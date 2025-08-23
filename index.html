@@ -6,7 +6,7 @@
     <meta name="description" content="Persönliche Website von Joshua Forster, Medizinstudent mit Fokus auf Kardiologie und Neurologie.">
     <meta property="og:title" content="Joshua Forster - Medizinstudent">
     <meta property="og:description" content="Website von Joshua Forster, Medizinstudent und Forscher im Bereich Kardiologie und Neurologie.">
-    <meta property="og:image" content="325FA6DA-42E5-45EA-B9A5-E2D4AFD93A3C.jpeg">
+    <meta property="og:image" content="https://via.placeholder.com/1200x630">
     <meta property="og:url" content="https://www.deinewebsite.de">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Joshua Forster - Medizinstudent">
@@ -131,6 +131,14 @@
             text-decoration: underline;
         }
 
+        /* Profilbild */
+        .profile-img {
+            max-width: 200px;
+            border-radius: 50%;
+            display: block;
+            margin: 0 auto 1rem;
+        }
+
         /* Zeitstrahl (interaktiv) */
         .timeline {
             border-left: 2px solid #00C6FF;
@@ -228,5 +236,32 @@
         <!-- Über mich -->
         <section id="about">
             <h2>Über mich</h2>
-            <img class="profile-img.jpeg" src="profile-img.jpeg" alt="Joshua Forster">
-            <p>Mein Name ist Joshua Forster, und ich bin Medizinstudent an der Universität Homburg. Ich interessiere mich besonders für die Fachgebiete
+            <img class="profile-img" src="https://via.placeholder.com/150" alt="Joshua Forster">
+            <p>Mein Name ist Joshua Forster, und ich bin Medizinstudent an der Universität Homburg. Ich interessiere mich besonders für die Fachgebiete Kardiologie und Neurologie. In meiner Freizeit arbeite ich an verschiedenen Projekten, um Theorie und Praxis zu verbinden.</p>
+        </section>
+
+        <!-- Projekte -->
+        <section id="projects-overview">
+            <h2>Projekte</h2>
+            <p>Eine Übersicht meiner Arbeiten findest du auf der <a href="projects.html">Projektseite</a>.</p>
+        </section>
+
+        <!-- Forschung -->
+        <section id="research-overview">
+            <h2>Forschung</h2>
+            <p>Aktuelle Forschungsschwerpunkte liegen in der <a href="research.html">Kardiologie und Neurologie</a>.</p>
+        </section>
+
+        <!-- Kontakt -->
+        <section id="contact-overview">
+            <h2>Kontakt</h2>
+            <p>Für Anfragen nutze bitte das <a href="contact.html">Kontaktformular</a>.</p>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Joshua Forster. Alle Rechte vorbehalten.</p>
+    </footer>
+</body>
+</html>
