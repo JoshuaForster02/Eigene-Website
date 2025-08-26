@@ -4,229 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Persönliche Website von Joshua Forster, Medizinstudent mit Fokus auf Kardiologie und Neurologie.">
-    <meta property="og:title" content="Joshua Forster - Medizinstudent">
-    <meta property="og:description" content="Website von Joshua Forster, Medizinstudent und Forscher im Bereich Kardiologie und Neurologie.">
-    <meta property="og:image" content="325FA6DA-42E5-45EA-B9A5-E2D4AFD93A3C.jpeg">
-    <meta property="og:url" content="https://www.deinewebsite.de">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Joshua Forster - Medizinstudent">
-    <meta name="twitter:description" content="Website von Joshua Forster, Medizinstudent und Forscher im Bereich Kardiologie und Neurologie.">
-    <meta name="twitter:image" content="https://via.placeholder.com/1200x630">
     <title>Joshua Forster - Medizinstudent</title>
-    <style>
-        /* Allgemeines Styling */
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-            background-color: #f0f0f0;
-            color: #333;
-            overflow-x: hidden;
-        }
-
-        /* Header */
-        header {
-            background: #1a1a1a; /* Dunkelgrau-Schwarz für einen eleganten Look */
-            color: #fff;
-            padding: 3rem 0;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-        }
-
-        .header-wrapper {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1.5rem;
-        }
-
-        .header-left {
-            font-size: 2.5rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: #00C6FF; /* Akzentfarbe für den Namen */
-        }
-
-        .header-center {
-            text-align: center;
-            font-size: 3rem;
-            font-weight: 300;
-            flex: 1;
-        }
-
-        /* Navigation */
-        nav {
-            background: #fff;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin: -2rem 0 2rem;
-        }
-
-        nav ul {
-            display: flex;
-            justify-content: center;
-            padding: 0;
-            margin: 0;
-            list-style: none;
-        }
-
-        nav a {
-            color: #1a1a1a;
-            text-decoration: none;
-            margin: 0 1.5rem;
-            font-size: 1.1rem;
-            font-weight: 500;
-            padding: 1.2rem;
-            transition: color 0.3s ease, transform 0.3s ease;
-        }
-
-        nav a:hover {
-            color: #00C6FF;
-            transform: translateY(-3px);
-        }
-
-        /* Main Content */
-        main {
-            max-width: 1000px;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
-        }
-
-        section {
-            margin-bottom: 3rem;
-            background: #fff;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        section:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-        }
-
-        section h2 {
-            font-size: 2.5rem;
-            color: #00C6FF; /* Akzentfarbe */
-            margin-bottom: 1.2rem;
-            font-weight: 700;
-        }
-
-        section p {
-            font-size: 1rem;
-            color: #555;
-        }
-
-        section a {
-            color: #00C6FF;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-
-        section a:hover {
-            text-decoration: underline;
-        }
-
-        /* Zeitstrahl (interaktiv) */
-        .timeline {
-            border-left: 2px solid #00C6FF;
-            padding-left: 20px;
-            margin-left: 10px;
-            position: relative;
-        }
-
-        .timeline-item {
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .timeline-item:before {
-            content: '';
-            position: absolute;
-            left: -8px;
-            top: 0;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background-color: #00C6FF;
-        }
-
-        /* Footer */
-        footer {
-            text-align: center;
-            font-size: 0.9rem;
-            color: #555;
-            margin-top: 4rem;
-            padding: 1.5rem 0;
-            background: #f0f0f0;
-            border-top: 1px solid #ddd;
-        }
-
-        footer a {
-            color: #00C6FF;
-            text-decoration: none;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
-        }
-
-        /* Mobile Anpassungen */
-        @media (max-width: 768px) {
-            .header-left {
-                font-size: 2rem;
-            }
-
-            .header-center {
-                font-size: 2rem;
-            }
-
-            nav a {
-                font-size: 1rem;
-                padding: 1rem;
-            }
-
-            main {
-                padding: 0 1rem;
-            }
-
-            section {
-                padding: 1.5rem;
-            }
-
-            .timeline {
-                padding-left: 10px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Header -->
     <header>
         <div class="header-wrapper">
-            <div class="header-left">Joshua Forster</div>
-            <div class="header-center">Willkommen auf meiner persönlichen Website</div>
+            <div class="brand"><a href="index.html">Joshua Forster</a></div>
+            <nav>
+                <ul>
+                    <li><a href="about.html">Über mich</a></li>
+                    <li><a href="projects.html">Projekte</a></li>
+                    <li><a href="research.html">Forschung</a></li>
+                    <li><a href="contact.html">Kontakt</a></li>
+                </ul>
+            </nav>
         </div>
     </header>
-
-    <!-- Navigation -->
-    <nav>
-        <ul>
-            <li><a href="about.html">Über mich</a></li>
-            <li><a href="projects.html">Projekte</a></li>
-            <li><a href="research.html">Forschung</a></li>
-            <li><a href="contact.html">Kontakt</a></li>
-        </ul>
-    </nav>
-
-    <!-- Hauptinhalt -->
     <main>
-        <!-- Über mich -->
         <section id="about">
             <h2>Über mich</h2>
-            <img class="profile-img.jpeg" src="profile-img.jpeg" alt="Joshua Forster">
-            <p>Mein Name ist Joshua Forster, und ich bin Medizinstudent an der Universität Homburg. Ich interessiere mich besonders für die Fachgebiete
+            <img class="profile-img" src="https://via.placeholder.com/150" alt="Joshua Forster">
+            <p>Mein Name ist Joshua Forster und ich bin Medizinstudent an der Universität Homburg. Ich interessiere mich besonders für Kardiologie und Neurologie.</p>
+        </section>
+        <section id="projects-overview">
+            <h2>Projekte</h2>
+            <p>Eine Übersicht meiner Arbeiten findest du auf der <a href="projects.html">Projektseite</a>.</p>
+        </section>
+        <section id="research-overview">
+            <h2>Forschung</h2>
+            <p>Aktuelle Schwerpunkte liegen in der <a href="research.html">Kardiologie und Neurologie</a>.</p>
+        </section>
+        <section id="contact-overview">
+            <h2>Kontakt</h2>
+            <p>Für Anfragen nutze das <a href="contact.html">Kontaktformular</a>.</p>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Joshua Forster. Alle Rechte vorbehalten.</p>
+    </footer>
+</body>
+</html>
