@@ -1,282 +1,142 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Persönliche Website von Joshua Forster, Medizinstudent mit Fokus auf Kardiologie und Neurologie.">
- codex/optimize-and-deploy-website-hp56t1
-    <title>Joshua Forster - Medizinstudent</title>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="description" content="Joshua Forster — Medizinstudent mit Fokus auf klinische Datenanalyse, Kardiologie und Neurologie. Projekte, Forschung und Kontakt.">
+        <meta name="author" content="Joshua Forster">
+        <meta property="og:title" content="Joshua Forster — Medizinstudent & Forscher">
+        <meta property="og:description" content="Projekte, Forschung und Kontakt von Joshua Forster. CV auf Anfrage.">
+        <meta property="og:type" content="website">
+    <title>Joshua Forster — Medizinstudent & Forscher</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="shortcut icon" href="favicon.ico">
+    <meta name="theme-color" content="#ffffff">
+    <meta property="og:image" content="og-image.svg">
     <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <a class="skip-link" href="#main-content">Weiter zu Inhalt</a>
+        <header>
+            <div class="site-max header-wrapper">
+                <div class="brand"><a href="index.html" aria-current="page">Joshua Forster</a></div>
+                <nav aria-label="Hauptnavigation">
+                    <ul>
+                        <li><a href="about.html">Über mich</a></li>
+                        <li><a href="projects.html">Projekte</a></li>
+                        <li><a href="research.html">Forschung</a></li>
+                        <li><a href="contact.html">Kontakt</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
 
-    <meta property="og:title" content="Joshua Forster - Medizinstudent">
-    <meta property="og:description" content="Website von Joshua Forster, Medizinstudent und Forscher im Bereich Kardiologie und Neurologie.">
-    <meta property="og:image" content="https://via.placeholder.com/1200x630">
-    <meta property="og:url" content="https://www.deinewebsite.de">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Joshua Forster - Medizinstudent">
-    <meta name="twitter:description" content="Website von Joshua Forster, Medizinstudent und Forscher im Bereich Kardiologie und Neurologie.">
-    <meta name="twitter:image" content="https://via.placeholder.com/1200x630">
-    <title>Joshua Forster - Medizinstudent</title>
-    <style>
-        /* Allgemeines Styling */
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-            background-color: #f0f0f0;
-            color: #333;
-            overflow-x: hidden;
-        }
+        <main class="site-max" id="main-content">
+            <section class="hero">
+                <div class="hero-inner">
+                    <h1>Joshua Forster — Medizinstudent & klinische Datenanalyse</h1>
+                    <p class="lead">Fokus auf Kardiologie, Neurologie und klinische Forschung. Ich verbinde medizinisches Wissen mit datengetriebenen Tools, um klinische Prozesse klarer und effizienter zu machen.</p>
+                    <div class="badges" aria-hidden="true">
+                        <span class="badge">Kardiologie</span>
+                        <span class="badge">Neurologie</span>
+                        <span class="badge">Klinische Forschung</span>
+                        <span class="badge">Med. Informatik</span>
+                    </div>
+                    <div class="ctas">
+                        <a class="btn btn-primary" href="contact.html#contact-form">CV anfragen</a>
+                        <a class="btn btn-ghost" href="projects.html">Projekte ansehen</a>
+                    </div>
 
-        /* Header */
-        header {
-            background: #1a1a1a; /* Dunkelgrau-Schwarz für einen eleganten Look */
-            color: #fff;
-            padding: 3rem 0;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-        }
+                    <div class="summary-cards" aria-hidden="false">
+                        <div class="card">
+                            <h3>Interessenschwerpunkte</h3>
+                            <p>Kardiologie · Neurologie · klinische Forschung</p>
+                        </div>
+                        <div class="card">
+                            <h3>Skills</h3>
+                            <p>Python · R · Datenanalyse · medizinische Informatik</p>
+                        </div>
+                        <div class="card">
+                            <h3>Ziel</h3>
+                            <p>Praxisnahe Forschung und Entwicklung nutzerfreundlicher klinischer Werkzeuge</p>
+                        </div>
+                    </div>
+                </div>
 
-        .header-wrapper {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1.5rem;
-        }
+                        <aside class="hero-aside">
+                            <!-- Allgemeines, nicht‑persönliches Bild (siehe README: place images/hero.jpg in the repo) -->
+                                        <picture>
+                                            <!-- WebP first for supported browsers -->
+                                            <source srcset="images/hero.webp 1x, images/hero-2x.webp 2x" type="image/webp">
+                                            <!-- Fallback to JPEG; high-DPI @2x available as images/hero@2x.jpg -->
+                                            <img class="profile-img" src="images/hero.jpg" srcset="images/hero.jpg 1x, images/hero@2x.jpg 2x" alt="Stimmungsbild: Berglandschaft" width="420" height="420" loading="lazy" decoding="async">
+                                        </picture>
+                                        <a class="btn btn-ghost" href="contact.html">Kontakt aufnehmen</a>
+                        </aside>
+            </section>
 
-        .header-left {
-            font-size: 2.5rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: #00C6FF; /* Akzentfarbe für den Namen */
-        }
+            <!-- Polished section: no experimental 3D cube — keep content focused -->
+            <section class="hero-more">
+                <div class="hero-more-inner">
+                    <h2>Highlights & Schnellzugriff</h2>
+                    <div class="quick-links">
+                        <a class="card" href="about.html"><h4>Über mich</h4><p>Kurzprofil & Motivation</p></a>
+                        <a class="card" href="projects.html"><h4>Projekte</h4><p>Ausgewählte Arbeiten</p></a>
+                        <a class="card" href="research.html"><h4>Forschung</h4><p>Publikationen & Studien</p></a>
+                        <a class="card" href="contact.html"><h4>Kontakt</h4><p>CV auf Anfrage</p></a>
+                    </div>
+                </div>
+            </section>
 
-        .header-center {
-            text-align: center;
-            font-size: 3rem;
-            font-weight: 300;
-            flex: 1;
-        }
+            <section aria-labelledby="featured-projects">
+                <h2 id="featured-projects">Ausgewählte Projekte</h2>
+                <div class="projects-grid">
+                    <article class="project">
+                        <div>
+                            <h4>Medicus</h4>
+                            <p>Plattform zur medizinischen Informationsvermittlung für Studierende und Ärzt:innen.</p>
+                        </div>
+                        <div><a href="https://medizin2.wordpress.com/" target="_blank" rel="noopener">Mehr</a></div>
+                    </article>
+                    <article class="project">
+                        <div>
+                            <h4>Klinischer Prototyp</h4>
+                            <p>In Arbeit: Datenaufbereitung und Visualisierung für klinische Fragestellungen.</p>
+                        </div>
+                        <div><a href="projects.html">Mehr</a></div>
+                    </article>
+                    <article class="project">
+                        <div>
+                            <h4>Forschung</h4>
+                            <p>Themenfelder zu Diagnostik, Workflow und translationaler Medizin.</p>
+                        </div>
+                        <div><a href="research.html">Mehr</a></div>
+                    </article>
+                </div>
+            </section>
 
-        /* Navigation */
-        nav {
-            background: #fff;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin: -2rem 0 2rem;
-        }
+            <section aria-labelledby="timeline">
+                <h2 id="timeline">Kurz & knapp</h2>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <h5>Medizinstudium</h5>
+                        <p>Fokus auf klinische Grundlagen, Diagnostik und interdisziplinäre Ansätze.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h5>Forschung</h5>
+                        <p>Interesse an Methodenentwicklung und praxisnahen, datenbasierten Lösungen.</p>
+                    </div>
+                </div>
+            </section>
 
-        nav ul {
-            display: flex;
-            justify-content: center;
-            padding: 0;
-            margin: 0;
-            list-style: none;
-        }
+        </main>
 
-        nav a {
-            color: #1a1a1a;
-            text-decoration: none;
-            margin: 0 1.5rem;
-            font-size: 1.1rem;
-            font-weight: 500;
-            padding: 1.2rem;
-            transition: color 0.3s ease, transform 0.3s ease;
-        }
-
-        nav a:hover {
-            color: #00C6FF;
-            transform: translateY(-3px);
-        }
-
-        /* Main Content */
-        main {
-            max-width: 1000px;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
-        }
-
-        section {
-            margin-bottom: 3rem;
-            background: #fff;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        section:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-        }
-
-        section h2 {
-            font-size: 2.5rem;
-            color: #00C6FF; /* Akzentfarbe */
-            margin-bottom: 1.2rem;
-            font-weight: 700;
-        }
-
-        section p {
-            font-size: 1rem;
-            color: #555;
-        }
-
-        section a {
-            color: #00C6FF;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-
-        section a:hover {
-            text-decoration: underline;
-        }
-
-        /* Profilbild */
-        .profile-img {
-            max-width: 200px;
-            border-radius: 50%;
-            display: block;
-            margin: 0 auto 1rem;
-        }
-
-        /* Zeitstrahl (interaktiv) */
-        .timeline {
-            border-left: 2px solid #00C6FF;
-            padding-left: 20px;
-            margin-left: 10px;
-            position: relative;
-        }
-
-        .timeline-item {
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .timeline-item:before {
-            content: '';
-            position: absolute;
-            left: -8px;
-            top: 0;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background-color: #00C6FF;
-        }
-
-        /* Footer */
-        footer {
-            text-align: center;
-            font-size: 0.9rem;
-            color: #555;
-            margin-top: 4rem;
-            padding: 1.5rem 0;
-            background: #f0f0f0;
-            border-top: 1px solid #ddd;
-        }
-
-        footer a {
-            color: #00C6FF;
-            text-decoration: none;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
-        }
-
-        /* Mobile Anpassungen */
-        @media (max-width: 768px) {
-            .header-left {
-                font-size: 2rem;
-            }
-
-            .header-center {
-                font-size: 2rem;
-            }
-
-            nav a {
-                font-size: 1rem;
-                padding: 1rem;
-            }
-
-            main {
-                padding: 0 1rem;
-            }
-
-            section {
-                padding: 1.5rem;
-            }
-
-            .timeline {
-                padding-left: 10px;
-            }
-        }
-    </style>
- main
-</head>
-<body>
-    <header>
-        <div class="header-wrapper">
-            <div class="brand"><a href="index.html">Joshua Forster</a></div>
-            <nav>
-                <ul>
-                    <li><a href="about.html">Über mich</a></li>
-                    <li><a href="projects.html">Projekte</a></li>
-                    <li><a href="research.html">Forschung</a></li>
-                    <li><a href="contact.html">Kontakt</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-    <main>
-        <section id="about">
-            <h2>Über mich</h2>
-            <img class="profile-img" src="https://via.placeholder.com/150" alt="Joshua Forster">
- codex/optimize-and-deploy-website-hp56t1
-            <p>Mein Name ist Joshua Forster und ich bin Medizinstudent an der Universität  Ich interessiere mich besonders für Kardiologie und Neurologie.</p>
-        </section>
-
-            <p>Mein Name ist Joshua Forster, und ich bin Medizinstudent an der Universität  Ich interessiere mich besonders für die Fachgebiete Kardiologie und Neurologie. In meiner Freizeit arbeite ich an verschiedenen Projekten, um Theorie und Praxis zu verbinden.</p>
-        </section>
-
-        <!-- Projekte -->
- main
-        <section id="projects-overview">
-            <h2>Projekte</h2>
-            <p>Eine Übersicht meiner Arbeiten findest du auf der <a href="projects.html">Projektseite</a>.</p>
-        </section>
- codex optimize-and-deploy-website-hp56t1
-        <section id="research-overview">
-            <h2>Forschung</h2>
-            <p>Aktuelle Schwerpunkte liegen in der <a href="research.html">Kardiologie und Neurologie</a>.</p>
-        </section>
-        <section id="contact-overview">
-            <h2>Kontakt</h2>
-            <p>Für Anfragen nutze das <a href="contact.html">Kontaktformular</a>.</p>
-        </section>
-    </main>
-
-
-        <!-- Forschung -->
-        <section id="research-overview">
-            <h2>Forschung</h2>
-            <p>Aktuelle Forschungsschwerpunkte liegen in der <a href="research.html">Kardiologie und Neurologie</a>.</p>
-        </section>
-
-        <!-- Kontakt -->
-        <section id="contact-overview">
-            <h2>Kontakt</h2>
-            <p>Für Anfragen nutze bitte das <a href="contact.html">Kontaktformular</a>.</p>
-        </section>
-    </main>
-
-    <!-- Footer -->
- main
-    <footer>
-        <p>&copy; 2024 Joshua Forster. Alle Rechte vorbehalten.</p>
-    </footer>
-</body>
+        <footer class="site-max">
+            <p>&copy; 2026 Joshua Forster — <a href="mailto:joshuaforster02@gmail.com">joshuaforster02@gmail.com</a> — <a href="datenschutz.html">Datenschutz</a></p>
+        </footer>
+        <script src="scripts/animations.js" defer></script>
+        </body>
 </html>
