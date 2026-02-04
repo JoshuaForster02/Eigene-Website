@@ -6,9 +6,17 @@ Diese statische Website ist ein persönliches Portfolio für Bewerbungen und Pr�
 
 Schnellstart (GitHub Pages)
 
-1. Lege ein GitHub-Repository an (falls noch nicht vorhanden) und pushe den Inhalt dieses Ordners.
-2. Aktiviere GitHub Pages in den Repository-Einstellungen: Branch `main` und Ordner `/ (root)`.
-3. (Optional) Füge eine `CNAME`-Datei hinzu, wenn du eine eigene Domain verwendest.
+Die Website wird automatisch auf GitHub Pages bereitgestellt:
+
+1. **Automatisches Deployment**: Bei jedem Push auf den `main` Branch wird die Website automatisch über GitHub Actions deployed.
+2. **GitHub Pages aktivieren**: 
+   - Gehe zu den Repository-Einstellungen → Pages
+   - Unter "Build and deployment" wähle "GitHub Actions" als Source
+3. **Custom Domain**: Die `CNAME`-Datei ist bereits konfiguriert für `joshuaforster.de`
+   - Stelle sicher, dass deine Domain-DNS-Einstellungen korrekt auf GitHub Pages zeigen
+   - Bei GitHub: Settings → Pages → Custom domain → `joshuaforster.de`
+
+Das Deployment erfolgt über den Workflow `.github/workflows/deploy.yml`.
 
 Wichtige Hinweise
 
