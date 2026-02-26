@@ -1,111 +1,432 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Kontakt zu Joshua Forster — Anfragen zu Projekten, Forschung oder CV.">
-    <title>Kontakt - Joshua Forster</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="icon" href="favicon.svg" type="image/svg+xml">
-    <link rel="shortcut icon" href="favicon.ico">
-    <meta name="theme-color" content="#ffffff">
-    <meta property="og:title" content="Kontakt — Joshua Forster">
-    <meta property="og:description" content="Kontaktanfrage zu Projekten, Forschung oder CV.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://joshuaforster.de/contact.html">
-    <meta property="og:image" content="https://joshuaforster.de/og-image.png">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Kontakt — Joshua Forster">
-    <meta name="twitter:description" content="Kontaktanfrage zu Projekten, Forschung oder CV.">
-    <meta name="twitter:image" content="https://joshuaforster.de/og-image.png">
-    <link rel="canonical" href="https://joshuaforster.de/contact.html">
-    <link rel="stylesheet" href="style.css?v=20260204">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Kontakt zu Joshua Forster. Anfragen zu Austausch, Kooperationen oder CV per E-Mail auf Anfrage.">
+<meta name="author" content="Joshua Forster">
+<meta property="og:title" content="Kontakt - Joshua Forster">
+<meta property="og:description" content="Kontaktformular fuer Anfragen. CV wird nach kurzer Bestaetigung per E-Mail versendet.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://joshuaforster.de/contact.html">
+<meta property="og:image" content="https://joshuaforster.de/og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Kontakt - Joshua Forster">
+<meta name="twitter:description" content="Kontaktformular fuer Anfragen und CV-Anfrage per E-Mail.">
+<meta name="twitter:image" content="https://joshuaforster.de/og-image.svg">
+<link rel="canonical" href="https://joshuaforster.de/contact.html">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="shortcut icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&amp;family=Karla:wght@300;400;500;700&amp;family=DM+Mono:wght@400&amp;display=swap" rel="stylesheet">
+<title>Kontakt - Joshua Forster</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --ivory: #f7f4ee;
+  --ivory-2: #ede9e0;
+  --ink: #0e0d0b;
+  --ink-2: #2a2826;
+  --ink-3: #6b6760;
+  --ink-4: #9a958d;
+  --accent: #8c1c13;
+  --border: #d8d3ca;
+  --border-2: #e8e3da;
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: "Karla", Arial, sans-serif;
+  --mono: "DM Mono", monospace;
+}
+body {
+  background: var(--ivory);
+  color: var(--ink);
+  font-family: var(--sans);
+  line-height: 1.65;
+}
+a { color: inherit; }
+.skip-link {
+  position: absolute;
+  left: 12px;
+  top: -44px;
+  z-index: 1000;
+  background: var(--accent);
+  color: var(--ivory);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  text-decoration: none;
+}
+.skip-link:focus { top: 10px; }
+header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  border-bottom: 1px solid var(--border-2);
+  backdrop-filter: blur(10px);
+  background: rgba(247, 244, 238, 0.94);
+}
+.nav {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 14px 26px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.brand {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 500;
+  text-decoration: none;
+}
+.brand span { color: var(--accent); }
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+nav a {
+  text-decoration: none;
+  font-family: var(--mono);
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+  padding-bottom: 2px;
+  border-bottom: 1px solid transparent;
+}
+nav a:hover,
+nav a:focus,
+nav a[aria-current="page"] {
+  color: var(--ink);
+  border-bottom-color: var(--accent);
+  outline: none;
+}
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 70px 26px 80px;
+}
+.section-label {
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 10px;
+  color: var(--accent);
+  margin-bottom: 20px;
+}
+h1 {
+  font-family: var(--serif);
+  font-size: clamp(40px, 6vw, 66px);
+  font-weight: 500;
+  line-height: 0.95;
+  margin-bottom: 16px;
+}
+.lead {
+  max-width: 760px;
+  color: var(--ink-3);
+  margin-bottom: 30px;
+  font-size: 16px;
+}
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  margin-bottom: 34px;
+}
+.info-card {
+  border: 1px solid var(--border-2);
+  background: var(--ivory-2);
+  padding: 18px 16px;
+}
+.info-card h2 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 24px;
+  margin-bottom: 6px;
+}
+.info-card p { color: var(--ink-3); font-size: 14px; }
+.contact-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+.card {
+  background: var(--ivory-2);
+  border: 1px solid var(--border-2);
+  padding: 20px;
+}
+.card h2 {
+  font-family: var(--serif);
+  font-size: 32px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+.card p { color: var(--ink-3); margin-bottom: 14px; }
+.contact-links {
+  display: grid;
+  gap: 8px;
+}
+.contact-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  background: var(--ivory);
+  text-decoration: none;
+}
+.contact-link strong {
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 10px;
+  color: var(--ink-4);
+  display: block;
+}
+.contact-link span { font-size: 14px; color: var(--ink-2); }
+.contact-link:hover,
+.contact-link:focus {
+  background: var(--ink);
+  border-color: var(--ink);
+  outline: none;
+}
+.contact-link:hover strong,
+.contact-link:hover span,
+.contact-link:focus strong,
+.contact-link:focus span { color: var(--ivory); }
+.contact-link em { font-style: normal; color: var(--ink-4); }
+.contact-link:hover em,
+.contact-link:focus em { color: var(--accent); }
+form {
+  display: grid;
+  gap: 2px;
+}
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+}
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 10px;
+  color: var(--ink-4);
+}
+input,
+textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: var(--ivory);
+  color: var(--ink);
+  font: inherit;
+  padding: 12px 14px;
+}
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--ink);
+}
+textarea {
+  min-height: 130px;
+  resize: vertical;
+}
+.cv-check {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  border: 1px solid var(--border);
+  background: var(--ivory);
+  padding: 12px 14px;
+  color: var(--ink-2);
+  font-size: 14px;
+}
+.cv-check input { margin-top: 3px; width: auto; }
+button {
+  border: none;
+  background: var(--ink);
+  color: var(--ivory);
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 11px;
+  padding: 14px 16px;
+  cursor: pointer;
+}
+button:hover,
+button:focus { background: var(--accent); outline: none; }
+.note {
+  color: var(--ink-3);
+  font-size: 12px;
+}
+footer {
+  border-top: 1px solid var(--border);
+  padding: 20px 26px;
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-family: var(--mono);
+  letter-spacing: 0.08em;
+  font-size: 11px;
+  color: var(--ink-4);
+}
+footer a {
+  text-decoration: none;
+  color: var(--ink-4);
+}
+footer a:hover,
+footer a:focus { color: var(--accent); outline: none; }
+@media (max-width: 900px) {
+  .info-grid,
+  .contact-layout,
+  .row { grid-template-columns: 1fr; }
+}
+</style>
 </head>
 <body>
-        <a class="skip-link" href="#main-content">Weiter zu Inhalt</a>
-        <header>
-            <div class="site-max header-wrapper">
-                <div class="brand"><a href="index.html">Joshua Forster</a></div>
-                <nav aria-label="Hauptnavigation">
-                    <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="about.html">Über mich</a></li>
-                        <li><a href="projects.html">Projekte</a></li>
-                        <li><a href="research.html">Forschung</a></li>
-                        <li><a href="contact.html" aria-current="page">Kontakt</a></li>
-                    </ul>
-                </nav>
-            </div>
-        </header>
+<a class="skip-link" href="#main-content">Direkt zum Inhalt</a>
+<header>
+  <div class="nav">
+    <a class="brand" href="index.html">Joshua <span>Forster</span></a>
+    <nav aria-label="Hauptnavigation">
+      <ul>
+        <li><a href="index.html">Start</a></li>
+        <li><a href="about.html">Ueber mich</a></li>
+        <li><a href="projects.html">Projekte</a></li>
+        <li><a href="research.html">Forschung</a></li>
+        <li><a href="contact.html" aria-current="page">Kontakt</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
 
-        <main class="site-max" id="main-content">
-            <section class="section">
-                <div class="section-head">
-                    <h1>Kontakt</h1>
-                    <p class="section-lead">Für Anfragen zu Projekten, Forschung oder Bewerbungen schreibe mir gern. Eine kurze Nachricht mit Kontext und Wunschzeitpunkt reicht.</p>
-                </div>
-                <div class="info-grid">
-                    <div class="info-card">
-                        <h4>Antwortzeit</h4>
-                        <p>In der Regel innerhalb von 48 Stunden.</p>
-                    </div>
-                    <div class="info-card">
-                        <h4>CV‑Anfrage</h4>
-                        <p>Ich sende den CV nach kurzer Bestätigung per E‑Mail zu.</p>
-                    </div>
-                    <div class="info-card">
-                        <h4>Kooperationen</h4>
-                        <p>Gern mit kurzer Zielbeschreibung und gewünschtem Zeitrahmen.</p>
-                    </div>
-                </div>
+<main id="main-content">
+  <p class="section-label">Kontakt</p>
+  <h1>Direkter Kontakt</h1>
+  <p class="lead">
+    Fuer Rueckfragen, Austausch oder CV-Anfragen. Der CV ist nicht oeffentlich hinterlegt und wird nach kurzer Bestaetigung per E-Mail versendet.
+  </p>
 
-                        <!-- Formspree endpoint configured -->
-                        <form id="contact-form" action="https://formspree.io/f/xqeajnve" method="POST">
-                            <input type="hidden" name="_subject" value="Website-Anfrage von Eigene-Website">
-                    <label for="name">Name</label>
-                    <input type="text" id="name" name="name" autocomplete="name" required>
+  <section class="info-grid" aria-label="Kontaktinfos">
+    <article class="info-card">
+      <h2>Antwortzeit</h2>
+      <p>In der Regel innerhalb von 48 Stunden.</p>
+    </article>
+    <article class="info-card">
+      <h2>CV-Flow</h2>
+      <p>Nur auf Anfrage. Kein oeffentlicher Download.</p>
+    </article>
+    <article class="info-card">
+      <h2>Kontext</h2>
+      <p>Kurze Nachricht mit Anliegen und Zeitraum reicht aus.</p>
+    </article>
+  </section>
 
-                    <label for="email">E-Mail</label>
-                    <input type="email" id="email" name="email" autocomplete="email" required>
+  <section class="contact-layout" aria-label="Kontaktformular und Wege">
+    <article class="card">
+      <h2>Kontaktwege</h2>
+      <p>Falls du lieber direkt schreibst:</p>
+      <div class="contact-links">
+        <a class="contact-link" href="mailto:joshuaforster02@gmail.com">
+          <div>
+            <strong>E-Mail</strong>
+            <span>joshuaforster02@gmail.com</span>
+          </div>
+          <em>↗</em>
+        </a>
+        <a class="contact-link" href="index.html#contact">
+          <div>
+            <strong>Startseite</strong>
+            <span>Kontaktbereich auf Startseite</span>
+          </div>
+          <em>↗</em>
+        </a>
+        <a class="contact-link" href="datenschutz.html">
+          <div>
+            <strong>Datenschutz</strong>
+            <span>Info zur Datenverarbeitung</span>
+          </div>
+          <em>↗</em>
+        </a>
+      </div>
+    </article>
 
-                    <label for="subject">Betreff</label>
-                    <input type="text" id="subject" name="subject" autocomplete="off">
+    <article class="card">
+      <h2>Nachricht senden</h2>
+      <form id="contact-form" action="https://formspree.io/f/xqeajnve" method="POST">
+        <input type="hidden" name="_subject" value="Website-Kontaktanfrage joshuaforster.de">
+        <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
 
-                    <label for="message">Nachricht</label>
-                    <textarea id="message" name="message" rows="6" required></textarea>
+        <div class="row">
+          <div>
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" autocomplete="name" required>
+          </div>
+          <div>
+            <label for="email">E-Mail</label>
+            <input type="email" id="email" name="email" autocomplete="email" required>
+          </div>
+        </div>
 
-                                <label style="display:flex;align-items:center;gap:0.5rem"><input type="checkbox" id="request_cv" name="request_cv" value="yes"> Ich möchte den CV per E-Mail erhalten</label>
+        <div>
+          <label for="subject">Betreff</label>
+          <input type="text" id="subject" name="subject" autocomplete="off">
+        </div>
 
-                                <button class="btn btn-primary" type="submit">Nachricht senden</button>
-                <p style="margin-top:0.6rem;color:var(--muted);font-size:0.9rem">Mit Absenden willige ich ein, dass meine Daten zur Bearbeitung dieser Anfrage gespeichert und verarbeitet werden. Weitere Informationen in <a href="datenschutz.html">Datenschutz</a>.</p>
-                </form>
+        <div>
+          <label for="message">Nachricht</label>
+          <textarea id="message" name="message" required></textarea>
+        </div>
 
-                <p style="margin-top:1rem;color:var(--muted)">Alternativ: <a href="mailto:joshuaforster02@gmail.com">joshuaforster02@gmail.com</a></p>
-            </section>
-        </main>
+        <label class="cv-check" for="request_cv">
+          <input type="checkbox" id="request_cv" name="request_cv" value="yes">
+          <span>Ich moechte den CV per E-Mail erhalten.</span>
+        </label>
 
-        <footer class="site-max">
-            <p>&copy; 2026 Joshua Forster — <a href="mailto:joshuaforster02@gmail.com">joshuaforster02@gmail.com</a> — <a href="datenschutz.html">Datenschutz</a></p>
-        </footer>
-            <script>
-                // Smooth-scroll to form when coming from CV-on-request links
-                (function(){
-                    if(!('querySelector' in document)) return;
-                    function focusForm(){
-                        var form = document.getElementById('contact-form');
-                        if(!form) return;
-                        form.scrollIntoView({behavior:'smooth',block:'center'});
-                        var first = form.querySelector('input,textarea,button');
-                        if(first) first.focus({preventScroll:true});
-                    }
-                    if(location.hash === '#contact-form'){
-                        // small timeout to allow layout to settle
-                        setTimeout(focusForm,80);
-                    }
-                })();
-            </script>
-    <script src="scripts/animations.js?v=20260204" defer></script>
+        <button type="submit">Nachricht senden</button>
+
+        <p class="note">
+          Mit Absenden willige ich in die Verarbeitung der eingegebenen Daten zur Bearbeitung der Anfrage ein.
+          Details unter <a href="datenschutz.html">Datenschutz</a>.
+        </p>
+      </form>
+    </article>
+  </section>
+</main>
+
+<footer>
+  <span>&copy; <span id="year"></span> Joshua Forster</span>
+  <span><a href="index.html">Start</a> - <a href="datenschutz.html">Datenschutz</a></span>
+</footer>
+
+<script>
+(function () {
+  var yearEl = document.getElementById('year');
+  if (yearEl) {
+    yearEl.textContent = String(new Date().getFullYear());
+  }
+
+  if (window.location.hash === '#contact-form') {
+    var form = document.getElementById('contact-form');
+    if (form) {
+      setTimeout(function () {
+        form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        var first = form.querySelector('input, textarea, button');
+        if (first) {
+          first.focus({ preventScroll: true });
+        }
+      }, 80);
+    }
+  }
+})();
+</script>
 </body>
 </html>

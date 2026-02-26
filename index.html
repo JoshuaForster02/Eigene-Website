@@ -1,195 +1,915 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="de">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="description" content="Joshua Forster — Medizinstudent mit Fokus auf klinische Datenanalyse, Kardiologie und Neurologie. Med-Tech Portfolio, Forschung & Kontakt.">
-        <meta name="author" content="Joshua Forster">
-        <meta property="og:title" content="Joshua Forster — Medizinstudent & Forscher">
-        <meta property="og:description" content="Projekte, Forschung und Kontakt von Joshua Forster. CV auf Anfrage.">
-        <meta property="og:type" content="website">
-        <meta property="og:url" content="https://joshuaforster.de/index.html">
-        <meta property="og:image" content="https://joshuaforster.de/og-image.png">
-        <meta name="twitter:card" content="summary_large_image">
-        <meta name="twitter:title" content="Joshua Forster — Medizinstudent & Forscher">
-        <meta name="twitter:description" content="Med-Tech Portfolio, Forschung & Kontakt. CV auf Anfrage.">
-        <meta name="twitter:image" content="https://joshuaforster.de/og-image.png">
-    <title>Joshua Forster — Medizinstudent & Forscher</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="icon" href="favicon.svg" type="image/svg+xml">
-    <link rel="shortcut icon" href="favicon.ico">
-    <meta name="theme-color" content="#ffffff">
-    <link rel="canonical" href="https://joshuaforster.de/index.html">
-    <link rel="stylesheet" href="style.css?v=20260204">
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Person",
-      "name": "Joshua Forster",
-      "url": "https://joshuaforster.de/index.html",
-      "jobTitle": "Medizinstudent",
-      "sameAs": [
-        "https://medizin2.wordpress.com/"
-      ]
-    }
-    </script>
-    </head>
-    <body>
-        <a class="skip-link" href="#main-content">Weiter zu Inhalt</a>
-        <header>
-            <div class="site-max header-wrapper">
-                <div class="brand"><a href="index.html" aria-current="page">Joshua Forster</a></div>
-                <nav aria-label="Hauptnavigation">
-                    <ul>
-                        <li><a href="about.html">Über mich</a></li>
-                        <li><a href="projects.html">Projekte</a></li>
-                        <li><a href="research.html">Forschung</a></li>
-                        <li><a href="contact.html">Kontakt</a></li>
-                    </ul>
-                </nav>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Joshua Forster - Medizinstudent im 5. Semester mit Fokus auf Sportmedizin, Praevention und klinische Forschung. CV per E-Mail auf Anfrage.">
+<meta name="author" content="Joshua Forster">
+<meta property="og:title" content="Joshua Forster - Medizinstudent">
+<meta property="og:description" content="5. Semester Medizin, Doktorarbeit in Arbeit, Interessen: Sportmedizin und Praevention. CV per Anfrage.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://joshuaforster.de/index.html">
+<meta property="og:image" content="https://joshuaforster.de/og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Joshua Forster - Medizinstudent">
+<meta name="twitter:description" content="5. Semester Medizin, Doktorarbeit in Arbeit, Interessen: Sportmedizin und Praevention.">
+<meta name="twitter:image" content="https://joshuaforster.de/og-image.svg">
+<link rel="canonical" href="https://joshuaforster.de/index.html">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="shortcut icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&amp;family=Karla:wght@300;400;500;700&amp;family=DM+Mono:wght@400&amp;display=swap" rel="stylesheet">
+<title>Joshua Forster - Medizinstudent</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --ivory: #f7f4ee;
+  --ivory-2: #ede9e0;
+  --ink: #0e0d0b;
+  --ink-2: #2a2826;
+  --ink-3: #6b6760;
+  --ink-4: #9a958d;
+  --accent: #8c1c13;
+  --accent-2: #b12e23;
+  --border: #d8d3ca;
+  --border-2: #e8e3da;
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: "Karla", Arial, sans-serif;
+  --mono: "DM Mono", monospace;
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--sans);
+  color: var(--ink);
+  background: var(--ivory);
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+a { color: inherit; }
+.skip-link {
+  position: absolute;
+  left: 12px;
+  top: -44px;
+  z-index: 1000;
+  background: var(--accent);
+  color: var(--ivory);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  text-decoration: none;
+}
+.skip-link:focus { top: 10px; }
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 56px;
+  background: rgba(247, 244, 238, 0.94);
+  border-bottom: 1px solid var(--border-2);
+  backdrop-filter: blur(10px);
+  z-index: 100;
+}
+.nav-logo {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 500;
+  text-decoration: none;
+  letter-spacing: 0.01em;
+}
+.nav-logo span { color: var(--accent); }
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 28px;
+}
+.nav-links a {
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 11px;
+  color: var(--ink-3);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 2px;
+}
+.nav-links a:hover,
+.nav-links a:focus,
+.nav-links a.is-active {
+  color: var(--ink);
+  border-bottom-color: var(--accent);
+  outline: none;
+}
+section {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 100px 56px;
+}
+.section-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 34px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-label::after {
+  content: "";
+  width: 42px;
+  height: 1px;
+  background: var(--accent);
+  opacity: 0.5;
+}
+#hero {
+  min-height: 100vh;
+  max-width: 100%;
+  padding-top: 120px;
+  position: relative;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute;
+  right: -30px;
+  top: 53%;
+  transform: translateY(-50%);
+  font-family: var(--serif);
+  font-size: clamp(180px, 28vw, 350px);
+  color: var(--border-2);
+  line-height: 0.8;
+  user-select: none;
+  pointer-events: none;
+}
+.hero-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 56px;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 70px;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+.hero-eyebrow {
+  font-family: var(--mono);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-size: 11px;
+  margin-bottom: 24px;
+}
+.hero h1 {
+  font-family: var(--serif);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 0.95;
+  font-size: clamp(56px, 8vw, 88px);
+  margin-bottom: 16px;
+}
+.hero h1 em {
+  font-style: italic;
+  color: var(--accent);
+}
+.hero-lead {
+  font-family: var(--serif);
+  font-size: clamp(18px, 2.2vw, 28px);
+  color: var(--ink-3);
+  margin-bottom: 22px;
+  font-style: italic;
+}
+.hero-copy p {
+  max-width: 620px;
+  color: var(--ink-2);
+  font-size: 16px;
+  margin-bottom: 22px;
+}
+.hero-cta {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  font-size: 11px;
+  text-decoration: none;
+  padding: 14px 20px;
+  transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease;
+}
+.btn:hover,
+.btn:focus { transform: translateY(-1px); outline: none; }
+.btn-primary {
+  background: var(--ink);
+  color: var(--ivory);
+  border: 1px solid var(--ink);
+}
+.btn-primary:hover,
+.btn-primary:focus { background: var(--accent); border-color: var(--accent); }
+.btn-secondary {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--border);
+}
+.btn-secondary:hover,
+.btn-secondary:focus { border-color: var(--ink); }
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.chip {
+  border: 1px solid var(--border);
+  background: var(--ivory-2);
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.hero-side {
+  display: grid;
+  gap: 2px;
+  border: 1px solid var(--border);
+  background: var(--border-2);
+}
+.hero-card {
+  background: var(--ivory);
+  padding: 28px;
+}
+.hero-card h3 {
+  font-family: var(--serif);
+  font-size: 26px;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+.hero-card p {
+  color: var(--ink-3);
+  font-size: 14px;
+}
+.hero-card ul {
+  margin-top: 12px;
+  padding-left: 18px;
+  color: var(--ink-2);
+}
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 70px;
+}
+.title-lg {
+  font-family: var(--serif);
+  font-size: clamp(34px, 4.2vw, 56px);
+  font-weight: 400;
+  line-height: 1.08;
+  margin-bottom: 22px;
+}
+.title-lg em { font-style: italic; color: var(--accent); }
+.text-block p { margin-bottom: 14px; color: var(--ink-2); }
+.quote {
+  margin: 20px 0;
+  border-left: 2px solid var(--accent);
+  padding-left: 16px;
+  color: var(--ink-3);
+  font-family: var(--serif);
+  font-size: 24px;
+  line-height: 1.3;
+}
+.sidebar-box {
+  padding: 24px;
+  border: 1px solid var(--border-2);
+  background: var(--ivory-2);
+  margin-bottom: 2px;
+}
+.sidebar-box h4 {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+.sidebar-box ul {
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+.sidebar-box li {
+  position: relative;
+  padding-left: 14px;
+  color: var(--ink-2);
+  font-size: 14px;
+}
+.sidebar-box li::before {
+  content: "-";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+}
+#focus {
+  background: var(--ink);
+  color: var(--ivory);
+  max-width: 100%;
+}
+#focus .section-wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 56px;
+}
+#focus .section-label { color: #c06a62; }
+#focus .section-label::after { background: #c06a62; }
+#focus h2 {
+  font-family: var(--serif);
+  font-size: clamp(34px, 4.2vw, 56px);
+  font-weight: 400;
+  margin-bottom: 14px;
+}
+#focus h2 em { font-style: italic; color: #c06a62; }
+#focus .lead { color: rgba(247, 244, 238, 0.66); max-width: 520px; margin-bottom: 36px; }
+.focus-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+}
+.focus-card {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 30px 22px;
+  background: rgba(255, 255, 255, 0.01);
+}
+.focus-card h3 {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+.focus-card p { color: rgba(247, 244, 238, 0.64); font-size: 13px; }
+.focus-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 14px;
+}
+.focus-tag {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  padding: 3px 8px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(247, 244, 238, 0.72);
+}
+.cards-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  border: 1px solid var(--border-2);
+}
+.info-card {
+  background: var(--ivory-2);
+  border: 1px solid var(--border-2);
+  padding: 30px 24px;
+}
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 14px;
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.info-card h3 {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1.2;
+  margin-bottom: 10px;
+}
+.info-card p { color: var(--ink-3); font-size: 14px; }
+#contact {
+  max-width: 100%;
+  background: var(--ivory-2);
+}
+#contact .section-wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 56px;
+}
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 70px;
+}
+.contact-links {
+  display: grid;
+  gap: 2px;
+}
+.contact-link {
+  background: var(--ivory);
+  border: 1px solid var(--border-2);
+  padding: 16px 18px;
+  text-decoration: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.contact-link strong {
+  display: block;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+}
+.contact-link span { color: var(--ink); font-size: 14px; }
+.contact-link:hover,
+.contact-link:focus {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--ivory);
+  outline: none;
+}
+.contact-link:hover strong,
+.contact-link:hover span,
+.contact-link:focus strong,
+.contact-link:focus span { color: var(--ivory); }
+.contact-link em {
+  font-style: normal;
+  color: var(--ink-4);
+  font-size: 20px;
+}
+.contact-link:hover em,
+.contact-link:focus em { color: var(--accent-2); }
+.contact-form {
+  display: grid;
+  gap: 2px;
+}
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+}
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+}
+.form-input,
+.form-textarea {
+  width: 100%;
+  background: var(--ivory);
+  border: 1px solid var(--border-2);
+  color: var(--ink);
+  padding: 14px 16px;
+  font-size: 14px;
+  font-family: var(--sans);
+}
+.form-input:focus,
+.form-textarea:focus {
+  border-color: var(--ink);
+  outline: none;
+}
+.form-textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+.checkbox-row {
+  background: var(--ivory);
+  border: 1px solid var(--border-2);
+  padding: 14px 16px;
+  font-size: 14px;
+  color: var(--ink-2);
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+.checkbox-row input {
+  margin-top: 3px;
+}
+.form-submit {
+  border: 0;
+  background: var(--ink);
+  color: var(--ivory);
+  font-family: var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 11px;
+  padding: 16px 20px;
+  cursor: pointer;
+}
+.form-submit:hover,
+.form-submit:focus { background: var(--accent); outline: none; }
+.form-note {
+  font-size: 12px;
+  color: var(--ink-3);
+}
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: none;
+}
+footer {
+  border-top: 1px solid var(--border);
+  padding: 28px 56px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-4);
+  letter-spacing: 0.08em;
+}
+.footer-links {
+  list-style: none;
+  display: flex;
+  gap: 18px;
+}
+.footer-links a {
+  text-decoration: none;
+  color: var(--ink-4);
+}
+.footer-links a:hover,
+.footer-links a:focus {
+  color: var(--accent);
+  outline: none;
+}
+@media (max-width: 1024px) {
+  nav,
+  .hero-inner,
+  section,
+  #focus .section-wrap,
+  #contact .section-wrap,
+  footer { padding-left: 34px; padding-right: 34px; }
+  .hero-inner,
+  .grid-2,
+  .contact-grid { grid-template-columns: 1fr; gap: 44px; }
+  .focus-grid { grid-template-columns: repeat(2, 1fr); }
+  .cards-3 { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 780px) {
+  nav,
+  .hero-inner,
+  section,
+  #focus .section-wrap,
+  #contact .section-wrap,
+  footer { padding-left: 20px; padding-right: 20px; }
+  nav { height: auto; flex-wrap: wrap; padding-top: 14px; padding-bottom: 14px; gap: 8px; }
+  .nav-links { width: 100%; flex-wrap: wrap; gap: 10px 14px; }
+  .hero-bg { right: -12px; top: 70%; }
+  .hero h1 { font-size: clamp(42px, 12vw, 64px); }
+  .focus-grid,
+  .cards-3,
+  .form-row { grid-template-columns: 1fr; }
+  footer { flex-direction: column; gap: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal { transition: none; opacity: 1; transform: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Direkt zum Inhalt</a>
+<nav aria-label="Hauptnavigation">
+  <a class="nav-logo" href="#hero">Joshua <span>Forster</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">Ueber mich</a></li>
+    <li><a href="#focus">Interessen</a></li>
+    <li><a href="#projects">In Arbeit</a></li>
+    <li><a href="#contact">Kontakt</a></li>
+    <li><a href="contact.html">Kontaktseite</a></li>
+  </ul>
+</nav>
+
+<main id="main-content">
+  <section id="hero" class="hero">
+    <div class="hero-bg" aria-hidden="true">JF</div>
+    <div class="hero-inner">
+      <div class="hero-copy reveal">
+        <div class="hero-eyebrow">Medizinstudent - 5. Semester</div>
+        <h1>Joshua<br><em>Forster</em></h1>
+        <p class="hero-lead">Sportmedizin, Praevention und klinische Forschung.</p>
+        <p>
+          Ich studiere Medizin im 5. Semester und arbeite aktuell an meiner Doktorarbeit.
+          Mein inhaltlicher Fokus liegt auf Sportmedizin, Sportpraevention und klinischer Arbeit mit klarem Praxisbezug.
+        </p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="#contact">Kontakt aufnehmen</a>
+          <a class="btn btn-secondary" href="contact.html#contact-form">CV per E-Mail anfragen</a>
+        </div>
+        <div class="chip-row" aria-label="Schwerpunkte">
+          <span class="chip">5. Semester</span>
+          <span class="chip">Doktorarbeit in Arbeit</span>
+          <span class="chip">Sportmedizin</span>
+          <span class="chip">Praevention</span>
+        </div>
+      </div>
+      <aside class="hero-side reveal" aria-label="Kurzprofil">
+        <article class="hero-card">
+          <h3>Kurzprofil</h3>
+          <p>Nur Fakten, keine erfundenen Referenzen.</p>
+          <ul>
+            <li>Studium: Medizin, 5. Semester</li>
+            <li>Status: Doktorarbeit in Arbeit</li>
+            <li>Praxisinteressen: Sportmedizin und Praevention</li>
+          </ul>
+        </article>
+        <article class="hero-card">
+          <h3>Sport und Alltag</h3>
+          <p>
+            Krafttraining und Laufen sind ein fester Teil meines Alltags. Diese Perspektive praegt auch mein Interesse an
+            Belastungssteuerung, Regeneration und Praevention.
+          </p>
+        </article>
+      </aside>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="section-label">01 - Ueber mich</div>
+    <div class="grid-2">
+      <div class="text-block reveal">
+        <h2 class="title-lg">Medizin als Verbindung aus <em>Wissenschaft und Praxis</em></h2>
+        <p>
+          Mein Schwerpunkt liegt aktuell auf dem klinischen Lernen, der Arbeit an meiner Doktorarbeit und dem Aufbau einer klaren,
+          belastbaren fachlichen Basis.
+        </p>
+        <p>
+          Inhaltlich interessieren mich vor allem Sportmedizin, Praeventionsansaetze und klinische Fragestellungen,
+          die sich alltagsnah und patientenorientiert umsetzen lassen.
+        </p>
+        <p class="quote">"Klar kommunizieren. Sauber arbeiten. Nur Dinge zeigen, die wirklich stimmen."</p>
+      </div>
+      <div class="reveal">
+        <div class="sidebar-box">
+          <h4>Interessen</h4>
+          <ul>
+            <li>Sportmedizin</li>
+            <li>Sportpraevention</li>
+            <li>Klinische Forschung</li>
+            <li>Belastung und Regeneration</li>
+          </ul>
+        </div>
+        <div class="sidebar-box">
+          <h4>Aktuell</h4>
+          <ul>
+            <li>5. Semester im Medizinstudium</li>
+            <li>Doktorarbeit in Arbeit</li>
+            <li>Website und Inhalte werden aufgebaut</li>
+          </ul>
+        </div>
+        <div class="sidebar-box">
+          <h4>Ausgleich</h4>
+          <ul>
+            <li>Krafttraining</li>
+            <li>Laufen</li>
+            <li>Strukturierter Alltag</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="focus">
+    <div class="section-wrap">
+      <div class="section-label">02 - Interessenfelder</div>
+      <div class="reveal">
+        <h2>Sportmedizin mit Fokus auf <em>Praevention und Praxis</em></h2>
+        <p class="lead">
+          Diese Website ist bewusst als ehrlicher Arbeitsstand aufgebaut. Statt fertiger Claims zeige ich nur Themen,
+          an denen ich aktuell arbeite oder die ich fachlich vertiefe.
+        </p>
+      </div>
+      <div class="focus-grid reveal">
+        <article class="focus-card">
+          <h3>Sportmedizin</h3>
+          <p>Interesse an Leistungsfaehigkeit, Belastungssteuerung und klinisch sinnvoller Trainingsbegleitung.</p>
+          <div class="focus-tags">
+            <span class="focus-tag">Training</span>
+            <span class="focus-tag">Belastung</span>
+          </div>
+        </article>
+        <article class="focus-card">
+          <h3>Praevention</h3>
+          <p>Fruehe Intervention und alltagstaugliche Strategien zur Reduktion gesundheitlicher Risiken.</p>
+          <div class="focus-tags">
+            <span class="focus-tag">Lifestyle</span>
+            <span class="focus-tag">Regeneration</span>
+          </div>
+        </article>
+        <article class="focus-card">
+          <h3>Klinische Forschung</h3>
+          <p>Arbeit an der Doktorarbeit und Interesse an sauberer Methodik sowie nachvollziehbarer Kommunikation.</p>
+          <div class="focus-tags">
+            <span class="focus-tag">Methodik</span>
+            <span class="focus-tag">Doktorarbeit</span>
+          </div>
+        </article>
+        <article class="focus-card">
+          <h3>Bewegung im Alltag</h3>
+          <p>Eigene Erfahrung durch Krafttraining und Laufen als zusaetzliche Perspektive auf praeventive Medizin.</p>
+          <div class="focus-tags">
+            <span class="focus-tag">Krafttraining</span>
+            <span class="focus-tag">Laufen</span>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects">
+    <div class="section-label">03 - In Arbeit</div>
+    <div class="reveal" style="margin-bottom: 26px;">
+      <h2 class="title-lg">Aktueller Stand: <em>Aufbauphase</em></h2>
+      <p style="color: var(--ink-3); max-width: 760px;">
+        Der Projektbereich wird schrittweise aufgebaut. Aktuell gibt es keine abgeschlossenen Case Studies mit oeffentlicher Detaildarstellung.
+      </p>
+    </div>
+    <div class="cards-3 reveal">
+      <article class="info-card">
+        <div class="status"><span class="dot"></span>In Arbeit</div>
+        <h3>Website-Struktur</h3>
+        <p>Inhalte werden von Grund auf mit Fokus auf Klarheit, Wahrheit und sauberer Kommunikation aufgebaut.</p>
+      </article>
+      <article class="info-card">
+        <div class="status"><span class="dot"></span>In Arbeit</div>
+        <h3>Forschungskontext</h3>
+        <p>Doktorarbeit laeuft. Oeffentliche Inhalte folgen erst, wenn fachlich und formal freigegeben.</p>
+      </article>
+      <article class="info-card">
+        <div class="status"><span class="dot"></span>Auf Anfrage</div>
+        <h3>CV und Details</h3>
+        <p>Lebenslauf und weiterfuehrende Infos nur nach kurzer Anfrage und Bestaetigung per E-Mail.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="section-wrap">
+      <div class="section-label">04 - Kontakt</div>
+      <div class="contact-grid">
+        <div class="reveal">
+          <h2 class="title-lg">Anfrage senden und <em>Rueckmeldung erhalten</em></h2>
+          <p style="color: var(--ink-3); margin-bottom: 24px;">
+            Fuer fachlichen Austausch, Kooperationen oder CV-Anfragen. Ich antworte in der Regel innerhalb von 48 Stunden.
+          </p>
+          <div class="contact-links">
+            <a class="contact-link" href="mailto:joshuaforster02@gmail.com">
+              <div>
+                <strong>E-Mail</strong>
+                <span>joshuaforster02@gmail.com</span>
+              </div>
+              <em>↗</em>
+            </a>
+            <a class="contact-link" href="contact.html#contact-form">
+              <div>
+                <strong>Kontaktseite</strong>
+                <span>Formular in eigener Ansicht oeffnen</span>
+              </div>
+              <em>↗</em>
+            </a>
+            <a class="contact-link" href="datenschutz.html">
+              <div>
+                <strong>Datenschutz</strong>
+                <span>Hinweise zur Datenverarbeitung</span>
+              </div>
+              <em>↗</em>
+            </a>
+          </div>
+        </div>
+
+        <div class="reveal">
+          <form id="kontakt-form" class="contact-form" action="https://formspree.io/f/xqeajnve" method="POST">
+            <input type="hidden" name="_subject" value="Website-Anfrage von joshuaforster.de">
+            <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="name">Name</label>
+                <input class="form-input" type="text" id="name" name="name" autocomplete="name" required>
+              </div>
+              <div class="form-group">
+                <label for="email">E-Mail</label>
+                <input class="form-input" type="email" id="email" name="email" autocomplete="email" required>
+              </div>
             </div>
-        </header>
 
-        <main class="site-max" id="main-content">
-            <section class="hero-grid">
-                <div class="hero-copy">
-                    <p class="hero-kicker">Med-Tech · Klinische Datenanalyse · Forschung</p>
-                    <h1>Ich übersetze klinische Fragen in klare Datenflüsse und nutzbare Prototypen.</h1>
-                    <p class="lead">Fokus auf Kardiologie, Neurologie und klinische Forschung. Ziel: Entscheidungen besser vorbereiten, Daten verständlicher machen und Workflows messbar verbessern.</p>
-                    <div class="badges" aria-hidden="true">
-                        <span class="badge">Kardiologie</span>
-                        <span class="badge">Neurologie</span>
-                        <span class="badge">Klinische Forschung</span>
-                        <span class="badge">Med. Informatik</span>
-                    </div>
-                    <div class="ctas">
-                        <a class="btn btn-primary" href="contact.html#contact-form">CV anfragen</a>
-                        <a class="btn btn-ghost" href="contact.html">Kontakt</a>
-                    </div>
-                    <div class="metrics">
-                        <div class="metric">
-                            <p class="metric-label">Fokus</p>
-                            <p class="metric-value">Klinik · Daten · Prototypen</p>
-                        </div>
-                        <div class="metric">
-                            <p class="metric-label">Tools</p>
-                            <p class="metric-value">Python · R · Datenanalyse</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="hero-stage">
-                    <div class="stage-frame">
-                        <div class="stage-toolbar" role="tablist" aria-label="3D Themen">
-                            <button class="stage-tab is-active" data-scene="cardio" role="tab" aria-selected="true">Kardiologie</button>
-                            <button class="stage-tab" data-scene="neuro" role="tab" aria-selected="false">Neurologie</button>
-                            <button class="stage-tab" data-scene="informatics" role="tab" aria-selected="false">Informatik</button>
-                        </div>
-                        <canvas id="hero-3d" aria-label="3D Visualisierung" role="img"></canvas>
-                        <div class="stage-caption">
-                            <p id="stage-caption-text">3D‑Szene: Herz‑Arterie, Puls‑Ring und Datenfluss‑Layer.</p>
-                            <a class="btn btn-ghost" href="projects.html">In Arbeit ansehen</a>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            <div class="form-group">
+              <label for="subject">Betreff</label>
+              <input class="form-input" type="text" id="subject" name="subject" autocomplete="off">
+            </div>
 
-            <section class="section">
-                <div class="section-head">
-                    <h2>Positionierung</h2>
-                    <p class="section-lead">Medizinische Inhalte werden erst dann wertvoll, wenn sie in klare Abläufe, Messpunkte und Werkzeuge übersetzt sind.</p>
-                </div>
-                <div class="focus-grid">
-                    <div class="focus-card">
-                        <h4>Klinische Klarheit</h4>
-                        <p>Komplexe Informationen strukturiert in verständliche Entscheidungs‑Bausteine.</p>
-                    </div>
-                    <div class="focus-card">
-                        <h4>Datenfluss‑Denken</h4>
-                        <p>Von der Erhebung bis zur Visualisierung: nachvollziehbare, prüfbare Schritte.</p>
-                    </div>
-                    <div class="focus-card">
-                        <h4>Prototyp‑Mentalität</h4>
-                        <p>Pragmatisch testen, iterieren und klinische Relevanz früh validieren.</p>
-                    </div>
-                </div>
-            </section>
+            <div class="form-group">
+              <label for="message">Nachricht</label>
+              <textarea class="form-textarea" id="message" name="message" required></textarea>
+            </div>
 
-            <section class="section" aria-labelledby="roadmap">
-                <div class="section-head">
-                    <h2 id="roadmap">Roadmap</h2>
-                    <p class="section-lead">Aktuelle Ideen und Prototypen — bewusst transparent als „in Arbeit“.</p>
-                </div>
-                <div class="roadmap-grid">
-                    <div class="roadmap-card">
-                        <div class="project-meta">
-                            <span class="status-pill status-inprogress"><span></span>In Arbeit</span>
-                        </div>
-                        <h4>Klinischer Workflow‑Prototyp</h4>
-                        <p>Strukturierung von Patientendaten und Visualisierung relevanter Kennzahlen.</p>
-                    </div>
-                    <div class="roadmap-card">
-                        <div class="project-meta">
-                            <span class="status-pill status-planned"><span></span>Geplant</span>
-                        </div>
-                        <h4>Datenanalyse‑Case</h4>
-                        <p>Konzept für Auswertung klinischer Fragestellungen mit nachvollziehbaren Reports.</p>
-                    </div>
-                    <div class="roadmap-card">
-                        <div class="project-meta">
-                            <span class="status-pill status-concept"><span></span>Konzept</span>
-                        </div>
-                        <h4>Forschungsprototyp</h4>
-                        <p>Ideen zu Datenaufbereitung, Visualisierung und methodischer Unterstützung.</p>
-                    </div>
-                </div>
-            </section>
+            <label class="checkbox-row" for="request_cv">
+              <input type="checkbox" id="request_cv" name="request_cv" value="yes">
+              <span>Ich moechte den CV per E-Mail erhalten.</span>
+            </label>
 
-            <section class="section" aria-labelledby="featured-projects">
-                <div class="section-head">
-                    <h2 id="featured-projects">Ausgewählte Referenz</h2>
-                    <p class="section-lead">Ein reales Projekt, das bereits öffentlich verfügbar ist.</p>
-                </div>
-                <div class="projects-grid">
-                    <article class="project">
-                        <div>
-                            <div class="project-meta">
-                                <span class="status-pill status-inprogress"><span></span>Live</span>
-                            </div>
-                            <h4>Medicus</h4>
-                            <p>Plattform zur medizinischen Informationsvermittlung für Studierende und Ärzt:innen.</p>
-                        </div>
-                        <div><a href="https://medizin2.wordpress.com/" target="_blank" rel="noopener">Zur Seite</a></div>
-                    </article>
-                    <article class="project">
-                        <div>
-                            <div class="project-meta">
-                                <span class="status-pill status-planned"><span></span>In Arbeit</span>
-                            </div>
-                            <h4>CV auf Anfrage</h4>
-                            <p>CV wird nach kurzer Bestätigung per E‑Mail zugesendet.</p>
-                        </div>
-                        <div><a href="contact.html">Kontakt</a></div>
-                    </article>
-                    <article class="project">
-                        <div>
-                            <div class="project-meta">
-                                <span class="status-pill status-concept"><span></span>Forschung</span>
-                            </div>
-                            <h4>Themenfelder</h4>
-                            <p>Kardiologie, Neurologie und klinische Informatik mit Fokus auf Diagnostik.</p>
-                        </div>
-                        <div><a href="research.html">Mehr</a></div>
-                    </article>
-                </div>
-            </section>
-        </main>
+            <button class="form-submit" type="submit">Nachricht senden</button>
+            <p class="form-note">
+              Mit Absenden willige ich ein, dass meine Daten zur Bearbeitung der Anfrage verarbeitet werden.
+              Weitere Infos unter <a href="datenschutz.html">Datenschutz</a>.
+            </p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
 
-        <footer class="site-max">
-            <p>&copy; 2026 Joshua Forster — <a href="mailto:joshuaforster02@gmail.com">joshuaforster02@gmail.com</a> — <a href="datenschutz.html">Datenschutz</a></p>
-        </footer>
-        <script src="scripts/animations.js?v=20260204" defer></script>
-        <script type="module" src="scripts/hero-3d.js?v=20260204"></script>
-        </body>
+<footer>
+  <div>&copy; <span id="year"></span> Joshua Forster</div>
+  <ul class="footer-links">
+    <li><a href="#hero">Nach oben</a></li>
+    <li><a href="contact.html">Kontaktseite</a></li>
+    <li><a href="datenschutz.html">Datenschutz</a></li>
+  </ul>
+</footer>
+
+<script>
+(function () {
+  const reveals = document.querySelectorAll('.reveal');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (!reduced && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach(function (el) { io.observe(el); });
+  } else {
+    reveals.forEach(function (el) { el.classList.add('visible'); });
+  }
+
+  const links = Array.from(document.querySelectorAll('.nav-links a[href^="#"]'));
+  const sections = links
+    .map(function (link) { return document.querySelector(link.getAttribute('href')); })
+    .filter(Boolean);
+
+  function setActiveLink() {
+    let currentId = '';
+    const offset = window.scrollY + 130;
+    sections.forEach(function (section) {
+      if (section.offsetTop <= offset) {
+        currentId = section.id;
+      }
+    });
+    links.forEach(function (link) {
+      link.classList.toggle('is-active', link.getAttribute('href') === '#' + currentId);
+    });
+  }
+
+  setActiveLink();
+  window.addEventListener('scroll', setActiveLink, { passive: true });
+
+  var yearEl = document.getElementById('year');
+  if (yearEl) {
+    yearEl.textContent = String(new Date().getFullYear());
+  }
+})();
+</script>
+</body>
 </html>
