@@ -3,913 +3,1555 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Joshua Forster - Medizinstudent im 5. Semester mit Fokus auf Sportmedizin, Praevention und klinische Forschung. CV per E-Mail auf Anfrage.">
+<meta name="description" content="Joshua Forster - Medizinstudent im 5. Semester. Doktorarbeit in Arbeit. Interesse an Sportmedizin, Sportpraevention und klinischer Forschung.">
 <meta name="author" content="Joshua Forster">
 <meta property="og:title" content="Joshua Forster - Medizinstudent">
-<meta property="og:description" content="5. Semester Medizin, Doktorarbeit in Arbeit, Interessen: Sportmedizin und Praevention. CV per Anfrage.">
+<meta property="og:description" content="5. Semester Medizin, Doktorarbeit in Arbeit, Sportmedizin und Praevention. CV per Anfrage.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://joshuaforster.de/index.html">
 <meta property="og:image" content="https://joshuaforster.de/og-image.svg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Joshua Forster - Medizinstudent">
-<meta name="twitter:description" content="5. Semester Medizin, Doktorarbeit in Arbeit, Interessen: Sportmedizin und Praevention.">
+<meta name="twitter:description" content="5. Semester Medizin, Doktorarbeit in Arbeit, Sportmedizin und Praevention.">
 <meta name="twitter:image" content="https://joshuaforster.de/og-image.svg">
 <link rel="canonical" href="https://joshuaforster.de/index.html">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="shortcut icon" href="favicon.ico">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&amp;family=Karla:wght@300;400;500;700&amp;family=DM+Mono:wght@400&amp;display=swap" rel="stylesheet">
 <title>Joshua Forster - Medizinstudent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&amp;family=Karla:ital,wght@0,300;0,400;0,500;1,300;1,400&amp;family=DM+Mono:ital,wght@0,300;0,400;1,300&amp;display=swap" rel="stylesheet">
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
+/* ─── RESET & ROOT ─────────────────────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
 :root {
-  --ivory: #f7f4ee;
-  --ivory-2: #ede9e0;
-  --ink: #0e0d0b;
-  --ink-2: #2a2826;
-  --ink-3: #6b6760;
-  --ink-4: #9a958d;
-  --accent: #8c1c13;
-  --accent-2: #b12e23;
-  --border: #d8d3ca;
-  --border-2: #e8e3da;
-  --serif: "Cormorant Garamond", Georgia, serif;
-  --sans: "Karla", Arial, sans-serif;
-  --mono: "DM Mono", monospace;
+  --ivory:   #F7F4EE;
+  --ivory2:  #EDE9E0;
+  --ink:     #0E0D0B;
+  --ink2:    #2A2826;
+  --ink3:    #6B6760;
+  --ink4:    #A8A49E;
+  --crimson: #8C1C13;
+  --crimson2:#B52D22;
+  --border:  #D8D3CA;
+  --border2: #E8E3DA;
+  --serif:   'Cormorant Garamond', Georgia, serif;
+  --sans:    'Karla', sans-serif;
+  --mono:    'DM Mono', monospace;
 }
+
 html { scroll-behavior: smooth; }
+
 body {
-  font-family: var(--sans);
-  color: var(--ink);
   background: var(--ivory);
-  line-height: 1.65;
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.6;
+  cursor: none;
   overflow-x: hidden;
 }
-a { color: inherit; }
+
 .skip-link {
   position: absolute;
   left: 12px;
   top: -44px;
-  z-index: 1000;
-  background: var(--accent);
+  z-index: 10000;
+  background: var(--crimson);
   color: var(--ivory);
   padding: 8px 12px;
   border-radius: 6px;
-  font-size: 13px;
   text-decoration: none;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 .skip-link:focus { top: 10px; }
-nav {
+
+/* ─── CUSTOM CURSOR ────────────────────────────────────────── */
+#cursor {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 56px;
-  background: rgba(247, 244, 238, 0.94);
-  border-bottom: 1px solid var(--border-2);
-  backdrop-filter: blur(10px);
-  z-index: 100;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--crimson);
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: transform 0.08s, width 0.25s, height 0.25s, opacity 0.25s;
+  mix-blend-mode: multiply;
 }
+#cursor-ring {
+  position: fixed;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--crimson);
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: transform 0.18s ease-out, width 0.25s, height 0.25s, opacity 0.25s;
+  opacity: 0.4;
+}
+body:hover #cursor { opacity: 1; }
+.cursor-hover #cursor { width: 16px; height: 16px; }
+.cursor-hover #cursor-ring { width: 54px; height: 54px; opacity: 0.2; }
+
+/* ─── NAVIGATION ───────────────────────────────────────────── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 0 60px;
+  height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(247, 244, 238, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border2);
+  transition: background 0.3s;
+}
+
 .nav-logo {
   font-family: var(--serif);
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--ink);
   text-decoration: none;
-  letter-spacing: 0.01em;
 }
-.nav-logo span { color: var(--accent); }
+.nav-logo span { color: var(--crimson); }
+
 .nav-links {
-  list-style: none;
-  display: flex;
-  gap: 28px;
+  display: flex; gap: 36px; list-style: none;
 }
 .nav-links a {
   font-family: var(--mono);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
   font-size: 11px;
-  color: var(--ink-3);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink3);
   text-decoration: none;
-  border-bottom: 1px solid transparent;
-  padding-bottom: 2px;
+  transition: color 0.2s;
+  position: relative;
 }
-.nav-links a:hover,
-.nav-links a:focus,
-.nav-links a.is-active {
-  color: var(--ink);
-  border-bottom-color: var(--accent);
-  outline: none;
+.nav-links a::after {
+  content: '';
+  position: absolute; bottom: -2px; left: 0; right: 100%;
+  height: 1px; background: var(--crimson);
+  transition: right 0.3s ease;
 }
+.nav-links a:hover { color: var(--ink); }
+.nav-links a:hover::after { right: 0; }
+
+/* ─── SECTIONS ─────────────────────────────────────────────── */
 section {
-  width: 100%;
-  max-width: 1180px;
+  padding: 120px 60px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 100px 56px;
 }
+
 .section-label {
   font-family: var(--mono);
   font-size: 10px;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 34px;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
+  color: var(--crimson);
+  margin-bottom: 48px;
+  display: flex; align-items: center; gap: 16px;
 }
 .section-label::after {
-  content: "";
-  width: 42px;
-  height: 1px;
-  background: var(--accent);
-  opacity: 0.5;
+  content: '';
+  flex: 1; max-width: 80px;
+  height: 1px; background: var(--crimson);
+  opacity: 0.4;
 }
+
+/* ─── HERO ─────────────────────────────────────────────────── */
 #hero {
   min-height: 100vh;
-  max-width: 100%;
+  display: flex; align-items: center;
   padding-top: 120px;
+  max-width: 100%;
+  padding-left: 60px; padding-right: 60px;
   position: relative;
   overflow: hidden;
 }
-.hero-bg {
+
+.hero-bg-number {
   position: absolute;
-  right: -30px;
-  top: 53%;
+  right: -40px; top: 50%;
   transform: translateY(-50%);
   font-family: var(--serif);
-  font-size: clamp(180px, 28vw, 350px);
-  color: var(--border-2);
-  line-height: 0.8;
-  user-select: none;
+  font-size: 380px;
+  font-weight: 300;
+  color: var(--border2);
+  line-height: 1;
   pointer-events: none;
+  user-select: none;
+  letter-spacing: -0.05em;
 }
+
 .hero-inner {
-  max-width: 1180px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 56px;
+  width: 100%;
   display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: 70px;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
   align-items: center;
   position: relative;
   z-index: 1;
 }
+
+.hero-text {}
+
 .hero-eyebrow {
   font-family: var(--mono);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--accent);
   font-size: 11px;
-  margin-bottom: 24px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--crimson);
+  margin-bottom: 28px;
+  display: flex; align-items: center; gap: 14px;
+  opacity: 0; animation: fadeUp 0.8s 0.2s ease forwards;
 }
-.hero h1 {
+.hero-eyebrow::before {
+  content: '';
+  width: 28px; height: 1px;
+  background: var(--crimson);
+}
+
+.hero-name {
   font-family: var(--serif);
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  line-height: 0.95;
-  font-size: clamp(56px, 8vw, 88px);
-  margin-bottom: 16px;
+  font-size: clamp(52px, 7vw, 88px);
+  font-weight: 300;
+  line-height: 1.0;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin-bottom: 12px;
+  opacity: 0; animation: fadeUp 0.8s 0.35s ease forwards;
 }
-.hero h1 em {
+.hero-name em {
   font-style: italic;
-  color: var(--accent);
+  color: var(--crimson);
 }
-.hero-lead {
+
+.hero-tagline {
   font-family: var(--serif);
-  font-size: clamp(18px, 2.2vw, 28px);
-  color: var(--ink-3);
-  margin-bottom: 22px;
+  font-size: clamp(16px, 2vw, 22px);
+  font-weight: 300;
   font-style: italic;
+  color: var(--ink3);
+  margin-bottom: 40px;
+  line-height: 1.5;
+  opacity: 0; animation: fadeUp 0.8s 0.5s ease forwards;
 }
-.hero-copy p {
-  max-width: 620px;
-  color: var(--ink-2);
-  font-size: 16px;
-  margin-bottom: 22px;
+
+.hero-desc {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--ink2);
+  max-width: 440px;
+  margin-bottom: 48px;
+  opacity: 0; animation: fadeUp 0.8s 0.65s ease forwards;
 }
+
 .hero-cta {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-bottom: 24px;
+  display: flex; gap: 16px; flex-wrap: wrap;
+  opacity: 0; animation: fadeUp 0.8s 0.8s ease forwards;
 }
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 999px;
-  font-family: var(--mono);
-  text-transform: uppercase;
-  letter-spacing: 0.09em;
-  font-size: 11px;
-  text-decoration: none;
-  padding: 14px 20px;
-  transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease;
-}
-.btn:hover,
-.btn:focus { transform: translateY(-1px); outline: none; }
+
 .btn-primary {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 28px;
   background: var(--ink);
   color: var(--ivory);
-  border: 1px solid var(--ink);
-}
-.btn-primary:hover,
-.btn-primary:focus { background: var(--accent); border-color: var(--accent); }
-.btn-secondary {
-  background: transparent;
-  color: var(--ink);
-  border: 1px solid var(--border);
-}
-.btn-secondary:hover,
-.btn-secondary:focus { border-color: var(--ink); }
-.chip-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.chip {
-  border: 1px solid var(--border);
-  background: var(--ivory-2);
-  padding: 5px 10px;
-  border-radius: 999px;
   font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.07em;
+  font-size: 11px;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--ink-3);
+  text-decoration: none;
+  transition: background 0.2s, transform 0.2s;
 }
-.hero-side {
-  display: grid;
-  gap: 2px;
+.btn-primary:hover { background: var(--crimson); transform: translateY(-1px); }
+
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 13px 28px;
   border: 1px solid var(--border);
-  background: var(--border-2);
+  color: var(--ink3);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: border-color 0.2s, color 0.2s, transform 0.2s;
 }
-.hero-card {
+.btn-secondary:hover { border-color: var(--ink); color: var(--ink); transform: translateY(-1px); }
+
+/* HERO RIGHT — Photo + Stats */
+.hero-right {
+  display: flex; flex-direction: column; align-items: flex-end; gap: 32px;
+  opacity: 0; animation: fadeLeft 0.9s 0.6s ease forwards;
+}
+
+.hero-photo-frame {
+  position: relative;
+  width: 320px; height: 400px;
+}
+.hero-photo-frame::before {
+  content: '';
+  position: absolute;
+  top: 16px; left: 16px;
+  right: -16px; bottom: -16px;
+  border: 1px solid var(--crimson);
+  opacity: 0.25;
+  transition: all 0.3s;
+}
+.hero-photo-frame:hover::before { opacity: 0.5; top: 12px; left: 12px; }
+.hero-photo-bg {
+  width: 100%; height: 100%;
+  background: var(--ivory2);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 12px;
+  color: var(--ink4);
+  font-family: var(--mono); font-size: 11px;
+  letter-spacing: 0.1em;
+  position: relative;
+  overflow: hidden;
+}
+.hero-photo-bg::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, transparent 40%, rgba(140,28,19,0.04));
+}
+.photo-icon {
+  font-size: 48px; opacity: 0.3;
+  font-family: serif;
+}
+
+.hero-stats {
+  display: flex; gap: 0;
+  border: 1px solid var(--border);
   background: var(--ivory);
-  padding: 28px;
+  width: 320px;
 }
-.hero-card h3 {
+.stat-item {
+  flex: 1; padding: 20px 16px;
+  border-right: 1px solid var(--border);
+  text-align: center;
+}
+.stat-item:last-child { border-right: none; }
+.stat-num {
   font-family: var(--serif);
-  font-size: 26px;
-  font-weight: 500;
-  margin-bottom: 10px;
+  font-size: 32px;
+  font-weight: 300;
+  color: var(--crimson);
+  line-height: 1;
+  display: block;
 }
-.hero-card p {
-  color: var(--ink-3);
-  font-size: 14px;
+.stat-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink4);
+  margin-top: 6px;
+  display: block;
 }
-.hero-card ul {
-  margin-top: 12px;
-  padding-left: 18px;
-  color: var(--ink-2);
+
+/* ─── ABOUT ─────────────────────────────────────────────────── */
+#about {
+  border-top: 1px solid var(--border2);
 }
-.grid-2 {
+
+.about-grid {
   display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
-  gap: 70px;
+  grid-template-columns: 2fr 1fr;
+  gap: 100px;
+  align-items: start;
 }
-.title-lg {
+
+.about-text h2 {
   font-family: var(--serif);
-  font-size: clamp(34px, 4.2vw, 56px);
-  font-weight: 400;
-  line-height: 1.08;
-  margin-bottom: 22px;
+  font-size: clamp(34px, 4vw, 52px);
+  font-weight: 300;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 32px;
 }
-.title-lg em { font-style: italic; color: var(--accent); }
-.text-block p { margin-bottom: 14px; color: var(--ink-2); }
-.quote {
-  margin: 20px 0;
-  border-left: 2px solid var(--accent);
-  padding-left: 16px;
-  color: var(--ink-3);
+.about-text h2 em { font-style: italic; color: var(--crimson); }
+
+.about-text p {
+  font-size: 15px;
+  line-height: 1.9;
+  color: var(--ink2);
+  margin-bottom: 20px;
+}
+
+.about-pull {
   font-family: var(--serif);
-  font-size: 24px;
-  line-height: 1.3;
+  font-size: 20px;
+  font-style: italic;
+  font-weight: 300;
+  color: var(--ink);
+  border-left: 2px solid var(--crimson);
+  padding: 12px 0 12px 28px;
+  margin: 36px 0;
+  line-height: 1.6;
 }
-.sidebar-box {
-  padding: 24px;
-  border: 1px solid var(--border-2);
-  background: var(--ivory-2);
+
+.about-sidebar {}
+.sidebar-block {
+  padding: 28px;
+  border: 1px solid var(--border2);
+  background: var(--ivory2);
   margin-bottom: 2px;
 }
-.sidebar-box h4 {
+.sidebar-block h4 {
   font-family: var(--mono);
   font-size: 10px;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 10px;
+  color: var(--crimson);
+  margin-bottom: 16px;
 }
-.sidebar-box ul {
+.sidebar-list {
   list-style: none;
-  display: grid;
-  gap: 8px;
+  display: flex; flex-direction: column; gap: 10px;
 }
-.sidebar-box li {
-  position: relative;
-  padding-left: 14px;
-  color: var(--ink-2);
+.sidebar-list li {
   font-size: 14px;
+  color: var(--ink2);
+  display: flex; align-items: flex-start; gap: 10px;
+  line-height: 1.4;
 }
-.sidebar-box li::before {
-  content: "-";
-  position: absolute;
-  left: 0;
-  color: var(--accent);
+.sidebar-list li::before {
+  content: '→';
+  color: var(--crimson);
+  font-size: 12px;
+  margin-top: 1px;
+  flex-shrink: 0;
 }
-#focus {
+
+/* ─── FACHGEBIETE ───────────────────────────────────────────── */
+#fachgebiete {
+  border-top: 1px solid var(--border2);
   background: var(--ink);
-  color: var(--ivory);
   max-width: 100%;
+  padding-left: 60px;
+  padding-right: 60px;
 }
-#focus .section-wrap {
-  max-width: 1180px;
+
+#fachgebiete .section-label { color: rgba(140,28,19,0.8); }
+#fachgebiete .section-label::after { background: rgba(140,28,19,0.4); }
+
+.fach-inner {
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 56px;
 }
-#focus .section-label { color: #c06a62; }
-#focus .section-label::after { background: #c06a62; }
-#focus h2 {
+
+.fach-header {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: 60px;
+  gap: 40px;
+}
+.fach-header h2 {
   font-family: var(--serif);
-  font-size: clamp(34px, 4.2vw, 56px);
-  font-weight: 400;
-  margin-bottom: 14px;
+  font-size: clamp(34px, 4vw, 56px);
+  font-weight: 300;
+  line-height: 1.1;
+  color: var(--ivory);
+  letter-spacing: -0.01em;
 }
-#focus h2 em { font-style: italic; color: #c06a62; }
-#focus .lead { color: rgba(247, 244, 238, 0.66); max-width: 520px; margin-bottom: 36px; }
-.focus-grid {
+.fach-header h2 em { font-style: italic; color: #C4665C; }
+.fach-header p {
+  font-size: 14px;
+  color: rgba(247,244,238,0.45);
+  max-width: 280px;
+  line-height: 1.7;
+}
+
+.fach-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 2px;
+  gap: 0;
+  border: 1px solid rgba(255,255,255,0.08);
 }
-.focus-card {
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  padding: 30px 22px;
-  background: rgba(255, 255, 255, 0.01);
+
+.fach-card {
+  padding: 40px 32px;
+  border-right: 1px solid rgba(255,255,255,0.08);
+  transition: background 0.3s;
+  position: relative;
+  overflow: hidden;
 }
-.focus-card h3 {
+.fach-card:last-child { border-right: none; }
+.fach-card::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--crimson);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+  transform-origin: left;
+}
+.fach-card:hover { background: rgba(255,255,255,0.03); }
+.fach-card:hover::before { transform: scaleX(1); }
+
+.fach-number {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: rgba(247,244,238,0.2);
+  margin-bottom: 24px;
+}
+.fach-icon {
+  font-size: 28px;
+  margin-bottom: 20px;
+  display: block;
+  filter: grayscale(0.3);
+}
+.fach-card h3 {
   font-family: var(--serif);
-  font-size: 24px;
-  font-weight: 500;
-  margin-bottom: 8px;
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--ivory);
+  margin-bottom: 12px;
+  line-height: 1.2;
 }
-.focus-card p { color: rgba(247, 244, 238, 0.64); font-size: 13px; }
-.focus-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 14px;
+.fach-card p {
+  font-size: 13px;
+  color: rgba(247,244,238,0.45);
+  line-height: 1.7;
 }
-.focus-tag {
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  padding: 3px 8px;
+.fach-card .fach-tags {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin-top: 24px;
+}
+.fach-tag {
   font-family: var(--mono);
   font-size: 10px;
   letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(247, 244, 238, 0.72);
+  padding: 4px 10px;
+  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(247,244,238,0.4);
 }
-.cards-3 {
+
+/* ─── CV / LEBENSLAUF ───────────────────────────────────────── */
+#cv { border-top: 1px solid var(--border2); }
+
+.cv-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+}
+
+.cv-column h3 {
+  font-family: var(--serif);
+  font-size: 26px;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 40px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.timeline { display: flex; flex-direction: column; gap: 0; }
+.timeline-item {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 24px;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--border2);
+  transition: background 0.2s;
+  position: relative;
+}
+.timeline-item:last-child { border-bottom: none; }
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: 100px;
+  top: 0; bottom: 0;
+  width: 1px;
+  background: var(--border2);
+}
+.timeline-item:hover .timeline-content { transform: translateX(4px); }
+
+.timeline-year {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--crimson);
+  letter-spacing: 0.06em;
+  padding-top: 3px;
+  line-height: 1.4;
+}
+
+.timeline-content { transition: transform 0.2s ease; }
+.timeline-content h4 {
+  font-family: var(--serif);
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+.timeline-content .tc-org {
+  font-size: 13px;
+  color: var(--ink3);
+  margin-bottom: 8px;
+  font-style: italic;
+}
+.timeline-content p {
+  font-size: 13px;
+  color: var(--ink3);
+  line-height: 1.7;
+}
+
+/* SKILLS */
+.skills-list { display: flex; flex-direction: column; gap: 16px; }
+.skill-row {}
+.skill-header {
+  display: flex; justify-content: space-between;
+  font-size: 13px;
+  color: var(--ink2);
+  margin-bottom: 8px;
+  font-family: var(--sans);
+}
+.skill-header span:last-child {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--ink4);
+  letter-spacing: 0.08em;
+}
+.skill-bar-bg {
+  height: 2px;
+  background: var(--border);
+  position: relative;
+  overflow: hidden;
+}
+.skill-bar-fill {
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  background: var(--crimson);
+  width: 0;
+  transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.skill-bar-fill.animated { width: var(--w); }
+
+/* LANG */
+.lang-grid { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+.lang-chip {
+  display: flex; flex-direction: column;
+  padding: 14px 20px;
+  border: 1px solid var(--border2);
+  gap: 4px;
+  min-width: 90px;
+}
+.lang-chip .lc-name { font-size: 14px; color: var(--ink); font-weight: 500; }
+.lang-chip .lc-level { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; color: var(--ink4); text-transform: uppercase; }
+
+/* ─── PROJEKTE ───────────────────────────────────────────────── */
+#projekte { border-top: 1px solid var(--border2); }
+
+.projekte-header {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  margin-bottom: 56px;
+}
+.projekte-header h2 {
+  font-family: var(--serif);
+  font-size: clamp(34px, 4vw, 52px);
+  font-weight: 300;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+.projekte-header h2 em { font-style: italic; color: var(--crimson); }
+
+.projekt-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 2px;
-  border: 1px solid var(--border-2);
 }
-.info-card {
-  background: var(--ivory-2);
-  border: 1px solid var(--border-2);
-  padding: 30px 24px;
+
+.projekt-card {
+  padding: 36px 32px;
+  background: var(--ivory2);
+  border: 1px solid var(--border2);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-.status {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  border: 1px solid var(--border);
-  padding: 4px 10px;
-  border-radius: 999px;
+.projekt-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--crimson);
+  transform: scaleX(0);
+  transition: transform 0.4s ease;
+  transform-origin: left;
+}
+.projekt-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(14,13,11,0.1); }
+.projekt-card:hover::after { transform: scaleX(1); }
+
+.projekt-num {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--ink4);
+  margin-bottom: 20px;
+}
+.projekt-card h3 {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+.projekt-card p {
+  font-size: 13px;
+  line-height: 1.75;
+  color: var(--ink3);
+  margin-bottom: 24px;
+}
+.projekt-tags {
+  display: flex; flex-wrap: wrap; gap: 6px;
+}
+.projekt-tag {
   font-family: var(--mono);
   font-size: 10px;
   letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--ink-3);
-  margin-bottom: 14px;
+  padding: 4px 10px;
+  background: var(--ivory);
+  border: 1px solid var(--border);
+  color: var(--ink3);
 }
-.dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--accent);
+.projekt-arrow {
+  position: absolute;
+  bottom: 28px; right: 28px;
+  font-size: 18px;
+  color: var(--ink4);
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.2s;
 }
-.info-card h3 {
+.projekt-card:hover .projekt-arrow { opacity: 1; transform: translate(2px, -2px); }
+
+/* ─── BLOG ───────────────────────────────────────────────────── */
+#blog { border-top: 1px solid var(--border2); }
+
+.blog-intro {
+  max-width: 560px;
+  margin-bottom: 56px;
+}
+.blog-intro h2 {
   font-family: var(--serif);
-  font-size: 24px;
-  font-weight: 500;
-  line-height: 1.2;
-  margin-bottom: 10px;
+  font-size: clamp(34px, 4vw, 52px);
+  font-weight: 300;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  margin-bottom: 16px;
 }
-.info-card p { color: var(--ink-3); font-size: 14px; }
-#contact {
-  max-width: 100%;
-  background: var(--ivory-2);
-}
-#contact .section-wrap {
-  max-width: 1180px;
-  margin: 0 auto;
-  padding: 0 56px;
-}
-.contact-grid {
+.blog-intro h2 em { font-style: italic; color: var(--crimson); }
+.blog-intro p { font-size: 15px; line-height: 1.8; color: var(--ink3); }
+
+.blog-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 70px;
-}
-.contact-links {
-  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr;
   gap: 2px;
 }
-.contact-link {
-  background: var(--ivory);
-  border: 1px solid var(--border-2);
-  padding: 16px 18px;
+
+.blog-card {
+  padding: 36px 32px;
+  background: var(--ivory2);
+  border: 1px solid var(--border2);
   text-decoration: none;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  display: flex; flex-direction: column;
+  transition: background 0.2s;
+  cursor: pointer;
+  position: relative;
 }
-.contact-link strong {
-  display: block;
+.blog-card:hover { background: var(--ivory); }
+.blog-card.featured { background: var(--ink2); }
+.blog-card.featured:hover { background: var(--ink); }
+
+.blog-meta {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 20px;
+}
+.blog-cat {
   font-family: var(--mono);
   font-size: 10px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--ink-4);
+  color: var(--crimson);
 }
-.contact-link span { color: var(--ink); font-size: 14px; }
-.contact-link:hover,
-.contact-link:focus {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: var(--ivory);
-  outline: none;
+.blog-card.featured .blog-cat { color: #C4665C; }
+.blog-date {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--ink4);
+  letter-spacing: 0.06em;
 }
-.contact-link:hover strong,
-.contact-link:hover span,
-.contact-link:focus strong,
-.contact-link:focus span { color: var(--ivory); }
-.contact-link em {
-  font-style: normal;
-  color: var(--ink-4);
+.blog-card.featured .blog-date { color: rgba(247,244,238,0.3); }
+
+.blog-card h3 {
+  font-family: var(--serif);
   font-size: 20px;
+  font-weight: 400;
+  line-height: 1.3;
+  color: var(--ink);
+  margin-bottom: 12px;
 }
-.contact-link:hover em,
-.contact-link:focus em { color: var(--accent-2); }
-.contact-form {
+.blog-card.featured h3 { font-size: 26px; color: var(--ivory); }
+
+.blog-card p {
+  font-size: 13px;
+  line-height: 1.75;
+  color: var(--ink3);
+  flex: 1;
+}
+.blog-card.featured p { color: rgba(247,244,238,0.5); }
+
+.blog-read {
+  margin-top: 24px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--crimson);
+  display: flex; align-items: center; gap: 8px;
+}
+.blog-card.featured .blog-read { color: #C4665C; }
+.blog-read::after {
+  content: '→';
+  transition: transform 0.2s;
+}
+.blog-card:hover .blog-read::after { transform: translateX(4px); }
+
+/* ─── KONTAKT ────────────────────────────────────────────────── */
+#kontakt {
+  border-top: 1px solid var(--border2);
+  background: var(--ivory2);
+  max-width: 100%;
+  padding-left: 60px; padding-right: 60px;
+}
+
+.kontakt-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.kontakt-grid {
   display: grid;
-  gap: 2px;
+  grid-template-columns: 1fr 1fr;
+  gap: 100px;
+  align-items: start;
 }
+
+.kontakt-left h2 {
+  font-family: var(--serif);
+  font-size: clamp(36px, 4.5vw, 60px);
+  font-weight: 300;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+}
+.kontakt-left h2 em { font-style: italic; color: var(--crimson); }
+.kontakt-left p {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--ink3);
+  margin-bottom: 48px;
+}
+
+.contact-links { display: flex; flex-direction: column; gap: 2px; }
+.contact-link {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 24px;
+  background: var(--ivory);
+  border: 1px solid var(--border2);
+  text-decoration: none;
+  transition: background 0.2s, border-color 0.2s;
+  group: true;
+}
+.contact-link:hover { background: var(--ink); border-color: var(--ink); }
+.contact-link:hover .cl-label, .contact-link:hover .cl-val { color: var(--ivory); }
+.contact-link:hover .cl-arrow { color: var(--crimson2); }
+
+.cl-left { display: flex; flex-direction: column; gap: 3px; }
+.cl-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink4);
+  transition: color 0.2s;
+}
+.cl-val {
+  font-size: 14px;
+  color: var(--ink);
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.cl-arrow { color: var(--ink4); font-size: 18px; transition: color 0.2s, transform 0.2s; }
+.contact-link:hover .cl-arrow { transform: translate(3px, -3px); }
+
+/* FORM */
+.contact-form { display: flex; flex-direction: column; gap: 2px; }
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2px;
 }
-.form-group label {
+.form-group {}
+.form-label {
   display: block;
-  margin-bottom: 6px;
   font-family: var(--mono);
   font-size: 10px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--ink-4);
+  color: var(--ink4);
+  margin-bottom: 8px;
 }
-.form-input,
-.form-textarea {
+.form-input, .form-textarea {
   width: 100%;
+  padding: 16px 18px;
   background: var(--ivory);
-  border: 1px solid var(--border-2);
+  border: 1px solid var(--border2);
   color: var(--ink);
-  padding: 14px 16px;
-  font-size: 14px;
   font-family: var(--sans);
-}
-.form-input:focus,
-.form-textarea:focus {
-  border-color: var(--ink);
-  outline: none;
-}
-.form-textarea {
-  resize: vertical;
-  min-height: 120px;
-}
-.checkbox-row {
-  background: var(--ivory);
-  border: 1px solid var(--border-2);
-  padding: 14px 16px;
   font-size: 14px;
-  color: var(--ink-2);
-  display: flex;
-  gap: 8px;
-  align-items: flex-start;
+  outline: none;
+  transition: border-color 0.2s;
 }
-.checkbox-row input {
-  margin-top: 3px;
-}
+.form-input:focus, .form-textarea:focus { border-color: var(--ink); }
+.form-textarea { resize: vertical; min-height: 120px; }
 .form-submit {
-  border: 0;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  padding: 18px 36px;
   background: var(--ink);
   color: var(--ivory);
+  border: none;
   font-family: var(--mono);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
   font-size: 11px;
-  padding: 16px 20px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
   cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  margin-top: 2px;
 }
-.form-submit:hover,
-.form-submit:focus { background: var(--accent); outline: none; }
-.form-note {
-  font-size: 12px;
-  color: var(--ink-3);
+.form-submit:hover { background: var(--crimson); transform: translateY(-1px); }
+
+/* ─── FOOTER ─────────────────────────────────────────────────── */
+footer {
+  padding: 32px 60px;
+  border-top: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+  max-width: 100%;
 }
+.footer-copy {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink4);
+  letter-spacing: 0.06em;
+}
+.footer-links {
+  display: flex; gap: 28px; list-style: none;
+}
+.footer-links a {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink4);
+  text-decoration: none;
+  letter-spacing: 0.06em;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--crimson); }
+
+/* ─── SCROLL ANIMATIONS ─────────────────────────────────────── */
 .reveal {
   opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.65s ease, transform 0.65s ease;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
 }
 .reveal.visible {
   opacity: 1;
   transform: none;
 }
-footer {
-  border-top: 1px solid var(--border);
-  padding: 28px 56px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--ink-4);
-  letter-spacing: 0.08em;
+.reveal-d1 { transition-delay: 0.1s; }
+.reveal-d2 { transition-delay: 0.2s; }
+.reveal-d3 { transition-delay: 0.3s; }
+.reveal-d4 { transition-delay: 0.4s; }
+
+/* ─── KEYFRAMES ─────────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-.footer-links {
-  list-style: none;
-  display: flex;
-  gap: 18px;
+@keyframes fadeLeft {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
 }
-.footer-links a {
-  text-decoration: none;
-  color: var(--ink-4);
-}
-.footer-links a:hover,
-.footer-links a:focus {
-  color: var(--accent);
-  outline: none;
-}
+
+/* ─── RESPONSIVE ─────────────────────────────────────────────── */
 @media (max-width: 1024px) {
-  nav,
-  .hero-inner,
-  section,
-  #focus .section-wrap,
-  #contact .section-wrap,
-  footer { padding-left: 34px; padding-right: 34px; }
-  .hero-inner,
-  .grid-2,
-  .contact-grid { grid-template-columns: 1fr; gap: 44px; }
-  .focus-grid { grid-template-columns: repeat(2, 1fr); }
-  .cards-3 { grid-template-columns: 1fr 1fr; }
+  section { padding: 80px 40px; }
+  nav { padding: 0 40px; }
+  #hero, #fachgebiete, #kontakt { padding-left: 40px; padding-right: 40px; }
+  footer { padding: 24px 40px; }
+  .hero-inner { grid-template-columns: 1fr; gap: 48px; }
+  .hero-right { align-items: flex-start; }
+  .hero-photo-frame { width: 280px; height: 340px; }
+  .fach-grid { grid-template-columns: repeat(2, 1fr); }
+  .blog-grid { grid-template-columns: 1fr 1fr; }
+  .cv-grid { gap: 48px; }
+  .projekt-grid { grid-template-columns: 1fr 1fr; }
 }
-@media (max-width: 780px) {
-  nav,
-  .hero-inner,
-  section,
-  #focus .section-wrap,
-  #contact .section-wrap,
-  footer { padding-left: 20px; padding-right: 20px; }
-  nav { height: auto; flex-wrap: wrap; padding-top: 14px; padding-bottom: 14px; gap: 8px; }
-  .nav-links { width: 100%; flex-wrap: wrap; gap: 10px 14px; }
-  .hero-bg { right: -12px; top: 70%; }
-  .hero h1 { font-size: clamp(42px, 12vw, 64px); }
-  .focus-grid,
-  .cards-3,
+
+@media (max-width: 768px) {
+  section { padding: 64px 24px; }
+  nav { padding: 0 24px; }
+  #hero, #fachgebiete, #kontakt { padding-left: 24px; padding-right: 24px; }
+  footer { padding: 24px; flex-direction: column; gap: 12px; text-align: center; }
+  .nav-links { display: none; }
+  .about-grid { grid-template-columns: 1fr; gap: 48px; }
+  .fach-grid { grid-template-columns: 1fr; }
+  .cv-grid { grid-template-columns: 1fr; gap: 48px; }
+  .blog-grid { grid-template-columns: 1fr; }
+  .projekt-grid { grid-template-columns: 1fr; }
+  .kontakt-grid { grid-template-columns: 1fr; gap: 48px; }
+  .hero-bg-number { font-size: 200px; right: -20px; }
   .form-row { grid-template-columns: 1fr; }
-  footer { flex-direction: column; gap: 10px; }
+  body { cursor: auto; }
+  #cursor, #cursor-ring { display: none; }
 }
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  .reveal { transition: none; opacity: 1; transform: none; }
-}
+
+/* ─── SELECTION ─────────────────────────────────────────────── */
+::selection { background: var(--crimson); color: var(--ivory); }
 </style>
 </head>
 <body>
-<a class="skip-link" href="#main-content">Direkt zum Inhalt</a>
-<nav aria-label="Hauptnavigation">
+<a class="skip-link" href="#main-content">Zum Inhalt springen</a>
+
+<!-- CURSOR -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- NAVIGATION -->
+<nav>
   <a class="nav-logo" href="#hero">Joshua <span>Forster</span></a>
   <ul class="nav-links">
-    <li><a href="#about">Ueber mich</a></li>
-    <li><a href="#focus">Interessen</a></li>
-    <li><a href="#projects">In Arbeit</a></li>
-    <li><a href="#contact">Kontakt</a></li>
-    <li><a href="contact.html">Kontaktseite</a></li>
+    <li><a href="#about">Über mich</a></li>
+    <li><a href="#fachgebiete">Fachgebiete</a></li>
+    <li><a href="#cv">CV & Profil</a></li>
+    <li><a href="#projekte">Projekte</a></li>
+    <li><a href="#blog">Notizen</a></li>
+    <li><a href="#kontakt">Kontakt</a></li>
   </ul>
 </nav>
 
 <main id="main-content">
-  <section id="hero" class="hero">
-    <div class="hero-bg" aria-hidden="true">JF</div>
-    <div class="hero-inner">
-      <div class="hero-copy reveal">
-        <div class="hero-eyebrow">Medizinstudent - 5. Semester</div>
-        <h1>Joshua<br><em>Forster</em></h1>
-        <p class="hero-lead">Sportmedizin, Praevention und klinische Forschung.</p>
-        <p>
-          Ich studiere Medizin im 5. Semester und arbeite aktuell an meiner Doktorarbeit.
-          Mein inhaltlicher Fokus liegt auf Sportmedizin, Sportpraevention und klinischer Arbeit mit klarem Praxisbezug.
-        </p>
-        <div class="hero-cta">
-          <a class="btn btn-primary" href="#contact">Kontakt aufnehmen</a>
-          <a class="btn btn-secondary" href="contact.html#contact-form">CV per E-Mail anfragen</a>
-        </div>
-        <div class="chip-row" aria-label="Schwerpunkte">
-          <span class="chip">5. Semester</span>
-          <span class="chip">Doktorarbeit in Arbeit</span>
-          <span class="chip">Sportmedizin</span>
-          <span class="chip">Praevention</span>
-        </div>
-      </div>
-      <aside class="hero-side reveal" aria-label="Kurzprofil">
-        <article class="hero-card">
-          <h3>Kurzprofil</h3>
-          <p>Nur Fakten, keine erfundenen Referenzen.</p>
-          <ul>
-            <li>Studium: Medizin, 5. Semester</li>
-            <li>Status: Doktorarbeit in Arbeit</li>
-            <li>Praxisinteressen: Sportmedizin und Praevention</li>
-          </ul>
-        </article>
-        <article class="hero-card">
-          <h3>Sport und Alltag</h3>
-          <p>
-            Krafttraining und Laufen sind ein fester Teil meines Alltags. Diese Perspektive praegt auch mein Interesse an
-            Belastungssteuerung, Regeneration und Praevention.
-          </p>
-        </article>
-      </aside>
-    </div>
-  </section>
 
-  <section id="about">
-    <div class="section-label">01 - Ueber mich</div>
-    <div class="grid-2">
-      <div class="text-block reveal">
-        <h2 class="title-lg">Medizin als Verbindung aus <em>Wissenschaft und Praxis</em></h2>
-        <p>
-          Mein Schwerpunkt liegt aktuell auf dem klinischen Lernen, der Arbeit an meiner Doktorarbeit und dem Aufbau einer klaren,
-          belastbaren fachlichen Basis.
-        </p>
-        <p>
-          Inhaltlich interessieren mich vor allem Sportmedizin, Praeventionsansaetze und klinische Fragestellungen,
-          die sich alltagsnah und patientenorientiert umsetzen lassen.
-        </p>
-        <p class="quote">"Klar kommunizieren. Sauber arbeiten. Nur Dinge zeigen, die wirklich stimmen."</p>
+<!-- ════════════════ HERO ════════════════ -->
+<section id="hero" style="max-width:100%">
+  <div class="hero-bg-number">Jf</div>
+  <div class="hero-inner">
+    <div class="hero-text">
+      <div class="hero-eyebrow">Medizinstudent · 5. Semester</div>
+      <h1 class="hero-name">Joshua<br><em>Forster</em></h1>
+      <p class="hero-tagline">Sportmedizin. Prävention. Klinik.</p>
+      <p class="hero-desc">
+        Ich studiere Medizin im 5. Semester und arbeite an meiner Doktorarbeit.
+        Mein Schwerpunkt liegt auf Sportmedizin und Sportprävention mit einem klaren,
+        praxisnahen Blick auf klinische Forschung.
+      </p>
+      <div class="hero-cta">
+        <a class="btn-primary" href="#kontakt">Kontakt aufnehmen →</a>
+        <a class="btn-secondary" href="#kontakt">CV per E-Mail anfragen</a>
       </div>
-      <div class="reveal">
-        <div class="sidebar-box">
-          <h4>Interessen</h4>
-          <ul>
-            <li>Sportmedizin</li>
-            <li>Sportpraevention</li>
-            <li>Klinische Forschung</li>
-            <li>Belastung und Regeneration</li>
-          </ul>
+    </div>
+    <div class="hero-right">
+      <div class="hero-photo-frame">
+        <div class="hero-photo-bg">
+          <div class="photo-icon">⚕</div>
+          <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase">Foto hier einfügen</span>
         </div>
-        <div class="sidebar-box">
-          <h4>Aktuell</h4>
-          <ul>
-            <li>5. Semester im Medizinstudium</li>
-            <li>Doktorarbeit in Arbeit</li>
-            <li>Website und Inhalte werden aufgebaut</li>
-          </ul>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-num">5</span>
+          <span class="stat-label">Semester<br>Medizin</span>
         </div>
-        <div class="sidebar-box">
-          <h4>Ausgleich</h4>
-          <ul>
-            <li>Krafttraining</li>
-            <li>Laufen</li>
-            <li>Strukturierter Alltag</li>
-          </ul>
+        <div class="stat-item">
+          <span class="stat-num">1</span>
+          <span class="stat-label">Doktorarbeit<br>in Arbeit</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num">2</span>
+          <span class="stat-label">Sportfokus<br>Training + Lauf</span>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section id="focus">
-    <div class="section-wrap">
-      <div class="section-label">02 - Interessenfelder</div>
-      <div class="reveal">
-        <h2>Sportmedizin mit Fokus auf <em>Praevention und Praxis</em></h2>
-        <p class="lead">
-          Diese Website ist bewusst als ehrlicher Arbeitsstand aufgebaut. Statt fertiger Claims zeige ich nur Themen,
-          an denen ich aktuell arbeite oder die ich fachlich vertiefe.
-        </p>
+<!-- ════════════════ ABOUT ════════════════ -->
+<section id="about">
+  <div class="section-label">01 — Über mich</div>
+  <div class="about-grid">
+    <div class="about-text reveal">
+      <h2>Medizin ist mehr als<br><em>nur Theorie.</em></h2>
+      <p>
+        Ich bin Joshua, Medizinstudent im 5. Semester. Mein Fokus liegt auf einem
+        sauberen klinischen Fundament und auf Themen rund um Sportmedizin und
+        Sportprävention.
+      </p>
+      <div class="about-pull">
+        "Nur Fakten: Studium im 5. Semester, Doktorarbeit in Arbeit, klare fachliche Interessen."
       </div>
-      <div class="focus-grid reveal">
-        <article class="focus-card">
-          <h3>Sportmedizin</h3>
-          <p>Interesse an Leistungsfaehigkeit, Belastungssteuerung und klinisch sinnvoller Trainingsbegleitung.</p>
-          <div class="focus-tags">
-            <span class="focus-tag">Training</span>
-            <span class="focus-tag">Belastung</span>
-          </div>
-        </article>
-        <article class="focus-card">
-          <h3>Praevention</h3>
-          <p>Fruehe Intervention und alltagstaugliche Strategien zur Reduktion gesundheitlicher Risiken.</p>
-          <div class="focus-tags">
-            <span class="focus-tag">Lifestyle</span>
-            <span class="focus-tag">Regeneration</span>
-          </div>
-        </article>
-        <article class="focus-card">
-          <h3>Klinische Forschung</h3>
-          <p>Arbeit an der Doktorarbeit und Interesse an sauberer Methodik sowie nachvollziehbarer Kommunikation.</p>
-          <div class="focus-tags">
-            <span class="focus-tag">Methodik</span>
-            <span class="focus-tag">Doktorarbeit</span>
-          </div>
-        </article>
-        <article class="focus-card">
-          <h3>Bewegung im Alltag</h3>
-          <p>Eigene Erfahrung durch Krafttraining und Laufen als zusaetzliche Perspektive auf praeventive Medizin.</p>
-          <div class="focus-tags">
-            <span class="focus-tag">Krafttraining</span>
-            <span class="focus-tag">Laufen</span>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section id="projects">
-    <div class="section-label">03 - In Arbeit</div>
-    <div class="reveal" style="margin-bottom: 26px;">
-      <h2 class="title-lg">Aktueller Stand: <em>Aufbauphase</em></h2>
-      <p style="color: var(--ink-3); max-width: 760px;">
-        Der Projektbereich wird schrittweise aufgebaut. Aktuell gibt es keine abgeschlossenen Case Studies mit oeffentlicher Detaildarstellung.
+      <p>
+        Neben dem Studium trainiere ich regelmäßig Kraft und laufe. Diese Perspektive
+        aus Training, Belastung und Regeneration prägt auch mein medizinisches Interesse.
       </p>
     </div>
-    <div class="cards-3 reveal">
-      <article class="info-card">
-        <div class="status"><span class="dot"></span>In Arbeit</div>
-        <h3>Website-Struktur</h3>
-        <p>Inhalte werden von Grund auf mit Fokus auf Klarheit, Wahrheit und sauberer Kommunikation aufgebaut.</p>
-      </article>
-      <article class="info-card">
-        <div class="status"><span class="dot"></span>In Arbeit</div>
-        <h3>Forschungskontext</h3>
-        <p>Doktorarbeit laeuft. Oeffentliche Inhalte folgen erst, wenn fachlich und formal freigegeben.</p>
-      </article>
-      <article class="info-card">
-        <div class="status"><span class="dot"></span>Auf Anfrage</div>
-        <h3>CV und Details</h3>
-        <p>Lebenslauf und weiterfuehrende Infos nur nach kurzer Anfrage und Bestaetigung per E-Mail.</p>
-      </article>
+    <div class="about-sidebar reveal reveal-d2">
+      <div class="sidebar-block">
+        <h4>Interessen</h4>
+        <ul class="sidebar-list">
+          <li>Sportmedizin & Prävention</li>
+          <li>Klinische Forschung</li>
+          <li>Belastungssteuerung & Regeneration</li>
+          <li>Patientennahe medizinische Praxis</li>
+        </ul>
+      </div>
+      <div class="sidebar-block">
+        <h4>Aktuell</h4>
+        <ul class="sidebar-list">
+          <li>5. Semester Medizinstudium</li>
+          <li>Doktorarbeit in Arbeit</li>
+          <li>Website-Inhalte im Aufbau</li>
+        </ul>
+      </div>
+      <div class="sidebar-block">
+        <h4>Außerhalb der Klinik</h4>
+        <ul class="sidebar-list">
+          <li>Krafttraining</li>
+          <li>Laufen</li>
+          <li>Disziplin im Alltag</li>
+        </ul>
+      </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section id="contact">
-    <div class="section-wrap">
-      <div class="section-label">04 - Kontakt</div>
-      <div class="contact-grid">
-        <div class="reveal">
-          <h2 class="title-lg">Anfrage senden und <em>Rueckmeldung erhalten</em></h2>
-          <p style="color: var(--ink-3); margin-bottom: 24px;">
-            Fuer fachlichen Austausch, Kooperationen oder CV-Anfragen. Ich antworte in der Regel innerhalb von 48 Stunden.
-          </p>
-          <div class="contact-links">
-            <a class="contact-link" href="mailto:joshuaforster02@gmail.com">
-              <div>
-                <strong>E-Mail</strong>
-                <span>joshuaforster02@gmail.com</span>
-              </div>
-              <em>↗</em>
-            </a>
-            <a class="contact-link" href="contact.html#contact-form">
-              <div>
-                <strong>Kontaktseite</strong>
-                <span>Formular in eigener Ansicht oeffnen</span>
-              </div>
-              <em>↗</em>
-            </a>
-            <a class="contact-link" href="datenschutz.html">
-              <div>
-                <strong>Datenschutz</strong>
-                <span>Hinweise zur Datenverarbeitung</span>
-              </div>
-              <em>↗</em>
-            </a>
-          </div>
+<!-- ════════════════ FACHGEBIETE ════════════════ -->
+<section id="fachgebiete" style="padding-top:100px;padding-bottom:100px;">
+  <div class="fach-inner">
+    <div class="section-label">02 — Fachgebiete</div>
+    <div class="fach-header reveal">
+      <h2>Fokusfelder.<br><em>In Arbeit.</em></h2>
+      <p>Nur Themen, die aktuell wirklich meinen Schwerpunkt abbilden.</p>
+    </div>
+    <div class="fach-grid reveal reveal-d1">
+      <div class="fach-card">
+        <div class="fach-number">01</div>
+        <span class="fach-icon">🏃</span>
+        <h3>Sportmedizin</h3>
+        <p>Interesse an Leistungsfähigkeit, Belastungssteuerung und klinischer Einordnung sportbezogener Fragen.</p>
+        <div class="fach-tags">
+          <span class="fach-tag">Belastung</span>
+          <span class="fach-tag">Prävention</span>
+          <span class="fach-tag">Regeneration</span>
         </div>
-
-        <div class="reveal">
-          <form id="kontakt-form" class="contact-form" action="https://formspree.io/f/xqeajnve" method="POST">
-            <input type="hidden" name="_subject" value="Website-Anfrage von joshuaforster.de">
-            <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
-
-            <div class="form-row">
-              <div class="form-group">
-                <label for="name">Name</label>
-                <input class="form-input" type="text" id="name" name="name" autocomplete="name" required>
-              </div>
-              <div class="form-group">
-                <label for="email">E-Mail</label>
-                <input class="form-input" type="email" id="email" name="email" autocomplete="email" required>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="subject">Betreff</label>
-              <input class="form-input" type="text" id="subject" name="subject" autocomplete="off">
-            </div>
-
-            <div class="form-group">
-              <label for="message">Nachricht</label>
-              <textarea class="form-textarea" id="message" name="message" required></textarea>
-            </div>
-
-            <label class="checkbox-row" for="request_cv">
-              <input type="checkbox" id="request_cv" name="request_cv" value="yes">
-              <span>Ich moechte den CV per E-Mail erhalten.</span>
-            </label>
-
-            <button class="form-submit" type="submit">Nachricht senden</button>
-            <p class="form-note">
-              Mit Absenden willige ich ein, dass meine Daten zur Bearbeitung der Anfrage verarbeitet werden.
-              Weitere Infos unter <a href="datenschutz.html">Datenschutz</a>.
-            </p>
-          </form>
+      </div>
+      <div class="fach-card">
+        <div class="fach-number">02</div>
+        <span class="fach-icon">🛡</span>
+        <h3>Sportprävention</h3>
+        <p>Frühe, praxisnahe Präventionsansätze rund um Bewegung, Alltag und nachhaltige Gesundheitsstrategien.</p>
+        <div class="fach-tags">
+          <span class="fach-tag">Prävention</span>
+          <span class="fach-tag">Lifestyle</span>
+          <span class="fach-tag">Alltag</span>
+        </div>
+      </div>
+      <div class="fach-card">
+        <div class="fach-number">03</div>
+        <span class="fach-icon">🔬</span>
+        <h3>Klinische Forschung</h3>
+        <p>Doktorarbeit in Arbeit mit Fokus auf strukturierter Methodik und klarer Kommunikation der Ergebnisse.</p>
+        <div class="fach-tags">
+          <span class="fach-tag">Methodik</span>
+          <span class="fach-tag">Doktorarbeit</span>
+          <span class="fach-tag">Auswertung</span>
+        </div>
+      </div>
+      <div class="fach-card">
+        <div class="fach-number">04</div>
+        <span class="fach-icon">🏋️</span>
+        <h3>Training & Alltag</h3>
+        <p>Krafttraining und Laufen als eigener Praxishintergrund für Themen rund um Belastung und Regeneration.</p>
+        <div class="fach-tags">
+          <span class="fach-tag">Krafttraining</span>
+          <span class="fach-tag">Laufen</span>
+          <span class="fach-tag">Routine</span>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
+
+<!-- ════════════════ CV ════════════════ -->
+<section id="cv">
+  <div class="section-label">03 — CV & Profil</div>
+  <div class="cv-grid">
+    <!-- LINKS: Fakten -->
+    <div>
+      <h3 class="reveal">Aktueller Stand</h3>
+      <div class="timeline">
+        <div class="timeline-item reveal reveal-d1">
+          <div class="timeline-year">Jetzt</div>
+          <div class="timeline-content">
+            <h4>Medizinstudium im 5. Semester</h4>
+            <div class="tc-org">Status: laufendes Studium</div>
+            <p>Klinischer Ausbildungsabschnitt mit Fokus auf belastbare Grundlagen und patientennahe Praxis.</p>
+          </div>
+        </div>
+        <div class="timeline-item reveal reveal-d2">
+          <div class="timeline-year">Jetzt</div>
+          <div class="timeline-content">
+            <h4>Doktorarbeit in Arbeit</h4>
+            <div class="tc-org">Status: laufend</div>
+            <p>Inhaltliche und methodische Arbeit an wissenschaftlichen Fragestellungen mit klinischem Bezug.</p>
+          </div>
+        </div>
+        <div class="timeline-item reveal reveal-d3">
+          <div class="timeline-year">Fokus</div>
+          <div class="timeline-content">
+            <h4>Sportmedizin & Prävention</h4>
+            <div class="tc-org">Interessenfeld</div>
+            <p>Belastung, Regeneration und präventive Perspektiven als zentrales Themenfeld.</p>
+          </div>
+        </div>
+        <div class="timeline-item reveal reveal-d4">
+          <div class="timeline-year">Info</div>
+          <div class="timeline-content">
+            <h4>CV nur auf Anfrage</h4>
+            <div class="tc-org">Kein öffentlicher Download</div>
+            <p>Der vollständige Lebenslauf wird nach kurzer Bestätigung per E-Mail versendet.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RECHTS: Fokus -->
+    <div>
+      <h3 class="reveal">Fokusprofil</h3>
+      <div class="skills-list reveal reveal-d1">
+        <div class="skill-row">
+          <div class="skill-header">
+            <span>Sportmedizin</span>
+            <span>Interessenfokus</span>
+          </div>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" style="--w:92%"></div></div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-header">
+            <span>Sportprävention</span>
+            <span>Interessenfokus</span>
+          </div>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" style="--w:90%"></div></div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-header">
+            <span>Klinische Forschung</span>
+            <span>In Arbeit</span>
+          </div>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" style="--w:84%"></div></div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-header">
+            <span>Krafttraining</span>
+            <span>Praxis</span>
+          </div>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" style="--w:88%"></div></div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-header">
+            <span>Laufen</span>
+            <span>Praxis</span>
+          </div>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" style="--w:86%"></div></div>
+        </div>
+      </div>
+
+      <div style="margin-top:40px;" class="reveal reveal-d2">
+        <h4 style="font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink4);margin-bottom:20px;">Transparenz</h4>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;">
+          <span class="projekt-tag">Keine erfundenen Projekte</span>
+          <span class="projekt-tag">Kein CV-Download</span>
+          <span class="projekt-tag">CV per Anfrage</span>
+        </div>
+      </div>
+
+      <div style="margin-top:40px;" class="reveal reveal-d3">
+        <h4 style="font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink4);margin-bottom:20px;">Austausch</h4>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;">
+          <span class="projekt-tag">Fachlicher Austausch</span>
+          <span class="projekt-tag">Kooperationen</span>
+          <span class="projekt-tag">Sportmedizin</span>
+          <span class="projekt-tag">Prävention</span>
+        </div>
+      </div>
+
+      <div style="margin-top:48px;" class="reveal reveal-d4">
+        <a class="btn-primary" href="#kontakt" style="display:inline-flex;">
+          CV per E-Mail anfragen →
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ PROJEKTE ════════════════ -->
+<section id="projekte">
+  <div class="section-label">04 — Projekte</div>
+  <div class="projekte-header reveal">
+    <h2>Ideen und<br><em>Arbeitsstände</em></h2>
+  </div>
+  <div class="projekt-grid">
+    <div class="projekt-card reveal reveal-d1">
+      <div class="projekt-num">01 / 03</div>
+      <h3>Sportmedizinisches Profil (in Arbeit)</h3>
+      <p>Aufbereitung meiner fachlichen Schwerpunkte in Sportmedizin und Prävention für eine klare Außendarstellung.</p>
+      <div class="projekt-tags">
+        <span class="projekt-tag">Sportmedizin</span>
+        <span class="projekt-tag">Profil</span>
+        <span class="projekt-tag">In Arbeit</span>
+      </div>
+      <div class="projekt-arrow">↗</div>
+    </div>
+    <div class="projekt-card reveal reveal-d2">
+      <div class="projekt-num">02 / 03</div>
+      <h3>Doktorarbeit (laufend)</h3>
+      <p>Wissenschaftliche Arbeit im Aufbau. Details werden erst nach fachlicher Freigabe veröffentlicht.</p>
+      <div class="projekt-tags">
+        <span class="projekt-tag">Forschung</span>
+        <span class="projekt-tag">Doktorarbeit</span>
+        <span class="projekt-tag">Laufend</span>
+      </div>
+      <div class="projekt-arrow">↗</div>
+    </div>
+    <div class="projekt-card reveal reveal-d3">
+      <div class="projekt-num">03 / 03</div>
+      <h3>CV-Flow nur auf Anfrage</h3>
+      <p>Der vollständige CV wird nicht öffentlich bereitgestellt, sondern nach Bestätigung per E-Mail verschickt.</p>
+      <div class="projekt-tags">
+        <span class="projekt-tag">Datenschutz</span>
+        <span class="projekt-tag">Anfrage</span>
+        <span class="projekt-tag">E-Mail</span>
+      </div>
+      <div class="projekt-arrow">↗</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ BLOG ════════════════ -->
+<section id="blog">
+  <div class="section-label">05 — Notizen</div>
+  <div class="blog-intro reveal">
+    <h2>Fachliche<br><em>Notizen.</em></h2>
+    <p>Dieser Bereich ist bewusst als Arbeitsstand markiert und wird Schritt für Schritt mit echten Inhalten gefüllt.</p>
+  </div>
+  <div class="blog-grid">
+    <div class="blog-card featured reveal reveal-d1">
+      <div class="blog-meta">
+        <span class="blog-cat">In Arbeit</span>
+        <span class="blog-date">kein Veröffentlichungsdatum</span>
+      </div>
+      <h3>Studium und klinische Lernprozesse</h3>
+      <p>Geplante Notizen zu Erfahrungen aus dem klinischen Alltag im Studium und zur strukturierten Aufarbeitung.</p>
+      <div class="blog-read">In Vorbereitung</div>
+    </div>
+    <div class="blog-card reveal reveal-d2">
+      <div class="blog-meta">
+        <span class="blog-cat">In Arbeit</span>
+        <span class="blog-date">kein Veröffentlichungsdatum</span>
+      </div>
+      <h3>Sportmedizin und Prävention im Alltag</h3>
+      <p>Geplante Inhalte zu Belastung, Regeneration und präventiver Perspektive aus Studium und Training.</p>
+      <div class="blog-read">In Vorbereitung</div>
+    </div>
+    <div class="blog-card reveal reveal-d3">
+      <div class="blog-meta">
+        <span class="blog-cat">In Arbeit</span>
+        <span class="blog-date">kein Veröffentlichungsdatum</span>
+      </div>
+      <h3>Doktorarbeit: Vorgehen und Methodik</h3>
+      <p>Geplante Einblicke in den wissenschaftlichen Arbeitsprozess, sobald Inhalte freigegeben werden können.</p>
+      <div class="blog-read">In Vorbereitung</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ KONTAKT ════════════════ -->
+<section id="kontakt" style="padding-top:100px;padding-bottom:100px;">
+  <div class="kontakt-inner">
+    <div class="section-label">06 — Kontakt</div>
+    <div class="kontakt-grid">
+      <div class="kontakt-left reveal">
+        <h2>Lass uns in<br><em>Kontakt</em> treten.</h2>
+        <p>Ich freue mich über fachlichen Austausch. Der CV wird ausschließlich nach kurzer Bestätigung per E-Mail versendet.</p>
+        <div class="contact-links">
+          <a class="contact-link" href="mailto:joshuaforster02@gmail.com">
+            <div class="cl-left">
+              <span class="cl-label">E-Mail</span>
+              <span class="cl-val">joshuaforster02@gmail.com</span>
+            </div>
+            <span class="cl-arrow">↗</span>
+          </a>
+          <a class="contact-link" href="contact.html#contact-form">
+            <div class="cl-left">
+              <span class="cl-label">Kontaktseite</span>
+              <span class="cl-val">Formular in eigener Seite öffnen</span>
+            </div>
+            <span class="cl-arrow">↗</span>
+          </a>
+          <a class="contact-link" href="datenschutz.html">
+            <div class="cl-left">
+              <span class="cl-label">Datenschutz</span>
+              <span class="cl-val">Hinweise zur Datenverarbeitung</span>
+            </div>
+            <span class="cl-arrow">↗</span>
+          </a>
+        </div>
+      </div>
+      <div class="reveal reveal-d2">
+        <form id="contact-form" class="contact-form" action="https://formspree.io/f/xqeajnve" method="POST">
+          <input type="hidden" name="_subject" value="Website-Anfrage von joshuaforster.de">
+          <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="name">Name</label>
+              <input type="text" id="name" name="name" class="form-input" placeholder="Dein Name" autocomplete="name" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="email">E-Mail</label>
+              <input type="email" id="email" name="email" class="form-input" placeholder="deine@email.de" autocomplete="email" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="subject">Betreff</label>
+            <input type="text" id="subject" name="subject" class="form-input" placeholder="Worum geht es?">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="message">Nachricht</label>
+            <textarea id="message" name="message" class="form-textarea" placeholder="Deine Nachricht..." required></textarea>
+          </div>
+          <div style="padding: 14px 18px; background: var(--ivory); border: 1px solid var(--border2);">
+            <label style="display:flex;align-items:flex-start;gap:8px;cursor:pointer;">
+              <input type="checkbox" id="request_cv" name="request_cv" value="yes" style="margin-top:3px;">
+              <span style="font-size:13px;color:var(--ink3);line-height:1.6;">Ich möchte den CV per E-Mail erhalten (nur auf Anfrage, kein öffentlicher Download).</span>
+            </label>
+          </div>
+          <button type="submit" class="form-submit">
+            Nachricht senden →
+          </button>
+          <p style="margin-top:10px;font-size:12px;color:var(--ink3);line-height:1.6;">
+            Mit dem Absenden willigst du in die Verarbeitung deiner Angaben zur Bearbeitung der Anfrage ein.
+            Weitere Informationen unter <a href="datenschutz.html">Datenschutz</a>.
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
 </main>
 
+<!-- FOOTER -->
 <footer>
-  <div>&copy; <span id="year"></span> Joshua Forster</div>
+  <div class="footer-copy">© 2026 Joshua Forster — Medizinstudent</div>
   <ul class="footer-links">
-    <li><a href="#hero">Nach oben</a></li>
-    <li><a href="contact.html">Kontaktseite</a></li>
+    <li><a href="#hero">Zurück nach oben ↑</a></li>
+    <li><a href="mailto:joshuaforster02@gmail.com">Kontakt</a></li>
     <li><a href="datenschutz.html">Datenschutz</a></li>
   </ul>
 </footer>
 
 <script>
-(function () {
-  const reveals = document.querySelectorAll('.reveal');
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+// ─── CURSOR ──────────────────────────────────────────────────
+const cursor = document.getElementById('cursor');
+const ring   = document.getElementById('cursor-ring');
+let cx = 0, cy = 0, rx = 0, ry = 0;
 
-  if (!reduced && 'IntersectionObserver' in window) {
-    const io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          io.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.12 });
-    reveals.forEach(function (el) { io.observe(el); });
-  } else {
-    reveals.forEach(function (el) { el.classList.add('visible'); });
+if (cursor && ring) {
+  document.addEventListener('mousemove', e => {
+    cx = e.clientX;
+    cy = e.clientY;
+    cursor.style.left = cx + 'px';
+    cursor.style.top  = cy + 'px';
+  });
+
+  function animateRing() {
+    rx += (cx - rx) * 0.14;
+    ry += (cy - ry) * 0.14;
+    ring.style.left = rx + 'px';
+    ring.style.top  = ry + 'px';
+    requestAnimationFrame(animateRing);
   }
+  animateRing();
 
-  const links = Array.from(document.querySelectorAll('.nav-links a[href^="#"]'));
-  const sections = links
-    .map(function (link) { return document.querySelector(link.getAttribute('href')); })
-    .filter(Boolean);
+  document.querySelectorAll('a, button, .fach-card, .blog-card, .projekt-card, .contact-link').forEach(el => {
+    el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+    el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+  });
+}
 
-  function setActiveLink() {
-    let currentId = '';
-    const offset = window.scrollY + 130;
-    sections.forEach(function (section) {
-      if (section.offsetTop <= offset) {
-        currentId = section.id;
+// ─── SCROLL REVEAL ───────────────────────────────────────────
+const revealEls = document.querySelectorAll('.reveal');
+if ('IntersectionObserver' in window) {
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        e.target.querySelectorAll('.skill-bar-fill').forEach(bar => bar.classList.add('animated'));
       }
     });
-    links.forEach(function (link) {
-      link.classList.toggle('is-active', link.getAttribute('href') === '#' + currentId);
-    });
-  }
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  revealEls.forEach(el => observer.observe(el));
+} else {
+  revealEls.forEach(el => el.classList.add('visible'));
+}
 
-  setActiveLink();
-  window.addEventListener('scroll', setActiveLink, { passive: true });
+// ─── ACTIVE NAV ──────────────────────────────────────────────
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
 
-  var yearEl = document.getElementById('year');
-  if (yearEl) {
-    yearEl.textContent = String(new Date().getFullYear());
-  }
-})();
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 200) current = s.id;
+  });
+  navLinks.forEach(a => {
+    a.style.color = a.getAttribute('href') === '#' + current
+      ? 'var(--ink)' : '';
+  });
+}, { passive: true });
+
+// ─── SMOOTH NAV SCROLL ───────────────────────────────────────
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
 </script>
 </body>
 </html>
