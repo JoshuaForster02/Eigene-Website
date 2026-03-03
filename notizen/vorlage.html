@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="shortcut icon" href="../favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&amp;family=Karla:wght@300;400;500;700&amp;family=DM+Mono:wght@400&amp;display=swap" rel="stylesheet">
+<title>Vorlage fuer fachliche Notiz</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --ivory: #f7f4ee;
+  --ivory2: #ede9e0;
+  --ink: #0e0d0b;
+  --ink3: #6b6760;
+  --crimson: #8c1c13;
+  --border: #d8d3ca;
+  --border2: #e8e3da;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'Karla', sans-serif;
+  --mono: 'DM Mono', monospace;
+}
+body {
+  background: var(--ivory);
+  color: var(--ink);
+  font-family: var(--sans);
+  line-height: 1.7;
+}
+main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 64px 24px 96px;
+}
+.eyebrow {
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 11px;
+  color: var(--crimson);
+  margin-bottom: 18px;
+}
+h1 {
+  font-family: var(--serif);
+  font-size: clamp(42px, 8vw, 68px);
+  font-weight: 500;
+  line-height: 0.96;
+  margin-bottom: 18px;
+}
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+.meta span {
+  border: 1px solid var(--border);
+  background: var(--ivory2);
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink3);
+}
+.notice {
+  border: 1px solid var(--border);
+  background: var(--ivory2);
+  padding: 18px 20px;
+  margin-bottom: 28px;
+}
+.notice strong {
+  display: block;
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 11px;
+  color: var(--crimson);
+  margin-bottom: 8px;
+}
+section {
+  margin-top: 28px;
+}
+h2 {
+  font-family: var(--serif);
+  font-size: 34px;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+p, li {
+  color: var(--ink3);
+}
+ul {
+  padding-left: 20px;
+}
+.actions {
+  margin-top: 36px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+a {
+  text-decoration: none;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 18px;
+  border-radius: 999px;
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 11px;
+}
+.btn-primary {
+  background: var(--ink);
+  color: var(--ivory);
+}
+.btn-secondary {
+  border: 1px solid var(--border);
+  color: var(--ink);
+}
+code {
+  background: var(--ivory2);
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+</style>
+</head>
+<body>
+<main>
+  <p class="eyebrow">Vorlage</p>
+  <h1>[Titel der fachlichen Notiz]</h1>
+  <div class="meta">
+    <span>[Datum]</span>
+    <span>[Kategorie]</span>
+    <span>[Status: Entwurf oder veroeffentlicht]</span>
+  </div>
+
+  <div class="notice">
+    <strong>Wichtig vor der Veroeffentlichung</strong>
+    Diese Datei ist eine Vorlage. Alle Platzhalter muessen ersetzt werden, bevor sie oeffentlich verlinkt wird.
+  </div>
+
+  <section>
+    <h2>Kontext</h2>
+    <p>
+      [Worum geht es? In welchem fachlichen oder praktischen Zusammenhang ist die Notiz entstanden?]
+    </p>
+  </section>
+
+  <section>
+    <h2>Kernaussagen</h2>
+    <ul>
+      <li>[Kernaussage 1]</li>
+      <li>[Kernaussage 2]</li>
+      <li>[Kernaussage 3]</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Eigene Einordnung</h2>
+    <p>
+      [Hier nur das schreiben, was du wirklich vertreten kannst. Beobachtung, Meinung und gesichertes Wissen sauber trennen.]
+    </p>
+  </section>
+
+  <section>
+    <h2>Quellenstand</h2>
+    <p>
+      [Optional: kurz angeben, ob die Notiz auf Vorlesung, Literatur, eigener Aufarbeitung oder freigegebenem Forschungsstand basiert.]
+    </p>
+  </section>
+
+  <section>
+    <h2>So nutzt du die Vorlage</h2>
+    <ul>
+      <li>Datei duplizieren, z. B. <code>notizen/sportmedizin-regeneration.html</code>.</li>
+      <li>Alle Platzhalter ersetzen.</li>
+      <li>Danach die neue Datei aus <code>index.html</code> oder <code>notizen/index.html</code> verlinken.</li>
+    </ul>
+  </section>
+
+  <div class="actions">
+    <a class="btn btn-primary" href="index.html">Zur Notiz-Uebersicht</a>
+    <a class="btn btn-secondary" href="../index.html">Zur Startseite</a>
+  </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Fachliche Notizen von Joshua Forster. Veroeffentlicht werden nur echte, freigegebene Inhalte.">
+<meta property="og:title" content="Fachliche Notizen - Joshua Forster">
+<meta property="og:description" content="Uebersicht der fachlichen Notizen. Keine erfundenen Inhalte, nur reale Arbeitsstaende.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://joshuaforster.de/notizen/index.html">
+<meta property="og:image" content="https://joshuaforster.de/og-image.svg">
+<link rel="canonical" href="https://joshuaforster.de/notizen/index.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="shortcut icon" href="../favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&amp;family=Karla:wght@300;400;500;700&amp;family=DM+Mono:wght@400&amp;display=swap" rel="stylesheet">
+<title>Fachliche Notizen - Joshua Forster</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --ivory: #f7f4ee;
+  --ivory2: #ede9e0;
+  --ink: #0e0d0b;
+  --ink2: #2a2826;
+  --ink3: #6b6760;
+  --ink4: #a8a49e;
+  --crimson: #8c1c13;
+  --border: #d8d3ca;
+  --border2: #e8e3da;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'Karla', sans-serif;
+  --mono: 'DM Mono', monospace;
+}
+body {
+  background: var(--ivory);
+  color: var(--ink);
+  font-family: var(--sans);
+  line-height: 1.65;
+}
+header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(247, 244, 238, 0.94);
+  border-bottom: 1px solid var(--border2);
+  backdrop-filter: blur(10px);
+}
+.nav {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+.brand {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--ink);
+}
+.brand span { color: var(--crimson); }
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.nav-links a {
+  text-decoration: none;
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 11px;
+  color: var(--ink3);
+}
+.nav-links a:hover,
+.nav-links a:focus,
+.nav-links a[aria-current="page"] {
+  color: var(--ink);
+  outline: none;
+}
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 72px 24px 96px;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--crimson);
+  margin-bottom: 20px;
+}
+h1 {
+  font-family: var(--serif);
+  font-size: clamp(46px, 8vw, 72px);
+  font-weight: 500;
+  line-height: 0.95;
+  margin-bottom: 16px;
+}
+.lead {
+  max-width: 720px;
+  color: var(--ink3);
+  margin-bottom: 32px;
+}
+.notice {
+  padding: 18px 20px;
+  border: 1px solid var(--border);
+  background: var(--ivory2);
+  margin-bottom: 32px;
+}
+.notice strong {
+  display: block;
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 11px;
+  color: var(--crimson);
+  margin-bottom: 8px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 24px;
+}
+.card {
+  border: 1px solid var(--border2);
+  background: var(--ivory2);
+  padding: 24px;
+}
+.card h2 {
+  font-family: var(--serif);
+  font-size: 34px;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+.card p,
+.card li { color: var(--ink2); }
+.list {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+}
+.note-item {
+  border: 1px solid var(--border);
+  background: var(--ivory);
+  padding: 18px;
+}
+.note-item strong {
+  display: block;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink4);
+  margin-bottom: 6px;
+}
+.note-item h3 {
+  font-family: var(--serif);
+  font-size: 28px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+.note-item p { color: var(--ink3); }
+.checklist {
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+.checklist li {
+  position: relative;
+  padding-left: 16px;
+}
+.checklist li::before {
+  content: '-';
+  position: absolute;
+  left: 0;
+  color: var(--crimson);
+}
+.actions {
+  margin-top: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 18px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 11px;
+}
+.btn-primary {
+  background: var(--ink);
+  color: var(--ivory);
+}
+.btn-secondary {
+  border: 1px solid var(--border);
+  color: var(--ink);
+}
+footer {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px 28px;
+  color: var(--ink4);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+@media (max-width: 900px) {
+  .grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="nav">
+    <a class="brand" href="../index.html">Joshua <span>Forster</span></a>
+    <ul class="nav-links">
+      <li><a href="../index.html">Start</a></li>
+      <li><a href="index.html" aria-current="page">Notizen</a></li>
+      <li><a href="../contact.html">Kontakt</a></li>
+    </ul>
+  </div>
+</header>
+
+<main>
+  <p class="eyebrow">Fachliche Notizen</p>
+  <h1>Nur reale Inhalte.</h1>
+  <p class="lead">
+    Hier erscheinen fachliche Notizen erst dann, wenn sie inhaltlich sauber formuliert,
+    von mir freigegeben und fuer eine oeffentliche Darstellung geeignet sind.
+  </p>
+
+  <div class="notice">
+    <strong>Aktueller Stand</strong>
+    Aktuell sind noch keine fachlichen Notizen veroeffentlicht.
+  </div>
+
+  <div class="grid">
+    <section class="card">
+      <h2>Was hier spaeter stehen kann</h2>
+      <div class="list">
+        <article class="note-item">
+          <strong>Status</strong>
+          <h3>Studium und klinische Lernprozesse</h3>
+          <p>Nur als Themenfeld vorgemerkt. Es gibt dazu noch keine veroeffentlichte Notiz.</p>
+        </article>
+        <article class="note-item">
+          <strong>Status</strong>
+          <h3>Sportmedizin und Praevention</h3>
+          <p>Nur als Themenfeld vorgemerkt. Es gibt dazu noch keine veroeffentlichte Notiz.</p>
+        </article>
+        <article class="note-item">
+          <strong>Status</strong>
+          <h3>Doktorarbeit und Methodik</h3>
+          <p>Nur dann oeffentlich, wenn Inhalte fachlich und formal freigegeben werden koennen.</p>
+        </article>
+      </div>
+    </section>
+
+    <aside class="card">
+      <h2>Regeln fuer neue Notizen</h2>
+      <ul class="checklist">
+        <li>Nur Dinge veroeffentlichen, die wirklich stimmen.</li>
+        <li>Klar zwischen Beobachtung, Meinung und gesichertem Wissen trennen.</li>
+        <li>Keine Details aus der Doktorarbeit veroeffentlichen, solange sie nicht freigegeben sind.</li>
+        <li>Keine Patientendaten, keine vertraulichen Inhalte.</li>
+        <li>Datum und Kontext immer sauber angeben.</li>
+      </ul>
+      <div class="actions">
+        <a class="btn btn-primary" href="vorlage.html">Vorlage ansehen</a>
+        <a class="btn btn-secondary" href="../contact.html">Kontakt</a>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<footer>
+  <span>&copy; 2026 Joshua Forster</span>
+</footer>
+</body>
+</html>
