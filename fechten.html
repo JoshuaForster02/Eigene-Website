@@ -427,11 +427,53 @@ footer {
 .klinge-svg-wrap {
   position: relative;
   z-index: 2;
-  width: clamp(120px, 22vw, 240px);
+  width: clamp(320px, 66vw, 680px);
   will-change: transform;
 }
 .klinge-svg-wrap svg { display: block; width: 100%; height: auto;
-  filter: drop-shadow(0 30px 60px rgba(0,0,0,0.55)); }
+  filter: drop-shadow(0 24px 48px rgba(0,0,0,0.6)); }
+
+/* ─── FIE-PROFIL ───────────────────────────────────────────── */
+.fie-card {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  max-width: 540px; border: 1px solid var(--border); background: var(--ivory2);
+}
+.fie-cell { padding: 30px 34px; border-right: 1px solid var(--border); }
+.fie-cell:last-child { border-right: none; }
+.fie-cell .fk {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--ink4); margin-bottom: 12px;
+}
+.fie-cell .fv { font-family: var(--serif); font-size: 28px; color: var(--ink); line-height: 1.05; }
+.fie-cell .fv small { display: block; margin-top: 8px; font-family: var(--sans); font-size: 13px; color: var(--ink3); }
+
+/* ─── ERGEBNIS-TABELLE (Sneak-Peek) ────────────────────────── */
+.results-wrap { max-width: 760px; }
+.results { width: 100%; border-collapse: collapse; border: 1px solid var(--border); }
+.results th {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--ink4); text-align: left;
+  padding: 16px 22px; background: var(--ivory2); border-bottom: 1px solid var(--border);
+}
+.results td { padding: 20px 22px; border-bottom: 1px solid var(--border2); font-size: 14px; color: var(--ink2); }
+.results tr:last-child td { border-bottom: none; }
+.results tr:hover td { background: var(--ivory2); }
+.r-code { font-family: var(--mono); font-size: 13px; letter-spacing: 0.08em; color: var(--crimson); }
+.r-weapon { font-weight: 500; color: var(--ink); }
+.r-blur {
+  filter: blur(4.5px); color: var(--ink3); user-select: none; letter-spacing: 1px;
+  font-family: var(--mono); font-size: 13px;
+}
+.r-foot {
+  margin-top: 18px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em;
+  color: var(--ink4); display: flex; align-items: center; gap: 8px;
+}
+@media (max-width: 768px) {
+  .fie-card { grid-template-columns: 1fr; }
+  .fie-cell { border-right: none; border-bottom: 1px solid var(--border); }
+  .fie-cell:last-child { border-bottom: none; }
+  .results th:nth-child(3), .results td:nth-child(3) { display: none; }
+}
 
 .klinge-captions {
   position: absolute;
@@ -581,46 +623,67 @@ footer {
     <div class="klinge-hint">Scrollen</div>
 
     <div class="klinge-svg-wrap" id="klingeSvg">
-      <svg viewBox="0 0 200 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Fechtdegen">
+      <svg viewBox="0 0 800 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Fechtdegen (Épée)">
         <defs>
-          <linearGradient id="blade" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0" stop-color="#7C7873"/>
-            <stop offset="0.45" stop-color="#EDE9E0"/>
-            <stop offset="0.5" stop-color="#FBFAF7"/>
-            <stop offset="0.55" stop-color="#EDE9E0"/>
-            <stop offset="1" stop-color="#6B6760"/>
+          <linearGradient id="bladeG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0"    stop-color="#56524C"/>
+            <stop offset="0.34" stop-color="#CFC9C0"/>
+            <stop offset="0.5"  stop-color="#FCFBF8"/>
+            <stop offset="0.62" stop-color="#C4BEB4"/>
+            <stop offset="1"    stop-color="#44413D"/>
           </linearGradient>
-          <linearGradient id="grip" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0" stop-color="#2A2826"/>
+          <radialGradient id="guardG" cx="0.36" cy="0.32" r="0.85">
+            <stop offset="0"   stop-color="#FBFAF7"/>
+            <stop offset="0.45" stop-color="#B6B0A6"/>
+            <stop offset="1"   stop-color="#403D3A"/>
+          </radialGradient>
+          <linearGradient id="gripG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0"   stop-color="#3A3633"/>
             <stop offset="0.5" stop-color="#0E0D0B"/>
-            <stop offset="1" stop-color="#2A2826"/>
+            <stop offset="1"   stop-color="#33302D"/>
           </linearGradient>
+          <radialGradient id="pommelG" cx="0.38" cy="0.34" r="0.8">
+            <stop offset="0"   stop-color="#E9E4DB"/>
+            <stop offset="0.5" stop-color="#9A948B"/>
+            <stop offset="1"   stop-color="#322F2C"/>
+          </radialGradient>
         </defs>
-        <!-- Klinge -->
-        <polygon points="98,46 102,46 105,392 95,392" fill="url(#blade)"/>
-        <!-- Mittelgrat -->
-        <line x1="100" y1="58" x2="100" y2="388" stroke="#FBFAF7" stroke-width="0.8" opacity="0.6"/>
-        <!-- Spitze -->
-        <circle cx="100" cy="44" r="2.4" fill="#FBFAF7"/>
-        <!-- Glocke / Coquille -->
-        <ellipse cx="100" cy="404" rx="58" ry="17" fill="#8C1C13"/>
-        <ellipse cx="100" cy="400" rx="58" ry="17" fill="#B52D22"/>
-        <ellipse cx="100" cy="398" rx="40" ry="10" fill="#8C1C13" opacity="0.55"/>
-        <!-- Griff -->
-        <rect x="90" y="412" width="20" height="120" rx="9" fill="url(#grip)"/>
-        <!-- Wicklung -->
-        <g stroke="#4A4744" stroke-width="2" opacity="0.7">
-          <line x1="90" y1="430" x2="110" y2="438"/>
-          <line x1="90" y1="446" x2="110" y2="454"/>
-          <line x1="90" y1="462" x2="110" y2="470"/>
-          <line x1="90" y1="478" x2="110" y2="486"/>
-          <line x1="90" y1="494" x2="110" y2="502"/>
-          <line x1="90" y1="510" x2="110" y2="518"/>
+
+        <!-- Knauf / Pommel -->
+        <circle cx="74" cy="120" r="18" fill="url(#pommelG)"/>
+        <circle cx="74" cy="120" r="18" fill="none" stroke="#000" stroke-width="1.5" opacity="0.25"/>
+        <circle cx="68" cy="113" r="5" fill="#FFFFFF" opacity="0.45"/>
+
+        <!-- Griff (französischer Griff) -->
+        <rect x="86" y="103" width="132" height="34" rx="16" fill="url(#gripG)"/>
+        <rect x="86" y="103" width="132" height="13" rx="6" fill="#FFFFFF" opacity="0.06"/>
+        <g stroke="#5A5651" stroke-width="2.2" opacity="0.55" stroke-linecap="round">
+          <line x1="100" y1="108" x2="118" y2="132"/>
+          <line x1="118" y1="108" x2="136" y2="132"/>
+          <line x1="136" y1="108" x2="154" y2="132"/>
+          <line x1="154" y1="108" x2="172" y2="132"/>
+          <line x1="172" y1="108" x2="190" y2="132"/>
+          <line x1="190" y1="108" x2="206" y2="130"/>
         </g>
-        <!-- Knauf -->
-        <circle cx="100" cy="544" r="15" fill="#B52D22"/>
-        <circle cx="100" cy="544" r="15" fill="none" stroke="#0E0D0B" stroke-width="2" opacity="0.4"/>
-        <circle cx="95" cy="539" r="4" fill="#F7F4EE" opacity="0.5"/>
+
+        <!-- Glocke / Coquille (große Degenglocke) -->
+        <ellipse cx="244" cy="120" rx="30" ry="92" fill="url(#guardG)"/>
+        <ellipse cx="252" cy="120" rx="15" ry="74" fill="#000000" opacity="0.16"/>
+        <ellipse cx="244" cy="120" rx="30" ry="92" fill="none" stroke="#2A2826" stroke-width="2.5" opacity="0.35"/>
+        <ellipse cx="233" cy="98"  rx="8"  ry="40" fill="#FCFBF8" opacity="0.4"/>
+        <!-- Stichblatt-Ansatz -->
+        <rect x="262" y="108" width="22" height="24" rx="5" fill="url(#guardG)"/>
+
+        <!-- Klinge (Épée, dreikantig, sich verjüngend) -->
+        <polygon points="280,110 752,118.4 752,121.6 280,130" fill="url(#bladeG)"/>
+        <!-- Heller Mittelgrat -->
+        <polygon points="284,116 748,119.4 748,120.4 284,118.5" fill="#FCFBF8" opacity="0.65"/>
+        <!-- Schattenkante unten -->
+        <line x1="288" y1="128" x2="750" y2="121" stroke="#34312E" stroke-width="0.9" opacity="0.5"/>
+
+        <!-- Spitze / pointe d'arrêt -->
+        <rect x="750" y="116" width="12" height="8" rx="2.5" fill="#CFC9C0"/>
+        <circle cx="766" cy="120" r="3.4" fill="#E9E4DB"/>
       </svg>
     </div>
 
@@ -645,91 +708,51 @@ footer {
 
 <!-- ════════════════ STECKBRIEF / WAFFE & STIL ════════════════ -->
 <section id="steckbrief">
-  <div class="section-label">01 — Waffe &amp; Stil</div>
-  <div class="note reveal">
-    <strong>Hinweis:</strong> Die <span class="ph">[ Platzhalter ]</span> einfach mit deinen echten
-    Angaben ersetzen. Auf der restlichen Website gilt „nur echte Inhalte" — das halten wir hier genauso.
-  </div>
-  <div class="steckbrief-grid">
-    <div class="reveal reveal-d1">
-      <div class="steck-list">
-        <div class="steck-row">
-          <div class="steck-key">Waffe</div>
-          <div class="steck-val"><span class="ph">[ Florett / Degen / Säbel ]</span></div>
-        </div>
-        <div class="steck-row">
-          <div class="steck-key">Seit</div>
-          <div class="steck-val"><span class="ph">[ Jahr / Anzahl Jahre ]</span></div>
-        </div>
-        <div class="steck-row">
-          <div class="steck-key">Verein / Club</div>
-          <div class="steck-val"><span class="ph">[ Vereinsname &amp; Ort ]</span></div>
-        </div>
-        <div class="steck-row">
-          <div class="steck-key">Training</div>
-          <div class="steck-val"><span class="ph">[ z. B. 2× / Woche ]</span></div>
-        </div>
-        <div class="steck-row">
-          <div class="steck-key">Fechthand</div>
-          <div class="steck-val"><span class="ph">[ Rechts / Links ]</span></div>
-        </div>
-        <div class="steck-row">
-          <div class="steck-key">Level</div>
-          <div class="steck-val"><span class="ph">[ Anfänger / Fortgeschritten / Turnier ]</span></div>
-        </div>
-      </div>
+  <div class="section-label">01 — Profil</div>
+  <div class="fie-card reveal">
+    <div class="fie-cell">
+      <div class="fk">Waffe</div>
+      <div class="fv">Degen<small>aktiv · auch Florett</small></div>
     </div>
-    <div class="reveal reveal-d2">
-      <div class="sidebar-block">
-        <h4>Was mich am Fechten reizt</h4>
-        <ul class="sidebar-list">
-          <li>Distanz- und Tempogefühl</li>
-          <li>Entscheidungen im Sekundenbruchteil</li>
-          <li>Technik schlägt rohe Kraft</li>
-          <li>Mentale Ruhe unter Druck</li>
-        </ul>
-      </div>
-      <div class="sidebar-block">
-        <h4>Ausrüstung</h4>
-        <ul class="sidebar-list">
-          <li><span class="ph">[ Waffe + Klingenstärke ]</span></li>
-          <li><span class="ph">[ Maske / Plastron / Jacke ]</span></li>
-          <li><span class="ph">[ Sonstiges ]</span></li>
-        </ul>
-      </div>
+    <div class="fie-cell">
+      <div class="fk">Fechthand</div>
+      <div class="fv">Rechts<small>Rechtshänder</small></div>
     </div>
   </div>
 </section>
 
 <!-- ════════════════ WETTKÄMPFE & ERFOLGE ════════════════ -->
 <section id="wettkaempfe">
-  <div class="section-label">02 — Wettkämpfe &amp; Erfolge</div>
-  <div class="note reveal">
-    Hier kommen <strong>nur reale</strong> Turniere und Platzierungen rein. Die Beispielzeilen
-    unten sind Platzhalter — fülle echte Ergebnisse ein oder lösche die Einträge, solange noch keine da sind.
+  <div class="section-label">02 — Wettkämpfe</div>
+  <div class="projekte-header reveal" style="margin-bottom:36px;">
+    <h2>Starts &amp;<br><em>Gefechte.</em></h2>
   </div>
-  <div class="timeline reveal reveal-d1">
-    <div class="timeline-item">
-      <div class="timeline-year"><span class="ph">[ Jahr ]</span></div>
-      <div class="timeline-content">
-        <h4><span class="ph">[ Turniername / Wettkampf ]</span></h4>
-        <p><span class="ph">[ Platzierung, Waffe, Ort — kurze Einordnung ]</span></p>
-      </div>
-    </div>
-    <div class="timeline-item">
-      <div class="timeline-year"><span class="ph">[ Jahr ]</span></div>
-      <div class="timeline-content">
-        <h4><span class="ph">[ Turniername / Wettkampf ]</span></h4>
-        <p><span class="ph">[ Platzierung, Waffe, Ort — kurze Einordnung ]</span></p>
-      </div>
-    </div>
-    <div class="timeline-item">
-      <div class="timeline-year">Ziel</div>
-      <div class="timeline-content">
-        <h4>Nächster Schritt</h4>
-        <p><span class="ph">[ z. B. erstes Turnier, Vereinsmeisterschaft, neue Waffe ]</span></p>
-      </div>
-    </div>
+  <div class="results-wrap reveal reveal-d1">
+    <table class="results">
+      <thead>
+        <tr>
+          <th>Saison</th>
+          <th>Waffe</th>
+          <th>Wettbewerb</th>
+          <th>Ergebnis</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>2025/26</td>
+          <td class="r-weapon">Degen</td>
+          <td><span class="r-code">R22</span> · Einzel</td>
+          <td><span class="r-blur">██ Platz</span></td>
+        </tr>
+        <tr>
+          <td>2026</td>
+          <td class="r-weapon">Degen</td>
+          <td>Freiluft · Open-Air <span style="color:var(--ink4)">(Region Saar)</span></td>
+          <td><span class="r-blur">██ Platz</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="r-foot">🔒 Sneak-Peek — volle Namen &amp; Platzierungen bleiben privat.</div>
   </div>
 </section>
 
