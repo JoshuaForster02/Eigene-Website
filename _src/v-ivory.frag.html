@@ -1,0 +1,272 @@
+<title>Joshua Forster</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Karla:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --ivory:#F7F4EE; --ivory2:#EEE9DF; --ivory3:#E3DDD1; --ink:#0E0D0B; --ink2:#2A2826; --ink3:#6B6760; --ink4:#A8A49E;
+  --crim:#8C1C13; --crim2:#B52D22; --line:#D8D3CA;
+  --serif:"Cormorant Garamond",Georgia,serif; --sans:"Karla",system-ui,sans-serif; --mono:"DM Mono",ui-monospace,monospace;
+  --ease:cubic-bezier(.2,.8,.2,1);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ivory);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+::selection{background:var(--crim);color:var(--ivory)}
+.skip{position:absolute;left:12px;top:-48px;background:var(--crim);color:var(--ivory);padding:8px 12px;z-index:200}
+.skip:focus{top:12px}
+.grain{position:fixed;inset:0;pointer-events:none;z-index:90;opacity:.35;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.3 0 0 0 0 0.25 0 0 0 0 0.2 0 0 0 .08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* progress bar + nav */
+.prog{position:fixed;top:0;left:0;height:2px;background:var(--crim);width:calc(var(--sp,0)*100%);z-index:120}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:68px;padding:0 clamp(16px,4vw,56px);display:flex;align-items:center;justify-content:space-between;transition:background .4s,backdrop-filter .4s}
+nav.solid{background:rgba(247,244,238,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--ivory3)}
+.logo{font-family:var(--serif);font-size:21px;text-decoration:none}
+.logo i{color:var(--crim)}
+.links{display:flex;gap:34px;list-style:none;margin:0;padding:0}
+.links a{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);text-decoration:none;position:relative}
+.links a::after{content:"";position:absolute;left:0;right:100%;bottom:-4px;height:1px;background:var(--crim);transition:right .4s var(--ease)}
+.links a:hover{color:var(--ink)}.links a:hover::after{right:0}
+@media (max-width:760px){.links{display:none}}
+
+.pin{position:relative}
+.stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+
+/* HERO */
+#hero{height:200vh}
+#hero .stage{display:grid;align-items:center;padding:0 clamp(16px,5vw,80px)}
+.mono-bg{position:absolute;right:-4vw;top:50%;font-family:var(--serif);font-weight:300;font-style:italic;font-size:min(62vw,720px);line-height:.8;color:transparent;-webkit-text-stroke:1px var(--line);transform:translateY(calc(-50% + var(--p,0)*-30vh)) rotate(calc(var(--p,0)*-6deg));pointer-events:none;user-select:none}
+.hero-in{position:relative;max-width:1280px;width:100%;margin:0 auto}
+.kicker{font-family:var(--mono);font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--crim);display:flex;align-items:center;gap:14px}
+.kicker::before{content:"";width:32px;height:1px;background:var(--crim)}
+.name{font-family:var(--serif);font-weight:300;font-size:clamp(72px,14vw,230px);line-height:.86;letter-spacing:-.035em;margin:26px 0 0}
+.name .ln{display:block;overflow:hidden;padding-bottom:.06em}
+.name .ch{display:inline-block;transform:translateY(105%);animation:rise 1.1s var(--ease) forwards}
+.name em{font-style:italic;color:var(--crim)}
+.name .ln:nth-child(2){padding-left:clamp(20px,8vw,160px);transform:translateX(calc(var(--p,0)*-8vw))}
+.name .ln:nth-child(1){transform:translateX(calc(var(--p,0)*6vw))}
+@keyframes rise{to{transform:none}}
+.hero-sub{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;flex-wrap:wrap;margin-top:44px;opacity:calc(1 - var(--p,0)*2.2)}
+.hero-sub p{font-family:var(--serif);font-style:italic;font-size:clamp(20px,2.2vw,30px);color:var(--ink3);margin:0;max-width:30ch;line-height:1.3;opacity:0;animation:fade 1.2s .9s forwards}
+.hero-cta{display:flex;gap:12px;opacity:0;animation:fade 1.2s 1.1s forwards}
+@keyframes fade{to{opacity:1}}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:15px 26px;font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;border:1px solid var(--ink);transition:background .3s,color .3s,transform .3s var(--ease)}
+.btn.dark{background:var(--ink);color:var(--ivory)}
+.btn:hover{background:var(--crim);border-color:var(--crim);color:var(--ivory)}
+
+/* STATEMENT */
+#about{height:220vh}
+#about .stage{display:grid;place-items:center;padding:0 clamp(16px,5vw,80px)}
+.stmt{max-width:1180px;font-family:var(--serif);font-weight:300;font-size:clamp(34px,5vw,76px);line-height:1.1;letter-spacing:-.02em;margin:0}
+.stmt .w{opacity:.14;transition:opacity .35s}
+.stmt .w.on{opacity:1}
+.stmt .w.hl{font-style:italic;color:var(--crim)}
+.label{position:absolute;top:110px;left:clamp(16px,5vw,80px);font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--crim)}
+
+/* HORIZONTAL STATIONEN */
+#stationen{height:360vh;background:var(--ink);color:var(--ivory)}
+#stationen .stage{display:flex;flex-direction:column;justify-content:center}
+.st-top{padding:0 clamp(16px,5vw,80px);display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:6vh}
+.st-top h2{font-family:var(--serif);font-weight:300;font-size:clamp(46px,7vw,110px);line-height:.9;margin:0;letter-spacing:-.03em}
+.st-top h2 em{color:#D0746A}
+.st-count{font-family:var(--mono);font-size:12px;letter-spacing:.14em;color:rgba(247,244,238,.5)}
+.track{display:flex;gap:clamp(18px,3vw,40px);padding:0 clamp(16px,5vw,80px);will-change:transform;transform:translateX(calc(var(--p,0) * var(--shift,0px) * -1))}
+.st{flex:none;width:min(78vw,520px);border-top:1px solid rgba(247,244,238,.2);padding-top:26px;position:relative}
+.st .yr{font-family:var(--serif);font-weight:300;font-size:clamp(90px,12vw,180px);line-height:.8;letter-spacing:-.05em;color:transparent;-webkit-text-stroke:1px rgba(247,244,238,.45)}
+.st.now .yr{color:#D0746A;-webkit-text-stroke:0}
+.st h3{font-family:var(--serif);font-weight:400;font-size:clamp(28px,2.6vw,40px);margin:22px 0 8px;letter-spacing:-.01em}
+.st p{margin:0;color:rgba(247,244,238,.55);font-size:16px;line-height:1.6;max-width:36ch}
+.st .tag{position:absolute;top:26px;right:0;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(247,244,238,.45)}
+.bar{margin:6vh clamp(16px,5vw,80px) 0;height:1px;background:rgba(247,244,238,.15);position:relative}
+.bar i{position:absolute;left:0;top:0;height:1px;background:#D0746A;width:calc(var(--p,0)*100%)}
+
+/* PROJECTS */
+.sec{padding:clamp(100px,14vw,190px) clamp(16px,5vw,80px)}
+.wrap{max-width:1280px;margin:0 auto}
+.sec-label{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--crim);display:flex;align-items:center;gap:14px}
+.sec-label::after{content:"";width:60px;height:1px;background:var(--crim);opacity:.5}
+.h2{font-family:var(--serif);font-weight:300;font-size:clamp(46px,7vw,112px);line-height:.92;letter-spacing:-.03em;margin:22px 0 0}
+.h2 em{font-style:italic;color:var(--crim)}
+.proj{display:grid;gap:clamp(80px,10vw,150px);margin-top:clamp(60px,8vw,110px)}
+.pr{display:grid;grid-template-columns:1.2fr 1fr;gap:clamp(30px,5vw,80px);align-items:center;text-decoration:none}
+.pr:nth-child(even){grid-template-columns:1fr 1.2fr}
+.pr:nth-child(even) .pimg{order:2}
+.pimg{position:relative;aspect-ratio:4/3;background:var(--ivory2);overflow:hidden;clip-path:inset(calc((1 - var(--v,1))*18%) calc((1 - var(--v,1))*12%) round 4px)}
+.pimg img{width:100%;height:100%;object-fit:cover;object-position:top left;transform:scale(calc(1.25 - var(--v,1)*.25))}
+.pimg .ph{position:absolute;inset:0;display:grid;place-items:center}
+.pnum{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--ink4);text-transform:uppercase}
+.pr h3{font-family:var(--serif);font-weight:300;font-size:clamp(44px,5vw,78px);line-height:.95;margin:16px 0 18px;letter-spacing:-.025em}
+.pr h3 em{color:var(--crim)}
+.pr p{font-size:17px;line-height:1.75;color:var(--ink2);margin:0 0 24px;max-width:44ch}
+.ptags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:30px}
+.ptags span{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 11px;border:1px solid var(--line);color:var(--ink3)}
+.more{font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--crim);display:inline-flex;gap:10px;align-items:center}
+.more::after{content:"→";transition:transform .4s var(--ease)}
+.pr:hover .more::after{transform:translateX(8px)}
+.cards3{position:relative;width:62%;aspect-ratio:3/2}
+.cards3 div{position:absolute;inset:0;background:var(--ivory);border:1px solid var(--line);padding:22px;font-family:var(--serif);font-size:clamp(18px,1.8vw,24px);line-height:1.25;box-shadow:0 20px 50px rgba(14,13,11,.08);transform:rotate(calc(var(--r)*var(--v,1))) translate(calc(var(--x)*var(--v,1)),calc(var(--y)*var(--v,1)))}
+.cards3 small{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--crim);margin-bottom:10px}
+@media (max-width:860px){.pr,.pr:nth-child(even){grid-template-columns:1fr}.pr:nth-child(even) .pimg{order:0}}
+
+/* BALANCE list */
+.list{margin-top:clamp(50px,7vw,90px);border-top:1px solid var(--line)}
+.li{display:grid;grid-template-columns:90px 1fr auto;gap:24px;align-items:baseline;padding:34px 0;border-bottom:1px solid var(--line);text-decoration:none;position:relative;overflow:hidden}
+.li::before{content:"";position:absolute;inset:0;background:var(--ink);transform:translateY(101%);transition:transform .6s var(--ease);z-index:0}
+.li>*{position:relative;z-index:1;transition:color .4s}
+.li:hover::before{transform:none}
+.li:hover>*{color:var(--ivory)}
+.li .n{font-family:var(--mono);font-size:12px;color:var(--crim)}
+.li h3{font-family:var(--serif);font-weight:300;font-size:clamp(34px,4.5vw,64px);margin:0;letter-spacing:-.02em;line-height:1}
+.li h3 em{color:var(--crim);font-style:italic}
+.li:hover h3 em{color:#D0746A}
+.li p{margin:8px 0 0;color:var(--ink3);font-size:15px}
+.li .arr{font-size:26px;color:var(--ink4)}
+@media (max-width:640px){.li{grid-template-columns:50px 1fr}.li .arr{display:none}}
+
+/* CONTACT */
+.contact{background:var(--ivory2)}
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,7vw,110px);align-items:start;margin-top:40px}
+.mail{display:block;font-family:var(--serif);font-style:italic;font-size:clamp(26px,3vw,42px);color:var(--crim);text-decoration:none;margin-top:30px;word-break:break-all;border-bottom:1px solid transparent;transition:border-color .3s}
+.mail:hover{border-color:var(--crim)}
+.form{display:grid;gap:2px}
+.form .row{display:grid;grid-template-columns:1fr 1fr;gap:2px}
+.form input,.form textarea{width:100%;padding:17px 18px;background:var(--ivory);border:1px solid var(--ivory3);font:inherit;font-size:15px;color:var(--ink)}
+.form input:focus,.form textarea:focus{outline:none;border-color:var(--ink)}
+.form textarea{min-height:130px;resize:vertical}
+.form .cb{display:flex;gap:10px;align-items:flex-start;padding:14px 18px;background:var(--ivory);border:1px solid var(--ivory3);font-size:14px;color:var(--ink3)}
+.form button{padding:18px;border:0;background:var(--ink);color:var(--ivory);font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;transition:background .3s}
+.form button:hover{background:var(--crim)}
+.form small{margin-top:10px;font-size:12.5px;color:var(--ink3)}
+@media (max-width:860px){.cgrid{grid-template-columns:1fr}.form .row{grid-template-columns:1fr}}
+footer{padding:30px clamp(16px,5vw,80px);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-family:var(--mono);font-size:11px;color:var(--ink4);letter-spacing:.06em}
+footer a{text-decoration:none;margin-left:20px}footer a:hover{color:var(--crim)}
+
+.rv{opacity:0;transform:translateY(34px);transition:opacity 1.1s var(--ease),transform 1.1s var(--ease)}
+.rv.in{opacity:1;transform:none}
+@media (max-width:760px){#stationen{height:auto}#stationen .stage{position:relative;height:auto;padding:100px 0}.track{flex-direction:column;transform:none!important}.st{width:auto}.bar{display:none}}
+@media (prefers-reduced-motion:reduce){
+  #hero,#about,#stationen{height:auto}.stage{position:relative;height:auto;min-height:100vh;padding-block:110px}
+  .name .ch{animation:none;transform:none}.hero-sub p,.hero-cta{animation:none;opacity:1}
+  .stmt .w{opacity:1}.track{flex-wrap:wrap;transform:none!important}.rv{opacity:1;transform:none}
+  .pimg,.pimg img,.cards3 div{--v:1!important}
+}
+</style>
+
+<div class="grain" aria-hidden="true"></div>
+<div class="prog" aria-hidden="true"></div>
+<a class="skip" href="#main">Zum Inhalt springen</a>
+<nav id="nav" aria-label="Hauptnavigation">
+  <a class="logo" href="#hero">Joshua <i>Forster</i></a>
+  <ul class="links"><li><a href="#about">Über mich</a></li><li><a href="#stationen">Stationen</a></li><li><a href="#projekte">Projekte</a></li><li><a href="fechten.html">Fechten</a></li><li><a href="#kontakt">Kontakt</a></li></ul>
+</nav>
+
+<main id="main">
+<section id="hero" class="pin" data-pin>
+  <div class="stage">
+    <div class="mono-bg" aria-hidden="true">Jf</div>
+    <div class="hero-in">
+      <div class="kicker">Medizinstudent · 7. Semester · Homburg</div>
+      <h1 class="name" data-chars><span class="ln">Joshua</span><span class="ln"><em>Forster</em></span></h1>
+      <div class="hero-sub">
+        <p>Orthopädie, Sportmedizin und digitale Werkzeuge für die Klinik.</p>
+        <div class="hero-cta"><a class="btn dark" href="#projekte">Projekte</a><a class="btn" href="#kontakt">Kontakt</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="about" class="pin" data-pin aria-label="Über mich">
+  <div class="stage">
+    <div class="label">01 · Über mich</div>
+    <p class="stmt" data-words>Ich studiere Medizin im klinischen Abschnitt an der Universität des Saarlandes. Mich fasziniert der <span class="hl">Bewegungsapparat</span>: wie Menschen sich bewegen, sich verletzen und wieder zurückkommen. Außerhalb der Klinik fechte ich, trainiere und baue <span class="hl">Werkzeuge</span>, die mir und anderen das Lernen leichter machen.</p>
+  </div>
+</section>
+
+<section id="stationen" class="pin" data-pin aria-label="Stationen">
+  <div class="stage">
+    <div class="st-top"><h2>Stationen<br><em>bis Basel.</em></h2><span class="st-count">02 · Werdegang</span></div>
+    <div class="track" id="track">
+      <div class="st"><span class="tag">Studium</span><div class="yr">2022</div><h3>Start Medizinstudium</h3><p>Universität des Saarlandes, Campus Homburg.</p></div>
+      <div class="st"><span class="tag">Prüfung</span><div class="yr">2025</div><h3>Physikum</h3><p>Erster Abschnitt der Ärztlichen Prüfung, danach Wechsel in den klinischen Abschnitt.</p></div>
+      <div class="st now"><span class="tag">Famulatur</span><div class="yr">2026</div><h3>Orthopädie</h3><p>Famulatur am Universitätsklinikum des Saarlandes in Homburg.</p></div>
+      <div class="st"><span class="tag">Praktisches Jahr</span><div class="yr">28/29</div><h3>PJ in Basel</h3><p>Innere Medizin und Chirurgie am Universitätsspital Basel.</p></div>
+    </div>
+    <div class="bar"><i></i></div>
+  </div>
+</section>
+
+<section id="projekte" class="sec">
+  <div class="wrap">
+    <div class="rv"><div class="sec-label">03 · Projekte</div><h2 class="h2">Was ich<br><em>gebaut habe.</em></h2></div>
+    <div class="proj">
+      <a class="pr" href="kitteltasche/">
+        <div class="pimg" data-view><img src="images/kitteltasche.webp" alt="Startseite der Kitteltasche" loading="lazy"></div>
+        <div class="rv"><div class="pnum">Live · joshuaforster.de/kitteltasche</div><h3>Kittel<em>tasche</em></h3><p>Ein Klinikbegleiter: Arztbriefe schreiben lernen an 12 realistischen Fällen aus neun Fächern, dazu 38 klinische Rechner und ein Nachschlagewerk für Station und Notaufnahme.</p><div class="ptags"><span>Arztbriefe</span><span>Scores</span><span>Referenz</span></div><span class="more">Öffnen</span></div>
+      </a>
+      <a class="pr" href="https://apkg.joshuaforster.de" target="_blank" rel="noopener">
+        <div class="pimg" data-view><div class="ph"><div class="cards3">
+          <div style="--r:-9deg;--x:-40px;--y:18px"><small>FOLIE 27</small>Klassifikation der Schenkelhalsfraktur nach Garden?</div>
+          <div style="--r:7deg;--x:40px;--y:-14px"><small>FOLIE 12</small>Innervation der Rotatorenmanschette?</div>
+          <div style="--r:-1deg;--x:0px;--y:0px"><small>FOLIE 8 · ANKI</small>Was prüft der Lachman-Test?</div>
+        </div></div></div>
+        <div class="rv"><div class="pnum">Live · apkg.joshuaforster.de</div><h3>medi.<em>cards</em></h3><p>Folien als PDF oder PPTX hochladen, die KI erzeugt daraus quellenbasierte Anki-Karten mit Seitenangabe. Gebaut fürs Medizinstudium.</p><div class="ptags"><span>KI</span><span>Anki / APKG</span></div><span class="more">Öffnen</span></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="sec" style="padding-top:0">
+  <div class="wrap">
+    <div class="rv"><div class="sec-label">04 · Außerhalb der Klinik</div><h2 class="h2">Der <em>Ausgleich.</em></h2></div>
+    <div class="list">
+      <a class="li" href="fechten.html"><span class="n">01</span><div><h3>Fechten, <em>Degen</em></h3><p>Distanz, Timing und Entscheidungen unter Druck.</p></div><span class="arr">↗</span></a>
+      <div class="li"><span class="n">02</span><div><h3>Kraft &amp; <em>Laufen</em></h3><p>Training als fester Teil des Alltags.</p></div></div>
+      <div class="li"><span class="n">03</span><div><h3>Lernen <em>bauen</em></h3><p>Digitale Werkzeuge fürs Studium und die Klinik.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="kontakt" class="sec contact">
+  <div class="wrap">
+    <div class="sec-label">05 · Kontakt</div>
+    <div class="cgrid">
+      <div class="rv"><h2 class="h2" style="margin-top:0">Lass uns<br><em>sprechen.</em></h2><p style="font-size:17px;line-height:1.75;color:var(--ink3);margin-top:26px;max-width:40ch">Für fachlichen Austausch oder Fragen zu meinen Projekten. Den Lebenslauf verschicke ich auf Anfrage per E-Mail.</p><a class="mail" href="mailto:joshuaforster02@gmail.com">joshuaforster02@gmail.com</a></div>
+      <form class="form rv" action="https://formspree.io/f/xqeajnve" method="POST">
+        <input type="hidden" name="_subject" value="Website-Anfrage von joshuaforster.de">
+        <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <div class="row"><input id="b-name" name="name" placeholder="Name" autocomplete="name" required aria-label="Name"><input id="b-mail" type="email" name="email" placeholder="E-Mail" autocomplete="email" required aria-label="E-Mail"></div>
+        <textarea id="b-msg" name="message" placeholder="Nachricht" required aria-label="Nachricht"></textarea>
+        <label class="cb"><input type="checkbox" name="request_cv" value="yes"> Ich möchte den Lebenslauf per E-Mail erhalten.</label>
+        <button type="submit">Nachricht senden →</button>
+        <small>Mit dem Absenden willigst du in die Verarbeitung deiner Angaben ein. Mehr unter <a href="datenschutz.html">Datenschutz</a>.</small>
+      </form>
+    </div>
+  </div>
+</section>
+</main>
+<footer><span>© 2026 Joshua Forster</span><span><a href="#hero">Nach oben ↑</a><a href="datenschutz.html">Datenschutz</a></span></footer>
+
+<script>
+(()=>{
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+document.querySelectorAll('[data-chars] .ln').forEach((ln,li)=>{const host=ln.querySelector('em')||ln;const t=host.textContent;host.textContent='';[...t].forEach((c,i)=>{const s=document.createElement('span');s.className='ch';s.textContent=c;s.style.animationDelay=(0.08+li*0.18+i*0.045)+'s';host.append(s)})});
+document.querySelectorAll('[data-words]').forEach(el=>{const walk=(node,hl)=>{[...node.childNodes].forEach(n=>{if(n.nodeType===3){const f=document.createDocumentFragment();n.textContent.split(/(\s+)/).forEach(t=>{if(!t)return;if(/^\s+$/.test(t)){f.append(t);return}const s=document.createElement('span');s.className='w'+(hl?' hl':'');s.textContent=t;f.append(s)});n.replaceWith(f)}else if(n.nodeType===1){const h=hl||n.classList.contains('hl');walk(n,h);if(n.classList.contains('hl'))n.replaceWith(...n.childNodes)}})};walk(el,false)});
+const pins=[...document.querySelectorAll('[data-pin]')],views=[...document.querySelectorAll('[data-view]')],words=[...document.querySelectorAll('#about .w')];
+const track=document.getElementById('track'),st=document.getElementById('stationen'),nav=document.getElementById('nav'),root=document.documentElement;
+function measure(){st.style.setProperty('--shift',Math.max(0,track.scrollWidth-innerWidth)+'px')}
+function frame(){const vh=innerHeight;
+ pins.forEach(s=>{const r=s.getBoundingClientRect(),t=s.offsetHeight-vh,p=t>0?Math.min(1,Math.max(0,-r.top/t)):0;s.style.setProperty('--p',p.toFixed(4));s._p=p});
+ const ap=document.getElementById('about')._p||0,n=Math.floor(Math.min(1,ap*1.25)*words.length);words.forEach((w,i)=>w.classList.toggle('on',i<n));
+ views.forEach(el=>{const r=el.getBoundingClientRect(),v=Math.min(1,Math.max(0,(vh-r.top)/(vh*.8)));el.style.setProperty('--v',v.toFixed(3))});
+ root.style.setProperty('--sp',(scrollY/(document.body.scrollHeight-vh)).toFixed(4));
+ nav.classList.toggle('solid',scrollY>40);
+}
+let tk=false;const on=()=>{if(!tk){tk=true;requestAnimationFrame(()=>{frame();tk=false})}};
+measure();
+if(RM){words.forEach(w=>w.classList.add('on'))}else{addEventListener('scroll',on,{passive:true})}
+addEventListener('resize',()=>{measure();on()});frame();
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.15});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+})();
+</script>
