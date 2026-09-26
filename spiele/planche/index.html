@@ -50,6 +50,7 @@ h1 i{color:var(--ac)}
 #menu{overflow-y:auto;align-items:safe center}
 @media (max-width:480px){#diffRow{gap:6px}#diffRow .btn{font-size:10.5px;letter-spacing:.06em}}
 </style>
+<script src="../shared/bestenliste.js" defer></script>
 </head>
 <body>
 <canvas id="c"></canvas>
@@ -81,6 +82,7 @@ h1 i{color:var(--ac)}
 <div class="ov hide" id="end"><div class="panel">
   <div class="eyebrow" id="endEy">Gefecht beendet</div><h1 id="endH" style="font-size:clamp(56px,10vw,120px)">Sieg</h1>
   <p class="sub" id="endP"></p>
+  <div id="endBoard" style="max-width:440px;margin:0 auto 22px;text-align:left;--bl-acc:var(--ac)"></div>
   <div class="menu"><button class="btn" id="bAgain">Revanche <small>Enter</small></button><button class="btn" id="bMenu">Hauptmenü</button></div>
 </div></div>
 
@@ -140,7 +142,7 @@ function recLine(){const w=store.get('wins',[0,0,0,0]);const m=M.n>=6?` · KI ke
 $('bRep').onclick=()=>{G.replays=!G.replays;store.set('replays',G.replays);$('repState').textContent=G.replays?'an':'aus'};$('repState').textContent=G.replays?'an':'aus';
 function call(t,ms=900){const e=$('call');e.textContent=t;e.classList.add('on');clearTimeout(call._h);call._h=setTimeout(()=>e.classList.remove('on'),ms)}
 function resetPositions(){F.forEach(f=>{f.x=f.side==='L'?-ENGARDE:ENGARDE;f.st='idle';f.t=0;f.lunge=0;f.arm=0;f.fle=0;f.parry=0;f.vx=0;f.hitAt=-1;f.touched=false;f.stun=0;f.line='high'});G.lights={L:0,R:0};G.firstHit=null}
-function startBout(ai){A.init();G.ai=ai;G.mode='bout';G.score=[0,0];store.set('diff',G.diff);['menu','end','pause'].forEach(i=>$(i).classList.add('hide'));$('tut').style.display='none';resetPositions();engarde();$('touch').classList.toggle('on',ai)}
+function startBout(ai){A.init();G.ai=ai;G.mode='bout';G.score=[0,0];G.boutT0=performance.now();store.set('diff',G.diff);['menu','end','pause'].forEach(i=>$(i).classList.add('hide'));$('tut').style.display='none';resetPositions();engarde();$('touch').classList.toggle('on',ai)}
 function startTutorial(){A.init();G.ai=true;G.mode='tut';G.score=[0,0];G.tutStep=0;['menu','end','pause'].forEach(i=>$(i).classList.add('hide'));resetPositions();G.phase='fence';$('tut').style.display='block';$('touch').classList.add('on');tutShow()}
 function engarde(){G.phase='engarde';G.phaseT=0;resetPositions();call('En garde !',700);setTimeout(()=>{if(G.phase==='engarde')call('Prêts ?',650)},750);setTimeout(()=>{if(G.phase==='engarde'){call('Allez !',600);G.phase='fence';G.phaseT=0}},1450)}
 $('bAI').onclick=()=>startBout(true);$('b2P').onclick=()=>startBout(false);$('bTut').onclick=startTutorial;
@@ -336,6 +338,10 @@ function nextOrEnd(){
   $('endH').innerHTML=G.ai?(win?'Sie<i>g</i>':'Nieder<i>lage</i>'):(win?'Links <i>gewinnt</i>':'Rechts <i>gewinnt</i>');
   $('endP').textContent=`${a} : ${b}`+(G.ai&&win?' · '+['Solide. Jetzt Mittel.','Sauber gefochten.','Das war Weltcup-Niveau.','Sie kannte dich — und du hast trotzdem gewonnen.'][G.diff]:G.ai?' · '+(G.diff===3?tipFor():'Distanz halten, Linie wechseln, in die Erholung stoßen.'):'');
   if(G.ai&&win){const best=store.get('wins',[0,0,0,0]);best[G.diff]=(best[G.diff]||0)+1;store.set('wins',best)}
+  // Weltbestenliste: nur Siege gegen die KI zählen – Stufe, Abstand und Tempo
+  const secs=(performance.now()-(G.boutT0||performance.now()))/1000;
+  const pts=G.ai&&win?Math.round((G.diff+1)*(500+(a-b)*150)+Math.max(0,300-secs)):0;
+  if(window.Bestenliste) Bestenliste.mount($('endBoard'),{game:'planche',score:pts,meta:{mode:DIFF[G.diff]+' · '+a+':'+b},title:pts?'Weltbestenliste · '+pts+' Gefechtspunkte':'Weltbestenliste (Siege gegen die KI)'});
   $('end').classList.remove('hide');$('touch').classList.remove('on');return}
  engarde();
 }
