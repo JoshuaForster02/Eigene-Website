@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0b1d24">
+<title>OP-Sieb · Instrumentenkunde</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Karla:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap">
+<script src="../shared/bestenliste.js" defer></script>
+<style>
+:root{--bg:#0b1d24;--bg2:#10272f;--card:#13303a;--fg:#ecf6f7;--fg2:#b9d0d4;--fg3:#7d9ca2;--ac:#4fd6c3;--ac2:#ffcf6b;--ok:#6be38f;--bad:#ff7a6b;--line:rgba(236,246,247,.13);--r:14px;--mono:"DM Mono",ui-monospace,monospace}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg);color:var(--fg);font-family:Karla,system-ui,sans-serif;min-height:100%}
+body{background:radial-gradient(ellipse at 50% -10%,#18414c 0%,var(--bg) 60%) fixed}
+button{font:inherit;color:inherit;cursor:pointer}
+.wrap{max-width:760px;margin:0 auto;padding:18px 16px 60px}
+.top{display:flex;justify-content:space-between;align-items:center;font:12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--fg3)}
+.top a{color:inherit;text-decoration:none}.top a:hover{color:var(--ac)}
+h1{font-size:clamp(34px,8vw,52px);line-height:1;margin:28px 0 8px;letter-spacing:-.01em}
+h1 i{font-style:normal;color:var(--ac)}
+.lead{color:var(--fg2);line-height:1.6;max-width:56ch;margin-bottom:22px}
+.modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.mode{text-align:left;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;transition:border-color .2s,transform .2s}
+.mode:hover{border-color:var(--ac);transform:translateY(-2px)}
+.mode b{display:block;font-size:18px;margin-bottom:4px}
+.mode small{color:var(--fg3);line-height:1.45;display:block}
+.mode .tag{font:11px var(--mono);color:var(--ac);letter-spacing:.12em;text-transform:uppercase;display:block;margin-bottom:8px}
+.prog{margin:18px 0 0;font:12px var(--mono);color:var(--fg3)}
+.bar{height:6px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden;margin-top:6px}.bar i{display:block;height:100%;background:var(--ac)}
+.hidden{display:none!important}
+.hud{display:flex;justify-content:space-between;align-items:center;margin:20px 0 12px;font:13px var(--mono);color:var(--fg3)}
+.hud b{color:var(--fg);font-size:16px}
+.q{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.q .kick{font:11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ac)}
+.q h2{font-size:21px;line-height:1.3;margin:6px 0 10px}
+.pic{background:#e9f2f1;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:10px;margin:10px 0}
+.pic svg{width:100%;max-width:420px;height:150px}
+.hintline{color:var(--fg2);font-size:15px;line-height:1.5}
+.opts{display:grid;gap:9px;margin-top:14px}
+.opt{text-align:left;background:var(--bg2);border:1px solid var(--line);border-radius:11px;padding:13px 14px;font-size:16px;line-height:1.35}
+.opt:hover:not([disabled]){border-color:var(--ac)}
+.opt.ok{border-color:var(--ok);background:rgba(107,227,143,.13)}
+.opt.bad{border-color:var(--bad);background:rgba(255,122,107,.13)}
+.opt.sel{border-color:var(--ac2);background:rgba(255,207,107,.12)}
+.explain{margin-top:14px;padding:12px 14px;border-left:3px solid var(--ac);background:rgba(79,214,195,.07);border-radius:0 10px 10px 0;color:var(--fg2);line-height:1.55;font-size:15px}
+.explain b{color:var(--fg)}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.btn{background:var(--ac);color:#062026;border:0;border-radius:11px;padding:12px 18px;font-weight:700}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:9px;margin-top:14px}
+.tile{background:var(--bg2);border:1px solid var(--line);border-radius:11px;padding:8px;text-align:center;font-size:13.5px;line-height:1.3}
+.tile svg{width:100%;height:56px;background:#e9f2f1;border-radius:7px;margin-bottom:6px}
+.tile.sel{border-color:var(--ac2);background:rgba(255,207,107,.12)}
+.tile.ok{border-color:var(--ok)}.tile.bad{border-color:var(--bad)}.tile.miss{border-color:var(--ac2);border-style:dashed}
+.match{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}
+.match .col{display:grid;gap:9px;align-content:start}
+.mi{background:var(--bg2);border:1px solid var(--line);border-radius:11px;padding:11px 12px;font-size:14.5px;line-height:1.35;text-align:left;min-height:52px}
+.mi.sel{border-color:var(--ac2)}.mi.done{opacity:.35;border-color:var(--ok)}.mi.wrong{border-color:var(--bad)}
+.lex{display:grid;gap:10px;margin-top:14px}
+.lexi{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;display:grid;grid-template-columns:130px 1fr;gap:12px;align-items:center}
+.lexi svg{width:130px;height:60px;background:#e9f2f1;border-radius:8px}
+.lexi b{font-size:16px}.lexi p{color:var(--fg2);font-size:14px;line-height:1.45;margin-top:3px}
+.lexi .ops{font:11.5px var(--mono);color:var(--ac);margin-top:5px}
+.search{width:100%;background:var(--bg2);border:1px solid var(--line);border-radius:11px;padding:12px 14px;color:var(--fg);font:inherit;font-size:16px;margin-top:10px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.chip{background:var(--bg2);border:1px solid var(--line);border-radius:999px;padding:6px 11px;font-size:13px}
+.chip.on{border-color:var(--ac);color:var(--ac)}
+.end{text-align:center}
+.end .big{font:500 54px var(--mono);color:var(--ac);margin:10px 0}
+.note{margin-top:26px;color:var(--fg3);font-size:13px;line-height:1.55}
+.streak{color:var(--ac2)}
+@media (max-width:520px){.lexi{grid-template-columns:1fr}.lexi svg{width:100%}.match{grid-template-columns:1fr 1fr}.mi{font-size:13.5px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a href="/spiele/">← Alle Spiele</a><span>OP-Sieb</span></div>
+
+  <section id="home">
+    <h1>OP-<i>Sieb</i></h1>
+    <p class="lead">Instrumentenkunde zum Spielen: Wie heißt das Instrument, woran erkennt man es, und in welchen OPs liegt es auf dem Tisch? Für OTA, Pflege, PJ und alle, die am Tisch stehen.</p>
+    <div class="modes">
+      <button class="mode" data-mode="name"><span class="tag">Quiz</span><b>Wie heißt das?</b><small>Bild und Merkmal – welches Instrument ist es?</small></button>
+      <button class="mode" data-mode="use"><span class="tag">Quiz</span><b>Wofür brauche ich das?</b><small>Instrument sehen, Einsatz und OP zuordnen.</small></button>
+      <button class="mode" data-mode="tray"><span class="tag">Sieb packen</span><b>Was kommt aufs Sieb?</b><small>Eine OP, zwölf Instrumente: Wähle alle, die typischerweise gebraucht werden.</small></button>
+      <button class="mode" data-mode="match"><span class="tag">Paare</span><b>Zuordnen</b><small>Namen und Beschreibungen gegeneinander – auf Zeit.</small></button>
+      <button class="mode" data-mode="lex"><span class="tag">Nachschlagen</span><b>Lexikon</b><small>Alle Instrumente mit Merkmal, Einsatz und OPs.</small></button>
+    </div>
+    <div class="prog" id="progTxt"></div>
+    <p class="note">Lernhilfe, kein Ersatz für die Siebliste deines Hauses: Welche Instrumente auf einem Sieb liegen, legt jede Klinik selbst fest. Die Zuordnungen hier zeigen typische Beispiele.</p>
+  </section>
+
+  <section id="game" class="hidden">
+    <div class="hud"><span>Frage <b id="hQ">1</b>/<span id="hN">10</span></span><span class="streak" id="hStreak"></span><span>Punkte <b id="hScore">0</b></span></div>
+    <div id="stageEl"></div>
+  </section>
+
+  <section id="endEl" class="hidden end"></section>
+
+  <section id="lexEl" class="hidden">
+    <div class="hud"><span>Lexikon</span><button class="btn ghost" id="lexBack">Zurück</button></div>
+    <input class="search" id="lexQ" placeholder="Suchen: Schere, Klemme, Appendektomie …" aria-label="Lexikon durchsuchen">
+    <div class="chips" id="lexChips"></div>
+    <div class="lex" id="lexList"></div>
+  </section>
+</div>
+
+<script>
+(() => {
+'use strict';
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = (Math.random() * (i + 1)) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const pick = (a, n) => shuffle(a).slice(0, n);
+
+// ---------------------------------------------------------------
+// Zeichnungen: schematische Silhouetten je Bauart (kein Foto-Ersatz)
+// ---------------------------------------------------------------
+const S = '#23434b', F = '#b9c9cc';
+const rings = (x = 22) => `<circle cx="${x}" cy="52" r="11" fill="none" stroke="${S}" stroke-width="4"/><circle cx="${x}" cy="98" r="11" fill="none" stroke="${S}" stroke-width="4"/>`;
+function ringInstr(jaw, opt = {}) {
+  // Instrument mit Ringgriffen: Schenkel zum Schloss, danach Maul
+  const lock = opt.ratchet ? `<path d="M36 64 L52 70 M36 86 L52 80" stroke="${S}" stroke-width="3"/><path d="M44 66 l3 3 l3-3 l3 3 M44 84 l3-3 l3 3 l3-3" stroke="${S}" stroke-width="1.6" fill="none"/>` : '';
+  return `${rings()}<path d="M31 58 L120 73 M31 92 L120 77" stroke="${S}" stroke-width="5" stroke-linecap="round"/>${lock}<circle cx="122" cy="75" r="4.5" fill="${S}"/>${jaw}`;
+}
+const jaws = {
+  scissorStraight: `<path d="M124 72 L330 66 L330 70 L124 78 Z" fill="${F}" stroke="${S}" stroke-width="2"/><path d="M124 78 L330 84 L330 80 L124 72 Z" fill="${F}" stroke="${S}" stroke-width="2"/>`,
+  scissorCurved: `<path d="M124 72 Q250 62 300 44 L304 48 Q252 72 124 78 Z" fill="${F}" stroke="${S}" stroke-width="2"/><path d="M124 78 Q250 74 300 48 L302 54 Q252 84 124 72 Z" fill="${F}" stroke="${S}" stroke-width="2"/>`,
+  scissorShort: `<path d="M124 70 L230 64 L236 72 L124 78 Z" fill="${F}" stroke="${S}" stroke-width="2"/><path d="M124 80 L236 78 L230 86 L124 72 Z" fill="${F}" stroke="${S}" stroke-width="2"/>`,
+  clampStraight: `<path d="M124 71 L300 71 L300 79 L124 79 Z" fill="${F}" stroke="${S}" stroke-width="2"/><path d="M190 75 H300" stroke="${S}" stroke-width="1" stroke-dasharray="3 3"/>`,
+  clampCurved: `<path d="M124 71 Q240 70 290 52 L296 58 Q244 80 124 79 Z" fill="${F}" stroke="${S}" stroke-width="2"/>`,
+  clampTeeth: `<path d="M124 71 L300 71 L300 79 L124 79 Z" fill="${F}" stroke="${S}" stroke-width="2"/><path d="M300 71 l8 4 l-8 4" fill="${S}"/>`,
+  clampFine: `<path d="M124 72 L262 73 L262 77 L124 78 Z" fill="${F}" stroke="${S}" stroke-width="2"/>`,
+  rightAngle: `<path d="M124 71 L260 71 Q280 71 282 50 L282 30 L290 30 L290 52 Q288 80 262 79 L124 79 Z" fill="${F}" stroke="${S}" stroke-width="2"/>`,
+  allis: `<path d="M124 71 L270 68 L270 82 L124 79 Z" fill="${F}" stroke="${S}" stroke-width="2"/><path d="M270 64 L286 64 L286 86 L270 86" fill="none" stroke="${S}" stroke-width="3"/><path d="M286 66 v18" stroke="${S}" stroke-width="2" stroke-dasharray="2 2"/>`,
+  babcock: `<path d="M124 71 L262 69 L262 81 L124 79 Z" fill="${F}" stroke="${S}" stroke-width="2"/><path d="M262 60 Q290 60 292 75 Q290 90 262 90 Z" fill="none" stroke="${S}" stroke-width="3"/>`,
+  towel: `<path d="M124 72 Q200 60 230 40 Q246 30 250 48" fill="none" stroke="${S}" stroke-width="5"/><path d="M124 78 Q200 90 230 110 Q246 120 250 102" fill="none" stroke="${S}" stroke-width="5"/>`,
+  sponge: `<path d="M124 72 L260 70 L260 80 L124 78 Z" fill="${F}" stroke="${S}" stroke-width="2"/><ellipse cx="282" cy="75" rx="24" ry="12" fill="none" stroke="${S}" stroke-width="4"/>`,
+  needleHolder: `<path d="M124 70 L250 71 L250 79 L124 80 Z" fill="${S}"/><path d="M250 72 L270 74 L270 76 L250 78 Z" fill="${S}"/><path d="M272 60 Q290 72 272 90" fill="none" stroke="#c77" stroke-width="2"/>`,
+  bowelClamp: `<path d="M124 71 Q260 64 330 66 L330 76 Q260 82 124 79 Z" fill="${F}" stroke="${S}" stroke-width="2"/><path d="M160 74 H320" stroke="${S}" stroke-width="1" stroke-dasharray="6 4"/>`,
+  satinsky: `<path d="M124 71 L220 70 Q260 69 272 40 L282 44 Q270 80 222 80 L124 79 Z" fill="${F}" stroke="${S}" stroke-width="2"/>`,
+  rongeur: `<path d="M124 70 L230 66 Q256 64 262 75 Q256 86 230 84 L124 80 Z" fill="${F}" stroke="${S}" stroke-width="2"/><path d="M244 70 Q256 75 244 80" fill="none" stroke="${S}" stroke-width="2"/>`,
+  boneClamp: `<path d="M124 70 Q220 40 290 56 L286 64 Q220 52 124 76 Z M124 80 Q220 110 290 94 L286 86 Q220 98 124 74 Z" fill="${F}" stroke="${S}" stroke-width="2"/>`,
+};
+function forceps(tip) {
+  // Pinzette: zwei Branchen, am Ende verbunden
+  const t = tip === 'teeth' ? `<path d="M318 64 l8 3 l-8 3 M318 80 l8 3 l-8 3" stroke="${S}" stroke-width="2" fill="none"/>`
+    : tip === 'debakey' ? `<path d="M200 68 H320 M200 82 H320" stroke="${S}" stroke-width="1" stroke-dasharray="2 2"/>`
+    : tip === 'bipolar' ? `<circle cx="324" cy="67" r="3" fill="#e0a030"/><circle cx="324" cy="83" r="3" fill="#e0a030"/><path d="M30 75 H6" stroke="#557" stroke-width="4"/>` : `<path d="M300 66 H322 M300 84 H322" stroke="${S}" stroke-width="1" stroke-dasharray="1.5 2"/>`;
+  return `<path d="M30 72 L150 60 L322 66 L322 70 L150 66 L30 76 Z" fill="${F}" stroke="${S}" stroke-width="2"/><path d="M30 78 L150 90 L322 84 L322 80 L150 84 L30 74 Z" fill="${F}" stroke="${S}" stroke-width="2"/><path d="M70 64 v22 M84 63 v24 M98 62 v26" stroke="${S}" stroke-width="1"/>${t}`;
+}
+function retractor(kind) {
+  if (kind === 'langenbeck') return `<rect x="20" y="68" width="220" height="14" rx="4" fill="${F}" stroke="${S}" stroke-width="2"/><path d="M240 70 L300 70 L300 110 L286 110 L286 82 L240 82 Z" fill="${F}" stroke="${S}" stroke-width="2"/>`;
+  if (kind === 'roux') return `<path d="M30 70 L150 70 L150 110 L136 110 L136 82 L44 82 L44 110 L30 110 Z" fill="${F}" stroke="${S}" stroke-width="2"/><path d="M150 70 H300 V100 H288 V82 H150" fill="${F}" stroke="${S}" stroke-width="2"/>`;
+  if (kind === 'volkmann') return `<rect x="20" y="68" width="220" height="12" rx="4" fill="${F}" stroke="${S}" stroke-width="2"/><circle cx="30" cy="74" r="0"/><path d="M240 68 L262 68 M240 80 L262 80" stroke="${S}" stroke-width="3"/>${[0, 1, 2, 3].map(k => `<path d="M${262} ${66 + k * 5} q16 0 14 18" fill="none" stroke="${S}" stroke-width="2.4"/>`).join('')}`;
+  if (kind === 'weitlaner') return `${rings()}<path d="M31 58 L150 70 M31 92 L150 80" stroke="${S}" stroke-width="5" stroke-linecap="round"/><circle cx="152" cy="75" r="4" fill="${S}"/><path d="M152 72 Q240 40 300 44 M152 78 Q240 110 300 106" fill="none" stroke="${S}" stroke-width="5"/>${[0, 1, 2].map(k => `<path d="M${300} ${40 + k * 5} l10 4 M300 ${102 + k * 5} l10 -4" stroke="${S}" stroke-width="2"/>`).join('')}<path d="M40 60 A60 60 0 0 1 40 90" fill="none" stroke="${S}" stroke-width="2"/>`;
+  if (kind === 'frame') return `<rect x="60" y="30" width="230" height="90" rx="10" fill="none" stroke="${S}" stroke-width="6"/><path d="M175 30 V14 M175 120 V136" stroke="${S}" stroke-width="5"/><path d="M60 50 H40 V100 H60 M290 50 H310 V100 H290" fill="none" stroke="${S}" stroke-width="5"/><path d="M160 34 H190 V60 H160 Z" fill="${F}" stroke="${S}" stroke-width="2"/>`;
+  if (kind === 'finochietto') return `<rect x="30" y="66" width="290" height="14" fill="${F}" stroke="${S}" stroke-width="2"/>${Array.from({ length: 14 }, (_, k) => `<path d="M${50 + k * 18} 66 v-6" stroke="${S}" stroke-width="2"/>`).join('')}<path d="M60 80 V120 H90 V80 M240 80 V120 H270 V80" fill="${F}" stroke="${S}" stroke-width="2"/><path d="M180 80 v30 h26" fill="none" stroke="${S}" stroke-width="5"/>`;
+  if (kind === 'hohmann') return `<path d="M20 70 L240 70 L240 84 L20 84 Z" fill="${F}" stroke="${S}" stroke-width="2"/><path d="M240 64 Q280 60 300 78 Q304 86 296 90 L240 90 Z" fill="${F}" stroke="${S}" stroke-width="2"/><path d="M300 78 L314 72" stroke="${S}" stroke-width="3"/>`;
+  if (kind === 'fritsch') return `<rect x="20" y="68" width="190" height="14" rx="4" fill="${F}" stroke="${S}" stroke-width="2"/><path d="M210 66 Q300 60 300 110 Q300 130 260 130 L250 130 Q280 126 282 110 Q280 78 210 84 Z" fill="${F}" stroke="${S}" stroke-width="2"/>`;
+  return '';
+}
+const other = {
+  scalpel: `<rect x="20" y="68" width="200" height="14" rx="5" fill="${F}" stroke="${S}" stroke-width="2"/><path d="M40 70 H200 M40 80 H200" stroke="${S}" stroke-width="1" stroke-dasharray="2 3"/><path d="M220 70 L300 64 Q330 70 322 84 L220 82 Z" fill="#e8eef0" stroke="${S}" stroke-width="2"/>`,
+  suctionY: `<path d="M20 75 H70" stroke="#8aa" stroke-width="10"/><path d="M70 64 H200 Q260 64 300 90 L306 84 Q262 56 200 58 H70" fill="${F}" stroke="${S}" stroke-width="2"/><rect x="70" y="58" width="130" height="24" rx="8" fill="${F}" stroke="${S}" stroke-width="2"/><circle cx="310" cy="92" r="4" fill="${S}"/>`,
+  suctionPoole: `<path d="M20 75 H70" stroke="#8aa" stroke-width="10"/><rect x="70" y="66" width="250" height="18" rx="9" fill="${F}" stroke="${S}" stroke-width="2"/>${Array.from({ length: 8 }, (_, k) => `<circle cx="${210 + k * 13}" cy="75" r="2.8" fill="${S}"/>`).join('')}`,
+  cautery: `<rect x="30" y="64" width="200" height="22" rx="10" fill="#dfe6e8" stroke="${S}" stroke-width="2"/><rect x="80" y="60" width="26" height="8" rx="3" fill="#e0a030"/><rect x="116" y="60" width="26" height="8" rx="3" fill="#4b8bd6"/><path d="M230 72 L300 74 L300 76 L230 78 Z" fill="${S}"/><path d="M30 75 H6" stroke="#557" stroke-width="4"/>`,
+  trocar: `<rect x="40" y="52" width="70" height="46" rx="8" fill="#dfe6e8" stroke="${S}" stroke-width="2"/><rect x="110" y="66" width="190" height="18" fill="${F}" stroke="${S}" stroke-width="2"/><path d="M300 66 L324 75 L300 84 Z" fill="${S}"/><path d="M60 52 V36 H90 V52" fill="none" stroke="${S}" stroke-width="3"/>`,
+  veress: `<rect x="30" y="64" width="80" height="22" rx="8" fill="#dfe6e8" stroke="${S}" stroke-width="2"/><path d="M110 73 H320 M110 77 H320" stroke="${S}" stroke-width="2"/><path d="M320 72 L330 75 L320 78" fill="${S}"/>`,
+  chisel: `<rect x="20" y="66" width="120" height="18" rx="6" fill="#dfe6e8" stroke="${S}" stroke-width="2"/><path d="M140 69 H290 L316 75 L290 81 H140 Z" fill="${F}" stroke="${S}" stroke-width="2"/>`,
+  mallet: `<rect x="40" y="70" width="220" height="12" rx="5" fill="#dfe6e8" stroke="${S}" stroke-width="2"/><rect x="250" y="40" width="46" height="72" rx="8" fill="${F}" stroke="${S}" stroke-width="2"/>`,
+  curette: `<rect x="20" y="68" width="180" height="14" rx="5" fill="#dfe6e8" stroke="${S}" stroke-width="2"/><path d="M200 73 H290" stroke="${S}" stroke-width="4"/><path d="M290 64 Q316 64 316 75 Q316 86 290 86 Q300 75 290 64 Z" fill="${F}" stroke="${S}" stroke-width="2"/>`,
+  raspatory: `<rect x="20" y="68" width="170" height="14" rx="5" fill="#dfe6e8" stroke="${S}" stroke-width="2"/><path d="M190 73 H270" stroke="${S}" stroke-width="4"/><path d="M270 62 H300 Q312 75 300 88 H270 Z" fill="${F}" stroke="${S}" stroke-width="2"/>`,
+  saw: `<rect x="30" y="52" width="170" height="48" rx="14" fill="#dfe6e8" stroke="${S}" stroke-width="2"/><rect x="200" y="66" width="90" height="18" fill="${F}" stroke="${S}" stroke-width="2"/><path d="M290 64 ${Array.from({ length: 6 }, (_, k) => `l6 ${k % 2 ? -4 : 4}`).join(' ')} V86 H290 Z" fill="${F}" stroke="${S}" stroke-width="2"/><path d="M110 100 V116 H90" fill="none" stroke="${S}" stroke-width="4"/>`,
+  bulldog: `<path d="M60 60 Q40 75 60 90" fill="none" stroke="${S}" stroke-width="4"/><path d="M60 64 L220 70 L220 80 L60 86" fill="${F}" stroke="${S}" stroke-width="2"/><circle cx="60" cy="75" r="8" fill="none" stroke="${S}" stroke-width="3"/>`,
+};
+function draw(k) {
+  const d = INSTR.find(x => x.id === k); return `<svg viewBox="0 0 340 150" role="img" aria-label="Schematische Zeichnung: ${esc(d.name)}">${d.svg()}</svg>`;
+}
+
+// ---------------------------------------------------------------
+// Instrumente (Name, Gruppe, Erkennungsmerkmal, Einsatz, typische OPs)
+// ---------------------------------------------------------------
+const OPS = {
+  lap: 'Laparotomie / Darmresektion', append: 'Appendektomie (offen)', lapchole: 'Laparoskopische Cholezystektomie', hernie: 'Leistenhernie (Lichtenstein)',
+  sectio: 'Sectio caesarea', htep: 'Hüft-TEP', osteo: 'Osteosynthese (Platte)', thorax: 'Thorakotomie', gefaess: 'Carotis-TEA / Gefäß-OP', wunde: 'Wundversorgung / Hautnaht',
+};
+const G = { schneiden: 'Schneiden', fassen: 'Fassen & Klemmen', halten: 'Halten & Spreizen', naehen: 'Nähen', saugen: 'Saugen & Koagulieren', knochen: 'Knochen', lapa: 'Laparoskopie' };
+const I = (id, name, grp, svg, feat, use, ops) => ({ id, name, grp, svg, feat, use, ops });
+const INSTR = [
+  I('skalpell', 'Skalpell (Klingenhalter Nr. 3/4)', 'schneiden', () => other.scalpel, 'Griff mit auswechselbarer Einmalklinge; Klinge 10 bauchig, 11 spitz, 15 klein.', 'Hautschnitt und scharfes Durchtrennen.', ['lap', 'append', 'lapchole', 'hernie', 'sectio', 'htep', 'osteo', 'thorax', 'gefaess', 'wunde']),
+  I('metzenbaum', 'Präparierschere nach Metzenbaum', 'schneiden', () => ringInstr(jaws.scissorCurved), 'Lange, schlanke Schere mit kurzen, feinen Branchen, meist gebogen.', 'Feines, stumpfes und scharfes Präparieren von zartem Gewebe.', ['lap', 'append', 'hernie', 'sectio', 'thorax', 'gefaess']),
+  I('mayoschere', 'Präparierschere nach Mayo', 'schneiden', () => ringInstr(jaws.scissorShort), 'Kräftige Schere mit kurzen, breiten Branchen, gerade oder gebogen.', 'Derbes Gewebe wie Faszie, Muskulatur und Narben schneiden.', ['lap', 'append', 'hernie', 'sectio', 'htep', 'osteo']),
+  I('fadenschere', 'Fadenschere (gerade)', 'schneiden', () => ringInstr(jaws.scissorStraight), 'Gerade Schere, oft mit stumpfen Spitzen; nicht für Gewebe gedacht.', 'Fäden, Ligaturen und Verbandmaterial schneiden.', ['lap', 'append', 'lapchole', 'hernie', 'sectio', 'htep', 'osteo', 'thorax', 'gefaess', 'wunde']),
+  I('chirpinz', 'Chirurgische Pinzette', 'fassen', () => forceps('teeth'), 'Pinzette mit Zähnchen an der Spitze (z. B. 1:2 Zähne).', 'Fester Halt an derbem Gewebe: Haut, Faszie. Nicht an Darm oder Gefäßen.', ['lap', 'append', 'hernie', 'sectio', 'htep', 'osteo', 'wunde']),
+  I('anatpinz', 'Anatomische Pinzette', 'fassen', () => forceps('flat'), 'Pinzette ohne Zähne, Spitze nur quer geriffelt.', 'Schonendes Fassen von zartem Gewebe, Darm, Tupfer.', ['lap', 'append', 'hernie', 'sectio', 'thorax', 'wunde']),
+  I('debakeypinz', 'Gefäßpinzette nach DeBakey', 'fassen', () => forceps('debakey'), 'Atraumatische Längsriffelung: feine Rille neben feinen Zähnchen.', 'Gefäße und empfindliches Gewebe fassen, ohne es zu verletzen.', ['gefaess', 'thorax', 'lap']),
+  I('pean', 'Arterienklemme nach Péan', 'fassen', () => ringInstr(jaws.clampStraight, { ratchet: true }), 'Klemme mit Sperre, Maul durchgehend quer geriffelt, ohne Zähne.', 'Blutende Gefäße fassen, Gewebe halten, Fäden anklemmen.', ['lap', 'append', 'hernie', 'sectio', 'htep', 'osteo', 'thorax', 'wunde']),
+  I('kocher', 'Klemme nach Kocher', 'fassen', () => ringInstr(jaws.clampTeeth, { ratchet: true }), 'Wie Péan, aber mit Zähnen an der Spitze (1:2).', 'Derbes Gewebe festhalten, z. B. Faszie, Mesenterium-Stümpfe.', ['lap', 'append', 'sectio', 'hernie']),
+  I('mosquito', 'Mosquito-Klemme', 'fassen', () => ringInstr(jaws.clampFine, { ratchet: true }), 'Kleine, zierliche Arterienklemme mit feinem Maul.', 'Feine Blutstillung an kleinen Gefäßen, Fäden halten.', ['wunde', 'gefaess', 'hernie', 'thorax']),
+  I('overholt', 'Overholt-Klemme', 'fassen', () => ringInstr(jaws.rightAngle, { ratchet: true }), 'Präparier- und Ligaturklemme mit fast rechtwinklig abgebogenem Maul.', 'Gefäße und Strukturen umfahren, Ligaturen durchziehen, z. B. Ductus cysticus offen.', ['lap', 'thorax', 'gefaess', 'append']),
+  I('allis', 'Gewebefasszange nach Allis', 'fassen', () => ringInstr(jaws.allis, { ratchet: true }), 'Maul mit feinen Zähnchen, das sich nur vorne berührt; dazwischen Lücke.', 'Gewebe fassen und hochhalten, z. B. Faszienränder, Darmwand.', ['lap', 'append', 'sectio', 'hernie']),
+  I('babcock', 'Gewebefasszange nach Babcock', 'fassen', () => ringInstr(jaws.babcock, { ratchet: true }), 'Rundes, gefenstertes Maul ohne Zähne.', 'Atraumatisches Fassen röhrenförmiger Strukturen: Appendix, Darm, Tube.', ['append', 'lap', 'sectio']),
+  I('backhaus', 'Tuchklemme nach Backhaus', 'fassen', () => ringInstr(jaws.towel, { ratchet: true }), 'Zwei spitze, gebogene Haken, die sich überkreuzen.', 'Abdecktücher und Schläuche fixieren.', ['lap', 'append', 'hernie', 'sectio', 'htep', 'osteo', 'thorax', 'gefaess']),
+  I('kornzange', 'Kornzange / Tupferzange', 'fassen', () => ringInstr(jaws.sponge, { ratchet: true }), 'Lange Zange mit ovalen, gefensterten Branchen.', 'Tupfer zum Desinfizieren halten und reichen.', ['lap', 'append', 'hernie', 'sectio', 'htep', 'osteo', 'thorax', 'gefaess', 'lapchole']),
+  I('doyen', 'Darmklemme (weich)', 'fassen', () => ringInstr(jaws.bowelClamp, { ratchet: true }), 'Lange, federnde, längs geriffelte Branchen.', 'Darm vor der Resektion schonend abklemmen.', ['lap']),
+  I('satinsky', 'Gefäßklemme nach Satinsky', 'fassen', () => ringInstr(jaws.satinsky, { ratchet: true }), 'Atraumatische Klemme mit abgewinkeltem, gebogenem Maul.', 'Große Gefäße teilweise ausklemmen, ohne den Fluss ganz zu stoppen.', ['gefaess', 'thorax']),
+  I('bulldog', 'Bulldog-Klemme', 'fassen', () => other.bulldog, 'Kleine federnde Klemme ohne Griffe, atraumatisch.', 'Kleinere Gefäße vorübergehend abklemmen.', ['gefaess']),
+  I('mayohegar', 'Nadelhalter nach Mayo-Hegar', 'naehen', () => ringInstr(jaws.needleHolder, { ratchet: true }), 'Ringgriffe mit Sperre, kurzes, kräftiges Maul mit Hartmetall-Einlage.', 'Nadel fassen und führen für Nähte und Ligaturen.', ['lap', 'append', 'hernie', 'sectio', 'htep', 'osteo', 'thorax', 'gefaess', 'wunde']),
+  I('langenbeck', 'Wundhaken nach Langenbeck', 'halten', () => retractor('langenbeck'), 'Einzelner, rechtwinkliger, stumpfer Haken mit Griff.', 'Wundränder und Gewebe zur Seite halten.', ['lap', 'append', 'hernie', 'sectio', 'htep', 'osteo', 'wunde']),
+  I('roux', 'Wundhaken nach Roux', 'halten', () => retractor('roux'), 'Doppelendiger Haken: zwei unterschiedlich große Enden.', 'Oberflächliche Schichten bei kleinen Schnitten halten.', ['hernie', 'append', 'wunde']),
+  I('volkmann', 'Scharfer Wundhaken nach Volkmann', 'halten', () => retractor('volkmann'), 'Haken mit mehreren krallenartigen Zinken (scharf oder stumpf).', 'Haut und Subkutis spreizen, oft in der Unfallchirurgie.', ['htep', 'osteo', 'wunde']),
+  I('weitlaner', 'Wundspreizer nach Weitlaner', 'halten', () => retractor('weitlaner'), 'Selbsthaltender Spreizer mit Ringgriffen, Sperre und gezinkten Enden.', 'Wunde offen halten, ohne dass jemand haken muss.', ['htep', 'osteo', 'hernie', 'wunde']),
+  I('rahmen', 'Bauchdeckenrahmen (z. B. nach Balfour)', 'halten', () => retractor('frame'), 'Großer, selbsthaltender Rahmen mit Seitenblättern.', 'Bauchdecke bei der Laparotomie offen halten.', ['lap']),
+  I('fritsch', 'Bauchdeckenhaken nach Fritsch', 'halten', () => retractor('fritsch'), 'Breiter, tief gebogener Haken.', 'Bauchdecke und Organe tief im Bauch zurückhalten.', ['lap', 'sectio']),
+  I('finochietto', 'Rippenspreizer nach Finochietto', 'halten', () => retractor('finochietto'), 'Zahnstange mit Kurbel und zwei Branchen.', 'Rippen bei der Thorakotomie auseinanderdrehen.', ['thorax']),
+  I('hohmann', 'Hohmann-Hebel', 'knochen', () => retractor('hohmann'), 'Schmaler Hebel mit gebogener Spitze.', 'Um den Knochen legen und Weichteile weghalten.', ['htep', 'osteo']),
+  I('yankauer', 'Sauger nach Yankauer', 'saugen', () => other.suctionY, 'Starrer, leicht gebogener Sauger mit Kugelspitze.', 'Gezielt Blut und Sekret absaugen, auch im Mund-Rachen-Raum.', ['sectio', 'thorax', 'gefaess', 'htep', 'osteo']),
+  I('poole', 'Bauchsauger (Poole)', 'saugen', () => other.suctionPoole, 'Gerades Saugrohr mit vielen seitlichen Löchern.', 'Große Flüssigkeitsmengen im Bauch absaugen, ohne sich festzusaugen.', ['lap', 'sectio', 'append']),
+  I('mono', 'Elektrokauter (monopolar)', 'saugen', () => other.cautery, 'Handgriff mit Knöpfen für Schneiden (gelb) und Koagulieren (blau), Neutralelektrode am Patienten.', 'Gewebe schneiden und Blutungen koagulieren.', ['lap', 'append', 'lapchole', 'hernie', 'sectio', 'htep', 'osteo', 'thorax']),
+  I('bipolar', 'Bipolare Pinzette', 'saugen', () => forceps('bipolar'), 'Pinzette mit Kabel; Strom fließt nur zwischen den Spitzen.', 'Punktgenaue Blutstillung nahe empfindlicher Strukturen.', ['gefaess', 'thorax', 'wunde']),
+  I('trokar', 'Trokar', 'lapa', () => other.trocar, 'Hülse mit Ventil und Gasanschluss, darin ein Obturator.', 'Zugang für Optik und Instrumente bei der Laparoskopie.', ['lapchole']),
+  I('veress', 'Veress-Nadel', 'lapa', () => other.veress, 'Hohlnadel mit federndem, stumpfem Innenstift.', 'Anlegen des Pneumoperitoneums mit CO₂.', ['lapchole']),
+  I('meissel', 'Osteotom / Meißel', 'knochen', () => other.chisel, 'Flache, geschliffene Klinge mit Schlagfläche am Griff.', 'Knochen durchtrennen oder abtragen, zusammen mit dem Hammer.', ['htep', 'osteo']),
+  I('hammer', 'Chirurgischer Hammer', 'knochen', () => other.mallet, 'Schwerer Kopf, oft aus Metall oder Kunststoff.', 'Meißel und Implantate einschlagen.', ['htep', 'osteo']),
+  I('luer', 'Hohlmeißelzange nach Luer', 'knochen', () => ringInstr(jaws.rongeur).replace(/<circle cx="22"[^>]*\/>/g, '').replace('M31 58', 'M20 58').replace('M31 92', 'M20 92'), 'Zange mit Federgriff und hohlen, scharfen Löffelbranchen.', 'Kleine Knochenstücke abknabbern und glätten.', ['htep', 'osteo', 'thorax']),
+  I('knochenfass', 'Knochenfasszange (Repositionszange)', 'knochen', () => ringInstr(jaws.boneClamp, { ratchet: true }), 'Kräftige Zange mit gebogenen, spitzen Branchen und Sperre.', 'Frakturenden fassen, reponieren und halten.', ['osteo']),
+  I('loeffel', 'Scharfer Löffel', 'knochen', () => other.curette, 'Griff mit kleinem, scharfkantigem Löffel.', 'Gewebe, Granulationen und Knochenreste ausschaben.', ['osteo', 'htep', 'wunde']),
+  I('raspatorium', 'Raspatorium', 'knochen', () => other.raspatory, 'Flache, stumpf-scharfe Platte am Griff.', 'Knochenhaut (Periost) vom Knochen abschieben.', ['osteo', 'htep', 'thorax']),
+  I('saege', 'Oszillierende Säge', 'knochen', () => other.saw, 'Motorhandstück mit schwingendem Sägeblatt.', 'Knochen präzise durchtrennen, z. B. Schenkelhals.', ['htep', 'osteo']),
+];
+const byId = Object.fromEntries(INSTR.map(x => [x.id, x]));
+
+// ---------------------------------------------------------------
+// Fortschritt: falsch beantwortete Instrumente kommen öfter
+// ---------------------------------------------------------------
+const KEY = 'opsieb.v1';
+let save; try { save = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { save = {}; }
+save.box = save.box || {}; save.seen = save.seen || {};
+const persist = () => { try { localStorage.setItem(KEY, JSON.stringify(save)); } catch (e) {} };
+const weight = id => 1 + (3 - Math.min(3, save.box[id] || 0)) * 1.5;
+function weightedPick(n, pool = INSTR) {
+  const out = [], rest = pool.slice();
+  while (out.length < n && rest.length) {
+    const tot = rest.reduce((s, x) => s + weight(x.id), 0); let r = Math.random() * tot;
+    const i = rest.findIndex(x => (r -= weight(x.id)) <= 0); out.push(rest.splice(i < 0 ? 0 : i, 1)[0]);
+  }
+  return out;
+}
+function learn(id, ok) { save.box[id] = ok ? Math.min(3, (save.box[id] || 0) + 1) : 0; save.seen[id] = 1; persist(); }
+function progText() {
+  const known = INSTR.filter(x => (save.box[x.id] || 0) >= 2).length;
+  $('progTxt').innerHTML = `${known} von ${INSTR.length} Instrumenten sicher${save.best ? ' · Bestwert ' + save.best : ''}<div class="bar"><i style="width:${known / INSTR.length * 100}%"></i></div>`;
+}
+progText();
+
+// ---------------------------------------------------------------
+// Runde
+// ---------------------------------------------------------------
+const R = { mode: '', q: 0, n: 10, score: 0, streak: 0, best: 0, right: 0, items: [], t0: 0 };
+function show(sec) { ['home', 'game', 'endEl', 'lexEl'].forEach(s => $(s).classList.toggle('hidden', s !== sec)); scrollTo(0, 0); }
+function start(mode) {
+  if (mode === 'lex') { show('lexEl'); renderLex(); return; }
+  Object.assign(R, { mode, q: 0, score: 0, streak: 0, best: 0, right: 0, t0: performance.now() });
+  R.n = mode === 'tray' ? 5 : mode === 'match' ? 5 : 10;
+  show('game'); next();
+}
+function hud() { $('hQ').textContent = Math.min(R.q, R.n); $('hN').textContent = R.n; $('hScore').textContent = R.score; $('hStreak').textContent = R.streak >= 3 ? R.streak + '× in Folge' : ''; }
+function next() {
+  if (R.q >= R.n) return finish();
+  R.q++; hud();
+  ({ name: qName, use: qUse, tray: qTray, match: qMatch })[R.mode]();
+}
+function award(ok, pts = 100) {
+  if (ok) { R.streak++; R.best = Math.max(R.best, R.streak); R.right++; R.score += pts + Math.min(5, R.streak - 1) * 20; }
+  else R.streak = 0;
+  hud();
+}
+function nextBtn(host) { const b = document.createElement('div'); b.className = 'row'; b.innerHTML = `<button class="btn" id="goNext">${R.q >= R.n ? 'Auswertung' : 'Weiter'}</button>`; host.appendChild(b); $('goNext').onclick = next; $('goNext').focus(); }
+
+// Wie heißt das?
+function qName() {
+  const t = weightedPick(1)[0];
+  const same = INSTR.filter(x => x.id !== t.id && x.grp === t.grp), others = INSTR.filter(x => x.id !== t.id && x.grp !== t.grp);
+  const opts = shuffle([t, ...pick(same, Math.min(2, same.length)), ...pick(others, 3 - Math.min(2, same.length))]);
+  $('stageEl').innerHTML = `<div class="q"><span class="kick">${G[t.grp]}</span><h2>Wie heißt dieses Instrument?</h2><div class="pic">${draw(t.id)}</div><p class="hintline">${esc(t.feat)}</p><div class="opts">${opts.map(o => `<button class="opt" data-id="${o.id}">${esc(o.name)}</button>`).join('')}</div><div id="exp"></div></div>`;
+  answerable(opts, t, () => `<b>${esc(t.name)}</b> – ${esc(t.use)} <br>Typisch bei: ${t.ops.slice(0, 4).map(o => OPS[o]).join(', ')}${t.ops.length > 4 ? ' u. a.' : '.'}`);
+}
+// Wofür brauche ich das?
+function qUse() {
+  const t = weightedPick(1)[0];
+  const variant = Math.random() < 0.5 ? 'use' : 'op';
+  let opts, q;
+  if (variant === 'use') {
+    q = 'Wofür wird es eingesetzt?';
+    opts = shuffle([{ id: t.id, label: t.use }, ...pick(INSTR.filter(x => x.id !== t.id && x.use !== t.use), 3).map(x => ({ id: x.id, label: x.use }))]);
+  } else {
+    q = 'Bei welcher OP liegt es typischerweise auf dem Tisch?';
+    const good = pick(t.ops, 1)[0];
+    const bad = pick(Object.keys(OPS).filter(o => !t.ops.includes(o)), 3);
+    if (bad.length < 3) return qUse(); // universelle Instrumente: andere Frage
+    opts = shuffle([{ id: t.id, label: OPS[good] }, ...bad.map(o => ({ id: 'x' + o, label: OPS[o] }))]);
+  }
+  $('stageEl').innerHTML = `<div class="q"><span class="kick">${esc(t.name)}</span><h2>${q}</h2><div class="pic">${draw(t.id)}</div><div class="opts">${opts.map(o => `<button class="opt" data-id="${o.id}">${esc(o.label)}</button>`).join('')}</div><div id="exp"></div></div>`;
+  answerable(opts, t, () => `<b>${esc(t.name)}</b>: ${esc(t.use)}<br>Erkennst du an: ${esc(t.feat)}<br>Typisch bei: ${t.ops.map(o => OPS[o]).join(', ')}.`);
+}
+function answerable(opts, t, explain) {
+  document.querySelectorAll('.opt').forEach((b, i) => b.onclick = () => {
+    const ok = b.dataset.id === t.id;
+    document.querySelectorAll('.opt').forEach(x => { x.disabled = true; if (x.dataset.id === t.id) x.classList.add('ok'); });
+    if (!ok) b.classList.add('bad');
+    learn(t.id, ok); award(ok);
+    $('exp').innerHTML = `<div class="explain">${ok ? '✓ Richtig. ' : '✗ Nicht ganz. '}${explain()}</div>`;
+    nextBtn($('exp'));
+  });
+}
+// Sieb packen: welche gehören zur OP?
+function qTray() {
+  const opKeys = Object.keys(OPS).filter(o => o !== 'wunde');
+  const op = pick(opKeys, 1)[0];
+  const need = INSTR.filter(x => x.ops.includes(op)), not = INSTR.filter(x => !x.ops.includes(op));
+  const specific = need.filter(x => x.ops.length <= 5);
+  const inTray = shuffle([...pick(specific.length >= 3 ? specific : need, Math.min(4, (specific.length >= 3 ? specific : need).length)), ...pick(need.filter(x => !specific.includes(x)), 2)]).slice(0, 6);
+  const tiles = shuffle([...inTray, ...pick(not.filter(x => x.ops.length <= 4), 12 - inTray.length)]);
+  $('stageEl').innerHTML = `<div class="q"><span class="kick">Sieb packen</span><h2>${esc(OPS[op])}</h2><p class="hintline">Tippe alle Instrumente an, die bei dieser OP typischerweise gebraucht werden. Grundinstrumente wie Skalpell und Nadelhalter zählen mit.</p><div class="grid">${tiles.map(x => `<button class="tile" data-id="${x.id}">${draw(x.id)}${esc(x.name)}</button>`).join('')}</div><div class="row"><button class="btn" id="check">Prüfen</button></div><div id="exp"></div></div>`;
+  document.querySelectorAll('.tile').forEach(b => b.onclick = () => b.classList.toggle('sel'));
+  $('check').onclick = () => {
+    let hit = 0, wrong = 0, miss = 0;
+    document.querySelectorAll('.tile').forEach(b => {
+      const x = byId[b.dataset.id], should = x.ops.includes(op), sel = b.classList.contains('sel'); b.disabled = true;
+      if (should && sel) { b.classList.add('ok'); hit++; learn(x.id, true); }
+      else if (!should && sel) { b.classList.add('bad'); wrong++; learn(x.id, false); }
+      else if (should && !sel) { b.classList.add('miss'); miss++; learn(x.id, false); }
+    });
+    const total = tiles.filter(x => x.ops.includes(op)).length, ok = wrong === 0 && miss === 0;
+    award(ok, 150); if (!ok) R.score += Math.max(0, hit * 25 - wrong * 25);
+    hud();
+    $('check').remove();
+    $('exp').innerHTML = `<div class="explain">${ok ? '✓ Perfekt gepackt!' : `${hit} von ${total} richtig${wrong ? `, ${wrong} gehören nicht dazu` : ''}${miss ? `, ${miss} vergessen (gestrichelt)` : ''}.`}<br>Grün = richtig · Rot = gehört nicht zu dieser OP · Gestrichelt = hätte dazugehört.</div>`;
+    nextBtn($('exp'));
+  };
+}
+// Paare zuordnen
+function qMatch() {
+  const set = weightedPick(4);
+  const left = shuffle(set), right = shuffle(set);
+  let selL = null, done = 0, errors = 0;
+  $('stageEl').innerHTML = `<div class="q"><span class="kick">Paare · Runde ${R.q}</span><h2>Ordne Namen und Einsatz zu</h2><div class="match"><div class="col">${left.map(x => `<button class="mi" data-l="${x.id}">${esc(x.name)}</button>`).join('')}</div><div class="col">${right.map(x => `<button class="mi" data-r="${x.id}">${esc(x.use)}</button>`).join('')}</div></div><div id="exp"></div></div>`;
+  document.querySelectorAll('[data-l]').forEach(b => b.onclick = () => { document.querySelectorAll('[data-l]').forEach(x => x.classList.remove('sel')); b.classList.add('sel'); selL = b; });
+  document.querySelectorAll('[data-r]').forEach(b => b.onclick = () => {
+    if (!selL) return;
+    if (selL.dataset.l === b.dataset.r) {
+      selL.classList.remove('sel'); selL.classList.add('done'); b.classList.add('done'); selL.disabled = b.disabled = true; learn(b.dataset.r, true); selL = null; done++;
+      if (done === 4) { award(errors === 0, 160); if (errors) R.score += 60; hud(); $('exp').innerHTML = `<div class="explain">${errors ? errors + ' Fehlversuch' + (errors > 1 ? 'e' : '') : '✓ Fehlerfrei!'}</div>`; nextBtn($('exp')); }
+    } else { errors++; learn(selL.dataset.l, false); b.classList.add('wrong'); setTimeout(() => b.classList.remove('wrong'), 450); }
+  });
+}
+function finish() {
+  const secs = Math.round((performance.now() - R.t0) / 1000);
+  const bonus = Math.max(0, 300 - secs) * (R.right === R.n ? 2 : 1);
+  const total = R.score + bonus;
+  if (total > (save.best || 0)) { save.best = total; persist(); }
+  show('endEl');
+  $('endEl').innerHTML = `<h1 style="margin-top:20px">Sieb <i>fertig</i></h1><div class="big">${total}</div><p class="lead" style="margin:0 auto 16px">${R.right} von ${R.n} richtig · beste Serie ${R.best} · ${secs} s · Tempobonus ${bonus}</p><div id="endBoard" style="max-width:420px;margin:0 auto;text-align:left;--bl-acc:var(--ac)"></div><div class="row" style="justify-content:center"><button class="btn" id="again">Nochmal</button><button class="btn ghost" id="home2">Andere Übung</button></div>`;
+  $('again').onclick = () => start(R.mode); $('home2').onclick = () => { show('home'); progText(); };
+  if (window.Bestenliste) Bestenliste.mount($('endBoard'), { game: 'instrumente', score: total, meta: { acc: Math.round(R.right / R.n * 100) }, title: 'Weltbestenliste' });
+}
+
+// ---------------------------------------------------------------
+// Lexikon
+// ---------------------------------------------------------------
+let lexGrp = '';
+function renderLex() {
+  $('lexChips').innerHTML = [['', 'Alle'], ...Object.entries(G)].map(([k, v]) => `<button class="chip${k === lexGrp ? ' on' : ''}" data-g="${k}">${v}</button>`).join('');
+  document.querySelectorAll('.chip').forEach(c => c.onclick = () => { lexGrp = c.dataset.g; renderLex(); });
+  const q = $('lexQ').value.trim().toLowerCase();
+  const list = INSTR.filter(x => (!lexGrp || x.grp === lexGrp) && (!q || (x.name + ' ' + x.feat + ' ' + x.use + ' ' + x.ops.map(o => OPS[o]).join(' ')).toLowerCase().includes(q)));
+  $('lexList').innerHTML = list.map(x => `<div class="lexi">${draw(x.id)}<div><b>${esc(x.name)}</b><p><b>Merkmal:</b> ${esc(x.feat)}<br><b>Einsatz:</b> ${esc(x.use)}</p><div class="ops">${x.ops.map(o => OPS[o]).join(' · ')}</div></div></div>`).join('') || '<p class="lead">Nichts gefunden.</p>';
+}
+$('lexQ').addEventListener('input', renderLex);
+$('lexBack').onclick = () => { show('home'); progText(); };
+document.querySelectorAll('.mode').forEach(b => b.onclick = () => start(b.dataset.mode));
+addEventListener('keydown', e => {
+  if ($('game').classList.contains('hidden')) return;
+  const n = parseInt(e.key); const o = document.querySelectorAll('.opt:not([disabled])');
+  if (n >= 1 && n <= o.length) o[n - 1].click();
+  if (e.key === 'Enter' && $('goNext')) $('goNext').click();
+});
+if (new URLSearchParams(location.search).has('test')) window.__op = { INSTR, start, R };
+})();
+</script>
+</body>
+</html>
