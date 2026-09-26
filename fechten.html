@@ -5,16 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Fechten (Degen) – Joshua Forster, Medizinstudent in Homburg.">
 <meta name="author" content="Joshua Forster">
-<meta name="theme-color" content="#0e0c0b">
+<meta name="theme-color" content="#070d1a">
 <meta property="og:title" content="Joshua Forster – Medizinstudent">
 <meta property="og:description" content="Fechten (Degen) – Joshua Forster, Medizinstudent in Homburg.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://joshuaforster.de/fechten.html">
-<meta property="og:image" content="https://joshuaforster.de/og-image.svg">
+<meta property="og:image" content="https://joshuaforster.de/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://joshuaforster.de/fechten.html">
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="shortcut icon" href="favicon.ico">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <title>Fechten · Joshua Forster</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,15 +23,15 @@
 <style>
 :root{
   color-scheme:dark;
-  --bg:#0E0C0B; --bg2:#161311; --bg3:#221D1A; --fg:#EFE8DD; --fg2:#D3CBBF; --fg3:#968E83; --fg4:#6B645C;
-  --crim:#D8715F; --crim-deep:#8C1C13; --line:rgba(239,232,221,.12); --glass:rgba(14,12,11,.55);
+  --bg:#070D1A; --bg2:#0C1526; --bg3:#15213A; --fg:#EAF0F8; --fg2:#C5D0E2; --fg3:#8B98AE; --fg4:#5F6C84;
+  --crim:#8FB1FF; --crim-deep:#1E3A8A; --line:rgba(234,240,248,.12); --glass:rgba(7,13,26,.55);
   --serif:"Cormorant Garamond",Georgia,serif; --sans:"Karla",system-ui,sans-serif; --mono:"DM Mono",ui-monospace,monospace;
   --ease:cubic-bezier(.2,.8,.2,1);
 }
 :root[data-theme="light"]{
   color-scheme:light;
-  --bg:#F7F4EE; --bg2:#EEE9DF; --bg3:#E3DDD1; --fg:#0E0D0B; --fg2:#2A2826; --fg3:#6B6760; --fg4:#A8A49E;
-  --crim:#8C1C13; --crim-deep:#8C1C13; --line:rgba(14,13,11,.14); --glass:rgba(247,244,238,.7);
+  --bg:#F5F7FB; --bg2:#E9EEF6; --bg3:#DCE3EF; --fg:#0A1428; --fg2:#22304A; --fg3:#5C6A82; --fg4:#9AA6BA;
+  --crim:#1C3D7A; --crim-deep:#1C3D7A; --line:rgba(10,20,40,.14); --glass:rgba(245,247,251,.7);
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -41,7 +42,7 @@ a{color:inherit}
 .skip:focus{top:12px}
 
 /* Hintergrund-Film */
-#bg{position:fixed;inset:0;width:100%;height:100%;z-index:-2;display:block;background:radial-gradient(60% 50% at 70% 30%,rgba(140,28,19,.35),transparent 70%),var(--bg)}
+#bg{position:fixed;inset:0;width:100%;height:100%;z-index:-2;display:block;background:radial-gradient(60% 50% at 70% 30%,rgba(30,58,138,.35),transparent 70%),var(--bg)}
 .veil{position:fixed;inset:0;z-index:-1;pointer-events:none;background:var(--bg);opacity:calc(.12 + var(--hp,0)*.62);transition:background .6s}
 .grain{position:fixed;inset:0;pointer-events:none;z-index:90;opacity:.22;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 
@@ -298,7 +299,7 @@ const cv=document.getElementById('bg');const gl=cv.getContext('webgl',{antialias
 let prog,U={},pal={c0:[0,0,0],c1:[0,0,0],c2:[0,0,0]};
 const hex=h=>{h=h.replace('#','');return[0,2,4].map(i=>parseInt(h.slice(i,i+2),16)/255)};
 function setPalette(){const l=root.getAttribute('data-theme')==='light';
- pal=l?{c0:hex('#F7F4EE'),c1:hex('#EAD5C8'),c2:hex('#B8433A')}:{c0:hex('#0E0C0B'),c1:hex('#4A120D'),c2:hex('#E0876B')};
+ pal=l?{c0:hex('#F5F7FB'),c1:hex('#D3DEF2'),c2:hex('#2B4F99')}:{c0:hex('#070D1A'),c1:hex('#132A5C'),c2:hex('#7FA3F0')};
  if(RM)draw(0)}
 function sizeGL(){if(!gl)return;const s=Math.min(devicePixelRatio||1,1.5)*.5;cv.width=Math.round(innerWidth*s);cv.height=Math.round(innerHeight*s);gl.viewport(0,0,cv.width,cv.height);if(RM)draw(0)}
 if(gl){
