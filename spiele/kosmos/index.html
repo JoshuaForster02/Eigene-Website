@@ -1,0 +1,1369 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta name="robots" content="noindex,nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>SOMA – Reise durch den inneren Kosmos</title>
+<meta name="description" content="SOMA: ein 3D-Weltraumspiel im Browser. Erkunde eine Galaxie, deren Sternsysteme Organsysteme sind, und sammle Erkenntnis-Fragmente aus Physiologie und Medizin.">
+<meta name="theme-color" content="#05060d">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+:root{
+  --bg:#05060d; --text:#eef2f8; --muted:#a8b3c4; --acc:#ff6a5a; --acc2:#ffd2a8;
+  --panel:rgba(10,12,24,.58); --line:rgba(255,255,255,.13);
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--sans)}
+canvas#c{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none;outline:none}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:inherit}
+.hidden{display:none!important}
+.glass{background:var(--panel);border:1px solid var(--line);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:14px}
+
+/* ---------- Title ---------- */
+#title{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px 16px;z-index:20;
+  background:radial-gradient(ellipse at 50% 55%,rgba(5,6,13,0) 0%,rgba(5,6,13,.25) 55%,rgba(5,6,13,.8) 100%)}
+.toplinks{position:fixed;top:14px;left:16px;display:flex;gap:10px;z-index:40;font-size:13px}
+.toplinks a{text-decoration:none;padding:7px 12px;border-radius:999px;background:rgba(10,12,24,.5);border:1px solid var(--line);color:var(--muted);backdrop-filter:blur(8px)}
+.toplinks a:hover{color:#fff;border-color:rgba(255,255,255,.35)}
+#title h1{font-family:var(--serif);font-weight:400;letter-spacing:.42em;font-size:clamp(56px,13vw,132px);margin:0 0 0 .42em;line-height:1;
+  background:linear-gradient(180deg,#fff 0%,#ffe3cf 45%,#ff8a7a 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 0 28px rgba(255,120,110,.45))}
+#title .sub{font-family:var(--serif);font-style:italic;font-size:clamp(17px,2.6vw,24px);color:#ffe9dc;margin:14px 0 6px;opacity:.95}
+#title .tag{max-width:560px;color:var(--muted);font-size:15px;line-height:1.6;margin:10px auto 26px}
+.btnrow{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.btn{border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06);padding:12px 26px;border-radius:999px;font-size:15px;letter-spacing:.06em;transition:.2s}
+.btn:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.5)}
+.btn.primary{background:linear-gradient(135deg,#ff7a6a,#ffb38a);color:#1a0806;border:none;font-weight:600;box-shadow:0 0 30px rgba(255,120,100,.45)}
+.btn.primary:hover{filter:brightness(1.08)}
+.controls{margin-top:26px;font-size:12.5px;color:var(--muted);line-height:1.9;max-width:640px}
+.controls kbd{font-family:var(--sans);font-size:11.5px;border:1px solid rgba(255,255,255,.25);border-bottom-width:2px;border-radius:5px;padding:1px 6px;color:#e6ecf5;background:rgba(255,255,255,.05)}
+.footnote{position:fixed;bottom:12px;left:0;right:0;text-align:center;font-size:11.5px;color:rgba(200,210,225,.5);pointer-events:none}
+
+/* ---------- HUD ---------- */
+#hud{position:fixed;inset:0;pointer-events:none;z-index:10}
+#sysCard{position:absolute;top:14px;left:16px;padding:10px 14px 12px;min-width:210px}
+#sysCard .kicker{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+#sysCard .name{font-family:var(--serif);font-size:24px;line-height:1.15;color:#fff}
+#sysCard .desc{font-size:12px;color:var(--muted);margin-top:1px}
+.pips{display:flex;gap:4px;margin-top:8px}
+.pip{width:14px;height:5px;border-radius:3px;background:rgba(255,255,255,.14)}
+.pip.on{background:var(--acc);box-shadow:0 0 8px var(--acc)}
+.pip.req{outline:1px solid rgba(255,255,255,.25)}
+#topBtns{position:absolute;top:14px;right:16px;display:flex;gap:8px;pointer-events:auto}
+.ib{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:var(--panel);border:1px solid var(--line);backdrop-filter:blur(10px);font-size:12px;position:relative}
+.ib:hover{border-color:rgba(255,255,255,.4)}
+.ib svg{width:20px;height:20px;stroke:#e8eef8;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.ib .k{position:absolute;bottom:2px;right:4px;font-size:8.5px;color:var(--muted)}
+#bars{position:absolute;left:16px;bottom:18px;padding:12px 14px;width:240px}
+.bar{margin:4px 0 9px}
+.bar .lab{display:flex;justify-content:space-between;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.bar .tr{height:6px;border-radius:4px;background:rgba(255,255,255,.1);overflow:hidden}
+.bar .fi{height:100%;width:100%;border-radius:4px;transition:width .15s}
+#enFill{background:linear-gradient(90deg,#ffd36a,#ffef9a);box-shadow:0 0 10px rgba(255,220,120,.6)}
+#shFill{background:linear-gradient(90deg,#5ac8ff,#a8f0ff);box-shadow:0 0 10px rgba(120,210,255,.6)}
+#spd{font-size:11px;color:var(--muted);letter-spacing:.1em;display:flex;justify-content:space-between}
+#spd b{color:#fff;font-weight:600;font-size:14px}
+#status{font-size:11px;margin-top:6px;min-height:14px;color:#ffe6a0;letter-spacing:.04em}
+#reticle{position:absolute;left:50%;top:50%;width:34px;height:34px;margin:-17px 0 0 -17px;border:1px solid rgba(255,255,255,.28);border-radius:50%}
+#reticle:after{content:"";position:absolute;left:50%;top:50%;width:3px;height:3px;margin:-1.5px;border-radius:50%;background:rgba(255,255,255,.7)}
+#vcursor{position:absolute;left:50%;top:50%;width:10px;height:10px;margin:-5px;border-radius:50%;border:1.5px solid var(--acc2);opacity:0;transition:opacity .3s}
+#prompt{position:absolute;left:50%;bottom:120px;transform:translateX(-50%);text-align:center;font-size:14px;letter-spacing:.04em;opacity:0;transition:opacity .25s;white-space:nowrap}
+#prompt.show{opacity:1}
+#prompt .pill{display:inline-flex;align-items:center;gap:10px;padding:9px 16px}
+#scanRing{width:26px;height:26px}
+#toasts{position:absolute;top:84px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;width:min(92vw,560px)}
+.toast{padding:10px 16px;font-size:14px;line-height:1.45;text-align:center;animation:tin .5s ease both}
+.toast.out{animation:tout .6s ease both}
+@keyframes tin{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+@keyframes tout{to{opacity:0;transform:translateY(-8px)}}
+#markers{position:absolute;inset:0;overflow:hidden}
+.mk{position:absolute;left:0;top:0;will-change:transform;font-size:11px;white-space:nowrap}
+.mk .d{width:12px;height:12px;transform:rotate(45deg);border:1.6px solid #9ff3ff;box-shadow:0 0 10px #6fe8ff;margin:-6px 0 0 -6px}
+.mk.found .d{border-color:#ffd98a;box-shadow:0 0 6px #ffc76a;width:8px;height:8px;margin:-4px 0 0 -4px;background:rgba(255,210,120,.35)}
+.mk.target .d{animation:pulse 1.2s ease-in-out infinite;border-color:#fff}
+.mk .t{position:absolute;left:12px;top:-8px;color:#d9faff;text-shadow:0 0 6px #000}
+.mk.found .t{color:#ffe2a8}
+@keyframes pulse{50%{box-shadow:0 0 22px #9ff3ff;transform:rotate(45deg) scale(1.3)}}
+.pl{position:absolute;left:0;top:0;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.75);text-shadow:0 0 8px #000;white-space:nowrap;transform-origin:0 0}
+.pl small{display:block;letter-spacing:.05em;text-transform:none;color:var(--muted);font-size:11px}
+#arrow{position:absolute;left:0;top:0;width:0;height:0;border-left:9px solid transparent;border-right:9px solid transparent;border-bottom:18px solid #9ff3ff;filter:drop-shadow(0 0 6px #6fe8ff);opacity:0}
+#storm{position:fixed;inset:0;pointer-events:none;z-index:5;opacity:0;background:radial-gradient(ellipse at center,rgba(255,120,40,0) 40%,rgba(255,100,30,.35) 100%);mix-blend-mode:screen}
+#hitflash{position:fixed;inset:0;pointer-events:none;z-index:6;opacity:0;background:radial-gradient(ellipse at center,rgba(90,200,255,0) 30%,rgba(90,200,255,.45) 100%)}
+#fade{position:fixed;inset:0;background:#000;opacity:0;pointer-events:none;z-index:30;transition:opacity .8s}
+
+/* ---------- Overlays ---------- */
+.overlay{position:fixed;inset:0;z-index:25;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(3,4,10,.55);backdrop-filter:blur(3px)}
+#fact .card{max-width:600px;width:100%;padding:28px 30px 24px;position:relative;overflow:hidden;animation:cardin .7s cubic-bezier(.2,.8,.2,1) both}
+@keyframes cardin{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:none}}
+#fact .card:before{content:"";position:absolute;inset:-1px;border-radius:14px;padding:1px;background:linear-gradient(135deg,var(--acc),transparent 50%,var(--acc2));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+#fact .glow{position:absolute;width:320px;height:320px;right:-120px;top:-140px;border-radius:50%;background:radial-gradient(circle,var(--acc) 0%,transparent 65%);opacity:.28;pointer-events:none}
+.kick{font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--acc2)}
+#fact h2{font-family:var(--serif);font-weight:400;font-size:32px;margin:8px 0 12px;line-height:1.15}
+#fact p{font-size:17px;line-height:1.65;color:#e4e9f2;margin:0 0 18px;font-family:var(--serif)}
+#fact .meta{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:12.5px;color:var(--muted);flex-wrap:wrap}
+#codex .wrap,#map .wrap,#pause .wrap{width:min(980px,100%);max-height:min(88vh,860px);display:flex;flex-direction:column;overflow:hidden}
+.ohead{display:flex;align-items:center;justify-content:space-between;padding:18px 22px 12px;border-bottom:1px solid var(--line)}
+.ohead h2{font-family:var(--serif);font-weight:400;font-size:26px;margin:0}
+.ohead .x{background:none;border:1px solid var(--line);border-radius:10px;width:36px;height:36px;font-size:18px}
+#codexBody{display:flex;min-height:0;flex:1}
+#codexTabs{width:220px;border-right:1px solid var(--line);padding:10px;overflow:auto;flex-shrink:0}
+.ctab{display:block;width:100%;text-align:left;background:none;border:1px solid transparent;border-radius:10px;padding:9px 11px;margin-bottom:4px}
+.ctab.on{background:rgba(255,255,255,.07);border-color:var(--line)}
+.ctab .n{font-family:var(--serif);font-size:17px}
+.ctab .c{font-size:11.5px;color:var(--muted)}
+.ctab .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px}
+#codexList{flex:1;overflow:auto;padding:14px 22px 22px}
+.centry{padding:14px 0;border-bottom:1px solid rgba(255,255,255,.07)}
+.centry h3{font-family:var(--serif);font-weight:400;font-size:20px;margin:0 0 5px}
+.centry p{margin:0;color:#d6dde8;line-height:1.6;font-size:14.5px}
+.centry.lock h3{color:rgba(255,255,255,.35)}
+.centry.lock p{color:var(--muted);font-style:italic}
+.centry .w{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.cintro{color:var(--muted);font-size:13.5px;line-height:1.55;margin:4px 0 8px}
+#mapSvg{width:100%;height:auto;display:block;flex:1;min-height:0}
+#mapInfo{padding:12px 22px 20px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+#mapInfo .l{min-width:0}
+#mapInfo .n{font-family:var(--serif);font-size:22px}
+#mapInfo .d{font-size:13px;color:var(--muted)}
+.mnode{cursor:pointer}
+.mnode text{font-family:var(--serif);fill:#fff;font-size:20px}
+.mnode .sm{font-family:var(--sans);font-size:13px;fill:#a8b3c4}
+#pause .wrap{width:min(420px,100%);padding:26px;align-items:stretch;gap:10px;text-align:center}
+#pause h2{font-family:var(--serif);font-weight:400;font-size:30px;margin:0 0 8px}
+#pause .btn{width:100%}
+#pause .links{display:flex;gap:10px;justify-content:center;margin-top:8px;font-size:13px}
+#pause .links a{color:var(--muted)}
+#ending{position:fixed;inset:0;z-index:28;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px 16px;background:radial-gradient(ellipse at center,rgba(255,250,240,.0),rgba(4,4,10,.55))}
+#ending .inner{max-width:640px}
+#ending .l{opacity:0;animation:tin 2.2s ease forwards}
+#ending h1{font-family:var(--serif);font-weight:400;font-size:clamp(40px,8vw,76px);letter-spacing:.12em;margin:0 0 18px;background:linear-gradient(180deg,#fff,#ffe0b8);-webkit-background-clip:text;background-clip:text;color:transparent}
+#ending p{font-family:var(--serif);font-size:18px;line-height:1.7;color:#eef0f6}
+#ending .stats{font-family:var(--sans);font-size:13px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+
+/* ---------- Touch ---------- */
+#touch{position:fixed;inset:0;z-index:12;pointer-events:none}
+#stick{position:absolute;left:22px;bottom:26px;width:132px;height:132px;border-radius:50%;border:1px solid rgba(255,255,255,.25);background:rgba(10,12,24,.35);pointer-events:auto;touch-action:none}
+#knob{position:absolute;left:50%;top:50%;width:54px;height:54px;margin:-27px;border-radius:50%;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.45)}
+.tb{position:absolute;pointer-events:auto;touch-action:none;border-radius:50%;border:1px solid rgba(255,255,255,.3);background:rgba(10,12,24,.45);font-size:11px;letter-spacing:.1em;text-transform:uppercase;display:flex;align-items:center;justify-content:center;user-select:none;-webkit-user-select:none}
+.tb.on{background:rgba(255,255,255,.22);border-color:#fff}
+#tThrust{right:22px;bottom:30px;width:88px;height:88px}
+#tBoost{right:122px;bottom:22px;width:62px;height:62px}
+#tScan{right:34px;bottom:132px;width:66px;height:66px;border-color:#9ff3ff;color:#bff8ff}
+#tAssist{right:118px;bottom:100px;width:52px;height:52px;font-size:9.5px}
+body.touch #bars{left:auto;right:16px;top:70px;bottom:auto;width:170px;padding:9px 11px}
+body.touch #reticle{opacity:.6}
+body.touch #prompt{bottom:auto;top:62%}
+body.touch .ib .k{display:none}
+
+@media (max-width:640px){
+  #sysCard{min-width:0;padding:8px 11px 10px;max-width:52vw}
+  #sysCard .name{font-size:19px}
+  #sysCard .desc{display:none}
+  .ib{width:38px;height:38px}
+  #topBtns{gap:6px;right:10px}
+  #toasts{top:110px}
+  #codexBody{flex-direction:column}
+  #codexTabs{width:auto;display:flex;overflow-x:auto;border-right:none;border-bottom:1px solid var(--line);flex-shrink:0}
+  .ctab{flex-shrink:0;width:auto;margin:0 4px 0 0}
+  .ctab .c{display:none}
+  #fact .card{padding:22px 20px 18px}
+  #fact h2{font-size:26px}
+  #fact p{font-size:16px}
+  .controls{font-size:11.5px}
+}
+</style>
+<script type="importmap">
+{"imports":{
+  "three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+}}
+</script>
+</head>
+<body>
+<canvas id="c" tabindex="0"></canvas>
+<div id="storm"></div>
+<div id="hitflash"></div>
+
+<!-- Title -->
+<div id="title">
+  <div class="toplinks"><a href="/">← joshuaforster.de</a><a href="/spiele/">Alle Spiele</a></div>
+  <h1>SOMA</h1>
+  <div class="sub">Reise durch den inneren Kosmos</div>
+  <p class="tag">Eine Galaxie, deren Sternsysteme Organsysteme sind. Scanne leuchtende Signale auf fremden Welten, sammle Erkenntnis-Fragmente – und finde im Kern der Galaxis das Gleichgewicht, das alles zusammenhält.</p>
+  <div class="btnrow">
+    <button class="btn primary" id="bStart">Start</button>
+    <button class="btn hidden" id="bContinue">Fortsetzen</button>
+    <button class="btn hidden" id="bReset">Neu beginnen</button>
+  </div>
+  <div class="controls" id="ctlDesk">
+    <kbd>W</kbd>/<kbd>S</kbd> Schub · <kbd>Maus</kbd> (Klick) oder <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> lenken · <kbd>A</kbd>/<kbd>D</kbd> gieren · <kbd>Shift</kbd> Boost<br>
+    <kbd>E</kbd> halten: Scannen · <kbd>Q</kbd> Zielassistent · <kbd>M</kbd> Sternenkarte · <kbd>C</kbd> Kodex · <kbd>T</kbd> Musik · <kbd>Esc</kbd> Pause
+  </div>
+  <div class="controls hidden" id="ctlTouch">Linker Stick: lenken · <b>Schub</b> halten zum Fliegen · <b>Scan</b> halten nahe einem Signal · <b>Ziel</b>: Zielassistent</div>
+  <div class="footnote">Kopfhörer empfohlen · Fortschritt wird lokal im Browser gespeichert</div>
+</div>
+
+<!-- HUD -->
+<div id="hud" class="hidden">
+  <div id="markers"><div id="arrow"></div></div>
+  <div id="reticle"></div><div id="vcursor"></div>
+  <div id="sysCard" class="glass"><div class="kicker" id="sysKick">System 1</div><div class="name" id="sysName">Kardia</div><div class="desc" id="sysDesc"></div><div class="pips" id="pips"></div></div>
+  <div id="topBtns">
+    <button class="ib" id="bMap" title="Sternenkarte (M)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.2"/><circle cx="12" cy="12" r="8.5" stroke-dasharray="2 3"/><circle cx="19" cy="7" r="1.4"/><circle cx="5.5" cy="15" r="1.2"/></svg><span class="k">M</span></button>
+    <button class="ib" id="bCodex" title="Kodex (C)"><svg viewBox="0 0 24 24"><path d="M5 4h10a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h10"/><path d="M9 8h5"/></svg><span class="k">C</span></button>
+    <button class="ib" id="bMute" title="Musik an/aus (T)"><svg viewBox="0 0 24 24" id="muteIcon"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a8.5 8.5 0 0 1 0 12"/></svg><span class="k">T</span></button>
+    <button class="ib" id="bPause" title="Pause (Esc)"><svg viewBox="0 0 24 24"><path d="M9 6v12M15 6v12"/></svg></button>
+  </div>
+  <div id="bars" class="glass">
+    <div class="bar"><div class="lab"><span>Energie</span><span id="enTxt">100</span></div><div class="tr"><div class="fi" id="enFill"></div></div></div>
+    <div class="bar"><div class="lab"><span>Schild</span><span id="shTxt">100</span></div><div class="tr"><div class="fi" id="shFill"></div></div></div>
+    <div id="spd"><span>GESCHW.</span><b id="spdTxt">0</b></div>
+    <div id="status"></div>
+  </div>
+  <div id="prompt"><div class="pill glass"><svg id="scanRing" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="3"/><circle id="scanArc" cx="18" cy="18" r="15" fill="none" stroke="#9ff3ff" stroke-width="3" stroke-linecap="round" stroke-dasharray="94.25" stroke-dashoffset="94.25" transform="rotate(-90 18 18)"/></svg><span id="promptTxt">E halten zum Scannen</span></div></div>
+  <div id="toasts"></div>
+</div>
+
+<!-- Touch controls -->
+<div id="touch" class="hidden">
+  <div id="stick"><div id="knob"></div></div>
+  <div class="tb" id="tThrust">Schub</div>
+  <div class="tb" id="tBoost">Boost</div>
+  <div class="tb" id="tScan">Scan</div>
+  <div class="tb" id="tAssist">Ziel</div>
+</div>
+
+<!-- Fact popup -->
+<div id="fact" class="overlay hidden">
+  <div class="card glass"><div class="glow"></div>
+    <div class="kick" id="fKick">Erkenntnis-Fragment</div>
+    <h2 id="fTitle"></h2>
+    <p id="fText"></p>
+    <div class="meta"><span id="fMeta"></span><button class="btn primary" id="fClose">Weiter <span style="opacity:.6;font-weight:400">(E)</span></button></div>
+  </div>
+</div>
+
+<!-- Codex -->
+<div id="codex" class="overlay hidden">
+  <div class="wrap glass">
+    <div class="ohead"><div><div class="kick">Kodex</div><h2 id="codexTotal">Erkenntnisse</h2></div><button class="x" id="codexX" aria-label="Schließen">✕</button></div>
+    <div id="codexBody"><div id="codexTabs"></div><div id="codexList"></div></div>
+  </div>
+</div>
+
+<!-- Map -->
+<div id="map" class="overlay hidden">
+  <div class="wrap glass">
+    <div class="ohead"><div><div class="kick">Sternenkarte</div><h2>Die innere Galaxis</h2></div><button class="x" id="mapX" aria-label="Schließen">✕</button></div>
+    <svg id="mapSvg" viewBox="0 0 1000 560"></svg>
+    <div id="mapInfo"><div class="l"><div class="n" id="mapN"></div><div class="d" id="mapD"></div></div><button class="btn primary" id="mapWarp">Warp starten</button></div>
+  </div>
+</div>
+
+<!-- Pause -->
+<div id="pause" class="overlay hidden">
+  <div class="wrap glass">
+    <h2>Pause</h2>
+    <button class="btn primary" id="pResume">Weiterfliegen</button>
+    <button class="btn" id="pCodex">Kodex</button>
+    <button class="btn" id="pMap">Sternenkarte</button>
+    <button class="btn" id="pTitle">Zum Titelbildschirm</button>
+    <div class="links"><a href="/">← joshuaforster.de</a><a href="/spiele/">Alle Spiele</a></div>
+  </div>
+</div>
+
+<div id="ending" class="hidden"><div class="inner" id="endInner"></div></div>
+<div id="fade"></div>
+
+<script type="module">
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+/* =====================================================================
+   INHALT: Erkenntnis-Fragmente
+   ===================================================================== */
+const FACTS = {
+  // KARDIA – Herz & Kreislauf
+  k1:{t:'Drei Milliarden Schläge',x:'Rund 100.000 Mal am Tag zieht sich dein Herz zusammen. Über ein 80-jähriges Leben summiert sich das auf etwa drei Milliarden Schläge – ein Muskel, der seit dem 22. Tag der Embryonalentwicklung schlägt und nie eine Pause macht.'},
+  k2:{t:'Der eigene Taktgeber',x:'Das Herz braucht kein Gehirn, um zu schlagen: Der Sinusknoten im rechten Vorhof erzeugt seinen Rhythmus selbst. Ein transplantiertes Herz ist von seinen Nerven getrennt – und schlägt trotzdem, in Ruhe sogar etwas schneller, weil die bremsende Hand des Vagusnervs fehlt.'},
+  k3:{t:'Das Geräusch der Klappen',x:'Das vertraute „Lub-Dub“ ist nicht das Geräusch des Muskels, sondern das Schließen der Herzklappen: Der erste Ton entsteht, wenn sich Mitral- und Trikuspidalklappe schließen, der zweite beim Schluss von Aorten- und Pulmonalklappe.'},
+  k4:{t:'Eine Runde pro Minute',x:'In Ruhe pumpt das Herz etwa fünf Liter Blut pro Minute – ungefähr deine gesamte Blutmenge. Ein rotes Blutkörperchen kann den großen und den kleinen Kreislauf so in rund einer Minute durchlaufen, unter Belastung noch deutlich schneller.'},
+  k5:{t:'Die häufigste Zelle',x:'Von den rund 30 Billionen menschlichen Zellen deines Körpers sind etwa 25 Billionen rote Blutkörperchen – mehr als vier von fünf. Um Platz für Hämoglobin zu schaffen, stoßen sie bei ihrer Reifung sogar ihren Zellkern aus.'},
+  k6:{t:'Im Gänsemarsch',x:'Viele Kapillaren sind nur fünf bis zehn Mikrometer weit – kaum breiter, manchmal sogar schmaler als ein rotes Blutkörperchen mit seinen etwa 7,5 µm. Die Zellen verformen sich wie weiche Fallschirme und zwängen sich einzeln hindurch; genau dort findet der Gasaustausch statt.'},
+  k7:{t:'Zwei Millionen pro Sekunde',x:'Dein Knochenmark bildet jede Sekunde rund zwei bis drei Millionen neue rote Blutkörperchen. Jedes lebt etwa 120 Tage, bevor Makrophagen in Milz und Leber es abbauen – das Eisen wird dabei fast vollständig wiederverwertet.'},
+  // NEURON – Nervensystem
+  n1:{t:'86 Milliarden',x:'Dein Gehirn enthält etwa 86 Milliarden Nervenzellen und ähnlich viele Gliazellen. Eine einzelne Nervenzelle kann Tausende Synapsen tragen – zusammen ergibt das ein Netz aus Hunderten Billionen Verbindungen.'},
+  n2:{t:'Das hungrigste Organ',x:'Das Gehirn macht nur rund zwei Prozent des Körpergewichts aus, verbraucht in Ruhe aber etwa ein Fünftel der Energie. Ein Großteil davon fließt in Ionenpumpen, die nach jedem Signal die Spannung über den Membranen wiederherstellen.'},
+  n3:{t:'Sprünge von Schnürring zu Schnürring',x:'In dicken, myelinisierten Fasern springt das Signal von Schnürring zu Schnürring und erreicht bis zu 120 m/s – über 400 km/h. Dünne, marklose C-Fasern leiten nur mit etwa 1 m/s. Darum folgt auf den ersten, hellen Schmerz eines gestoßenen Zehs Augenblicke später ein zweiter, dumpfer.'},
+  n4:{t:'Hunderte Blitze pro Sekunde',x:'Nach jedem Aktionspotenzial ist ein Neuron für rund eine Millisekunde unerregbar – die Refraktärzeit. Sie setzt eine Obergrenze, und doch feuern manche Nervenzellen, etwa im Hörsystem oder im Kleinhirn, Hunderte Male pro Sekunde.'},
+  n5:{t:'Phantome',x:'Nach einer Amputation spüren die meisten Betroffenen das fehlende Glied weiter, viele sogar als Schmerz. Die Körperkarte im Gehirn existiert fort; mit einem einfachen Spiegelkasten, der das gesunde Glied an die Stelle des fehlenden spiegelt, ließ sich Phantomschmerz bei manchen Patienten lindern.'},
+  n6:{t:'Karten, die wachsen',x:'Londoner Taxifahrer lernen Zehntausende Straßen auswendig. Hirnscans zeigten bei ihnen einen vergrößerten hinteren Hippocampus – umso ausgeprägter, je länger sie gefahren waren. Auch das erwachsene Gehirn baut sich nach dem um, was es täglich tut.'},
+  n7:{t:'Der verborgene Sinn',x:'Muskelspindeln und Sehnenorgane melden dem Gehirn ständig Länge und Spannung jedes Muskels – die Propriozeption. Menschen, die diesen Sinn durch eine seltene Nervenerkrankung verloren haben, können sich nur gezielt bewegen, solange sie ihre Glieder dabei ansehen.'},
+  // OSTEON – Knochen & Bewegung
+  o1:{t:'Ein neues Skelett pro Jahrzehnt',x:'Knochen ist kein toter Stein: Osteoklasten bauen ihn ständig ab, Osteoblasten wieder auf. Beim Erwachsenen werden so jedes Jahr rund zehn Prozent des Skeletts erneuert – rechnerisch besitzt du etwa alle zehn Jahre ein neues.'},
+  o2:{t:'Fester als Beton',x:'Kompakter Knochen hält Druck von rund 170 Megapascal stand – ein Vielfaches von gewöhnlichem Beton. Auf sein Gewicht bezogen erreicht er eine Zugfestigkeit in der Größenordnung von Baustahl. Das Geheimnis: zähes Kollagen, durchsetzt mit harten Hydroxylapatit-Kristallen.'},
+  o3:{t:'Jahresringe im Knochen',x:'Kompakter Knochen besteht aus Osteonen – Röhren aus konzentrischen Lamellen um einen zentralen Havers-Kanal mit Blutgefäß und Nerv. Die Kollagenfasern wechseln von Lamelle zu Lamelle ihre Richtung, wie bei Sperrholz, das Risse ablenkt.'},
+  o4:{t:'Der kleinste Knochen',x:'Der Steigbügel im Mittelohr misst nur etwa drei Millimeter – der kleinste Knochen des Körpers. Er überträgt Schall auf das ovale Fenster des Innenohrs. An ihm setzt der kleinste Skelettmuskel an, der Musculus stapedius, der bei großem Lärm reflexartig dämpft.'},
+  o5:{t:'Aus 300 werden 206',x:'Ein Neugeborenes besitzt rund 300 Knochen und Knochenkerne. Viele verschmelzen im Lauf von Kindheit und Jugend – im Schädel, im Becken, im Kreuzbein –, bis Erwachsene bei etwa 206 Knochen ankommen.'},
+  o6:{t:'Das lebende Netzwerk',x:'Über 90 Prozent der Knochenzellen sind Osteozyten, eingemauert in winzige Höhlen und durch feinste Kanälchen verbunden. Sie spüren Belastung und steuern den Umbau. Fehlt die Last, wird abgebaut: Astronauten verlieren in Schwerelosigkeit pro Monat etwa ein bis eineinhalb Prozent Knochenmasse in Hüfte und Wirbelsäule.'},
+  o7:{t:'Die Last der Hüfte',x:'Messungen mit instrumentierten Hüftprothesen zeigen: Schon beim normalen Gehen wirkt auf das Hüftgelenk etwa das Zwei- bis Dreifache des Körpergewichts – beim Stolpern kurzzeitig bis zum Achtfachen. Knorpel und Knochen tragen solche Spitzen Millionen Male im Leben.'},
+  // PNEUMA – Atmung
+  p1:{t:'Eine gefaltete Welt',x:'Deine Lunge enthält rund 300 bis 500 Millionen Alveolen. Zusammen bilden sie eine Austauschfläche von etwa 50 bis 100 Quadratmetern – gefaltet in zwei Lungenflügel, die zusammen nur wenige Liter Luft fassen.'},
+  p2:{t:'Hauchdünn',x:'Zwischen Luft und Blut liegen an den dünnsten Stellen nur etwa 0,2 bis 0,5 Mikrometer – mehr als hundertmal dünner als ein Haar. Sauerstoff überquert diese Barriere allein durch Diffusion, in Sekundenbruchteilen.'},
+  p3:{t:'Der Takt des Kohlendioxids',x:'Nicht Sauerstoffmangel treibt dich vor allem zum Atmen, sondern steigendes Kohlendioxid, das Chemosensoren im Hirnstamm über den pH-Wert registrieren. Wer vor dem Tauchen hyperventiliert, senkt das CO₂ – und unterdrückt das Warnsignal womöglich, bis er ohne Vorwarnung bewusstlos wird.'},
+  p4:{t:'Seifenblasen-Physik',x:'Ohne Surfactant würden die winzigen Alveolen nach dem Gesetz von Laplace in sich zusammenfallen. Frühgeborenen fehlt dieser Film oft – seit rund 1990 rettet ihnen künstlich verabreichtes Surfactant in großer Zahl das Leben.'},
+  p5:{t:'Zehntausend Liter am Tag',x:'Mit gut 20.000 Atemzügen am Tag bewegst du in Ruhe rund zehntausend Liter Luft. Unter Höchstlast können trainierte Ausdauersportler weit über 150 Liter pro Minute ventilieren.'},
+  p6:{t:'Die Rolltreppe',x:'Die Atemwege sind mit Flimmerhärchen ausgekleidet, die etwa 10- bis 20-mal pro Sekunde schlagen. Wie eine Rolltreppe schieben sie den Schleim samt Staub und Keimen Richtung Rachen – einige Millimeter pro Minute, ohne Pause.'},
+  p7:{t:'Die Lunge schwimmt',x:'Gesundes, belüftetes Lungengewebe schwimmt im Wasser. Die Rechtsmedizin nutzte das lange in der „Lungenschwimmprobe“, um zu prüfen, ob ein Neugeborenes geatmet hatte – ein Test, der heute als unzuverlässig gilt.'},
+  // ENTERON – Darm & Mikrobiom
+  e1:{t:'Eins zu eins',x:'Lange hieß es, Bakterien seien zehnmal zahlreicher als deine eigenen Zellen. Eine Neuberechnung von 2016 kommt auf etwa 38 Billionen Bakterien gegenüber rund 30 Billionen menschlichen Zellen – ungefähr eins zu eins. Die allermeisten leben im Dickdarm.'},
+  e2:{t:'Alle paar Tage neu',x:'Die Darmschleimhaut gehört zu den sich am schnellsten erneuernden Geweben: Das Epithel der Dünndarmzotten wird etwa alle drei bis fünf Tage vollständig ersetzt. Stammzellen am Grund der Krypten liefern unermüdlich Nachschub.'},
+  e3:{t:'Das zweite Gehirn',x:'In der Darmwand arbeitet ein eigenes Nervensystem mit schätzungsweise 200 bis 600 Millionen Neuronen – mehr als im Rückenmark. Es steuert Peristaltik und Sekretion weitgehend selbstständig; sogar ein isolierter Darmabschnitt kann noch peristaltische Wellen ausführen.'},
+  e4:{t:'Das Organ des Prometheus',x:'In der Sage fraß ein Adler täglich an Prometheus’ Leber, die jede Nacht nachwuchs. Ganz so schnell geht es nicht – doch nach Entfernung von bis zu etwa zwei Dritteln wächst die Leber binnen Wochen bis Monaten fast auf ihre ursprüngliche Größe nach. Darauf beruht die Leber-Lebendspende.'},
+  e5:{t:'Säurebad',x:'Magensäure erreicht einen pH-Wert von etwa 1 bis 2 – sauer genug, um viele Krankheitserreger abzutöten. Die Magenwand schützt sich mit einer bicarbonatreichen Schleimschicht, und ihre Oberflächenzellen werden alle paar Tage erneuert.'},
+  e6:{t:'Glück aus dem Darm?',x:'Rund 90 Prozent des Serotonins im Körper entstehen in enterochromaffinen Zellen des Darms. Ins Gehirn gelangt es von dort nicht, denn Serotonin passiert die Blut-Hirn-Schranke nicht. Die Achse zwischen Darm und Stimmung ist real, aber subtiler: über Vagusnerv, Immunsystem und Stoffwechselprodukte.'},
+  e7:{t:'Kein Tennisplatz',x:'Die Oberfläche des Darms wurde oft mit einem Tennisplatz verglichen. Genauere Messungen von 2014 ergeben rund 32 Quadratmeter für den gesamten Verdauungstrakt – etwa ein halbes Badmintonfeld. Falten, Zotten und Mikrovilli vergrößern die Fläche dennoch enorm.'},
+  // AISTHESIS – Sinne & Geist
+  a1:{t:'Ein einziges Photon',x:'Ein Stäbchen in deiner Netzhaut kann auf ein einzelnes Lichtquant reagieren: Ein einziges aktiviertes Rhodopsin-Molekül löst über eine Verstärkungskaskade eine messbare elektrische Antwort aus – nahe an der physikalischen Grenze des Möglichen.'},
+  a2:{t:'Der scharfe Fleck',x:'Wirklich scharf siehst du nur mit der Fovea, in einem Feld von etwa zwei Grad – ungefähr die Breite deines Daumennagels auf Armlänge. Deine Augen springen deshalb etwa dreimal pro Sekunde in Sakkaden umher, und das Gehirn fügt daraus ein scheinbar lückenlos scharfes Bild zusammen.'},
+  a3:{t:'Der blinde Fleck',x:'Wo der Sehnerv das Auge verlässt, gibt es keine Photorezeptoren – in jedem Auge klafft ein blinder Fleck. Du bemerkst ihn nie, weil das andere Auge ihn abdeckt und das Gehirn die Lücke mit dem umgebenden Muster füllt.'},
+  a4:{t:'Das Ohr singt',x:'Das Innenohr hört nicht nur, es sendet auch: Äußere Haarzellen verstärken Schwingungen aktiv und erzeugen dabei leise Töne, die ein Mikrofon im Gehörgang messen kann. Diese otoakustischen Emissionen nutzt das Hörscreening bei Neugeborenen.'},
+  a5:{t:'Steine im Ohr',x:'Im Gleichgewichtsorgan liegen winzige Kristalle aus Calciumcarbonat, die Otolithen. Sie machen Schwerkraft und Beschleunigung spürbar. Lösen sich einige und geraten in einen Bogengang, entsteht gutartiger Lagerungsschwindel – oft behebbar mit einem gezielten Lagerungsmanöver des Kopfes.'},
+  a6:{t:'Die Kraft der Erwartung',x:'Placebos können messbar wirken: Placebo-Schmerzlinderung lässt sich teilweise mit Naloxon aufheben – ein Hinweis, dass körpereigene Opioide beteiligt sind. In Studien linderten sogar offen als Placebo ausgegebene Tabletten Beschwerden beim Reizdarmsyndrom.'},
+  a7:{t:'Die Zungenkarte',x:'Die berühmte Zungenkarte mit getrennten Zonen für süß, sauer, salzig und bitter ist ein Mythos – sie geht auf die Fehlinterpretation einer deutschen Arbeit von 1901 zurück. Tatsächlich nehmen alle Zungenregionen mit Geschmacksknospen alle Grundqualitäten wahr, auch umami.'},
+  // KERN
+  h1:{t:'Homöostase',x:'Claude Bernard erkannte im 19. Jahrhundert, dass der Körper sein „inneres Milieu“ konstant hält; Walter Cannon gab dem Prinzip 1926 den Namen Homöostase. Der pH-Wert des Blutes bleibt zwischen 7,35 und 7,45, die Kerntemperatur nahe 37 °C – Billionen Zellen arbeiten zusammen, damit sich innen fast nichts ändert, während draußen alles im Wandel ist.'},
+};
+
+const REQ = 5; // Fragmente pro System für die Warpkern-Kalibrierung
+const C = (h)=>new THREE.Color(h);
+const SYSTEMS = [
+ {name:'Kardia',desc:'Das pulsierende System · Herz & Kreislauf',star:{name:'Sinusknoten',c1:'#ffb070',c2:'#ff3a2a',r:110,heart:true},
+  neb:['#7a0c24','#ff4a36','#ffb08a'],hue:'#ff6a5a',hue2:'#ffcfa8',belt:{name:'Plaque-Gürtel',c:'#e8d49a'},root:50,
+  planets:[
+   {name:'Myokard',type:0,r:175,orbit:760,ang:.35,y:30,c:['#4e0510','#b3122e','#ff6a4a','#ff2a3a'],atmo:'#ff4a5a',rot:.02,pulse:true,facts:['k1','k2','k3']},
+   {name:'Plasma-See',type:1,r:125,orbit:1180,ang:-.55,y:-60,c:['#3a0508','#9e2a10','#e0584a','#ffb347'],atmo:'#ffa060',rot:.015,facts:['k4','k5']},
+   {name:'Kapillaris',type:2,r:95,orbit:1780,ang:.95,y:80,c:['#1d0508','#3d0a12','#ff4040','#ff3050'],atmo:'#ff6070',rot:.03,facts:['k6','k7']}]},
+ {name:'Neuron',desc:'Das denkende System · Nervensystem',star:{name:'Thalamus',c1:'#e8f6ff',c2:'#6ab8ff',r:100},
+  neb:['#1e1060','#6a3cff','#30d0ff'],hue:'#9a8cff',hue2:'#9ff3ff',belt:{name:'Amyloid-Plaques',c:'#b8a4d8'},root:52,
+  planets:[
+   {name:'Kortex',type:2,r:180,orbit:800,ang:-.3,y:40,c:['#140a30','#2e1d5c','#b890ff','#7ad7ff'],atmo:'#8a7dff',rot:.018,flash:true,facts:['n1','n2','n3']},
+   {name:'Liquor',type:1,r:120,orbit:1250,ang:.6,y:-50,c:['#041f38','#0b5a80','#8fe8ff','#55f0ff'],atmo:'#7fe3ff',rot:.02,facts:['n4','n5']},
+   {name:'Myelin',type:0,r:130,orbit:1800,ang:-1.0,y:90,c:['#d8d0ea','#8a7cb0','#fff6e8','#c9a0ff'],atmo:'#d8c8ff',rot:.025,ring:[1.45,2.3,'#e6dcff'],facts:['n6','n7']}]},
+ {name:'Osteon',desc:'Das tragende System · Knochen & Bewegung',star:{name:'Kalzitriol',c1:'#fff6e0',c2:'#ffb86a',r:105},
+  neb:['#3a2a18','#c9a070','#6a98c0'],hue:'#f2dcb0',hue2:'#ffffff',belt:{name:'Kalkgeröll',c:'#f4ecd8'},root:45,
+  planets:[
+   {name:'Kompakta',type:3,r:170,orbit:780,ang:.2,y:-30,c:['#efe6d2','#c8b894','#7a6a4c','#ff9a5a'],atmo:'#ffe7c4',rot:.015,facts:['o1','o2','o3']},
+   {name:'Spongiosa',type:5,r:130,orbit:1260,ang:-.7,y:70,c:['#d9cdb2','#a8906a','#fff4de','#ff7a4a'],atmo:'#ffd9a8',rot:.02,facts:['o5','o6']},
+   {name:'Stapes',type:3,r:42,orbit:1760,ang:.8,y:20,c:['#fbf7ee','#dcd0b8','#a08e70','#ffd08a'],atmo:'#fff0d0',rot:.05,facts:['o4','o7']}]},
+ {name:'Pneuma',desc:'Das atmende System · Lunge & Atmung',star:{name:'Oxygenia',c1:'#ffffff',c2:'#9ad4ff',r:115},
+  neb:['#0a2848','#3a98ff','#d8f0ff'],hue:'#8fd0ff',hue2:'#e8fbff',belt:{name:'Feinstaub-Wolke',c:'#6a6a70'},root:48,
+  planets:[
+   {name:'Alveolus',type:4,r:175,orbit:820,ang:-.4,y:50,c:['#2a6fb0','#9fd4ff','#ffffff','#b8f0ff'],atmo:'#9fdcff',rot:.012,facts:['p1','p2','p3']},
+   {name:'Bronchia',type:2,r:120,orbit:1240,ang:.5,y:-40,c:['#1a3550','#35658a','#e6f6ff','#9ae8ff'],atmo:'#a8e0ff',rot:.02,facts:['p4','p6']},
+   {name:'Surfactant',type:1,r:110,orbit:1800,ang:-1.1,y:60,c:['#0d3b5a','#3f8fb5','#e8fbff','#fff3c4'],atmo:'#cdefff',rot:.02,facts:['p5','p7']}]},
+ {name:'Enteron',desc:'Das nährende System · Darm & Mikrobiom',star:{name:'Hepar',c1:'#f6ffd0',c2:'#c8ff6a',r:105},
+  neb:['#0a3424','#2adf8a','#ffd24a'],hue:'#6affb0',hue2:'#f0ffa8',belt:{name:'Gallenkonkremente',c:'#8a9a3a'},root:53,
+  planets:[
+   {name:'Mikrobiom',type:5,r:170,orbit:780,ang:.45,y:-40,c:['#0b3a2a','#1f7a4a','#8aff6a','#3affd2'],atmo:'#7affc0',rot:.016,facts:['e1','e2','e3']},
+   {name:'Hepatica',type:3,r:135,orbit:1250,ang:-.45,y:60,c:['#7a2a1e','#a8483a','#3a0f0a','#ffb04a'],atmo:'#ff9a6a',rot:.02,facts:['e4','e5']},
+   {name:'Villi',type:0,r:120,orbit:1800,ang:1.0,y:-70,c:['#1e5a4a','#63b58a','#d8f5a8','#6affb0'],atmo:'#a0ffcf',rot:.024,facts:['e6','e7']}]},
+ {name:'Aisthesis',desc:'Das wahrnehmende System · Sinne & Geist',star:{name:'Lumen',c1:'#fff0fa',c2:'#ff8ad8',r:110},
+  neb:['#3a0f4a','#ff5ad0','#5ad0ff'],hue:'#ff9ae0',hue2:'#b0f0ff',belt:{name:'Drusen-Feld',c:'#f0e070'},root:55,
+  planets:[
+   {name:'Iris',type:6,r:175,orbit:800,ang:-.25,y:30,c:['#1a2a44','#9fd0ff','#1a6a8a','#7affea'],atmo:'#b0e8ff',rot:.01,facts:['a1','a2','a3']},
+   {name:'Cochlea',type:0,r:130,orbit:1260,ang:.65,y:-50,c:['#6a2a5a','#e89ac8','#ffe0b0','#ff7ad0'],atmo:'#ffb0e0',rot:.02,ring:[1.4,2.1,'#ffd0f0'],facts:['a4','a5']},
+   {name:'Olfactoria',type:5,r:115,orbit:1780,ang:-.9,y:80,c:['#2a1440','#7a3aa0','#ffb0f0','#ff5ad0'],atmo:'#e0a0ff',rot:.02,facts:['a6','a7']}]},
+ {name:'Homöostase',desc:'Der galaktische Kern · Gleichgewicht',core:true,star:{name:'Homöostase',c1:'#ffffff',c2:'#ffd08a',r:150},
+  neb:['#1a0f3a','#8a6aff','#ffcf7a'],hue:'#ffe0a8',hue2:'#ffffff',root:50,planets:[],facts:['h1']},
+];
+SYSTEMS.forEach((s,i)=>{ s.i=i; s.factIds = s.core? ['h1'] : s.planets.flatMap(p=>p.facts); });
+const FACT_SYS = {}; SYSTEMS.forEach(s=>s.factIds.forEach(id=>FACT_SYS[id]=s.i));
+const TOTAL_FACTS = Object.keys(FACTS).length;
+
+/* =====================================================================
+   Zustand & Speicher
+   ===================================================================== */
+const SAVE_KEY='soma-kosmos-v1';
+const S = { mode:'title', sys:0, found:new Set(), muted:false, done:false,
+  energy:100, shield:100, speed:0, lastHit:-99, scan:0, scanTarget:null, scanLock:false, assist:false,
+  storm:{state:'idle', t:80, k:0}, sheltered:false, warp:null, dead:0, heat:false };
+function load(){ try{ const d=JSON.parse(localStorage.getItem(SAVE_KEY)||'null'); if(d&&Array.isArray(d.found)){ d.found.forEach(id=>FACTS[id]&&S.found.add(id)); S.sys=Math.min(6,Math.max(0,d.sys|0)); S.muted=!!d.muted; S.done=!!d.done; if(!isUnlocked(S.sys)) S.sys=0; } }catch(e){} }
+function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify({found:[...S.found],sys:S.sys,muted:S.muted,done:S.done})); }catch(e){} }
+const foundIn = i => SYSTEMS[i].factIds.filter(id=>S.found.has(id)).length;
+function isUnlocked(i){ if(i===0) return true; if(i<6) return foundIn(i-1)>=REQ; for(let k=0;k<6;k++) if(foundIn(k)<REQ) return false; return true; }
+
+/* =====================================================================
+   Renderer, Qualität
+   ===================================================================== */
+const params = new URLSearchParams(location.search);
+const DEBUG = params.has('debug');
+const isTouch = matchMedia('(pointer: coarse)').matches || ('ontouchstart' in window && innerWidth<1000);
+const LOWQ = isTouch || params.get('q')==='low';
+const canvas = document.getElementById('c');
+const renderer = new THREE.WebGLRenderer({canvas, antialias:!LOWQ, powerPreference:'high-performance'});
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+const MAXPR = params.has('pr') ? parseFloat(params.get('pr')) : Math.min(window.devicePixelRatio||1, LOWQ?1.25:1.75);
+const MINPR = params.has('pr') ? MAXPR : 0.55;
+let pixelRatio = Math.min(MAXPR, LOWQ?1:1.25);
+renderer.setPixelRatio(pixelRatio);
+renderer.setSize(innerWidth, innerHeight, false);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(62, innerWidth/innerHeight, 1, 30000);
+scene.add(camera);
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.9, 0.55, 0.78);
+composer.addPass(bloom);
+composer.addPass(new OutputPass());
+composer.setPixelRatio(pixelRatio);
+composer.setSize(innerWidth, innerHeight);
+function applyPR(pr){ pixelRatio=pr; renderer.setPixelRatio(pr); composer.setPixelRatio(pr); composer.setSize(innerWidth,innerHeight); }
+addEventListener('resize',()=>{ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight,false); composer.setSize(innerWidth,innerHeight); });
+
+const OCT = LOWQ ? 3 : 5;
+
+/* =====================================================================
+   Shader-Bausteine
+   ===================================================================== */
+const NOISE = `
+vec3 mod289(vec3 x){return x-floor(x*(1.0/289.0))*289.0;}
+vec4 mod289(vec4 x){return x-floor(x*(1.0/289.0))*289.0;}
+vec4 permute(vec4 x){return mod289(((x*34.0)+1.0)*x);}
+vec4 taylorInvSqrt(vec4 r){return 1.79284291400159-0.85373472095314*r;}
+float snoise(vec3 v){
+  const vec2 C=vec2(1.0/6.0,1.0/3.0); const vec4 D=vec4(0.0,0.5,1.0,2.0);
+  vec3 i=floor(v+dot(v,C.yyy)); vec3 x0=v-i+dot(i,C.xxx);
+  vec3 g=step(x0.yzx,x0.xyz); vec3 l=1.0-g; vec3 i1=min(g.xyz,l.zxy); vec3 i2=max(g.xyz,l.zxy);
+  vec3 x1=x0-i1+C.xxx; vec3 x2=x0-i2+C.yyy; vec3 x3=x0-D.yyy;
+  i=mod289(i);
+  vec4 p=permute(permute(permute(i.z+vec4(0.0,i1.z,i2.z,1.0))+i.y+vec4(0.0,i1.y,i2.y,1.0))+i.x+vec4(0.0,i1.x,i2.x,1.0));
+  float n_=0.142857142857; vec3 ns=n_*D.wyz-D.xzx;
+  vec4 j=p-49.0*floor(p*ns.z*ns.z); vec4 x_=floor(j*ns.z); vec4 y_=floor(j-7.0*x_);
+  vec4 x=x_*ns.x+ns.yyyy; vec4 y=y_*ns.x+ns.yyyy; vec4 h=1.0-abs(x)-abs(y);
+  vec4 b0=vec4(x.xy,y.xy); vec4 b1=vec4(x.zw,y.zw);
+  vec4 s0=floor(b0)*2.0+1.0; vec4 s1=floor(b1)*2.0+1.0; vec4 sh=-step(h,vec4(0.0));
+  vec4 a0=b0.xzyw+s0.xzyw*sh.xxyy; vec4 a1=b1.xzyw+s1.xzyw*sh.zzww;
+  vec3 p0=vec3(a0.xy,h.x); vec3 p1=vec3(a0.zw,h.y); vec3 p2=vec3(a1.xy,h.z); vec3 p3=vec3(a1.zw,h.w);
+  vec4 norm=taylorInvSqrt(vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3)));
+  p0*=norm.x;p1*=norm.y;p2*=norm.z;p3*=norm.w;
+  vec4 m=max(0.6-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.0); m=m*m;
+  return 42.0*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));
+}
+float fbm(vec3 p){float f=0.,a=.5;for(int i=0;i<OCT;i++){f+=a*snoise(p);p=p*2.02+vec3(1.7,9.2,3.1);a*=.5;}return f;}
+vec3 hash3(vec3 p){p=vec3(dot(p,vec3(127.1,311.7,74.7)),dot(p,vec3(269.5,183.3,246.1)),dot(p,vec3(113.5,271.9,124.6)));return fract(sin(p)*43758.5453123);}
+vec2 voronoi(vec3 x){vec3 p=floor(x);vec3 f=fract(x);float d1=8.,d2=8.;
+  for(int k=-1;k<=1;k++)for(int j=-1;j<=1;j++)for(int i=-1;i<=1;i++){vec3 b=vec3(float(i),float(j),float(k));vec3 r=b-f+hash3(p+b);float d=dot(r,r);if(d<d1){d2=d1;d1=d;}else if(d<d2){d2=d;}}
+  return vec2(sqrt(d1),sqrt(d2));}
+`;
+const VS_WORLD = `
+varying vec3 vObj; varying vec3 vWN; varying vec3 vWP;
+void main(){ vObj=position; vec4 wp=modelMatrix*vec4(position,1.); vWP=wp.xyz; vWN=normalize(mat3(modelMatrix)*normal); gl_Position=projectionMatrix*viewMatrix*wp; }`;
+
+const PLANET_FS = `
+uniform float uTime,uType,uSeed,uPulse,uFlash;
+uniform vec3 uC1,uC2,uC3,uC4,uAtmo,uSunPos,uSunColor;
+varying vec3 vObj; varying vec3 vWN; varying vec3 vWP;
+${NOISE}
+void main(){
+  vec3 p=normalize(vObj); vec3 N=normalize(vWN);
+  vec3 L=normalize(uSunPos-vWP); vec3 V=normalize(cameraPosition-vWP);
+  float ndl=dot(N,L); float ndv=max(dot(N,V),0.);
+  vec3 albedo=uC1; vec3 emis=vec3(0.); float spec=0.2; float seed=uSeed;
+  int t=int(uType+.5);
+  if(t==0){ // Gasriese mit Bändern & Adern
+    float w=fbm(vec3(p.x*2.,p.y*7.,p.z*2.)+vec3(uTime*.02,0.,0.)+seed);
+    float bands=sin((p.y+w*.2)*16.+seed);
+    albedo=mix(uC1,uC2,smoothstep(-1.,1.,bands));
+    float st=fbm(p*3.+w*1.2+seed+vec3(0.,0.,uTime*.01));
+    albedo=mix(albedo,uC3,smoothstep(.25,.75,st)*.8);
+    float vein=pow(1.-abs(snoise(p*5.+w*1.5+seed)),14.);
+    emis=uC4*vein*(.25+2.4*uPulse);
+    emis+=uC4*smoothstep(.55,.9,st)*.25*(.5+uPulse);
+    spec=.25;
+  } else if(t==1){ // Ozean
+    float w1=fbm(p*4.+vec3(0.,uTime*.03,0.)+seed);
+    float w2=fbm(p*11.-vec3(uTime*.05)+w1*1.5);
+    albedo=mix(uC1,uC2,smoothstep(-.5,.6,w1+.35*w2));
+    vec2 vr=voronoi(p*7.+seed+w1*.35);
+    float cell=smoothstep(.36,.2,vr.x); float rim=smoothstep(.07,0.,abs(vr.x-.26));
+    albedo=mix(albedo,uC3,(cell-smoothstep(.16,.05,vr.x)*.6)*.75);
+    emis=uC4*(pow(max(w2,0.),2.5)*.7+rim*.35);
+    spec=1.4;
+  } else if(t==2){ // Kristall-Netzwerk / Gefäßbaum
+    vec2 v=voronoi(p*6.+seed); float line=smoothstep(.09,0.,v.y-v.x);
+    vec2 v2=voronoi(p*15.+seed*2.); float line2=smoothstep(.05,0.,v2.y-v2.x);
+    float facet=fbm(p*7.+seed);
+    albedo=mix(uC1,uC2,facet*.5+.5);
+    float pulse=pow(.5+.5*sin(dot(p,vec3(13.,7.,11.))*3.-uTime*3.5),8.);
+    albedo=mix(albedo,uC3,line*.7);
+    emis=uC4*(line*(.45+2.6*pulse+uFlash*5.)+line2*.35*(.5+uFlash*4.));
+    spec=.9;
+  } else if(t==3){ // Osteone / Leberläppchen
+    vec2 v=voronoi(p*9.+seed);
+    float rings=.5+.5*sin(v.x*62.);
+    float canal=smoothstep(.13,.05,v.x);
+    float cement=smoothstep(.06,0.,v.y-v.x);
+    float por=fbm(p*18.+seed);
+    albedo=mix(uC1,uC2,rings*.55+por*.25);
+    albedo=mix(albedo,uC3,cement*.85);
+    albedo*=1.-canal*.8;
+    emis=uC4*canal*(.7+.5*sin(uTime*1.5+v.x*20.+seed));
+    spec=.3;
+  } else if(t==4){ // Luftige Alveolenwelt
+    vec3 q=p*2.5+seed;
+    vec3 wv=vec3(fbm(q+uTime*.01),fbm(q+5.2),fbm(q+9.1));
+    float c=fbm(q+wv*1.6+vec3(uTime*.015));
+    vec2 v=voronoi(p*9.+wv*.35+seed);
+    float bub=smoothstep(.06,0.,abs(v.x-.32));
+    albedo=mix(uC1,uC2,smoothstep(-.35,.6,c));
+    albedo=mix(albedo,uC3,bub*.45+smoothstep(.3,.9,c)*.6);
+    emis=uC4*bub*.35;
+    spec=.5;
+  } else if(t==5){ // Organisch, biolumineszent
+    float r=1.-abs(snoise(p*6.+seed)); r*=r;
+    float h=fbm(p*3.+seed);
+    float villi=pow(.5+.5*sin(snoise(p*28.+seed)*6.),3.);
+    albedo=mix(uC1,uC2,smoothstep(-.25,.5,h));
+    albedo=mix(albedo,uC3,r*.55);
+    albedo*=.75+.35*villi;
+    float spots=smoothstep(.72,.95,snoise(p*24.+seed+vec3(0.,uTime*.05,0.)));
+    emis=uC4*(spots*1.6+r*r*.25)*(.6+.4*sin(uTime*2.+h*10.));
+    spec=.35;
+  } else { // Irisierend, mit Iris
+    float ang=atan(p.y,p.x); float rad=acos(clamp(p.z,-1.,1.));
+    float st=fbm(vec3(cos(ang)*7.,sin(ang)*7.,rad*5.+seed));
+    float iris=smoothstep(.95,.85,rad)*smoothstep(.22,.3,rad);
+    float pupil=smoothstep(.27,.2,rad);
+    vec3 irid=.5+.5*cos(6.2831*(vec3(0.,.33,.67)+ndv*1.3+fbm(p*3.+seed)*.6+uTime*.02));
+    albedo=mix(uC1,irid*uC2,.55);
+    vec3 irisCol=mix(uC3,uC4,.5+.5*st)*(.55+.9*abs(st));
+    albedo=mix(albedo,irisCol,iris);
+    albedo=mix(albedo,vec3(.008),pupil);
+    emis=uC4*iris*pow(abs(st),1.6)*.9+irid*.06*(1.-iris);
+    spec=1.1;
+  }
+  float diff=smoothstep(-.18,1.,ndl);
+  vec3 col=albedo*(diff*uSunColor*1.35+.025);
+  col+=albedo*uAtmo*.3*exp(-pow(ndl*3.5,2.)); // Dämmerungsstreifen
+  vec3 H=normalize(L+V);
+  col+=spec*pow(max(dot(N,H),0.),70.)*uSunColor*step(0.,ndl)*.8;
+  float fr=pow(1.-ndv,3.);
+  col+=uAtmo*fr*(.15+1.3*smoothstep(-.35,.6,ndl));
+  col+=emis*(.4+.6*(1.-diff));
+  gl_FragColor=vec4(col,1.);
+}`;
+
+const ATMO_FS = `
+uniform vec3 uAtmo,uSunPos; uniform float uRatio,uStrength;
+varying vec3 vObj; varying vec3 vWN; varying vec3 vWP;
+void main(){
+  vec3 N=normalize(vWN); vec3 V=normalize(cameraPosition-vWP);
+  float ndv=abs(dot(N,V));
+  float limb=sqrt(max(1.-uRatio*uRatio,0.));
+  float g=pow(smoothstep(0.,limb,ndv),2.4);
+  vec3 L=normalize(uSunPos-vWP);
+  float lit=.12+smoothstep(-.4,.5,dot(N,L));
+  gl_FragColor=vec4(uAtmo,g*lit*uStrength);
+}`;
+
+const STAR_FS = `
+uniform float uTime,uPulse; uniform vec3 uC1,uC2;
+varying vec3 vObj; varying vec3 vWN; varying vec3 vWP;
+${NOISE}
+void main(){
+  vec3 p=normalize(vObj); vec3 V=normalize(cameraPosition-vWP); vec3 N=normalize(vWN);
+  float n=fbm(p*3.+vec3(uTime*.06)); float n2=fbm(p*9.-vec3(uTime*.1)+n);
+  vec3 col=mix(uC2,uC1,smoothstep(-.4,.6,n+n2*.5));
+  float limb=pow(max(dot(N,V),0.),.45);
+  gl_FragColor=vec4(col*(2.2+1.8*uPulse)*(.55+.45*limb)+uC1*pow(1.-max(dot(N,V),0.),2.)*2.,1.);
+}`;
+
+const CORE_FS = `
+uniform float uTime; uniform vec3 uC[6];
+varying vec3 vObj; varying vec3 vWN; varying vec3 vWP;
+${NOISE}
+void main(){
+  vec3 p=normalize(vObj); vec3 V=normalize(cameraPosition-vWP); vec3 N=normalize(vWN);
+  float n=fbm(p*2.5+vec3(uTime*.05));
+  float k=fract(n*1.5+uTime*.04+atan(p.z,p.x)/6.2831)*6.;
+  int i=int(k); float f=fract(k);
+  vec3 a=uC[0],b=uC[1];
+  for(int j=0;j<6;j++){ if(j==i){a=uC[j];b=uC[j==5?0:j+1];} }
+  vec3 col=mix(a,b,smoothstep(0.,1.,f));
+  float lines=smoothstep(.04,0.,abs(fract(n*6.+uTime*.1)-.5)-.44);
+  col=mix(col,vec3(1.),.35+lines*.4);
+  float limb=pow(max(dot(N,V),0.),.5);
+  gl_FragColor=vec4(col*(2.4+lines*2.)*(.6+.4*limb),1.);
+}`;
+
+const RING_VS = `varying float vR; varying vec3 vWP; void main(){ vR=length(position.xy); vec4 wp=modelMatrix*vec4(position,1.); vWP=wp.xyz; gl_Position=projectionMatrix*viewMatrix*wp; }`;
+const RING_FS = `
+uniform float uIn,uOut,uSeed; uniform vec3 uCol,uSunColor;
+varying float vR; varying vec3 vWP;
+float h(float n){return fract(sin(n)*43758.5453);}
+void main(){
+  float t=(vR-uIn)/(uOut-uIn);
+  float b=0.; for(int i=0;i<5;i++){ float fi=float(i); b+=sin(t*(18.+fi*23.)+h(fi+uSeed)*6.28)*(.5/(fi+1.)); }
+  float a=smoothstep(0.,.08,t)*smoothstep(1.,.85,t)*(.35+.65*smoothstep(-.4,.8,b));
+  a*=.55+.45*smoothstep(.45,.5,abs(t-.62)+.3);
+  gl_FragColor=vec4(uCol*uSunColor*1.2,a*.75);
+}`;
+
+/* =====================================================================
+   Hilfsfunktionen
+   ===================================================================== */
+function rng(seed){ let s=seed>>>0||1; return ()=>{ s=(s*1664525+1013904223)>>>0; return s/4294967296; }; }
+const glowTex = (()=>{ const c=document.createElement('canvas'); c.width=c.height=128; const g=c.getContext('2d');
+  const gr=g.createRadialGradient(64,64,0,64,64,64); gr.addColorStop(0,'rgba(255,255,255,1)'); gr.addColorStop(.18,'rgba(255,255,255,.55)'); gr.addColorStop(.45,'rgba(255,255,255,.12)'); gr.addColorStop(1,'rgba(255,255,255,0)');
+  g.fillStyle=gr; g.fillRect(0,0,128,128); const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; return t; })();
+function glowSprite(color, scale, intensity=1){ const m=new THREE.SpriteMaterial({map:glowTex,color:C(color).multiplyScalar(intensity),blending:THREE.AdditiveBlending,depthWrite:false,transparent:true}); const s=new THREE.Sprite(m); s.scale.setScalar(scale); return s; }
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const lerp=(a,b,t)=>a+(b-a)*t;
+const damp=(a,b,k,dt)=>lerp(a,b,1-Math.exp(-k*dt));
+function heartEnv(t){ const period=60/62, ph=((t%period)+period)%period; return Math.exp(-Math.pow(ph/.07,2))+.65*Math.exp(-Math.pow((ph-.3)/.07,2)); }
+
+/* =====================================================================
+   Hintergrund: Nebel-Cubemap + Sterne
+   ===================================================================== */
+const bgScene = new THREE.Scene();
+const nebMat = new THREE.ShaderMaterial({ side:THREE.BackSide, depthWrite:false, defines:{OCT:5},
+  uniforms:{uA:{value:C('#fff')},uB:{value:C('#fff')},uC:{value:C('#fff')},uSeed:{value:0}},
+  vertexShader:`varying vec3 vDir; void main(){ vDir=position; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
+  fragmentShader:`uniform vec3 uA,uB,uC; uniform float uSeed; varying vec3 vDir; ${NOISE}
+  void main(){ vec3 d=normalize(vDir);
+    float n1=fbm(d*1.8+uSeed); float n2=fbm(d*3.6+vec3(n1*1.6)+uSeed*2.);
+    vec3 col=vec3(.003,.004,.01);
+    float neb=smoothstep(-.15,.8,n2)*smoothstep(-.35,.55,n1);
+    col+=uA*neb*.5+uB*pow(max(n2,0.),2.2)*.9;
+    float band=exp(-pow(d.y*2.6+n1*.6,2.));
+    col+=uC*band*.16*(.5+n2);
+    col*=1.-.75*smoothstep(.15,.6,fbm(d*5.+uSeed+3.))*band;
+    vec3 sd=d*420.; vec3 id=floor(sd); vec3 hh=hash3(id+uSeed);
+    float st=step(.965,hh.x)*smoothstep(.5,.0,length(fract(sd)-.5-(hh-.5)*.5))*hh.y;
+    col+=st*mix(vec3(.8,.9,1.),vec3(1.,.85,.7),hh.z)*1.2;
+    gl_FragColor=vec4(col,1.); }`});
+bgScene.add(new THREE.Mesh(new THREE.SphereGeometry(500,48,32), nebMat));
+const cubeRT = new THREE.WebGLCubeRenderTarget(LOWQ?512:1024, {type:THREE.HalfFloatType, generateMipmaps:true, minFilter:THREE.LinearMipmapLinearFilter});
+const cubeCam = new THREE.CubeCamera(1, 1000, cubeRT);
+const pmrem = new THREE.PMREMGenerator(renderer);
+let envRT=null;
+function buildSky(sys){
+  nebMat.uniforms.uA.value=C(sys.neb[0]); nebMat.uniforms.uB.value=C(sys.neb[1]).multiplyScalar(.5); nebMat.uniforms.uC.value=C(sys.neb[2]); nebMat.uniforms.uSeed.value=sys.i*7.31+1.3;
+  const tm=renderer.toneMapping; renderer.toneMapping=THREE.NoToneMapping;
+  cubeCam.update(renderer, bgScene); renderer.toneMapping=tm;
+  scene.background=cubeRT.texture;
+  if(envRT) envRT.dispose(); envRT=pmrem.fromCubemap(cubeRT.texture); scene.environment=envRT.texture;
+}
+// Sterne (twinkeln, folgen der Kamera)
+const starPts=(()=>{ const N=LOWQ?900:1800, pos=new Float32Array(N*3), col=new Float32Array(N*3), sz=new Float32Array(N), ph=new Float32Array(N); const r=rng(42);
+  for(let i=0;i<N;i++){ const u=r()*2-1, a=r()*Math.PI*2, s=Math.sqrt(1-u*u); pos.set([Math.cos(a)*s*8000,u*8000,Math.sin(a)*s*8000],i*3);
+    const c=C(['#ffffff','#bcd8ff','#ffe2c0','#ffd0e8'][r()*4|0]); col.set([c.r,c.g,c.b],i*3); sz[i]=r()<.06?3.2+r()*2:1+r()*1.6; ph[i]=r()*6.28; }
+  const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.BufferAttribute(pos,3)); g.setAttribute('color',new THREE.BufferAttribute(col,3)); g.setAttribute('aSize',new THREE.BufferAttribute(sz,1)); g.setAttribute('aPh',new THREE.BufferAttribute(ph,1));
+  const m=new THREE.ShaderMaterial({uniforms:{uTime:{value:0},uPR:{value:1}},vertexColors:true,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
+    vertexShader:`attribute float aSize,aPh; uniform float uTime,uPR; varying vec3 vC; varying float vA; void main(){ vC=color; vA=.55+.45*sin(uTime*(1.+aPh*.3)+aPh*9.); gl_PointSize=aSize*uPR*(.8+.4*vA); gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
+    fragmentShader:`varying vec3 vC; varying float vA; void main(){ vec2 d=gl_PointCoord-.5; float a=smoothstep(.5,0.,length(d)); gl_FragColor=vec4(vC*1.6,a*vA); }`});
+  const p=new THREE.Points(g,m); p.frustumCulled=false; p.renderOrder=-1; scene.add(p); return p; })();
+
+/* =====================================================================
+   Staub & Geschwindigkeitslinien
+   ===================================================================== */
+const DUST_S=420;
+const dust=(()=>{ const N=LOWQ?700:1500, pos=new Float32Array(N*3); const r=rng(7); for(let i=0;i<N*3;i++) pos[i]=(r()-.5)*DUST_S;
+  const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  const m=new THREE.ShaderMaterial({uniforms:{uCam:{value:new THREE.Vector3()},uCol:{value:C('#fff')},uPR:{value:1}},transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
+    vertexShader:`uniform vec3 uCam; uniform float uPR; varying float vA; const float S=${DUST_S.toFixed(1)};
+      void main(){ vec3 p=mod(position-uCam+.5*S,S)-.5*S; vec4 mv=modelViewMatrix*vec4(uCam+p,1.); float d=length(p); vA=smoothstep(S*.5,S*.2,d)*smoothstep(3.,12.,d);
+      gl_PointSize=clamp(90./-mv.z,1.,4.)*uPR; gl_Position=projectionMatrix*mv; }`,
+    fragmentShader:`uniform vec3 uCol; varying float vA; void main(){ float a=smoothstep(.5,0.,length(gl_PointCoord-.5)); gl_FragColor=vec4(uCol,a*vA*.8); }`});
+  const p=new THREE.Points(g,m); p.frustumCulled=false; scene.add(p); return p; })();
+const streaks=(()=>{ const N=LOWQ?140:260, pos=new Float32Array(N*6), end=new Float32Array(N*2); const r=rng(9);
+  for(let i=0;i<N;i++){ const x=(r()-.5)*DUST_S,y=(r()-.5)*DUST_S,z=(r()-.5)*DUST_S; pos.set([x,y,z,x,y,z],i*6); end[i*2]=0; end[i*2+1]=1; }
+  const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.BufferAttribute(pos,3)); g.setAttribute('aEnd',new THREE.BufferAttribute(end,1));
+  const m=new THREE.ShaderMaterial({uniforms:{uCam:{value:new THREE.Vector3()},uVel:{value:new THREE.Vector3()},uWind:{value:new THREE.Vector3()},uCol:{value:C('#fff')},uAlpha:{value:0}},transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
+    vertexShader:`attribute float aEnd; uniform vec3 uCam,uVel,uWind; varying float vA; const float S=${DUST_S.toFixed(1)};
+      void main(){ vec3 p=mod(position-uCam+.5*S,S)-.5*S; float d=length(p); vA=smoothstep(S*.5,S*.15,d)*smoothstep(4.,20.,d)*(1.-aEnd*.9);
+      vec3 w=uCam+p-(uVel*.07+uWind)*aEnd; gl_Position=projectionMatrix*modelViewMatrix*vec4(w,1.); }`,
+    fragmentShader:`uniform vec3 uCol; uniform float uAlpha; varying float vA; void main(){ gl_FragColor=vec4(uCol,vA*uAlpha); }`});
+  const l=new THREE.LineSegments(g,m); l.frustumCulled=false; scene.add(l); return l; })();
+
+/* =====================================================================
+   Raumschiff
+   ===================================================================== */
+const ship=(()=>{
+  const g=new THREE.Group(), body=new THREE.Group(); g.add(body);
+  const hull=new THREE.MeshStandardMaterial({color:0xe4e9f0,metalness:.7,roughness:.26,envMapIntensity:1.4});
+  const dark=new THREE.MeshStandardMaterial({color:0x1c2029,metalness:.6,roughness:.4,envMapIntensity:1});
+  const accent=new THREE.MeshBasicMaterial({color:C('#ff6a5a').multiplyScalar(3)});
+  const prof=[[0,3.9],[.3,3.3],[.68,2.3],[.95,.9],[1.02,-.5],[.92,-2.2],[.78,-3],[.58,-3.25],[0,-3.25]].reverse().map(([x,y])=>new THREE.Vector2(x,y));
+  const lg=new THREE.LatheGeometry(prof,28); lg.rotateX(-Math.PI/2);
+  const fus=new THREE.Mesh(lg,hull); fus.scale.set(1,.62,1); body.add(fus);
+  const can=new THREE.Mesh(new THREE.SphereGeometry(.55,24,14),new THREE.MeshStandardMaterial({color:0x0a1420,metalness:1,roughness:.05,envMapIntensity:2.2,emissive:C('#3a8aff'),emissiveIntensity:.25}));
+  can.scale.set(1,.62,1.9); can.position.set(0,.42,-1.1); body.add(can);
+  const ws=new THREE.Shape(); ws.moveTo(.5,-1.1); ws.lineTo(4.3,1.5); ws.lineTo(4.5,2.35); ws.lineTo(3.8,2.4); ws.lineTo(.7,2.1); ws.lineTo(.5,-1.1);
+  const wg=new THREE.ExtrudeGeometry(ws,{depth:.14,bevelEnabled:true,bevelThickness:.05,bevelSize:.05,bevelSegments:2}); wg.rotateX(Math.PI/2); wg.translate(0,.05,0);
+  const wr=new THREE.Mesh(wg,hull), wl=new THREE.Mesh(wg,hull); wl.scale.x=-1; body.add(wr,wl);
+  const stripG=new THREE.BoxGeometry(3.3,.03,.09);
+  [1,-1].forEach(sx=>{ const s=new THREE.Mesh(stripG,accent); s.position.set(sx*2.45,.14,.35); s.rotation.y=-sx*.6; body.add(s);
+    const tip=new THREE.Mesh(new THREE.SphereGeometry(.13,10,8),accent); tip.position.set(sx*4.35,.08,2.3); body.add(tip); });
+  const fin=new THREE.Shape(); fin.moveTo(0,0); fin.lineTo(1.9,0); fin.lineTo(2.2,1.3); fin.lineTo(1.5,1.35); fin.lineTo(0,0);
+  const fg=new THREE.ExtrudeGeometry(fin,{depth:.1,bevelEnabled:false}); fg.rotateY(-Math.PI/2); const fm=new THREE.Mesh(fg,dark); fm.position.set(.05,.4,1.0); body.add(fm);
+  const flames=[], nozzles=[];
+  const flameMat=new THREE.ShaderMaterial({uniforms:{uCol:{value:C('#ffb070')},uT:{value:0}},transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
+    vertexShader:`varying vec2 vUv; void main(){vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
+    fragmentShader:`uniform vec3 uCol; uniform float uT; varying vec2 vUv; void main(){ float f=1.-vUv.y; float a=pow(f,1.6)*(.75+.25*sin(uT*40.+f*20.)); gl_FragColor=vec4(mix(uCol,vec3(1.),f*f)*3.,a); }`});
+  [1,-1].forEach(sx=>{
+    const eng=new THREE.Mesh(new THREE.CylinderGeometry(.42,.52,1.7,18),dark); eng.rotation.x=Math.PI/2; eng.position.set(sx*1.02,-.08,2.75); body.add(eng);
+    const ring=new THREE.Mesh(new THREE.TorusGeometry(.4,.06,8,24),accent); ring.position.set(sx*1.02,-.08,3.6); body.add(ring);
+    const noz=new THREE.Mesh(new THREE.CircleGeometry(.36,20),new THREE.MeshBasicMaterial({color:C('#ffd0a0').multiplyScalar(4)})); noz.position.set(sx*1.02,-.08,3.62); body.add(noz); nozzles.push(noz);
+    const fl=new THREE.Mesh(new THREE.ConeGeometry(.34,3,16,1,true),flameMat); fl.rotation.x=Math.PI/2; fl.position.set(sx*1.02,-.08,3.62+1.5); body.add(fl); flames.push(fl);
+    const gs=glowSprite('#ffb070',4,1.2); gs.position.set(sx*1.02,-.08,3.9); body.add(gs); flames.push(gs);
+  });
+  scene.add(g);
+  return {g, body, flames, flameMat, accent, nozzles, q:new THREE.Quaternion(), pos:new THREE.Vector3(), vel:new THREE.Vector3(), ang:new THREE.Vector3()};
+})();
+const fill=new THREE.DirectionalLight(0xbfd6ff,.55); fill.position.set(-.4,1,.6); camera.add(fill);
+scene.add(new THREE.HemisphereLight(0x8899bb,0x221a1a,.35));
+const sunLight=new THREE.PointLight(0xffffff,4,0,0); scene.add(sunLight);
+
+// Scan-Strahl
+const scanBeam=(()=>{ const g=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(),new THREE.Vector3(0,0,-1)]);
+  const l=new THREE.Line(g,new THREE.LineBasicMaterial({color:C('#9ff3ff').multiplyScalar(4),transparent:true,opacity:.9,blending:THREE.AdditiveBlending,depthWrite:false})); l.frustumCulled=false; l.visible=false; scene.add(l); return l; })();
+
+// Warp-Tunnel
+const tunnel=(()=>{ const geo=new THREE.CylinderGeometry(26,26,900,48,1,true); geo.rotateX(Math.PI/2);
+  const m=new THREE.ShaderMaterial({side:THREE.BackSide,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
+    uniforms:{uTime:{value:0},uAlpha:{value:0},uC1:{value:C('#fff')},uC2:{value:C('#fff')}},
+    vertexShader:`varying vec2 vUv; void main(){vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
+    fragmentShader:`varying vec2 vUv; uniform float uTime,uAlpha; uniform vec3 uC1,uC2; float h(float n){return fract(sin(n)*43758.5453);}
+      void main(){ float a=vUv.x*72.; float id=floor(a); float fa=fract(a); float sp=1.+h(id)*2.;
+        float z=fract(vUv.y*2.5+uTime*sp*.9+h(id+7.));
+        float streak=smoothstep(0.,.06,z)*smoothstep(.55,.1,z)*smoothstep(.5,.05,abs(fa-.5));
+        vec3 col=mix(uC1,uC2,h(id+3.))*streak*4.;
+        float edge=smoothstep(0.,.3,vUv.y)*smoothstep(1.,.7,vUv.y);
+        float swirl=.5+.5*sin(vUv.x*6.2831*3.+vUv.y*20.-uTime*6.);
+        gl_FragColor=vec4(col+mix(uC1,uC2,swirl)*.35,(streak+.25)*edge*uAlpha); }`});
+  const t=new THREE.Mesh(geo,m); t.position.z=-380; t.visible=false; t.frustumCulled=false; camera.add(t); return t; })();
+
+/* =====================================================================
+   System-Aufbau
+   ===================================================================== */
+let SYS=null;
+const tmpV=new THREE.Vector3(), tmpV2=new THREE.Vector3(), tmpQ=new THREE.Quaternion();
+function makePlanet(d, i, sysI, sunPos, sunCol){
+  const group=new THREE.Group();
+  const pos=new THREE.Vector3(Math.cos(d.ang)*d.orbit, d.y, Math.sin(d.ang)*d.orbit);
+  group.position.copy(pos);
+  const u={uTime:{value:0},uType:{value:d.type},uSeed:{value:sysI*13.7+i*5.1+.7},uPulse:{value:.35},uFlash:{value:0},
+    uC1:{value:C(d.c[0])},uC2:{value:C(d.c[1])},uC3:{value:C(d.c[2])},uC4:{value:C(d.c[3]).multiplyScalar(1.6)},uAtmo:{value:C(d.atmo)},uSunPos:{value:sunPos},uSunColor:{value:sunCol}};
+  const seg=LOWQ?64:112;
+  const mesh=new THREE.Mesh(new THREE.SphereGeometry(d.r,seg,seg*0.6|0), new THREE.ShaderMaterial({uniforms:u,defines:{OCT},vertexShader:VS_WORLD,fragmentShader:PLANET_FS}));
+  mesh.rotation.z=.25*(i%2?1:-1); group.add(mesh);
+  const ratio=1/1.2;
+  const au={uAtmo:{value:C(d.atmo).multiplyScalar(1.3)},uSunPos:{value:sunPos},uRatio:{value:ratio},uStrength:{value:1}};
+  const atmo=new THREE.Mesh(new THREE.SphereGeometry(d.r*1.2,64,40), new THREE.ShaderMaterial({uniforms:au,vertexShader:VS_WORLD,fragmentShader:ATMO_FS,side:THREE.BackSide,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}));
+  group.add(atmo);
+  if(d.ring){ const [a,b,c]=d.ring; const rg=new THREE.RingGeometry(d.r*a,d.r*b,160,1);
+    const rm=new THREE.Mesh(rg,new THREE.ShaderMaterial({uniforms:{uIn:{value:d.r*a},uOut:{value:d.r*b},uSeed:{value:i+sysI},uCol:{value:C(c)},uSunColor:{value:sunCol}},vertexShader:RING_VS,fragmentShader:RING_FS,side:THREE.DoubleSide,transparent:true,depthWrite:false}));
+    rm.rotation.x=-Math.PI/2+.35; rm.rotation.y=.2; group.add(rm); }
+  return {d, group, mesh, atmo, u, au, pos, r:d.r};
+}
+function makeAnomaly(id, pos, normal, color){
+  const g=new THREE.Group(); g.position.copy(pos);
+  const col=C(color);
+  const core=new THREE.Mesh(new THREE.OctahedronGeometry(2.6,0),new THREE.MeshBasicMaterial({color:col.clone().multiplyScalar(5)}));
+  const shell=new THREE.Mesh(new THREE.IcosahedronGeometry(7,1),new THREE.MeshBasicMaterial({color:col.clone().multiplyScalar(1.6),wireframe:true,transparent:true,opacity:.45,blending:THREE.AdditiveBlending,depthWrite:false}));
+  const beamGeo=new THREE.CylinderGeometry(.5,3.5,160,12,1,true); beamGeo.translate(0,80,0);
+  const beam=new THREE.Mesh(beamGeo,new THREE.ShaderMaterial({uniforms:{uCol:{value:col.clone().multiplyScalar(2.5)},uTime:{value:0}},transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,side:THREE.DoubleSide,
+    vertexShader:`varying float vH; void main(){ vH=uv.y; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
+    fragmentShader:`uniform vec3 uCol; uniform float uTime; varying float vH; void main(){ float a=pow(1.-vH,2.)*(.55+.45*sin(uTime*3.-vH*14.)); gl_FragColor=vec4(uCol,a*.7); }`}));
+  beam.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0), normal.clone().negate());
+  beam.position.copy(normal).multiplyScalar(-2);
+  const beamUp=beam.clone(); beamUp.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0), normal); beamUp.scale.set(.6,.9,.6);
+  const glow=glowSprite(color,36,1.6);
+  g.add(core,shell,beam,beamUp,glow);
+  return {id, g, core, shell, beam, beamUp, glow, pos:pos.clone(), col};
+}
+function buildSystem(i){
+  if(SYS){ scene.remove(SYS.group); SYS.group.traverse(o=>{ if(o.geometry) o.geometry.dispose(); if(o.material){ o.material.dispose(); } }); }
+  const sys=SYSTEMS[i]; const group=new THREE.Group(); scene.add(group);
+  const sunPos=new THREE.Vector3(0,0,0); const sunCol=C(sys.star.c1).lerp(C(sys.star.c2),.25);
+  sunLight.color.copy(sunCol);
+  const obj={i, sys, group, planets:[], anomalies:[], sunPos, sunCol, star:null, belt:null, core:null, echoes:[]};
+  // Stern / Kern
+  const sr=sys.star.r;
+  if(sys.core){
+    const cu={uTime:{value:0},uC:{value:SYSTEMS.slice(0,6).map(s=>C(s.hue))}};
+    const m=new THREE.Mesh(new THREE.SphereGeometry(sr,96,64),new THREE.ShaderMaterial({uniforms:cu,defines:{OCT},vertexShader:VS_WORLD,fragmentShader:CORE_FS})); group.add(m);
+    const rings=[]; SYSTEMS.slice(0,6).forEach((s,k)=>{ const t=new THREE.Mesh(new THREE.TorusGeometry(sr*(1.6+k*.22),1.2,8,160),new THREE.MeshBasicMaterial({color:C(s.hue).multiplyScalar(3)}));
+      t.rotation.set(Math.random()*3,Math.random()*3,0); group.add(t); rings.push(t); });
+    const g1=glowSprite('#fff0d8',sr*9,1.1), g2=glowSprite('#ffc88a',sr*22,.45); group.add(g1,g2);
+    obj.core={m,cu,rings,g1,g2};
+    // Echo-Welten der sechs Systeme
+    SYSTEMS.slice(0,6).forEach((s,k)=>{ const pd=Object.assign({},s.planets[0],{r:46,orbit:760,ang:k/6*Math.PI*2+.3,y:Math.sin(k*1.7)*90,ring:null}); const p=makePlanet(pd,k,k,sunPos,sunCol); group.add(p.group); obj.planets.push(p); obj.echoes.push(p); });
+    const n=new THREE.Vector3(0,.25,1).normalize(); const a=makeAnomaly('h1', n.clone().multiplyScalar(sr+95), n, '#ffffff'); group.add(a.g); obj.anomalies.push(Object.assign(a,{planet:null,normal:n}));
+  } else {
+    const su={uTime:{value:0},uPulse:{value:0},uC1:{value:C(sys.star.c1)},uC2:{value:C(sys.star.c2)}};
+    const m=new THREE.Mesh(new THREE.SphereGeometry(sr,72,48),new THREE.ShaderMaterial({uniforms:su,defines:{OCT},vertexShader:VS_WORLD,fragmentShader:STAR_FS})); group.add(m);
+    const g1=glowSprite(sys.star.c1,sr*7,1.3), g2=glowSprite(sys.star.c2,sr*18,.55); group.add(g1,g2);
+    obj.star={m,su,g1,g2,r:sr};
+    sys.planets.forEach((pd,k)=>{ const p=makePlanet(pd,k,i,sunPos,sunCol); group.add(p.group); obj.planets.push(p);
+      // Anomalien um den Planeten
+      const toSun=tmpV.copy(p.pos).negate().normalize().clone(); const up=new THREE.Vector3(0,1,0); const side=new THREE.Vector3().crossVectors(toSun,up).normalize(); const up2=new THREE.Vector3().crossVectors(side,toSun).normalize();
+      pd.facts.forEach((id,j)=>{ const n=pd.facts.length; const a=(j/n)*Math.PI*2+k*.9+.4;
+        const dir=new THREE.Vector3().addScaledVector(toSun,.75).addScaledVector(side,Math.cos(a)).addScaledVector(up2,Math.sin(a)*.8).normalize();
+        const alt=pd.r+Math.max(22,pd.r*.16);
+        const an=makeAnomaly(id, p.pos.clone().addScaledVector(dir,alt), dir, sys.hue2); group.add(an.g); obj.anomalies.push(Object.assign(an,{planet:p,normal:dir})); });
+    });
+    // Gefahrengürtel
+    const N=LOWQ?110:180, R=1480, W=150; const r=rng(100+i);
+    const geo=new THREE.IcosahedronGeometry(1,1); const pa=geo.attributes.position;
+    for(let v=0;v<pa.count;v++){ tmpV.fromBufferAttribute(pa,v); const k=.75+.5*Math.abs(Math.sin(tmpV.x*3.1+tmpV.y*5.3)*Math.cos(tmpV.z*4.7)); tmpV.multiplyScalar(k); pa.setXYZ(v,tmpV.x,tmpV.y,tmpV.z); }
+    geo.computeVertexNormals();
+    const bc=C(sys.belt.c);
+    const bm=new THREE.InstancedMesh(geo,new THREE.MeshStandardMaterial({color:bc,roughness:.75,metalness:.15,flatShading:true,emissive:bc.clone().multiplyScalar(.12)}),N);
+    const items=[]; const M=new THREE.Matrix4();
+    for(let k=0;k<N;k++){ const a=r()*Math.PI*2, rr=R+(r()-.5)*W*2, y=(r()-.5)*70, s=4+r()*r()*16;
+      const p=new THREE.Vector3(Math.cos(a)*rr,y,Math.sin(a)*rr); tmpQ.setFromEuler(new THREE.Euler(r()*6,r()*6,r()*6));
+      M.compose(p,tmpQ,new THREE.Vector3(s,s*(.7+r()*.5),s)); bm.setMatrixAt(k,M); items.push({p,s}); }
+    group.add(bm); obj.belt={mesh:bm,items,rot:0};
+  }
+  SYS=obj;
+  buildSky(sys);
+  dust.material.uniforms.uCol.value=C(sys.hue2).multiplyScalar(.9);
+  streaks.material.uniforms.uCol.value=C(sys.hue2);
+  ship.accent.color.copy(C(sys.hue)).multiplyScalar(3);
+  ship.flameMat.uniforms.uCol.value=C(sys.hue).lerp(C('#ffd0a0'),.5);
+  document.documentElement.style.setProperty('--acc',sys.hue); document.documentElement.style.setProperty('--acc2',sys.hue2);
+  obj.anomalies.forEach(a=>setAnomalyFound(a,S.found.has(a.id)));
+  S.storm={state:'idle',t:sys.core?1e9:75+Math.random()*30,k:0};
+  audio.setSystem(i);
+  buildMarkers(); updateSysCard();
+  return obj;
+}
+function setAnomalyFound(a,f){ a.found=f; a.core.material.color.copy(f?C('#ffd98a').multiplyScalar(2):a.col.clone().multiplyScalar(5)); a.shell.visible=!f; a.beam.visible=!f; a.beamUp.visible=!f; a.glow.material.color.copy(f?C('#ffcf80').multiplyScalar(.6):a.col.clone().multiplyScalar(1.6)); a.glow.scale.setScalar(f?14:36); }
+function spawnPoint(){ const sys=SYSTEMS[SYS.i]; const p=new THREE.Vector3(0,120,2350).applyAxisAngle(new THREE.Vector3(0,1,0), SYS.i*.8+.3);
+  if(sys.core) p.set(0,150,1900);
+  return p; }
+function placeShipAtSpawn(){ const p=spawnPoint(); ship.pos.copy(p); const tgt=nearestTarget(p)||{pos:new THREE.Vector3()}; const m=new THREE.Matrix4().lookAt(p,tgt.pos.clone().lerp(new THREE.Vector3(),.15),new THREE.Vector3(0,1,0)); ship.q.setFromRotationMatrix(m); ship.vel.set(0,0,0); S.speed=0; ship.ang.set(0,0,0); }
+function nearestTarget(from){ let best=null,bd=1e12; for(const a of SYS.anomalies){ if(a.found) continue; const d=a.pos.distanceToSquared(from); if(d<bd){bd=d;best=a;} } return best; }
+
+/* =====================================================================
+   Audio: generativer Ambient-Soundtrack & SFX
+   ===================================================================== */
+const audio=(()=>{
+  let ctx=null, master, music, sfx, reverb, delay, fb, pad=[], sub, lfo, arpT=0, chordT=0, chordI=0, root=50, sysI=0, speedN=0, near=0, heartNext=0, eng, engF, engG, rumble, rumbleG, scanOsc=null, scanG=null, timer=null, noiseBuf;
+  const LYD=[0,2,4,6,7,9,11], PENT=[0,2,4,7,9], PROG=[0,4,5,3,0,1,5,4];
+  const mtof=m=>440*Math.pow(2,(m-69)/12);
+  const deg=(d,base)=>{ const o=Math.floor(d/7), k=((d%7)+7)%7; return base+o*12+LYD[k]; };
+  function init(){
+    if(ctx) return; const AC=window.AudioContext||window.webkitAudioContext; if(!AC) return;
+    ctx=new AC();
+    master=ctx.createGain(); master.gain.value=S.muted?0:.85;
+    const comp=ctx.createDynamicsCompressor(); comp.threshold.value=-18; comp.ratio.value=3; master.connect(comp); comp.connect(ctx.destination);
+    music=ctx.createGain(); music.gain.value=.55; sfx=ctx.createGain(); sfx.gain.value=.8;
+    reverb=ctx.createConvolver(); const len=ctx.sampleRate*4.5, ir=ctx.createBuffer(2,len,ctx.sampleRate);
+    for(let c=0;c<2;c++){ const d=ir.getChannelData(c); for(let k=0;k<len;k++) d[k]=(Math.random()*2-1)*Math.pow(1-k/len,2.6); }
+    reverb.buffer=ir; const wet=ctx.createGain(); wet.gain.value=.75; reverb.connect(wet); wet.connect(master);
+    music.connect(master); music.connect(reverb); sfx.connect(master); sfx.connect(reverb);
+    delay=ctx.createDelay(2); delay.delayTime.value=.42; fb=ctx.createGain(); fb.gain.value=.38; const dl=ctx.createBiquadFilter(); dl.type='lowpass'; dl.frequency.value=2400;
+    delay.connect(dl); dl.connect(fb); fb.connect(delay); dl.connect(music);
+    noiseBuf=ctx.createBuffer(1,ctx.sampleRate*2,ctx.sampleRate); const nd=noiseBuf.getChannelData(0); for(let k=0;k<nd.length;k++) nd[k]=Math.random()*2-1;
+    // Pad
+    lfo=ctx.createOscillator(); lfo.frequency.value=.06; const lfoG=ctx.createGain(); lfoG.gain.value=260; lfo.connect(lfoG); lfo.start();
+    for(let v=0;v<4;v++){ const f=ctx.createBiquadFilter(); f.type='lowpass'; f.frequency.value=700; f.Q.value=.6; lfoG.connect(f.frequency);
+      const g=ctx.createGain(); g.gain.value=0; f.connect(g); g.connect(music);
+      const o1=ctx.createOscillator(), o2=ctx.createOscillator(); o1.type='sawtooth'; o2.type='triangle'; o1.detune.value=-7+v*2; o2.detune.value=7-v;
+      o1.connect(f); o2.connect(f); o1.start(); o2.start(); pad.push({o1,o2,f,g}); }
+    sub=ctx.createOscillator(); sub.type='sine'; const subG=ctx.createGain(); subG.gain.value=.12; sub.connect(subG); subG.connect(music); sub.start();
+    // Triebwerk
+    eng=ctx.createOscillator(); eng.type='sawtooth'; eng.frequency.value=42; engF=ctx.createBiquadFilter(); engF.type='lowpass'; engF.frequency.value=120; engG=ctx.createGain(); engG.gain.value=0;
+    eng.connect(engF); engF.connect(engG); engG.connect(sfx); eng.start();
+    const ns=ctx.createBufferSource(); ns.buffer=noiseBuf; ns.loop=true; const nf=ctx.createBiquadFilter(); nf.type='lowpass'; nf.frequency.value=280; rumbleG=ctx.createGain(); rumbleG.gain.value=0; ns.connect(nf); nf.connect(rumbleG); rumbleG.connect(sfx); ns.start();
+    setSystem(sysI, true);
+    timer=setInterval(schedule,40);
+  }
+  function setChord(t, glide=2.2){
+    const d=PROG[chordI%PROG.length]; const base=root;
+    const notes=[deg(d,base-12),deg(d+2,base),deg(d+4,base),deg(d+6,base+ (d>3?-12:0))];
+    pad.forEach((v,k)=>{ const f=mtof(notes[k]); v.o1.frequency.setTargetAtTime(f,t,glide); v.o2.frequency.setTargetAtTime(f*(k===3?2:1),t,glide); v.g.gain.setTargetAtTime(k===0?.07:.045,t,1.5); });
+    sub.frequency.setTargetAtTime(mtof(deg(d,base-24)),t,glide);
+  }
+  function setSystem(i, force){ sysI=i; root=SYSTEMS[i].root; if(!ctx) return; chordI=0; setChord(ctx.currentTime, force?.01:2.5); }
+  function note(t, m, vel=.12, dur=1.2, type='triangle', dest){
+    const o=ctx.createOscillator(), o2=ctx.createOscillator(), g=ctx.createGain(); o.type=type; o2.type='sine'; o.frequency.value=mtof(m); o2.frequency.value=mtof(m)*2.001;
+    const g2=ctx.createGain(); g2.gain.value=.35; o2.connect(g2); g2.connect(g); o.connect(g);
+    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(vel,t+.012); g.gain.exponentialRampToValueAtTime(.0005,t+dur);
+    g.connect(dest||music); g.connect(delay); o.start(t); o2.start(t); o.stop(t+dur+.1); o2.stop(t+dur+.1);
+  }
+  let walk=4;
+  function schedule(){
+    if(!ctx) return; const now=ctx.currentTime;
+    if(now>chordT){ chordT=now+9.5; chordI++; setChord(now+.05); }
+    const step=lerp(.36,.15,speedN);
+    while(arpT<now+.15){ if(arpT<now) arpT=now;
+      const dens=.28+.45*speedN+.25*near;
+      if(Math.random()<dens && S.mode!=='title'){ walk=clamp(walk+((Math.random()*5)|0)-2,0,9); const o=Math.floor(walk/5), k=walk%5; const m=root+12+o*12+PENT[k];
+        note(arpT,m,.05+.05*Math.random(),.9+Math.random()*1.4, sysI===5?'sine':'triangle'); }
+      if(S.mode==='title' && Math.random()<.18){ note(arpT, root+24+PENT[(Math.random()*5)|0], .04, 2.5, 'sine'); }
+      arpT+=step*(Math.random()<.2?2:1);
+    }
+    // Herzschlag im Kardia-System
+    if(sysI===0 && S.mode!=='ending'){ const period=60/62; if(heartNext<now){ heartNext=Math.ceil(now/period)*period; }
+      while(heartNext<now+.2){ thump(heartNext,.32); thump(heartNext+.3,.22); heartNext+=period; } }
+    if(sysI===6 && Math.random()<.05) note(now+.05, root+36+PENT[(Math.random()*5)|0], .03, 3, 'sine');
+  }
+  function thump(t,v){ const o=ctx.createOscillator(), g=ctx.createGain(); o.frequency.setValueAtTime(78,t); o.frequency.exponentialRampToValueAtTime(38,t+.18);
+    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(v,t+.01); g.gain.exponentialRampToValueAtTime(.0005,t+.3); o.connect(g); g.connect(music); o.start(t); o.stop(t+.35); }
+  function noise(t,dur,f0,f1,v,type='bandpass',q=1){ const s=ctx.createBufferSource(); s.buffer=noiseBuf; s.loop=true; const f=ctx.createBiquadFilter(); f.type=type; f.Q.value=q; f.frequency.setValueAtTime(f0,t); f.frequency.exponentialRampToValueAtTime(f1,t+dur);
+    const g=ctx.createGain(); g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(v,t+dur*.2); g.gain.exponentialRampToValueAtTime(.0005,t+dur); s.connect(f); f.connect(g); g.connect(sfx); s.start(t); s.stop(t+dur+.05); }
+  return {
+    init, setSystem,
+    clock(){ return ctx? ctx.currentTime : null; },
+    resume(){ if(ctx&&ctx.state!=='running') ctx.resume(); },
+    setMuted(m){ if(ctx) master.gain.setTargetAtTime(m?0:.85,ctx.currentTime,.2); },
+    update(dt, sp, nr, thrust, storm){ if(!ctx) return; speedN=sp; near=nr; const t=ctx.currentTime;
+      pad.forEach(v=>v.f.frequency.setTargetAtTime(420+900*nr+500*sp,t,.8));
+      engF.frequency.setTargetAtTime(90+500*sp+300*thrust,t,.2); engG.gain.setTargetAtTime(S.mode==='play'||S.mode==='warp'?.03+.07*sp+.05*thrust:0,t,.3); eng.frequency.setTargetAtTime(38+30*sp,t,.3);
+      rumbleG.gain.setTargetAtTime(storm*.25,t,.4); },
+    scanStart(){ if(!ctx||scanOsc) return; scanOsc=ctx.createOscillator(); scanOsc.type='sine'; scanG=ctx.createGain(); scanG.gain.value=0; scanG.gain.setTargetAtTime(.06,ctx.currentTime,.05);
+      const lf=ctx.createOscillator(); lf.frequency.value=14; const lg=ctx.createGain(); lg.gain.value=30; lf.connect(lg); lg.connect(scanOsc.frequency); lf.start(); scanOsc._lf=lf;
+      scanOsc.connect(scanG); scanG.connect(sfx); scanOsc.start(); },
+    scanSet(p){ if(scanOsc) scanOsc.frequency.setTargetAtTime(300+900*p,ctx.currentTime,.05); },
+    scanStop(){ if(!scanOsc) return; const o=scanOsc,g=scanG; g.gain.setTargetAtTime(0,ctx.currentTime,.05); setTimeout(()=>{ try{o.stop();o._lf.stop();}catch(e){} },300); scanOsc=null; },
+    discover(){ if(!ctx) return; const t=ctx.currentTime+.02; [0,2,4,7,9,12,16].forEach((k,j)=>{ note(t+j*.09, root+24+[0,2,4,7,9,12,14][j], .09, 3.2, 'sine', sfx); });
+      const o=ctx.createOscillator(), g=ctx.createGain(); o.type='sine'; o.frequency.value=mtof(root+12); g.gain.setValueAtTime(.12,t); g.gain.exponentialRampToValueAtTime(.001,t+4); o.connect(g); g.connect(sfx); o.start(t); o.stop(t+4.1); },
+    warp(){ if(!ctx) return; const t=ctx.currentTime; noise(t,3.4,180,5200,.35,'bandpass',2.5);
+      const o=ctx.createOscillator(), g=ctx.createGain(), f=ctx.createBiquadFilter(); o.type='sawtooth'; o.frequency.setValueAtTime(55,t); o.frequency.exponentialRampToValueAtTime(880,t+3.2); f.type='lowpass'; f.frequency.value=1400;
+      g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.12,t+.5); g.gain.exponentialRampToValueAtTime(.001,t+3.6); o.connect(f); f.connect(g); g.connect(sfx); o.start(t); o.stop(t+3.7);
+      setTimeout(()=>{ if(!ctx) return; const t2=ctx.currentTime; noise(t2,2,3000,120,.4,'lowpass',.7); thump(t2,.5); },3100); },
+    hit(){ if(!ctx) return; const t=ctx.currentTime; noise(t,.45,1800,200,.45,'lowpass',.8); thump(t,.4); },
+    alarm(){ if(!ctx) return; const t=ctx.currentTime; [0,.22].forEach(d=>{ const o=ctx.createOscillator(), g=ctx.createGain(); o.type='square'; o.frequency.value=660; const f=ctx.createBiquadFilter(); f.type='lowpass'; f.frequency.value=1500;
+      g.gain.setValueAtTime(0,t+d); g.gain.linearRampToValueAtTime(.05,t+d+.01); g.gain.linearRampToValueAtTime(0,t+d+.16); o.connect(f); f.connect(g); g.connect(sfx); o.start(t+d); o.stop(t+d+.2); }); },
+    click(){ if(!ctx) return; const t=ctx.currentTime; const o=ctx.createOscillator(), g=ctx.createGain(); o.frequency.value=1200; g.gain.setValueAtTime(.04,t); g.gain.exponentialRampToValueAtTime(.0005,t+.08); o.connect(g); g.connect(sfx); o.start(t); o.stop(t+.1); },
+    crackle(){ if(!ctx) return; const t=ctx.currentTime; noise(t,.35,4000,900,.06,'highpass',.5); },
+    unlock(){ if(!ctx) return; const t=ctx.currentTime; [0,4,7,11,14].forEach((k,j)=>note(t+j*.15, root+12+[0,4,7,11,14][j], .08, 4, 'sine', sfx)); },
+    ending(){ if(!ctx) return; const t=ctx.currentTime; [0,7,12,16,19,24,28].forEach((k,j)=>note(t+j*.5, root+k, .07, 8, 'sine', sfx)); },
+  };
+})();
+
+/* =====================================================================
+   HUD
+   ===================================================================== */
+const $=id=>document.getElementById(id);
+const hud=$('hud');
+function updateSysCard(){ const s=SYSTEMS[SYS.i]; $('sysKick').textContent = s.core? 'Galaktischer Kern' : `System ${SYS.i+1} · Stern ${s.star.name}`; $('sysName').textContent=s.name; $('sysDesc').textContent=s.desc;
+  const pips=$('pips'); pips.innerHTML=''; s.factIds.forEach((id,k)=>{ const d=document.createElement('div'); d.className='pip'+(S.found.has(id)?' on':'')+(k===REQ-1&&!s.core?' req':''); pips.appendChild(d); }); }
+let markerEls=[], planetEls=[];
+function buildMarkers(){ const box=$('markers'); markerEls.forEach(m=>m.el.remove()); planetEls.forEach(m=>m.el.remove()); markerEls=[]; planetEls=[];
+  SYS.anomalies.forEach(a=>{ const el=document.createElement('div'); el.className='mk'; el.innerHTML='<div class="d"></div><div class="t"></div>'; box.appendChild(el); markerEls.push({a,el,t:el.querySelector('.t')}); });
+  const labels = SYS.sys.core? [] : SYS.planets.map(p=>({p,name:p.d.name}));
+  labels.forEach(l=>{ const el=document.createElement('div'); el.className='pl'; box.appendChild(el); planetEls.push({p:l.p,el,name:l.name}); });
+  if(SYS.star){ const el=document.createElement('div'); el.className='pl'; box.appendChild(el); planetEls.push({p:{pos:SYS.sunPos,r:SYS.star.r,star:true},el,name:'★ '+SYS.sys.star.name}); }
+}
+const projV=new THREE.Vector3();
+function fmtD(d){ return d>=1000?(d/1000).toFixed(1)+' k':Math.round(d)+''; }
+function updateMarkers(){
+  const W=innerWidth,H=innerHeight; const target=S.mode==='play'?nearestTarget(ship.pos):null;
+  for(const m of markerEls){ const a=m.a; projV.copy(a.pos).project(camera); const behind=projV.z>1; const x=(projV.x*.5+.5)*W, y=(-projV.y*.5+.5)*H;
+    const d=a.pos.distanceTo(ship.pos);
+    const vis=!behind && x>-20&&x<W+20&&y>-20&&y<H+20 && S.mode!=='title' && (d<3200 || a===target);
+    m.el.style.display=vis?'block':'none'; if(!vis) continue;
+    m.el.style.transform=`translate(${x}px,${y}px)`; m.el.classList.toggle('found',a.found); m.el.classList.toggle('target',a===target);
+    m.t.textContent = a.found? (d<900?'✓ '+FACTS[a.id].t:'') : (a===target? 'Signal · '+fmtD(d) : fmtD(d)); }
+  for(const pl of planetEls){ const p=pl.p; projV.copy(p.pos).project(camera); const d=p.pos.distanceTo(ship.pos);
+    const vis=projV.z<1 && S.mode!=='title' && d<4200 && d>p.r*1.6; pl.el.style.display=vis?'block':'none'; if(!vis) continue;
+    const x=(projV.x*.5+.5)*W, y=(-projV.y*.5+.5)*H;
+    tmpV.copy(camera.up).applyQuaternion(camera.quaternion); // Offset über Planet
+    const ang=Math.atan(p.r/d)/(camera.fov*Math.PI/360)*H*.5;
+    pl.el.style.transform=`translate(${x+ang*.72}px,${y-ang*.72}px)`;
+    if(p.star) pl.el.innerHTML=`${pl.name}<small>${d<p.r*5?'Solarladung aktiv':'Energiequelle · '+fmtD(d)}</small>`;
+    else { const fs=p.d.facts, f=fs.filter(id=>S.found.has(id)).length; pl.el.innerHTML=`${pl.name}<small>${f}/${fs.length} Signale · ${fmtD(d)}</small>`; } }
+  // Pfeil zum Ziel außerhalb des Bildes
+  const arrow=$('arrow');
+  if(target){ projV.copy(target.pos).project(camera); let x=projV.x, y=projV.y; const behind=projV.z>1; if(behind){ x=-x; y=-y; }
+    const off=behind||Math.abs(x)>.95||Math.abs(y)>.92;
+    if(off){ const ang=Math.atan2(y,x); const r=.86; let ax=Math.cos(ang), ay=Math.sin(ang); const s=Math.min(r/Math.abs(ax||1e-6), r/Math.abs(ay||1e-6)); ax*=s; ay*=s;
+      const sx=(ax*.5+.5)*W, sy=(-ay*.5+.5)*H; arrow.style.opacity=.9; arrow.style.transform=`translate(${sx-9}px,${sy-9}px) rotate(${-ang+Math.PI/2}rad)`; }
+    else arrow.style.opacity=0;
+  } else arrow.style.opacity=0;
+}
+function toast(html, ms=4200){ const el=document.createElement('div'); el.className='toast glass'; el.innerHTML=html; $('toasts').appendChild(el);
+  while($('toasts').children.length>3) $('toasts').firstChild.remove();
+  setTimeout(()=>{ el.classList.add('out'); setTimeout(()=>el.remove(),650); }, ms); }
+function setStatus(t){ $('status').textContent=t; }
+function refreshMuteIcon(){ $('muteIcon').innerHTML = S.muted ? '<path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 9l5 6M22 9l-5 6"/>' : '<path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a8.5 8.5 0 0 1 0 12"/>'; }
+
+/* =====================================================================
+   Eingabe
+   ===================================================================== */
+const keys=new Set(); const vcur={x:0,y:0};
+const touch={x:0,y:0,thrust:false,boost:false,scan:false};
+addEventListener('keydown',e=>{
+  if(e.repeat && !['KeyW','KeyS','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','KeyA','KeyD','KeyE','Space','ShiftLeft','ShiftRight'].includes(e.code)) return;
+  keys.add(e.code); audio.resume();
+  if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Tab'].includes(e.code)) e.preventDefault();
+  const m=S.mode;
+  if(m==='fact'){ if(['KeyE','Enter','Space','Escape'].includes(e.code) && !e.repeat) closeFact(); return; }
+  if(m==='codex'){ if(['KeyC','Escape'].includes(e.code)) closeOverlay(); return; }
+  if(m==='map'){ if(['KeyM','Escape'].includes(e.code)) closeOverlay(); const n=parseInt(e.key); if(n>=1&&n<=7) selectMap(n-1); if(e.code==='Enter') tryWarp(); return; }
+  if(m==='pause'){ if(e.code==='Escape') resume(); return; }
+  if(m==='title'){ if(e.code==='Enter') $('bContinue').classList.contains('hidden')? startGame(true):startGame(false); return; }
+  if(m==='play'){
+    if(e.code==='KeyM') openMap(); else if(e.code==='KeyC') openCodex(); else if(e.code==='Escape') pause();
+    else if(e.code==='KeyT') toggleMute(); else if(e.code==='KeyQ') toggleAssist();
+  }
+});
+addEventListener('keyup',e=>{ keys.delete(e.code); if(e.code==='KeyE'||e.code==='Space') S.scanLock=false; });
+addEventListener('blur',()=>keys.clear());
+canvas.addEventListener('click',()=>{ if(S.mode==='play' && !isTouch && document.pointerLockElement!==canvas){ try{ const r=canvas.requestPointerLock(); if(r&&r.catch) r.catch(()=>{}); }catch(e){} } });
+document.addEventListener('pointerlockchange',()=>{ $('vcursor').style.opacity = document.pointerLockElement===canvas?1:0; if(document.pointerLockElement!==canvas){ vcur.x=vcur.y=0; } });
+addEventListener('mousemove',e=>{ if(document.pointerLockElement!==canvas) return; vcur.x=clamp(vcur.x+e.movementX*.0028,-1,1); vcur.y=clamp(vcur.y+e.movementY*.0028,-1,1); const l=Math.hypot(vcur.x,vcur.y); if(l>1){vcur.x/=l;vcur.y/=l;} });
+// Touch
+(function(){ const stick=$('stick'), knob=$('knob'); let sid=null, cx=0, cy=0;
+  stick.addEventListener('pointerdown',e=>{ sid=e.pointerId; stick.setPointerCapture(sid); const r=stick.getBoundingClientRect(); cx=r.left+r.width/2; cy=r.top+r.height/2; move(e); audio.resume(); });
+  const move=e=>{ if(e.pointerId!==sid) return; let dx=(e.clientX-cx)/56, dy=(e.clientY-cy)/56; const l=Math.hypot(dx,dy); if(l>1){dx/=l;dy/=l;} touch.x=dx; touch.y=dy; knob.style.transform=`translate(${dx*42}px,${dy*42}px)`; };
+  stick.addEventListener('pointermove',move);
+  const end=e=>{ if(e.pointerId!==sid) return; sid=null; touch.x=touch.y=0; knob.style.transform=''; };
+  stick.addEventListener('pointerup',end); stick.addEventListener('pointercancel',end);
+  const hold=(id,key)=>{ const el=$(id); el.addEventListener('pointerdown',e=>{ el.setPointerCapture(e.pointerId); touch[key]=true; el.classList.add('on'); audio.resume(); });
+    const up=()=>{ touch[key]=false; el.classList.remove('on'); if(key==='scan') S.scanLock=false; }; el.addEventListener('pointerup',up); el.addEventListener('pointercancel',up); };
+  hold('tThrust','thrust'); hold('tBoost','boost'); hold('tScan','scan');
+  $('tAssist').addEventListener('pointerdown',()=>toggleAssist());
+})();
+function toggleAssist(){ S.assist=!S.assist; $('tAssist').classList.toggle('on',S.assist); toast(S.assist?'Zielassistent <b>an</b> – das Schiff richtet sich auf das nächste Signal aus':'Zielassistent aus',2200); audio.click(); }
+function toggleMute(){ S.muted=!S.muted; audio.setMuted(S.muted); refreshMuteIcon(); save(); }
+
+/* =====================================================================
+   Spielablauf
+   ===================================================================== */
+function startGame(fresh){
+  audio.init(); audio.resume();
+  if(fresh){ S.found.clear(); S.sys=0; S.done=false; save(); }
+  $('title').classList.add('hidden'); hud.classList.remove('hidden'); if(isTouch) $('touch').classList.remove('hidden');
+  if(fresh || SYS.i!==S.sys) buildSystem(S.sys); else { audio.setSystem(S.sys); updateSysCard(); }
+  placeShipAtSpawn(); S.energy=100; S.shield=100; S.mode='play'; ship.g.visible=true;
+  camera.position.copy(ship.pos).add(new THREE.Vector3(0,40,80).applyQuaternion(ship.q)); camera.quaternion.copy(ship.q);
+  if(S.found.size===0){
+    setTimeout(()=>toast(isTouch?'Linker Stick zum Lenken, <b>Schub</b> gedrückt halten zum Fliegen.':'<b>W</b> für Schub · Klicke ins Bild, um mit der <b>Maus</b> zu lenken (oder Pfeiltasten).',6000),600);
+    setTimeout(()=>toast('Folge den leuchtenden <b>Signalen</b> ◆ und halte <b>'+(isTouch?'Scan':'E')+'</b> gedrückt, um sie zu scannen.',6500),5200);
+    setTimeout(()=>toast(`Sammle ${REQ} Fragmente, um den Warpkern für das nächste System zu kalibrieren.`,6000),11000);
+  } else toast(`Willkommen zurück im System <b>${SYSTEMS[S.sys].name}</b>.`,3500);
+}
+function pause(){ if(S.mode!=='play') return; S.mode='pause'; $('pause').classList.remove('hidden'); document.exitPointerLock?.(); }
+function resume(){ $('pause').classList.add('hidden'); S.mode='play'; }
+function closeOverlay(){ ['codex','map','pause'].forEach(id=>$(id).classList.add('hidden')); S.mode=S.prevMode==='title'?'title':'play'; S.prevMode=null; }
+$('bStart').onclick=()=>{ audio.click(); startGame(S.found.size===0); };
+$('bContinue').onclick=()=>{ audio.click(); startGame(false); };
+$('bReset').onclick=()=>{ if(confirm('Gesamten Fortschritt löschen und neu beginnen?')){ S.found.clear(); S.sys=0; S.done=false; save(); buildSystem(0); refreshTitle(); } };
+$('bMap').onclick=()=>{ if(S.mode==='play') openMap(); };
+$('bCodex').onclick=()=>{ if(S.mode==='play') openCodex(); };
+$('bMute').onclick=()=>toggleMute();
+$('bPause').onclick=()=>pause();
+$('pResume').onclick=resume;
+$('pCodex').onclick=()=>{ $('pause').classList.add('hidden'); S.mode='play'; openCodex(); };
+$('pMap').onclick=()=>{ $('pause').classList.add('hidden'); S.mode='play'; openMap(); };
+$('pTitle').onclick=()=>{ $('pause').classList.add('hidden'); toTitle(); };
+$('codexX').onclick=closeOverlay; $('mapX').onclick=closeOverlay; $('fClose').onclick=()=>closeFact();
+function refreshTitle(){ const has=S.found.size>0; $('bContinue').classList.toggle('hidden',!has); $('bReset').classList.toggle('hidden',!has); $('bStart').textContent=has?'Neues Spiel':'Start';
+  $('bStart').onclick=()=>{ audio.click(); if(has && !confirm('Neues Spiel starten? Der bisherige Fortschritt wird überschrieben.')) return; startGame(true); };
+  if(has){ $('bContinue').classList.add('primary'); $('bStart').classList.remove('primary'); } else { $('bStart').classList.add('primary'); } }
+function toTitle(){ S.mode='title'; hud.classList.add('hidden'); $('touch').classList.add('hidden'); $('title').classList.remove('hidden'); $('ending').classList.add('hidden'); refreshTitle(); document.exitPointerLock?.(); }
+
+// ---------- Scan & Fakten ----------
+function completeScan(a){
+  S.found.add(a.id); save(); setAnomalyFound(a,true); audio.scanStop(); audio.discover();
+  S.energy=Math.min(100,S.energy+15);
+  const sys=SYSTEMS[FACT_SYS[a.id]]; const f=FACTS[a.id];
+  $('fKick').textContent='Erkenntnis-Fragment · '+sys.name; $('fTitle').textContent=f.t; $('fText').textContent=f.x;
+  const n=foundIn(sys.i); $('fMeta').textContent = sys.core? 'Das letzte Fragment' : `${a.planet?a.planet.d.name+' · ':''}${n} / ${sys.factIds.length} in ${sys.name} · ${S.found.size} / ${TOTAL_FACTS} gesamt`;
+  S.mode='fact'; S.scanLock=true; $('fact').classList.remove('hidden'); document.exitPointerLock?.();
+  updateSysCard();
+  S.justFound=a.id;
+}
+function closeFact(){ $('fact').classList.add('hidden'); S.mode='play'; S.scanLock=true;
+  const id=S.justFound; S.justFound=null; if(!id) return;
+  if(id==='h1'){ startEnding(); return; }
+  const si=FACT_SYS[id]; const n=foundIn(si);
+  if(n===REQ){ audio.unlock();
+    if(si<5) toast(`✦ Warpkern kalibriert! Neues System freigeschaltet: <b>${SYSTEMS[si+1].name}</b>. Öffne die Sternenkarte (<b>M</b>).`,7000);
+    if(isUnlocked(6)) setTimeout(()=>toast('✦ Alle Systeme im Gleichgewicht – der <b>galaktische Kern</b> ist erreichbar.',7000),1200); }
+  else if(n===SYSTEMS[si].factIds.length) toast(`System <b>${SYSTEMS[si].name}</b> vollständig erforscht.`,4500);
+  else if(n<REQ) toast(`Noch ${REQ-n} Fragment${REQ-n>1?'e':''} bis zur Warpkern-Kalibrierung.`,3200);
+}
+
+// ---------- Kodex ----------
+let codexSel=0;
+function openCodex(){ S.prevMode=S.mode; S.mode='codex'; codexSel=SYS.i; renderCodex(); $('codex').classList.remove('hidden'); document.exitPointerLock?.(); audio.click(); }
+function renderCodex(){
+  $('codexTotal').textContent=`${S.found.size} von ${TOTAL_FACTS} Erkenntnissen`;
+  const tabs=$('codexTabs'); tabs.innerHTML='';
+  SYSTEMS.forEach((s,i)=>{ const b=document.createElement('button'); b.className='ctab'+(i===codexSel?' on':''); const un=isUnlocked(i);
+    b.innerHTML=`<div class="n"><span class="dot" style="background:${un?s.hue:'#444'}"></span>${un?s.name:'Unbekannt'}</div><div class="c">${foundIn(i)} / ${s.factIds.length} Fragmente</div>`;
+    b.onclick=()=>{ codexSel=i; renderCodex(); }; tabs.appendChild(b); });
+  const s=SYSTEMS[codexSel], list=$('codexList'); list.innerHTML=`<div class="cintro">${isUnlocked(codexSel)?s.desc:'Dieses System ist noch nicht kartiert.'}</div>`;
+  s.factIds.forEach(id=>{ const f=FACTS[id], got=S.found.has(id); const pl=s.planets.find(p=>p.facts.includes(id));
+    const d=document.createElement('div'); d.className='centry'+(got?'':' lock');
+    d.innerHTML = got? `<div class="w">${pl?pl.name:'Kern'}</div><h3>${f.t}</h3><p>${f.x}</p>` : `<div class="w">${pl&&isUnlocked(codexSel)?'Signal bei '+pl.name:'Unentdeckt'}</div><h3>? ? ?</h3><p>Noch nicht gescannt.</p>`;
+    list.appendChild(d); });
+}
+
+// ---------- Sternenkarte ----------
+let mapSel=0;
+const MAPPOS=SYSTEMS.map((s,i)=>{ if(i===6) return [500,280]; const a=i*1.02-2.6, r=235-i*16; return [500+Math.cos(a)*r*1.65, 280+Math.sin(a)*r]; });
+function openMap(){ S.prevMode=S.mode; S.mode='map'; mapSel=SYS.i; renderMap(); $('map').classList.remove('hidden'); document.exitPointerLock?.(); audio.click(); }
+function selectMap(i){ mapSel=i; renderMap(); audio.click(); }
+function renderMap(){
+  const svg=$('mapSvg'); let h='<defs><radialGradient id="mg"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs>';
+  for(let k=0;k<160;k++){ const x=(Math.sin(k*91.7)*.5+.5)*1000, y=(Math.cos(k*37.3)*.5+.5)*560; h+=`<circle cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="${(k%7?0.8:1.5)}" fill="#fff" opacity="${(0.2+(k%5)*.1).toFixed(2)}"/>`; }
+  h+=`<path d="M${MAPPOS.map(p=>p.join(' ')).join(' L')}" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="1.5" stroke-dasharray="4 6"/>`;
+  SYSTEMS.forEach((s,i)=>{ const [x,y]=MAPPOS[i], un=isUnlocked(i), cur=i===SYS.i, sel=i===mapSel; const r=i===6?26:17;
+    h+=`<g class="mnode" data-i="${i}">`;
+    if(un) h+=`<circle cx="${x}" cy="${y}" r="${r*3}" fill="${s.hue}" opacity="${sel?.28:.13}"/>`;
+    h+=`<circle cx="${x}" cy="${y}" r="${r}" fill="${un?s.hue:'#2a2d38'}" stroke="${sel?'#fff':'rgba(255,255,255,.3)'}" stroke-width="${sel?3:1.2}"/>`;
+    if(cur) h+=`<circle cx="${x}" cy="${y}" r="${r+9}" fill="none" stroke="#fff" stroke-dasharray="3 4" stroke-width="1.5"><animateTransform attributeName="transform" type="rotate" from="0 ${x} ${y}" to="360 ${x} ${y}" dur="12s" repeatCount="indefinite"/></circle>`;
+    h+=`<text x="${x}" y="${y+r+26}" text-anchor="middle">${un?s.name:'???'}</text><text class="sm" x="${x}" y="${y+r+44}" text-anchor="middle">${un?(i===6?(S.found.has('h1')?'im Gleichgewicht':'Ziel'):foundIn(i)+' / '+s.factIds.length):'gesperrt'}</text></g>`; });
+  svg.innerHTML=h; svg.querySelectorAll('.mnode').forEach(n=>n.addEventListener('click',()=>selectMap(+n.dataset.i)));
+  const s=SYSTEMS[mapSel], un=isUnlocked(mapSel);
+  $('mapN').textContent=un?s.name:'Unbekanntes System';
+  let d; if(!un){ d = mapSel===6? `Erfordert ${REQ} Fragmente in jedem der sechs Systeme.` : `Sammle ${REQ} Fragmente in ${SYSTEMS[mapSel-1].name}, um den Warpkern zu kalibrieren.`; }
+  else if(mapSel===SYS.i) d='Du befindest dich hier. '+s.desc; else d=s.desc+(s.core?'':` · Gefahr: ${s.belt.name}`);
+  $('mapD').textContent=d;
+  const btn=$('mapWarp'); btn.disabled=!un||mapSel===SYS.i; btn.style.opacity=btn.disabled?.4:1; btn.textContent= S.energy<30&&un&&mapSel!==SYS.i ? 'Zu wenig Energie (30)' : 'Warp starten';
+  btn.onclick=tryWarp;
+}
+function tryWarp(){ if(!isUnlocked(mapSel)||mapSel===SYS.i) return; if(S.energy<30){ toast('Zu wenig Energie für den Warp – lade nahe am Stern auf.',3500); audio.alarm(); return; }
+  $('map').classList.add('hidden'); S.prevMode=null; startWarp(mapSel); }
+function startWarp(to){ S.energy-=30; S.mode='warp'; S.warp={t:0,to,swapped:false}; audio.warp(); scanBeam.visible=false; audio.scanStop();
+  const a=SYSTEMS[SYS.i], b=SYSTEMS[to]; tunnel.material.uniforms.uC1.value=C(a.hue).multiplyScalar(1.2); tunnel.material.uniforms.uC2.value=C(b.hue).multiplyScalar(1.2); }
+
+// ---------- Ende ----------
+function startEnding(){ S.mode='ending'; S.done=true; save(); audio.ending(); hud.classList.add('hidden'); $('touch').classList.add('hidden'); document.exitPointerLock?.();
+  S.endT=0; const lines=[
+    ['h1','Homöostase'],
+    ['p','Sechs Systeme, ein Körper. Das Herz schlägt, damit das Gehirn denken kann; die Knochen tragen, die Lunge atmet, der Darm nährt, die Sinne deuten die Welt.'],
+    ['p','Keines davon arbeitet für sich allein. Gesundheit ist kein Zustand, sondern ein ständiges, leises Ausbalancieren – Milliarden Mal in jeder Sekunde.'],
+    ['s',`${S.found.size} von ${TOTAL_FACTS} Erkenntnissen gesammelt`],
+  ];
+  const inner=$('endInner'); inner.innerHTML=lines.map((l,k)=>{ const st=`style="animation-delay:${1.2+k*2.4}s"`; return l[0]==='h1'?`<h1 class="l" ${st}>${l[1]}</h1>`:l[0]==='s'?`<p class="l stats" ${st}>${l[1]}</p>`:`<p class="l" ${st}>${l[1]}</p>`; }).join('')+
+    `<div class="l btnrow" style="animation-delay:${1.2+lines.length*2.4}s;margin-top:22px"><button class="btn primary" id="eGo">Weiter erkunden</button><button class="btn" id="eTitle">Zum Titel</button></div>
+     <div class="l" style="animation-delay:${1.6+lines.length*2.4}s;margin-top:18px;font-size:13px"><a href="/" style="color:var(--muted)">← joshuaforster.de</a> &nbsp;·&nbsp; <a href="/spiele/" style="color:var(--muted)">Alle Spiele</a></div>`;
+  $('ending').classList.remove('hidden');
+  $('eGo').onclick=()=>{ $('ending').classList.add('hidden'); hud.classList.remove('hidden'); if(isTouch) $('touch').classList.remove('hidden'); S.mode='play'; toast('Alle Systeme stehen dir offen. Finde die übrigen Fragmente!',5000); };
+  $('eTitle').onclick=()=>toTitle();
+}
+
+/* =====================================================================
+   Simulation
+   ===================================================================== */
+const FWD=new THREE.Vector3(0,0,-1), UP=new THREE.Vector3(0,1,0), RIGHT=new THREE.Vector3(1,0,0);
+let shake=0, T=0;
+function damage(v, reason){ if(S.mode!=='play') return; S.shield=Math.max(0,S.shield-v); S.lastHit=T; if(v>5){ shake=Math.max(shake,Math.min(1,v/20)); $('hitflash').style.transition='none'; $('hitflash').style.opacity=.9; requestAnimationFrame(()=>{ $('hitflash').style.transition='opacity .6s'; $('hitflash').style.opacity=0; }); }
+  if(S.shield<=0 && !S.dead){ S.dead=1; audio.alarm(); toast(`Schild kollabiert (${reason}) – Notfall-Rekalibrierung …`,3500); $('fade').style.opacity=1;
+    setTimeout(()=>{ placeShipAtSpawn(); S.shield=70; S.energy=Math.max(S.energy,45); S.dead=0; $('fade').style.opacity=0; },1200); } }
+function simulate(dt){
+  if(S.dead) return;
+  const kW=keys.has('KeyW'), kS=keys.has('KeyS');
+  const boostKey=(keys.has('ShiftLeft')||keys.has('ShiftRight')||touch.boost);
+  let thrust=(kW||touch.thrust?1:0)-(kS?1:0);
+  const canBoost=boostKey && S.energy>1 && thrust>0;
+  // Lenkung
+  let yawIn=(keys.has('KeyA')||keys.has('ArrowLeft')?1:0)-(keys.has('KeyD')||keys.has('ArrowRight')?1:0);
+  let pitchIn=(keys.has('ArrowUp')?1:0)-(keys.has('ArrowDown')?1:0);
+  yawIn+=-vcur.x*1.1 - touch.x; pitchIn+=-vcur.y*1.1 - touch.y;
+  vcur.x*=Math.exp(-.9*dt); vcur.y*=Math.exp(-.9*dt);
+  $('vcursor').style.transform=`translate(${vcur.x*120}px,${vcur.y*120}px)`;
+  const target=nearestTarget(ship.pos);
+  if(S.assist && target && Math.abs(yawIn)<.1 && Math.abs(pitchIn)<.1){ tmpV.copy(target.pos).sub(ship.pos).normalize().applyQuaternion(tmpQ.copy(ship.q).invert());
+    yawIn=clamp(-tmpV.x*2.5,-1,1); pitchIn=clamp(tmpV.y*2.5,-1,1); if(tmpV.z>0){ yawIn=1; } }
+  yawIn=clamp(yawIn,-1,1); pitchIn=clamp(pitchIn,-1,1);
+  const rate=1.35;
+  ship.ang.y=damp(ship.ang.y,yawIn*rate,5,dt); ship.ang.x=damp(ship.ang.x,pitchIn*rate*.85,5,dt);
+  // automatisches Ausgleichen der Rollachse
+  const right=tmpV2.copy(RIGHT).applyQuaternion(ship.q); const upW=tmpV.copy(UP).applyQuaternion(ship.q);
+  const rollErr=Math.atan2(right.y, upW.y);
+  ship.ang.z=damp(ship.ang.z, -rollErr*1.6, 4, dt);
+  tmpQ.setFromEuler(new THREE.Euler(ship.ang.x*dt, ship.ang.y*dt, ship.ang.z*dt,'YXZ')); ship.q.multiply(tmpQ).normalize();
+  // Schub
+  const maxS = canBoost?330:(S.energy<1?70:120);
+  if(thrust>0) S.speed=Math.min(maxS, S.speed + (canBoost?160:70)*dt);
+  else if(thrust<0) S.speed=Math.max(-30, S.speed-110*dt);
+  else S.speed*=Math.exp(-.3*dt);
+  if(S.speed>maxS) S.speed=damp(S.speed,maxS,1.5,dt);
+  const fwd=tmpV.copy(FWD).applyQuaternion(ship.q);
+  ship.vel.lerp(fwd.clone().multiplyScalar(S.speed), 1-Math.exp(-3.5*dt));
+  ship.pos.addScaledVector(ship.vel,dt);
+  // Energie
+  if(canBoost) S.energy-=9*dt;
+  const dStar=ship.pos.length();
+  const sr=SYSTEMS[SYS.i].star.r;
+  if(!SYS.sys.core && dStar<sr*5){ S.energy=Math.min(100,S.energy+14*dt); }
+  S.energy=Math.min(100,Math.max(0,S.energy+.5*dt));
+  // Kollisionen: Stern / Planeten
+  if(dStar<sr*1.25){ ship.pos.setLength(sr*1.25); S.speed*=.5; }
+  if(!SYS.sys.core && dStar<sr*1.9){ damage(22*dt,'Hitze'); S.heat=true; } else S.heat=false;
+  let near=0;
+  for(const p of SYS.planets){ const d=ship.pos.distanceTo(p.pos); near=Math.max(near, clamp(1-(d-p.r)/(p.r*3),0,1));
+    if(d<p.r+9){ tmpV2.copy(ship.pos).sub(p.pos).setLength(p.r+9); ship.pos.copy(p.pos).add(tmpV2); S.speed*=.6; } }
+  // Gürtel
+  if(SYS.belt){ const b=SYS.belt; const ca=Math.cos(-b.rot), sa=Math.sin(-b.rot); const lx=ship.pos.x*ca-ship.pos.z*sa, lz=ship.pos.x*sa+ship.pos.z*ca;
+    const rr=Math.hypot(lx,lz);
+    if(Math.abs(rr-1480)<200 && Math.abs(ship.pos.y)<80){ for(const it of b.items){ const dx=lx-it.p.x, dy=ship.pos.y-it.p.y, dz=lz-it.p.z; const rad=it.s*1.1+3.5;
+      if(dx*dx+dy*dy+dz*dz<rad*rad){ damage(8+Math.abs(S.speed)*.1, SYSTEMS[SYS.i].belt.name); audio.hit(); S.speed=-Math.abs(S.speed)*.35-10; ship.vel.multiplyScalar(-.3); const n=new THREE.Vector3(dx,dy,dz).normalize(); const nw=new THREE.Vector3(n.x*Math.cos(b.rot)-n.z*Math.sin(b.rot),n.y,n.x*Math.sin(b.rot)+n.z*Math.cos(b.rot)); ship.pos.addScaledVector(nw,6); break; } } } }
+  // Grenze
+  const lim=SYS.sys.core?2600:3300; if(ship.pos.length()>lim){ ship.pos.setLength(lim); S.speed*=.9; if(!S.edgeWarn||T-S.edgeWarn>6){ S.edgeWarn=T; toast('Rand des Systems erreicht – wende, oder nutze die Sternenkarte (M) für einen Warp.',3500);} }
+  // Strahlungssturm
+  const st=S.storm; st.t-=dt;
+  if(st.state==='idle' && st.t<=0){ st.state='warn'; st.t=7; audio.alarm(); toast('⚠ <b>Strahlungssturm</b> in 7 s! Suche Schutz im Schatten eines Planeten oder nahe seiner Atmosphäre.',6500); }
+  else if(st.state==='warn' && st.t<=0){ st.state='storm'; st.t=16; }
+  else if(st.state==='storm' && st.t<=0){ st.state='idle'; st.t=85+Math.random()*40; toast('Der Sturm ist abgeklungen.',2500); }
+  st.k=damp(st.k, st.state==='storm'?1:st.state==='warn'?.25:0, 2, dt);
+  S.sheltered=false;
+  if(st.state==='storm'||st.state==='warn'){ const sp=ship.pos, L=sp.length();
+    for(const p of SYS.planets){ const dp=p.pos.distanceTo(sp); if(dp<p.r*1.7){ S.sheltered=true; break; }
+      const t=p.pos.dot(sp)/(L*L); if(t>0&&t<1){ const cx=sp.x*t-p.pos.x, cy=sp.y*t-p.pos.y, cz=sp.z*t-p.pos.z; if(cx*cx+cy*cy+cz*cz<(p.r*1.05)**2){ S.sheltered=true; break; } } }
+    if(st.state==='storm' && !S.sheltered) damage(6.5*dt,'Strahlung'); }
+  // Schildregeneration
+  if(T-S.lastHit>4 && !(st.state==='storm'&&!S.sheltered)) S.shield=Math.min(100,S.shield+2.5*dt);
+  // Scannen
+  let cand=null, cd=1e9; for(const a of SYS.anomalies){ if(a.found) continue; const d=a.pos.distanceTo(ship.pos); if(d<cd){cd=d;cand=a;} }
+  const range=SYS.sys.core?120:65;
+  const scanKey=(keys.has('KeyE')||keys.has('Space')||touch.scan) && !S.scanLock;
+  const prompt=$('prompt');
+  if(cand && cd<range){
+    prompt.classList.add('show');
+    if(scanKey){ if(S.scanTarget!==cand){ S.scanTarget=cand; S.scan=0; } S.scan+=dt/2.0; S.energy=Math.max(0,S.energy-2*dt); audio.scanStart(); audio.scanSet(S.scan);
+      $('promptTxt').textContent='Scanne … '+Math.round(S.scan*100)+' %';
+      scanBeam.visible=true; const pa=scanBeam.geometry.attributes.position; pa.setXYZ(0,ship.pos.x,ship.pos.y-.3,ship.pos.z); pa.setXYZ(1,cand.pos.x,cand.pos.y,cand.pos.z); pa.needsUpdate=true;
+      if(S.scan>=1){ S.scan=0; S.scanTarget=null; scanBeam.visible=false; completeScan(cand); } }
+    else { S.scan=Math.max(0,S.scan-dt); audio.scanStop(); scanBeam.visible=false; $('promptTxt').innerHTML=(isTouch?'<b>Scan</b> halten':'<b>E</b> halten')+' zum Scannen'; }
+  } else { prompt.classList.remove('show'); S.scan=0; S.scanTarget=null; audio.scanStop(); scanBeam.visible=false; }
+  $('scanArc').setAttribute('stroke-dashoffset', (94.25*(1-S.scan)).toFixed(1));
+  // Status
+  let status='';
+  if(st.state==='storm') status=S.sheltered?'☂ Geschützt vor dem Sturm':'⚠ Strahlung trifft den Schild!';
+  else if(st.state==='warn') status='⚠ Sturm naht – suche Schutz';
+  else if(S.heat) status='⚠ Zu nah am Stern!';
+  else if(!SYS.sys.core && dStar<sr*5) status='☀ Solarladung aktiv';
+  else if(S.energy<15) status='Energie niedrig – fliege zum Stern';
+  else if(S.assist) status='Zielassistent aktiv';
+  setStatus(status);
+  S.thrustVis=thrust>0?(canBoost?1:.55):.08; S.near=near;
+}
+function updateWarp(dt){
+  const w=S.warp; w.t+=dt;
+  const fwd=tmpV.copy(FWD).applyQuaternion(ship.q);
+  const sp = w.t<.9? lerp(120,900,w.t/.9) : w.t<3.2? 1600 : lerp(1600,140,Math.min(1,(w.t-3.2)/.8));
+  S.speed=Math.min(sp,400); ship.pos.addScaledVector(fwd, (w.t<3.2&&w.t>.9?0:sp)*dt);
+  const a = w.t<.9? w.t/.9 : w.t<3.2? 1 : Math.max(0,1-(w.t-3.2)/.8);
+  tunnel.visible=a>0.01; tunnel.material.uniforms.uAlpha.value=a; tunnel.material.uniforms.uTime.value+=dt*(.5+a);
+  if(SYS) SYS.group.visible = !(w.t>1.1 && w.t<3.2);
+  if(w.t>2 && !w.swapped){ w.swapped=true; S.sys=w.to; save(); buildSystem(w.to); SYS.group.visible=false; placeShipAtSpawn(); ship.pos.addScaledVector(tmpV.copy(FWD).applyQuaternion(ship.q),-250);
+    camera.position.copy(ship.pos).add(new THREE.Vector3(0,3.4,15).applyQuaternion(ship.q)); }
+  S.thrustVis=1; S.near=0;
+  if(w.t>=4){ S.mode='play'; tunnel.visible=false; S.warp=null; SYS.group.visible=true; S.speed=140;
+    const s=SYSTEMS[SYS.i]; toast(s.core?'<b>Der galaktische Kern.</b> Nähere dich dem Licht und scanne das letzte Signal.':`Willkommen in <b>${s.name}</b> – ${s.desc}.`,5500); }
+}
+
+/* =====================================================================
+   Hauptschleife
+   ===================================================================== */
+buildSystem(S.sys);
+let lastRender=0, perfAcc=0, perfN=0, titleT=0;
+const camTarget=new THREE.Vector3(), camQ=new THREE.Quaternion(), lookM=new THREE.Matrix4();
+function frame(now){
+  requestAnimationFrame(frame);
+  if(now-lastRender < 1000/62) return;
+  const realDt=lastRender?Math.min(.05,(now-lastRender)/1000):.016; lastRender=now;
+  // adaptive Auflösung
+  perfAcc+=realDt; perfN++;
+  if(perfAcc>2){ const avg=perfAcc/perfN; if(avg>1/42 && pixelRatio>MINPR) applyPR(Math.max(MINPR,pixelRatio-.15)); else if(avg<1/57 && pixelRatio<MAXPR) applyPR(Math.min(MAXPR,pixelRatio+.1)); perfAcc=0; perfN=0; }
+  const paused = S.mode==='fact'||S.mode==='codex'||S.mode==='map'||S.mode==='pause';
+  const dt = paused? realDt*.15 : realDt;
+  T+=dt;
+  const clk=audio.clock() ?? T;
+  // Welt animieren
+  const hb=heartEnv(clk);
+  for(const p of SYS.planets){ p.u.uTime.value=T; p.mesh.rotation.y+=p.d.rot*dt; if(p.d.pulse) p.u.uPulse.value=hb; else p.u.uPulse.value=.35+.1*Math.sin(T*.8+p.r);
+    if(p.d.flash){ let f=p.u.uFlash.value*Math.exp(-7*dt); if(Math.random()<dt*.5){ f=1; if(ship.pos.distanceTo(p.pos)<1200) audio.crackle(); } p.u.uFlash.value=f; }
+    const cd=camera.position.distanceTo(p.pos); p.au.uStrength.value = .35+.65*clamp((cd-p.r*1.15)/(p.r*.4),0,1); }
+  if(SYS.star){ const s=SYS.star; s.su.uTime.value=T; const pulse=SYS.sys.star.heart?hb*.6:.15+.1*Math.sin(T*.7); s.su.uPulse.value=pulse; s.g1.scale.setScalar(s.r*(7+pulse*1.5+S.storm.k*3)); s.g2.scale.setScalar(s.r*(18+S.storm.k*10)); }
+  if(SYS.core){ const c=SYS.core; c.cu.uTime.value=T; c.rings.forEach((r,k)=>{ r.rotation.x+=dt*(.1+k*.03); r.rotation.y+=dt*(.07-k*.02); }); c.g1.scale.setScalar(150*(9+Math.sin(T*1.3)*.6));
+    SYS.echoes.forEach((p,k)=>{ const a=T*.05+k/6*Math.PI*2; p.pos.set(Math.cos(a)*760,Math.sin(k*1.7)*90,Math.sin(a)*760); p.group.position.copy(p.pos); }); }
+  if(SYS.belt){ SYS.belt.rot+=dt*.006; SYS.belt.mesh.rotation.y=SYS.belt.rot; }
+  for(const a of SYS.anomalies){ a.core.rotation.y+=dt*1.5; a.core.rotation.x+=dt*.7; a.shell.rotation.y-=dt*.4; a.shell.rotation.z+=dt*.25; a.beam.material.uniforms.uTime.value=T; a.beamUp.material.uniforms.uTime.value=T;
+    if(!a.found){ const s=1+.15*Math.sin(T*2.2+a.pos.x); a.shell.scale.setScalar(s); a.glow.scale.setScalar(36*(1+.2*Math.sin(T*3+a.pos.y))); } }
+  starPts.material.uniforms.uTime.value=T; starPts.material.uniforms.uPR.value=pixelRatio; starPts.position.copy(camera.position);
+
+  if(S.mode==='play') simulate(dt);
+  else if(S.mode==='warp') updateWarp(dt);
+
+  // Kamera
+  if(S.mode==='title'){
+    titleT+=realDt; ship.g.visible=false;
+    const p=SYS.planets[0]||{pos:new THREE.Vector3(),r:150}; const a=titleT*.035+.9, R=p.r*3.1;
+    camera.position.set(p.pos.x+Math.cos(a)*R, p.pos.y+p.r*.55+Math.sin(titleT*.05)*20, p.pos.z+Math.sin(a)*R);
+    lookM.lookAt(camera.position, tmpV.copy(p.pos).lerp(SYS.sunPos,.18).add(new THREE.Vector3(0,-p.r*.25,0)), UP); camera.quaternion.setFromRotationMatrix(lookM);
+    camera.fov=damp(camera.fov,55,2,realDt); camera.updateProjectionMatrix();
+  } else if(S.mode==='ending'){
+    S.endT+=realDt; ship.g.visible=false; const a=S.endT*.05, R=900-Math.min(400,S.endT*18);
+    camera.position.set(Math.cos(a)*R, 120+Math.sin(S.endT*.1)*60, Math.sin(a)*R); lookM.lookAt(camera.position,new THREE.Vector3(),UP); camera.quaternion.setFromRotationMatrix(lookM);
+    camera.fov=damp(camera.fov,50,1,realDt); camera.updateProjectionMatrix();
+  } else {
+    ship.g.visible=true; ship.g.position.copy(ship.pos); ship.g.quaternion.copy(ship.q);
+    ship.body.rotation.z=damp(ship.body.rotation.z, ship.ang.y*.45, 4, dt); ship.body.rotation.x=damp(ship.body.rotation.x, ship.ang.x*.12, 4, dt);
+    const tv=S.thrustVis||0; ship.flames.forEach((f,k)=>{ if(f.isSprite) f.scale.setScalar(2.5+tv*5+Math.random()*.4); else { f.scale.set(1,.3+tv*1.6+Math.random()*.1,1); f.position.z=3.62+1.5*(.3+tv*1.6); } });
+    ship.flameMat.uniforms.uT.value=T;
+    const spN=clamp(Math.abs(S.speed)/330,0,1);
+    const off=new THREE.Vector3(0,3.3+spN*.6,14.5+spN*5).applyQuaternion(ship.q);
+    camTarget.copy(ship.pos).add(off);
+    camera.position.lerp(camTarget, 1-Math.exp(-(S.mode==='warp'?14:7)*realDt));
+    const look=tmpV.copy(ship.pos).add(tmpV2.copy(FWD).applyQuaternion(ship.q).multiplyScalar(40)).add(tmpV2.set(0,1.5,0).applyQuaternion(ship.q));
+    lookM.lookAt(camera.position, look, tmpV2.copy(UP).applyQuaternion(ship.q)); camQ.setFromRotationMatrix(lookM);
+    camera.quaternion.slerp(camQ, 1-Math.exp(-9*realDt));
+    if(shake>0){ camera.position.x+=(Math.random()-.5)*shake*1.4; camera.position.y+=(Math.random()-.5)*shake*1.4; shake=Math.max(0,shake-realDt*2); }
+    const wa=S.mode==='warp'?tunnel.material.uniforms.uAlpha.value:0;
+    camera.fov=damp(camera.fov, 62+spN*14+wa*38, 3, realDt); camera.updateProjectionMatrix();
+  }
+  // Staub/Streifen
+  dust.material.uniforms.uCam.value.copy(camera.position); dust.material.uniforms.uPR.value=pixelRatio;
+  const su=streaks.material.uniforms; su.uCam.value.copy(camera.position); su.uVel.value.copy(ship.vel);
+  const stormK=S.storm.k; su.uWind.value.copy(ship.pos).normalize().multiplyScalar(-40*stormK);
+  su.uAlpha.value = S.mode==='title'?0: clamp(Math.abs(S.speed)/200,0,1)*.7 + stormK*.8;
+  if(stormK>.05) su.uCol.value.copy(C('#ffb070')); else su.uCol.value.copy(C(SYSTEMS[SYS.i].hue2));
+  $('storm').style.opacity=(stormK*(S.sheltered?.35:1)*(.75+.25*Math.sin(T*6))).toFixed(3);
+  bloom.strength = 0.9 + (S.mode==='warp'?tunnel.material.uniforms.uAlpha.value*.6:0);
+
+  // HUD
+  if(S.mode!=='title'){ $('enFill').style.width=S.energy.toFixed(1)+'%'; $('enTxt').textContent=Math.round(S.energy); $('shFill').style.width=S.shield.toFixed(1)+'%'; $('shTxt').textContent=Math.round(S.shield); $('spdTxt').textContent=Math.round(Math.abs(S.speed)*3.6)+' km/s';
+    updateMarkers(); }
+  audio.update(dt, clamp(Math.abs(S.speed)/330,0,1), S.near||0, S.thrustVis||0, (S.mode==='play'&&S.storm.state==='storm')?1:0);
+
+  composer.render(realDt);
+}
+
+/* =====================================================================
+   Start
+   ===================================================================== */
+load(); refreshMuteIcon();
+if(isTouch){ document.body.classList.add('touch'); $('ctlDesk').classList.add('hidden'); $('ctlTouch').classList.remove('hidden'); }
+if(S.sys!==0) buildSystem(S.sys);
+refreshTitle();
+requestAnimationFrame(frame);
+
+// Test-/Debug-Schnittstelle (nur mit ?debug)
+if(DEBUG) window.__soma={ S, SYSTEMS, FACTS, ship, get SYS(){return SYS;}, camera, startGame, openCodex, openMap, closeOverlay, completeScan, buildSystem, startWarp, startEnding,
+  flyTo(id){ const a=SYS.anomalies.find(x=>x.id===id)||nearestTarget(ship.pos); const n=a.normal; ship.pos.copy(a.pos).addScaledVector(n,40).add(new THREE.Vector3(0,8,0)); const m=new THREE.Matrix4().lookAt(ship.pos,a.pos,UP); ship.q.setFromRotationMatrix(m); S.speed=0; ship.vel.set(0,0,0); camera.position.copy(ship.pos).add(new THREE.Vector3(0,3.3,14.5).applyQuaternion(ship.q)); camera.quaternion.copy(ship.q); return a.id; },
+  unlockAll(){ SYSTEMS.slice(0,6).forEach(s=>s.factIds.slice(0,REQ).forEach(id=>S.found.add(id))); save(); } };
+</script>
+</body>
+</html>

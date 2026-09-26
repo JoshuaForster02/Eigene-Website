@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#070d1a">
+<title>Easter Egg · Spiele</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Karla:wght@400;500&family=DM+Mono:wght@400&display=swap">
+<style>
+:root{--bg:#070D1A;--bg2:#0C1526;--fg:#EAF0F8;--fg2:#C5D0E2;--fg3:#8B98AE;--fg4:#5F6C84;--ac:#8FB1FF;--line:rgba(234,240,248,.12);--ease:cubic-bezier(.2,.8,.2,1)}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:radial-gradient(ellipse at 20% 0%,#132A5C 0%,#0C1526 38%,#070D1A 75%) fixed,var(--bg);color:var(--fg);font-family:Karla,system-ui,sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding:28px clamp(16px,4vw,40px) 80px}
+.top{display:flex;justify-content:space-between;align-items:center;font-family:"DM Mono",monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg3)}
+.top a{text-decoration:none}.top a:hover{color:var(--ac)}
+h1{font-family:"Cormorant Garamond",serif;font-weight:400;font-size:clamp(56px,11vw,132px);line-height:.95;margin:64px 0 10px;letter-spacing:-.01em}
+h1 i{color:var(--ac)}
+.lead{color:var(--fg2);max-width:52ch;font-size:17px;line-height:1.6;margin:0 0 48px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:18px}
+.card{position:relative;display:flex;flex-direction:column;min-height:300px;padding:26px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(143,177,255,.06),rgba(143,177,255,0) 60%),rgba(12,21,38,.6);text-decoration:none;overflow:hidden;transition:border-color .4s var(--ease),transform .4s var(--ease)}
+a.card:hover{border-color:var(--ac);transform:translateY(-3px)}
+.card .no{font-family:"DM Mono",monospace;font-size:11.5px;letter-spacing:.14em;color:var(--fg4);text-transform:uppercase}
+.card h2{font-family:"Cormorant Garamond",serif;font-weight:400;font-size:44px;margin:auto 0 8px;line-height:1}
+.card h2 i{color:var(--ac)}
+.card p{color:var(--fg3);margin:0;line-height:1.55;font-size:15px}
+.card .tags{margin-top:18px;font-family:"DM Mono",monospace;font-size:11px;letter-spacing:.12em;color:var(--fg4);text-transform:uppercase}
+.card.soon{opacity:.55}
+.card.soon .no::after{content:" · in Arbeit";color:var(--ac)}
+.art{position:absolute;right:-30px;top:-30px;width:190px;height:190px;border-radius:50%;filter:blur(2px);opacity:.55;pointer-events:none}
+.foot{margin-top:56px;color:var(--fg4);font-size:13px}
+@media (prefers-reduced-motion:reduce){a.card:hover{transform:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a href="/">← joshuaforster.de</a><span>◆ Easter Egg</span></div>
+  <h1>Du hast es <i>gefunden.</i></h1>
+  <p class="lead">Hier landet, was ich baue, wenn gerade niemand hinschaut. Alles läuft direkt im Browser, ohne Installation.</p>
+  <div class="grid">
+    <a class="card" href="nachtdienst/">
+      <div class="art" style="background:radial-gradient(circle,#2b8a6e 0%,transparent 65%)"></div>
+      <span class="no">01 · Lernspiel</span>
+      <h2>Nacht<i>dienst</i></h2>
+      <p>Du bist allein im Haus, der Piepser hört nicht auf. Triagieren, anordnen, entscheiden, bevor jemand kippt.</p>
+      <span class="tags">Innere · Unfallchirurgie · Intensiv · 8–12 min</span>
+    </a>
+    <a class="card" href="kosmos/">
+      <div class="art" style="background:radial-gradient(circle,#c2412d 0%,transparent 65%)"></div>
+      <span class="no">02 · Erkundung</span>
+      <h2>S<i>oma</i></h2>
+      <p>Eine Galaxie, deren Sternsysteme Organsysteme sind. Fliegen, scannen, verstehen, bis zum Kern.</p>
+      <span class="tags">3D · Musik · Kopfhörer empfohlen</span>
+    </a>
+    <div class="card soon">
+      <div class="art" style="background:radial-gradient(circle,#8FB1FF 0%,transparent 65%)"></div>
+      <span class="no">03 · Duell</span>
+      <h2>Plan<i>che</i></h2>
+      <p>Degenfechten auf 14 Metern. Distanz, Timing, Doppeltreffer.</p>
+      <span class="tags">1 oder 2 Spieler</span>
+    </div>
+    <div class="card soon">
+      <div class="art" style="background:radial-gradient(circle,#c04bd6 0%,transparent 65%)"></div>
+      <span class="no">04 · Arena</span>
+      <h2>Ar<i>ena</i></h2>
+      <p>Schnelles Lasertag in einer Neon-Arena gegen Drohnen.</p>
+      <span class="tags">Maus &amp; Tastatur</span>
+    </div>
+  </div>
+  <p class="foot">Lernspiele ersetzen keine Leitlinie. Spielstände bleiben lokal im Browser.</p>
+</div>
+</body>
+</html>
