@@ -46,12 +46,35 @@
   .planets button small { color: var(--dim); }
   .loading { position: absolute; right: 22px; bottom: 22px; font-size: 11px; letter-spacing: .2em; color: var(--dim); }
   .hidden { display: none !important; }
+  .navc { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 1; }
+  .hud { z-index: 2; }
+  .obj { position: absolute; left: 22px; top: 76px; width: min(330px, calc(100vw - 44px)); padding: 11px 14px 12px; border-radius: 12px; background: var(--bg); backdrop-filter: blur(8px); border: 1px solid rgba(127,208,255,.18); }
+  .obj:empty { display: none; }
+  .obj .oh { display: flex; justify-content: space-between; align-items: baseline; font-size: 10px; letter-spacing: .24em; text-transform: uppercase; color: var(--acc); }
+  .obj .oh b { font: 600 13px ui-monospace, "SF Mono", Menlo, monospace; letter-spacing: 0; color: var(--fg); }
+  .obj .ot { margin-top: 6px; font-size: 15px; line-height: 1.35; }
+  .obj .ok { margin-top: 6px; font-size: 11.5px; color: var(--dim); line-height: 1.7; }
+  .obj .ok kbd { font: 600 10.5px ui-monospace, Menlo, monospace; border: 1px solid rgba(255,255,255,.35); border-radius: 4px; padding: 0 4px; }
+  .obj.flash { animation: objf 1.2s ease-out; }
+  @keyframes objf { 0% { border-color: rgba(127,208,255,.9); box-shadow: 0 0 24px rgba(127,208,255,.35); } 100% { border-color: rgba(127,208,255,.18); box-shadow: none; } }
+  .card.map { width: min(900px, calc(100vw - 32px)); max-height: calc(100vh - 32px); overflow: auto; }
+  .mhead { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .mhead h2 { margin: 0; font-size: 22px; letter-spacing: .3em; font-weight: 300; text-transform: uppercase; }
+  .mhead span { font: 12px ui-monospace, Menlo, monospace; color: var(--acc); }
+  #mapc { display: block; width: 100%; height: min(46vh, 420px); margin-top: 12px; border-radius: 12px; background: radial-gradient(ellipse at 45% 50%, rgba(40,60,90,.35), rgba(0,0,0,.2) 70%); }
+  #mapList { grid-template-columns: repeat(4, 1fr); }
+  .menuprog { margin: -10px 0 18px; font-size: 13px; color: var(--acc); letter-spacing: .04em; }
+  .touchnote { display: none; margin-top: 14px; font-size: 13px; color: var(--warn); }
+  @media (hover: none) and (pointer: coarse) { .touchnote { display: block; } }
+  @media (max-width: 800px) { #mapList { grid-template-columns: repeat(2, 1fr); } .obj { top: 70px; } }
   @media (max-width: 700px) { .grid2 { grid-template-columns: 1fr; } .card h1 { font-size: 30px; } .bc { gap: 12px; } .stat { min-width: 60px; } .stat b { font-size: 18px; } }
 </style>
 </head>
 <body>
 <canvas id="c"></canvas>
+<canvas id="hNav" class="navc"></canvas>
 <div class="hud" id="hud">
+  <div class="obj" id="hObj"></div>
   <div class="tl"><div class="planet" id="hPlanet">Aurora</div><div class="status" id="hStatus">Zu Fuß</div></div>
   <div class="tr" id="hInfo"></div>
   <div class="cross"></div>
@@ -65,15 +88,25 @@
 <div class="overlay" id="menu">
   <div class="card">
     <h1>KOSMOS</h1>
-    <p class="sub">Browser-Demo · prozedurales Sonnensystem · Blockschiffe</p>
+    <p class="sub">Expedition durch ein prozedurales Sonnensystem · Blockschiffe</p>
+    <p class="menuprog" id="menuProg"></p>
     <div class="grid2">
       <div><b>Zu Fuß</b><kbd>WASD</kbd> gehen · <kbd>Shift</kbd> rennen<br><kbd>Leertaste</kbd> springen / Jetpack<br><kbd>F</kbd> ins Cockpit · <kbd>B</kbd> Baumodus</div>
       <div><b>Schiff</b><kbd>WASD</kbd> Schub · Maus lenkt · <kbd>Q</kbd><kbd>E</kbd> rollen<br><kbd>Leer</kbd>/<kbd>C</kbd> hoch/runter · <kbd>Shift</kbd> Boost<br><kbd>Z</kbd> Dämpfer · <kbd>J</kbd> Pulsantrieb (im All) · <kbd>V</kbd> Kamera</div>
       <div><b>Bauen</b><kbd>1</kbd>–<kbd>8</kbd> Block · <kbd>R</kbd> drehen<br>Linksklick setzen · Rechtsklick abbauen</div>
-      <div><b>Sonst</b><kbd>M</kbd> Karte &amp; Schnellreise · <kbd>L</kbd> Licht<br><kbd>Esc</kbd> Menü</div>
+      <div><b>Expedition</b><kbd>M</kbd> Systemkarte &amp; Schnellreise · <kbd>T</kbd> Ziel wechseln<br><kbd>L</kbd> Licht · <kbd>N</kbd> Ton · <kbd>Esc</kbd> Menü</div>
     </div>
-    <div class="btns"><button class="b" id="bStart">Spielen</button><button class="b ghost" id="bMap">Schnellreise</button><a class="b ghost" href="/spiele/" style="text-decoration:none;pointer-events:auto">Alle Spiele</a></div>
+    <div class="btns"><button class="b" id="bStart">Expedition starten</button><button class="b ghost" id="bMap">Systemkarte</button><button class="b ghost" id="bSound">Ton: an</button><a class="b ghost" href="/spiele/" style="text-decoration:none;pointer-events:auto">Alle Spiele</a><button class="b ghost" id="bReset" style="margin-left:auto">Neu beginnen</button></div>
+    <p class="touchnote">Kosmos braucht Tastatur und Maus. Am Handy kannst du dir die Welt ansehen, steuern geht nur am Rechner.</p>
     <div class="planets hidden" id="planetList"></div>
+  </div>
+</div>
+<div class="overlay hidden" id="mapov">
+  <div class="card map">
+    <div class="mhead"><h2>Systemkarte</h2><span id="mapProg"></span></div>
+    <canvas id="mapc"></canvas>
+    <div class="planets" id="mapList"></div>
+    <div class="btns"><button class="b" id="mapClose">Weiter</button></div>
   </div>
 </div>
 <script src="kosmos.min.js"></script>

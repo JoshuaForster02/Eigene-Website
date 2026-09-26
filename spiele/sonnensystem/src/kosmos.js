@@ -23013,7 +23013,7 @@ varying float vDist;
       snow: [0.85, 0.88, 0.92],
       special: [1, 0.3, 0.05],
       water: [0.02, 0.1, 0.16],
-      forest: [0.018, 0.05, 0.015],
+      forest: [0.032, 0.072, 0.022],
       foliage: [0.03, 0.09, 0.02],
       foliage2: [0.1, 0.12, 0.02],
     },
@@ -24723,7 +24723,7 @@ void main(){
           (this.r = i),
           i.setPixelRatio(e.pixelRatio),
           (i.shadowMap.enabled = e.shadows),
-          (i.shadowMap.type = ya),
+          (i.shadowMap.type = Zs),
           (i.toneMapping = ti),
           (i.outputColorSpace = xn),
           (i.autoClear = !0));
@@ -24816,6 +24816,7 @@ void main(){
           (this.quad.material = this.atmoMat),
           a.setRenderTarget(this.hdrRT),
           this.quad.render(a),
+          this.fx && this.fx.children.length && ((a.autoClear = !1), a.render(this.fx, e), (a.autoClear = !0)),
           this.opts.bloom && this.bloom.render(a, null, this.hdrRT, 0.016, !1),
           (this.toneMat.uniforms.uExposure.value = r),
           (this.quad.material = this.toneMat),
@@ -25126,7 +25127,7 @@ void main(){
         }
         ((i = Math.max(i, 100)),
           (this.mass = i),
-          (this.fuelCap = s),
+          (this.fuelCap = s * (this.fuelMul || 1)),
           (this.fuel = Math.min(this.fuel, s)),
           (this.gyro = r),
           this.com.copy(a.divideScalar(i)));
@@ -25363,7 +25364,7 @@ void main(){
         for (let A = 0; A < 3; A++) S[A] += w[A] / i;
         if ((C.applyQuaternion(f), (P[0] += C.x), (P[1] += C.y), (P[2] += C.z), this.pulseActive)) {
           let A = new F(0, 0, -1).applyQuaternion(this.q),
-            L = 6e4 * this.pulseCharge * this.pulseCharge,
+            L = 6e4 * (this.pulseMul || 1) * this.pulseCharge * this.pulseCharge,
             G = Math.min(1, t * 1.2);
           ((this.v = this.v.map((D, et) => D + (A.getComponent(et) * L - D) * G)), (this.status = "PULSANTRIEB"));
         } else {
@@ -25493,7 +25494,7 @@ void main(){
               ? (S = Math.max(S, 5.2))
               : this.swimming
                 ? (S = Math.max(S, 1.5))
-                : this.jet > 0 && ((S += (u + 6) * t), (this.jet = Math.max(0, this.jet - t * 0.22)))),
+                : this.jet > 0 && ((S += (u + 6) * t), (this.jet = Math.max(0, this.jet - t * 0.22 * (this.jetDrain || 1))))),
           this.grounded && (this.jet = Math.min(1, this.jet + t * 0.5)),
           m.copy(y).addScaledVector(o, S));
         let M = s.airDensity(r, a.alt);
@@ -25764,6 +25765,609 @@ void main(){
       ((this.mesh.count = c), (this.mesh.instanceMatrix.needsUpdate = !0), (this.mesh.instanceColor.needsUpdate = !0));
     }
   };
+  // =====================================================================
+  // Expedition: Relikte auf allen Welten, Navigation, Aufgaben, Upgrades
+  // (lesbar gehalten; three.js-Klassen heißen im Bundle: F=Vector3, ye=Quaternion,
+  //  Tt=Color, Ee=Mesh, ke=Group, Se=ShaderMaterial, Zi=Cylinder, Bs=Icosahedron, ri=MeshStandardMaterial)
+  // =====================================================================
+  var EXP_KEY = "kosmos.expedition.v1";
+  var RELIC_PLAN = { Aurora: 4, Selene: 3, Ferrox: 3, Glacia: 3 };
+  var RELIC_TOTAL = Object.values(RELIC_PLAN).reduce((a, b) => a + b, 0);
+  var UPGRADES = [
+    { at: 1, id: "jet", name: "Jetpack-Zellen", desc: "Das Jetpack hält 50 % länger." },
+    { at: 3, id: "fuel", name: "Tankverdichter", desc: "+30 % Treibstoff, Tank füllt sich am Boden schneller." },
+    { at: 5, id: "scan", name: "Tiefenscanner", desc: "Zeigt alle Relikte einer Welt, egal wie weit." },
+    { at: 8, id: "pulse", name: "Pulsfokus", desc: "Pulsantrieb 30 % schneller." },
+    { at: RELIC_TOTAL, id: "gold", name: "Goldene Hülle", desc: "Dein Schiff glänzt golden. Expedition abgeschlossen." },
+  ];
+  var STEPS = [
+    { id: "relic1", text: "Folge dem Lichtstrahl und birg das erste Relikt", hint: "zu Fuß · <kbd>Shift</kbd> rennen · <kbd>Leer</kbd> Jetpack" },
+    { id: "board", text: "Zurück zum Schiff und einsteigen", hint: "<kbd>F</kbd> in der Nähe des Cockpits" },
+    { id: "fly", text: "Starte und flieg zum nächsten Signal", hint: "<kbd>Leer</kbd> steigen · <kbd>W</kbd> Schub · Maus lenkt" },
+    { id: "orbit", text: "Verlasse die Atmosphäre: steig über 20 km", hint: "Nase hoch, <kbd>Shift</kbd> Boost" },
+    { id: "pulse", text: "Kurs Selene: Nase auf den Marker, Pulsantrieb halten", hint: "<kbd>J</kbd> halten · loslassen bremst auf 800 m/s" },
+    { id: "land", text: "Lande auf Selene und birg ein Relikt", hint: "<kbd>Z</kbd> Dämpfer an lassen · sanft aufsetzen" },
+    { id: "all", text: "Birg alle Relikte im System", hint: "<kbd>M</kbd> Karte · <kbd>T</kbd> Ziel wechseln" },
+    { id: "done", text: "Expedition abgeschlossen", hint: "Danke fürs Spielen · <kbd>M</kbd> Karte" },
+  ];
+  function expRng(seed) {
+    let a = seed >>> 0;
+    return () => {
+      a = (a + 0x6d2b79f5) >>> 0;
+      let t = a;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function expLoad() {
+    try {
+      let s = JSON.parse(localStorage.getItem(EXP_KEY) || "{}");
+      return { found: s.found || [], visited: s.visited || ["Aurora"], step: s.step || 0, time: s.time || 0, sound: s.sound !== !1 };
+    } catch (n) {
+      return { found: [], visited: ["Aurora"], step: 0, time: 0, sound: !0 };
+    }
+  }
+  var BEAM_VS = `
+    varying float vH; varying vec3 vN; varying vec3 vV;
+    void main(){
+      vH = uv.y;
+      vec4 mv = modelViewMatrix * vec4(position, 1.0);
+      vV = mv.xyz; vN = normalize(normalMatrix * normal);
+      gl_Position = projectionMatrix * mv;
+    }`;
+  // Wird NACH dem Atmosphären-Pass in den HDR-Puffer addiert (sonst verschluckt der Himmel den Strahl).
+  // Verdeckung durch Gelände: eigener Tiefentest gegen die Szenentiefe (alle drei Tiefenmodi des Renderers).
+  var BEAM_FS = `
+    precision highp float;
+    uniform vec3 uColor; uniform float uTime; uniform float uAlpha;
+    uniform sampler2D tDepth; uniform mat4 uProjInv; uniform int uDepthMode; uniform float uLogFar; uniform vec2 uRes;
+    varying float vH; varying vec3 vN; varying vec3 vV;
+    void main(){
+      vec2 uv = gl_FragCoord.xy / uRes;
+      float d = texture2D(tDepth, uv).x;
+      float dist = length(vV);
+      float tScene = 1e30;
+      if (uDepthMode == 1) {
+        if (d > 0.0) { vec4 vp = uProjInv * vec4(uv * 2.0 - 1.0, d, 1.0); tScene = length(vp.xyz / vp.w); }
+      } else if (uDepthMode == 0) {
+        if (d < 1.0) { float w = exp2(d * uLogFar) - 1.0; tScene = w / max(-vV.z / dist, 1e-4); }
+      } else {
+        if (d < 1.0) { vec4 vp = uProjInv * vec4(uv * 2.0 - 1.0, d * 2.0 - 1.0, 1.0); tScene = length(vp.xyz / vp.w); }
+      }
+      if (dist > tScene * 1.002 + 0.5) discard;
+      float facing = abs(dot(normalize(vN), normalize(-vV)));
+      float core = pow(facing, 4.0);
+      float fall = pow(1.0 - vH, 1.4);
+      float pulse = 0.7 + 0.3 * sin(uTime * 2.2 - vH * 60.0);
+      float nearFade = smoothstep(12.0, 240.0, dist);
+      float a = core * fall * pulse * uAlpha * nearFade;
+      gl_FragColor = vec4(uColor * a, 1.0);
+    }`;
+
+  // ---------- Klang: kleine Web-Audio-Engine ohne Samples ----------
+  function createSound() {
+    let ctx = null, master, sfx, amb, noise, wind, windF, windG, thr, thrF, thrG, rumble, rumbleG, jet, jetG, pulseO, pulseG, padBus, musicT = 0, enabled = !0, stepT = 0;
+    function init() {
+      if (ctx) { ctx.state === "suspended" && ctx.resume().catch(() => {}); return; }
+      let AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      try { ctx = new AC(); } catch (n) { ctx = null; return; }
+      master = ctx.createGain(); master.gain.value = enabled ? 0.9 : 0;
+      let comp = ctx.createDynamicsCompressor(); comp.threshold.value = -16; comp.ratio.value = 3;
+      master.connect(comp); comp.connect(ctx.destination);
+      sfx = ctx.createGain(); sfx.gain.value = 1; sfx.connect(master);
+      amb = ctx.createGain(); amb.gain.value = 1; amb.connect(master);
+      // Rauschen (braun + weiß gemischt), 2 s Schleife
+      let len = ctx.sampleRate * 2, buf = ctx.createBuffer(1, len, ctx.sampleRate), d = buf.getChannelData(0), last = 0;
+      for (let i = 0; i < len; i++) { let w = Math.random() * 2 - 1; last = (last + 0.02 * w) / 1.02; d[i] = last * 3.2 + w * 0.12; }
+      noise = buf;
+      let loop = (freq, type, q) => {
+        let s = ctx.createBufferSource(); s.buffer = noise; s.loop = !0; s.playbackRate.value = 0.9 + Math.random() * 0.2;
+        let f = ctx.createBiquadFilter(); f.type = type; f.frequency.value = freq; f.Q.value = q;
+        let g = ctx.createGain(); g.gain.value = 0;
+        s.connect(f); f.connect(g); g.connect(amb); s.start();
+        return [f, g];
+      };
+      [windF, windG] = loop(500, "bandpass", 0.7);
+      [thrF, thrG] = loop(180, "lowpass", 0.8);
+      [, jetG] = loop(2400, "highpass", 0.5);
+      rumble = ctx.createOscillator(); rumble.type = "sine"; rumble.frequency.value = 42;
+      rumbleG = ctx.createGain(); rumbleG.gain.value = 0; rumble.connect(rumbleG); rumbleG.connect(amb); rumble.start();
+      pulseO = ctx.createOscillator(); pulseO.type = "sawtooth"; pulseO.frequency.value = 60;
+      let pf = ctx.createBiquadFilter(); pf.type = "lowpass"; pf.frequency.value = 900;
+      pulseG = ctx.createGain(); pulseG.gain.value = 0; pulseO.connect(pf); pf.connect(pulseG); pulseG.connect(amb); pulseO.start();
+      // Hall für die Musik
+      let ir = ctx.createBuffer(2, ctx.sampleRate * 3.5, ctx.sampleRate);
+      for (let c = 0; c < 2; c++) { let x = ir.getChannelData(c); for (let i = 0; i < x.length; i++) x[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / x.length, 2.6); }
+      let rev = ctx.createConvolver(); rev.buffer = ir;
+      padBus = ctx.createGain(); padBus.gain.value = 0.55;
+      let dry = ctx.createGain(); dry.gain.value = 0.35;
+      padBus.connect(rev); padBus.connect(dry); rev.connect(master); dry.connect(master);
+    }
+    let set = (g, v, tc = 0.12) => g && g.gain.setTargetAtTime(v, ctx.currentTime, tc);
+    function tone(f, dur, type = "sine", vol = 0.12, delay = 0, dest = sfx, f1) {
+      if (!ctx || !enabled) return;
+      let t = ctx.currentTime + delay, o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = type; o.frequency.setValueAtTime(f, t); f1 && o.frequency.exponentialRampToValueAtTime(f1, t + dur);
+      g.gain.setValueAtTime(1e-4, t); g.gain.exponentialRampToValueAtTime(vol, t + Math.min(0.04, dur * 0.3)); g.gain.exponentialRampToValueAtTime(1e-4, t + dur);
+      o.connect(g); g.connect(dest); o.start(t); o.stop(t + dur + 0.05);
+    }
+    function burst(freq, dur, vol, type = "bandpass", q = 1) {
+      if (!ctx || !enabled) return;
+      let t = ctx.currentTime, s = ctx.createBufferSource(); s.buffer = noise;
+      let f = ctx.createBiquadFilter(); f.type = type; f.frequency.value = freq; f.Q.value = q;
+      let g = ctx.createGain(); g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(1e-4, t + dur);
+      s.connect(f); f.connect(g); g.connect(sfx); s.start(t, Math.random()); s.stop(t + dur + 0.05);
+    }
+    // ruhige Akkordflächen (A-Dorisch), alle ~9 s ein neuer Akkord
+    let CHORDS = [[57, 64, 69, 72], [55, 62, 67, 71], [53, 60, 64, 69], [52, 59, 64, 67], [50, 57, 62, 66]];
+    let mtof = (m) => 440 * Math.pow(2, (m - 69) / 12);
+    function music(dt, space) {
+      if (!ctx || !enabled) return;
+      musicT -= dt;
+      if (musicT > 0) return;
+      musicT = 8 + Math.random() * 4;
+      let ch = CHORDS[(Math.random() * CHORDS.length) | 0], t = ctx.currentTime;
+      ch.forEach((m, k) => {
+        let o = ctx.createOscillator(), o2 = ctx.createOscillator(), g = ctx.createGain();
+        o.type = "sine"; o2.type = "triangle";
+        o.frequency.value = mtof(m - (space ? 12 : 0)); o2.frequency.value = mtof(m) * 1.004;
+        let v = (k === 0 ? 0.05 : 0.028) * (space ? 1.2 : 1);
+        g.gain.setValueAtTime(1e-4, t); g.gain.exponentialRampToValueAtTime(v, t + 3); g.gain.setValueAtTime(v, t + 6); g.gain.exponentialRampToValueAtTime(1e-4, t + 11);
+        o.connect(g); o2.connect(g); g.connect(padBus); o.start(t); o2.start(t); o.stop(t + 11.2); o2.stop(t + 11.2);
+      });
+      // seltenes Glitzern
+      if (Math.random() < 0.6) [0, 1, 2].forEach((k) => tone(mtof(ch[(k + 1) % 4] + 12), 2.2, "sine", 0.018, 2 + k * 0.45, padBus));
+    }
+    return {
+      init,
+      get on() { return enabled; },
+      toggle(v) { enabled = v === void 0 ? !enabled : v; ctx && master.gain.setTargetAtTime(enabled ? 0.9 : 0, ctx.currentTime, 0.1); return enabled; },
+      update(dt, s) {
+        if (!ctx) return;
+        // Wind: Luftdichte × Tempo, am Boden eine leise Brise
+        let w = s.rho > 0 ? Math.min(0.5, s.rho * (0.03 + s.speed / 260)) : 0;
+        set(windG, w, 0.25); windF.frequency.setTargetAtTime(300 + Math.min(2200, s.speed * 6), ctx.currentTime, 0.3);
+        set(thrG, s.thrust * 0.5, 0.08); thrF.frequency.setTargetAtTime(140 + s.thrust * 380, ctx.currentTime, 0.1);
+        set(rumbleG, s.thrust * 0.22, 0.1);
+        set(jetG, s.jet ? 0.07 : 0, 0.05);
+        set(pulseG, s.pulse * 0.07, 0.2); pulseO.frequency.setTargetAtTime(55 + s.pulse * 180, ctx.currentTime, 0.3);
+        if (s.walking && s.speed > 1.5) {
+          stepT -= dt * s.speed;
+          if (stepT <= 0) { stepT = 2.4; burst(s.soft ? 700 : 420, 0.07, 0.14, "lowpass", 0.8); }
+        }
+        music(dt, s.space);
+      },
+      relic() { [0, 4, 7, 12, 16].forEach((st, k) => tone(523.25 * Math.pow(2, st / 12), 1.4, "triangle", 0.09, k * 0.09)); tone(1046.5, 2.5, "sine", 0.05, 0.5, padBus); },
+      step() { [0, 7, 12].forEach((st, k) => tone(659.25 * Math.pow(2, st / 12), 0.5, "sine", 0.07, k * 0.07)); },
+      blip() { tone(880, 0.12, "sine", 0.05); },
+      thud(v) { burst(160, 0.4, Math.min(0.5, v * 0.05), "lowpass", 0.7); },
+      upgrade() { [0, 3, 7, 10, 14, 19].forEach((st, k) => tone(392 * Math.pow(2, st / 12), 1.8, "sine", 0.06, k * 0.11)); },
+    };
+  }
+
+  function createExpedition(ctx) {
+    let { uni, ship, player, camera, hull, toast, renderer } = ctx,
+      fxScene = (renderer.fx = new As()),
+      fxGroups = new Map(),
+      fxGroup = (pl) => {
+        let g = fxGroups.get(pl);
+        return g || ((g = new ke()), fxScene.add(g), fxGroups.set(pl, g)), g;
+      },
+      beamU = {
+        tDepth: { value: renderer.sceneRT.depthTexture },
+        uProjInv: { value: camera.projectionMatrixInverse },
+        uDepthMode: { value: renderer.depthMode },
+        uLogFar: { value: Math.log2(camera.far + 1) },
+        uRes: { value: renderer.resVec || (renderer.resVec = new Ct(1, 1)) },
+      },
+      save = expLoad(),
+      relics = [],
+      sound = createSound(),
+      target = null,
+      manualTarget = !1,
+      lastMode = "walk",
+      wasLanded = !0,
+      lastVS = 0,
+      tmp = new F(),
+      q0 = new ye(),
+      beamGeo = new Zi(1, 1, 1, 20, 1, !0),
+      crystalGeo = new Bs(1, 0),
+      baseGeo = new Zi(1.5, 2, 0.7, 6, 1),
+      haloGeo = new Zi(2.6, 2.6, 0.12, 32, 1, !0),
+      hud = {
+        nav: document.getElementById("hNav"),
+        obj: document.getElementById("hObj"),
+      },
+      g2 = hud.nav.getContext("2d"),
+      stepShown = -1,
+      refuelHint = !1;
+    sound.toggle(save.sound);
+    ship.fuelMul = 1;
+    let persist = () => {
+      try { localStorage.setItem(EXP_KEY, JSON.stringify(save)); } catch (n) {}
+    };
+    let has = (id) => UPGRADES.some((u) => u.id === id && save.found.length >= u.at);
+    function applyUpgrades(announce) {
+      player.jetDrain = has("jet") ? 0.66 : 1;
+      let fm = has("fuel") ? 1.3 : 1;
+      if (ship.fuelMul !== fm) { ship.fuelMul = fm; ship.recalc(); }
+      ship.pulseMul = has("pulse") ? 1.3 : 1;
+      let gold = has("gold");
+      hull.Accent.color.setRGB(...(gold ? [1, 0.72, 0.18] : [0.9, 0.38, 0.06]));
+      hull.Accent.metalness = gold ? 0.9 : 0.2;
+      hull.Accent.roughness = gold ? 0.25 : 0.45;
+      if (announce) {
+        let u = UPGRADES.find((x) => x.at === save.found.length);
+        u && setTimeout(() => { toast("Upgrade: " + u.name + " · " + u.desc, 5200); sound.upgrade(); }, 1600);
+      }
+    }
+    // ---------- Fundorte bestimmen (deterministisch) ----------
+    function slopeOK(pl, u, h) {
+      let t1 = Math.abs(u[2]) < 0.9 ? [-u[1], u[0], 0] : [0, -u[2], u[1]],
+        l = Math.hypot(...t1);
+      t1 = t1.map((x) => x / l);
+      let t2 = [u[1] * t1[2] - u[2] * t1[1], u[2] * t1[0] - u[0] * t1[2], u[0] * t1[1] - u[1] * t1[0]],
+        e = 10 / pl.P.radius,
+        hA = pl.gen.height(u[0] + t1[0] * e, u[1] + t1[1] * e, u[2] + t1[2] * e),
+        hB = pl.gen.height(u[0] + t2[0] * e, u[1] + t2[1] * e, u[2] + t2[2] * e);
+      return Math.abs(hA - h) < 3.2 && Math.abs(hB - h) < 3.2;
+    }
+    function sites(pl, n, seed, near) {
+      let rnd = expRng(seed), out = [], P = pl.P;
+      for (let tries = 0; out.length < n && tries < 6000; tries++) {
+        let u;
+        if (near && out.length === 0) {
+          // erstes Relikt auf Aurora: 350–650 m vom Landeplatz
+          let t1 = Math.abs(near[2]) < 0.9 ? [-near[1], near[0], 0] : [0, -near[2], near[1]],
+            l = Math.hypot(...t1);
+          t1 = t1.map((x) => x / l);
+          let t2 = [near[1] * t1[2] - near[2] * t1[1], near[2] * t1[0] - near[0] * t1[2], near[0] * t1[1] - near[1] * t1[0]],
+            ang = rnd() * Math.PI * 2,
+            dist = (350 + rnd() * 300) / P.radius;
+          u = near.map((x, k) => x + (t1[k] * Math.cos(ang) + t2[k] * Math.sin(ang)) * dist);
+        } else {
+          let z = rnd() * 2 - 1, a = rnd() * Math.PI * 2, r = Math.sqrt(1 - z * z);
+          u = [Math.cos(a) * r, z, Math.sin(a) * r];
+        }
+        let L = Math.hypot(...u);
+        u = u.map((x) => x / L);
+        let h = pl.gen.height(u[0], u[1], u[2]);
+        if (P.ocean && h < 18) continue;
+        if (!P.ocean && h < -P.relief * 0.35) continue;
+        if (out.some((o) => o.u[0] * u[0] + o.u[1] * u[1] + o.u[2] * u[2] > Math.cos(near && out.length === 0 ? 0 : 0.42))) continue;
+        if (!slopeOK(pl, u, h)) continue;
+        out.push({ u, h });
+      }
+      return out;
+    }
+    function buildRelic(pl, k, site) {
+      let id = pl.P.name + "-" + k,
+        R = pl.P.radius + site.h,
+        grp = new ke(),
+        cMat = new ri({ color: 856096, emissive: new Tt(0.3, 0.85, 1), emissiveIntensity: 7, roughness: 0.2, metalness: 0.1, flatShading: !0 }),
+        crystal = new Ee(crystalGeo, cMat),
+        base = new Ee(baseGeo, hull.HullDark),
+        halo = new Ee(haloGeo, new pi({ color: new Tt(0.4, 0.9, 1).multiplyScalar(6), side: ai, transparent: !0, opacity: 0.8 })),
+        beamMat = new Se({
+          vertexShader: BEAM_VS,
+          fragmentShader: BEAM_FS,
+          uniforms: { uColor: { value: new Tt(2.6, 9, 20) }, uTime: oi.uTime, uAlpha: { value: 1 }, ...beamU },
+          transparent: !0,
+          depthTest: !1,
+          depthWrite: !1,
+          blending: 2,
+          side: ai,
+        }),
+        beam = new Ee(beamGeo, beamMat);
+      crystal.scale.set(0.9, 1.9, 0.9); crystal.position.y = 3; crystal.castShadow = !0;
+      base.position.y = 0.1; base.castShadow = base.receiveShadow = !0;
+      halo.position.y = 3;
+      beam.scale.set(4.5, 1600, 4.5); beam.position.y = 800; beam.frustumCulled = !1; beam.renderOrder = 5;
+      grp.add(base, crystal, halo);
+      grp.position.set(site.u[0] * R, site.u[1] * R, site.u[2] * R);
+      grp.quaternion.setFromUnitVectors(tmp.set(0, 1, 0), new F(...site.u));
+      pl.group.add(grp);
+      let bg = new ke();
+      bg.position.copy(grp.position); bg.quaternion.copy(grp.quaternion); bg.add(beam);
+      fxGroup(pl).add(bg);
+      let rel = { id, planet: pl, u: site.u, h: site.h, R, grp, crystal, cMat, halo, beam, beamMat, found: save.found.includes(id) };
+      rel.world = () => [pl.pos[0] + site.u[0] * (R + 3), pl.pos[1] + site.u[1] * (R + 3), pl.pos[2] + site.u[2] * (R + 3)];
+      styleRelic(rel);
+      relics.push(rel);
+    }
+    function styleRelic(r) {
+      r.beam.visible = !r.found;
+      r.halo.visible = !r.found;
+      r.cMat.emissive.setRGB(...(r.found ? [1, 0.62, 0.15] : [0.3, 0.85, 1]));
+      r.cMat.emissiveIntensity = r.found ? 1.6 : 7;
+    }
+    function init(spawnDir) {
+      let seeds = { Aurora: 101, Selene: 202, Ferrox: 303, Glacia: 404 };
+      for (let pl of uni.planets) {
+        let n = RELIC_PLAN[pl.P.name] || 0;
+        if (!n) continue;
+        sites(pl, n, seeds[pl.P.name] || 7, pl.P.name === "Aurora" ? spawnDir : null).forEach((s, k) => buildRelic(pl, k, s));
+      }
+      applyUpgrades(!1);
+      syncStep();
+    }
+    // ---------- Aufgaben ----------
+    let foundCount = () => save.found.length,
+      foundOn = (name) => save.found.filter((id) => id.startsWith(name + "-")).length;
+    function stepDone(i, st) {
+      switch (STEPS[i].id) {
+        case "relic1": return foundCount() >= 1;
+        case "board": return st.mode === "pilot" || foundCount() >= 2;
+        case "fly": return foundCount() >= 2 || foundOn("Selene") > 0;
+        case "orbit": return (st.mode === "pilot" && st.alt > 2e4 && st.planet.P.name === "Aurora") || st.planet.P.name !== "Aurora" || foundOn("Selene") > 0;
+        case "pulse": return (st.planet.P.name === "Selene" && st.alt < 2e5) || foundOn("Selene") > 0;
+        case "land": return foundOn("Selene") > 0;
+        case "all": return foundCount() >= RELIC_TOTAL;
+        default: return !1;
+      }
+    }
+    function syncStep(st) {
+      if (!st) return;
+      let changed = !1;
+      while (save.step < STEPS.length - 1 && stepDone(save.step, st)) { save.step++; changed = !0; }
+      if (changed) { persist(); sound.step(); manualTarget = !1; }
+    }
+    function autoTarget(st) {
+      let id = STEPS[Math.min(save.step, STEPS.length - 1)].id;
+      if (id === "board") return { kind: "ship" };
+      if (id === "orbit") return null;
+      if (id === "pulse") return { kind: "planet", pl: uni.byName("Selene") };
+      let pl = st.planet, best = null, bd = 1e30, here = st.pos;
+      for (let r of relics) {
+        if (r.found) continue;
+        if (id !== "all" && r.planet !== pl) continue;
+        let w = r.world(), dd = Math.hypot(w[0] - here[0], w[1] - here[1], w[2] - here[2]) + (r.planet === pl ? 0 : 1e9);
+        dd < bd && ((bd = dd), (best = r));
+      }
+      if (best && best.planet === pl) return { kind: "relic", r: best };
+      // nichts mehr hier → nächste Welt mit offenen Relikten
+      let open = uni.planets.filter((p) => relics.some((r) => r.planet === p && !r.found) && p !== pl);
+      open.sort((a, b) => Math.hypot(...a.pos.map((x, k) => x - here[k])) - Math.hypot(...b.pos.map((x, k) => x - here[k])));
+      return open[0] ? { kind: "planet", pl: open[0] } : null;
+    }
+    function cycleTarget(st) {
+      let list = [];
+      for (let r of relics) !r.found && r.planet === st.planet && list.push({ kind: "relic", r });
+      list.push({ kind: "ship" });
+      for (let p of uni.planets) p !== st.planet && list.push({ kind: "planet", pl: p });
+      let key = (t) => t && (t.kind === "relic" ? t.r.id : t.kind === "planet" ? t.pl.P.name : "ship"),
+        k = list.findIndex((t) => key(t) === key(target));
+      target = list[(k + 1) % list.length];
+      manualTarget = !0;
+      sound.blip();
+      toast("Ziel: " + targetName(target));
+    }
+    function targetName(t) {
+      return !t ? "–" : t.kind === "relic" ? "Relikt · " + t.r.planet.P.name : t.kind === "planet" ? t.pl.P.name : "Dein Schiff";
+    }
+    function targetPos(t, st) {
+      if (!t) return null;
+      if (t.kind === "relic") return t.r.world();
+      if (t.kind === "ship") return ship.x;
+      // Planet: Punkt auf der Oberfläche in Richtung des Betrachters
+      let p = t.pl.pos, d = st.pos.map((x, k) => x - p[k]), L = Math.hypot(...d) || 1;
+      return p.map((x, k) => x + (d[k] / L) * t.pl.P.radius);
+    }
+    // ---------- Einsammeln ----------
+    function collect(r) {
+      r.found = !0;
+      save.found.push(r.id);
+      save.visited.includes(r.planet.P.name) || save.visited.push(r.planet.P.name);
+      styleRelic(r);
+      persist();
+      sound.relic();
+      let n = foundCount();
+      toast(n >= RELIC_TOTAL ? "Alle " + RELIC_TOTAL + " Relikte geborgen!" : "Relikt geborgen · " + n + "/" + RELIC_TOTAL, 3600);
+      ship.fuel = ship.fuelCap;
+      applyUpgrades(!0);
+      manualTarget = !1;
+    }
+    // ---------- HUD-Marker ----------
+    let dpr = 1;
+    function resize() {
+      dpr = Math.min(devicePixelRatio || 1, 2);
+      hud.nav.width = innerWidth * dpr; hud.nav.height = innerHeight * dpr;
+    }
+    resize();
+    addEventListener("resize", resize);
+    let fmtD = (m) => (m >= 1e6 ? (m / 1e6).toFixed(m >= 1e7 ? 0 : 1) + " Mm" : m >= 1e4 ? (m / 1e3).toFixed(0) + " km" : m >= 1e3 ? (m / 1e3).toFixed(1) + " km" : Math.round(m) + " m");
+    let qi2 = new ye();
+    function project(pos, camPos) {
+      tmp.set(pos[0] - camPos[0], pos[1] - camPos[1], pos[2] - camPos[2]);
+      let dist = tmp.length();
+      tmp.applyQuaternion(qi2.copy(camera.quaternion).invert());
+      let behind = tmp.z >= 0, f = 1 / Math.tan((camera.fov * Math.PI) / 360), z = Math.max(1e-6, Math.abs(tmp.z));
+      let x = ((tmp.x / z) * f) / camera.aspect, y = (tmp.y / z) * f;
+      if (behind) { x = -x; y = -y; }
+      return { x, y, behind, dist };
+    }
+    function marker(pos, camPos, label, color, primary, eta) {
+      let W = innerWidth, H = innerHeight, pr = project(pos, camPos), sx = (pr.x * 0.5 + 0.5) * W, sy = (-pr.y * 0.5 + 0.5) * H;
+      let pad = 46, off = pr.behind || sx < pad || sx > W - pad || sy < pad || sy > H - pad;
+      if (off) {
+        // an den Rand klemmen, Pfeil zeigt die Richtung
+        let dx = sx - W / 2, dy = sy - H / 2;
+        if (pr.behind && Math.abs(dx) + Math.abs(dy) < 1) dy = 1;
+        let s = Math.min((W / 2 - pad) / Math.max(Math.abs(dx), 1e-3), (H / 2 - pad) / Math.max(Math.abs(dy), 1e-3));
+        sx = W / 2 + dx * s; sy = H / 2 + dy * s;
+      }
+      let g = g2, r = primary ? 9 : 6;
+      g.save();
+      g.translate(sx * dpr, sy * dpr); g.scale(dpr, dpr);
+      g.strokeStyle = color; g.fillStyle = color; g.lineWidth = primary ? 2 : 1.4;
+      g.shadowColor = "rgba(0,0,0,.6)"; g.shadowBlur = 4;
+      if (off) {
+        let a = Math.atan2(sy - H / 2, sx - W / 2);
+        g.rotate(a); g.beginPath(); g.moveTo(r + 6, 0); g.lineTo(-r * 0.6, -r * 0.9); g.lineTo(-r * 0.6, r * 0.9); g.closePath(); g.fill(); g.rotate(-a);
+      } else {
+        g.beginPath(); g.moveTo(0, -r); g.lineTo(r, 0); g.lineTo(0, r); g.lineTo(-r, 0); g.closePath(); g.stroke();
+        if (primary) { g.globalAlpha = 0.25; g.fill(); g.globalAlpha = 1; }
+      }
+      g.font = (primary ? "600 12px " : "11px ") + "ui-monospace, SF Mono, Menlo, monospace";
+      g.textAlign = off ? (sx > W / 2 ? "right" : "left") : "center";
+      let tx = off ? (sx > W / 2 ? -16 : 16) : 0, ty = off ? 4 : r + 15;
+      g.fillText(label + " · " + fmtD(pr.dist) + (eta ? " · " + eta : ""), tx, ty);
+      g.restore();
+    }
+    function drawNav(st) {
+      let W = hud.nav.width, H = hud.nav.height;
+      g2.clearRect(0, 0, W, H);
+      if (st.menu) return;
+      let cam = st.cam, scan = has("scan");
+      // Relikte in Reichweite
+      for (let r of relics) {
+        if (r.found || (target && target.kind === "relic" && target.r === r)) continue;
+        if (r.planet !== st.planet) continue;
+        let w = r.world(), dd = Math.hypot(w[0] - cam[0], w[1] - cam[1], w[2] - cam[2]);
+        if (dd > (scan ? 1e9 : 2.5e4)) continue;
+        marker(w, cam, "Relikt", "rgba(127,208,255,.75)", !1);
+      }
+      // Planeten, sobald man die Atmosphäre verlassen hat
+      if (st.alt > 15e3) for (let p of uni.planets) {
+        if (target && target.kind === "planet" && target.pl === p) continue;
+        if (p === st.planet && st.alt < p.P.radius * 2) continue;
+        let n = relics.filter((r) => r.planet === p), f = n.filter((r) => r.found).length;
+        marker(targetPos({ kind: "planet", pl: p }, st), cam, p.P.name + (n.length ? " " + f + "/" + n.length : ""), "rgba(232,238,245,.7)", !1);
+      }
+      // Schiff, wenn man zu Fuß weiter weg ist
+      if (st.mode === "walk" && !(target && target.kind === "ship")) {
+        let dd = Math.hypot(ship.x[0] - cam[0], ship.x[1] - cam[1], ship.x[2] - cam[2]);
+        dd > 25 && dd < 2e5 && marker(ship.x, cam, "Schiff", "rgba(255,179,71,.8)", !1);
+      }
+      // aktuelles Ziel
+      let tp = targetPos(target, st);
+      if (tp) {
+        let v = st.vel, d = tp.map((x, k) => x - st.pos[k]), L = Math.hypot(...d) || 1,
+          closing = (v[0] * d[0] + v[1] * d[1] + v[2] * d[2]) / L,
+          eta = closing > 2 && L > 60 ? fmtT(L / closing) : "";
+        let blocked = target.kind === "planet" && occluded(st.pos, tp, target.pl);
+        marker(tp, cam, targetName(target) + (blocked ? " · verdeckt: erst um den Planeten" : ""), target.kind === "ship" ? "#ffb347" : blocked ? "#ffb347" : "#7fd0ff", !0, eta);
+      }
+    }
+    // liegt ein anderer Himmelskörper (inkl. Atmosphäre) zwischen Schiff und Ziel?
+    function occluded(from, to, skip) {
+      for (let pl of uni.planets) {
+        if (pl === skip) continue;
+        let R = pl.P.radius + (pl.P.atmo.has ? pl.P.atmo.height * 600 : 8e3),
+          d = to.map((x, k) => x - from[k]), L = Math.hypot(...d),
+          o = pl.pos.map((x, k) => x - from[k]),
+          tt = Math.max(0, Math.min(L, (o[0] * d[0] + o[1] * d[1] + o[2] * d[2]) / L)),
+          c = o.map((x, k) => x - (d[k] / L) * tt);
+        if (Math.hypot(...c) < R && tt > 0 && tt < L) return !0;
+      }
+      return !1;
+    }
+    let fmtT = (s) => (s > 5400 ? Math.round(s / 3600) + " h" : s > 90 ? Math.round(s / 60) + " min" : Math.round(s) + " s");
+    function drawObjective() {
+      let i = Math.min(save.step, STEPS.length - 1), s = STEPS[i];
+      if (stepShown === i && hud.obj.dataset.n === String(foundCount())) return;
+      stepShown = i; hud.obj.dataset.n = String(foundCount());
+      hud.obj.innerHTML = `<div class="oh"><span>Expedition</span><b>${foundCount()}/${RELIC_TOTAL}</b></div><div class="ot">${s.text}</div><div class="ok">${s.hint}</div>`;
+      hud.obj.classList.remove("flash"); void hud.obj.offsetWidth; hud.obj.classList.add("flash");
+    }
+    // ---------- pro Frame ----------
+    function update(dt, st) {
+      save.time += dt;
+      for (let [pl, g] of fxGroups) g.position.copy(pl.group.position);
+      beamU.uRes.value.set(renderer.size[0] || 1, renderer.size[1] || 1);
+      // Besuch registrieren
+      if (st.alt < st.planet.P.radius * 0.6 && !save.visited.includes(st.planet.P.name)) {
+        save.visited.push(st.planet.P.name); persist();
+        toast("Erstbesuch: " + st.planet.P.name + " · " + st.planet.P.desc, 4200);
+      }
+      // Relikte: Drehen, Einsammeln zu Fuß
+      let t = oi.uTime.value, sun = uni.sunDirFrom(st.planet);
+      for (let r of relics) {
+        if (r.planet !== st.planet) continue;
+        // am Tag heller, nachts gedimmt (der Himmel ist dann dunkel)
+        let day = r.u[0] * sun[0] + r.u[1] * sun[1] + r.u[2] * sun[2];
+        r.beamMat.uniforms.uAlpha.value = 0.25 + 0.75 * Math.min(1, Math.max(0, (day + 0.1) / 0.5));
+        r.crystal.rotation.y = t * 0.8; r.crystal.position.y = 3 + Math.sin(t * 1.6 + r.u[0] * 10) * 0.25;
+        r.halo.rotation.y = -t * 0.5; r.halo.scale.setScalar(1 + Math.sin(t * 2.2) * 0.06);
+        if (r.found || st.mode !== "walk") continue;
+        let w = r.world(), p = player.x;
+        Math.hypot(w[0] - p[0], w[1] - p[1], w[2] - p[2]) < 5.5 && collect(r);
+      }
+      // Tank füllt sich gelandet langsam wieder (sonst strandet man)
+      if (ship.landed && ship.fuel < ship.fuelCap) {
+        ship.fuel = Math.min(ship.fuelCap, ship.fuel + ship.fuelCap * (has("fuel") ? 0.05 : 0.025) * dt);
+        if (!refuelHint && ship.fuel < ship.fuelCap * 0.6) { refuelHint = !0; toast("Gelandet: Tank füllt sich langsam wieder auf"); }
+      }
+      // harte Landung hörbar
+      if (ship.landed && !wasLanded && lastVS < -3) sound.thud(-lastVS);
+      wasLanded = ship.landed; lastVS = ship.vSpeed || 0;
+      if (st.mode !== lastMode) { lastMode = st.mode; manualTarget = !1; }
+      syncStep(st);
+      manualTarget || (target = autoTarget(st));
+      if (target && target.kind === "relic" && target.r.found) target = autoTarget(st);
+      drawNav(st);
+      drawObjective();
+      // Klang
+      let piloting = st.mode === "pilot", usage = piloting ? Math.min(1, ship.axisUsage.reduce((a, b) => a + b, 0) * 0.7) : 0;
+      sound.update(dt, {
+        rho: st.rho,
+        speed: Math.hypot(...st.vel),
+        thrust: usage,
+        pulse: piloting && ship.pulseActive ? ship.pulseCharge : 0,
+        jet: !piloting && st.jetting,
+        walking: !piloting && player.grounded,
+        soft: st.planet.P.trees > 0,
+        space: st.rho < 0.01,
+      });
+    }
+    // ---------- Karte ----------
+    function drawMap(cv, st) {
+      let r = Math.min(devicePixelRatio || 1, 2), W = cv.clientWidth, H = cv.clientHeight;
+      cv.width = W * r; cv.height = H * r;
+      let g = cv.getContext("2d");
+      g.scale(r, r); g.clearRect(0, 0, W, H);
+      // Projektion: Draufsicht (x/z), Entfernung wurzelskaliert
+      let cx = W * 0.42, cy = H * 0.52, maxR = Math.min(W, H) * 0.42,
+        scale = (d) => (Math.sqrt(d) / Math.sqrt(8.2e6)) * maxR,
+        pt = (p) => { let dx = p[0], dz = p[2], L = Math.hypot(dx, dz) || 1, dd = Math.hypot(p[0], p[1], p[2]), s = scale(dd); return [cx + (dx / L) * s, cy + (dz / L) * s]; };
+      g.strokeStyle = "rgba(255,255,255,.06)"; g.lineWidth = 1;
+      for (let k of [1.4e6, 5.2e6, 8e6]) { g.beginPath(); g.arc(cx, cy, scale(k), 0, Math.PI * 2); g.stroke(); }
+      // Sonne (Richtung)
+      let sd = Math.hypot(ln[0], ln[2]), sx = cx + (ln[0] / sd) * maxR * 1.12, sy = cy + (ln[2] / sd) * maxR * 1.12;
+      let gr = g.createRadialGradient(sx, sy, 0, sx, sy, 26); gr.addColorStop(0, "rgba(255,236,200,1)"); gr.addColorStop(1, "rgba(255,200,120,0)");
+      g.fillStyle = gr; g.beginPath(); g.arc(sx, sy, 26, 0, Math.PI * 2); g.fill();
+      g.fillStyle = "rgba(255,230,190,.8)"; g.font = "11px ui-monospace, Menlo, monospace"; g.textAlign = "center"; g.fillText("Sonne", sx, sy + 38);
+      let cols = { Aurora: "#4d9be6", Selene: "#b8bcc6", Ferrox: "#d9773a", Glacia: "#bfe6ff" };
+      for (let p of uni.planets) {
+        let [x, y] = pt(p.pos), rad = 5 + (p.P.radius / 4e4) * 9, n = relics.filter((q) => q.planet === p), f = n.filter((q) => q.found).length;
+        let pg = g.createRadialGradient(x - rad * 0.4, y - rad * 0.4, 1, x, y, rad);
+        pg.addColorStop(0, "#fff"); pg.addColorStop(0.25, cols[p.P.name] || "#aaa"); pg.addColorStop(1, "rgba(0,0,0,.9)");
+        g.fillStyle = pg; g.beginPath(); g.arc(x, y, rad, 0, Math.PI * 2); g.fill();
+        if (p === st.planet && st.alt < p.P.radius * 3) { g.strokeStyle = "#7fd0ff"; g.lineWidth = 1.5; g.beginPath(); g.arc(x, y, rad + 6, 0, Math.PI * 2); g.stroke(); }
+        g.fillStyle = "#e8eef5"; g.font = "600 13px ui-sans-serif, system-ui, sans-serif"; g.textAlign = "left";
+        g.fillText(p.P.name, x + rad + 8, y - 2);
+        g.fillStyle = "rgba(232,238,245,.6)"; g.font = "11px ui-monospace, Menlo, monospace";
+        g.fillText((save.visited.includes(p.P.name) ? "" : "unbesucht · ") + "Relikte " + f + "/" + n.length, x + rad + 8, y + 13);
+      }
+      // eigene Position
+      let [mx, my] = pt(st.pos);
+      g.fillStyle = "#ffb347"; g.beginPath(); g.moveTo(mx, my - 6); g.lineTo(mx + 5, my + 5); g.lineTo(mx - 5, my + 5); g.closePath(); g.fill();
+    }
+    return {
+      init, update, cycleTarget, drawMap, sound,
+      get found() { return foundCount(); },
+      get total() { return RELIC_TOTAL; },
+      get save() { return save; },
+      get relics() { return relics; },
+      get target() { return target; },
+      stepText: () => STEPS[Math.min(save.step, STEPS.length - 1)].text,
+      toggleSound() { save.sound = sound.toggle(); persist(); return save.sound; },
+      reset() { try { localStorage.removeItem(EXP_KEY); } catch (n) {} location.reload(); },
+      persist,
+    };
+  }
   var ml = new URLSearchParams(location.search),
     Du = {
       niedrig: { pixelRatio: 0.7, cloudSteps: 12, shadows: !1, bloom: !0, clouds: !0 },
@@ -25800,6 +26404,12 @@ void main(){
       h = new No(a, s, e),
       d = new wo(a);
     function E(V) {
+      if ((E.c || (E.c = {}))[V.P.name]) return E.c[V.P.name];
+      let nb = a.planets
+          .filter((q) => q !== V)
+          .map((q) => [q, Math.hypot(...q.pos.map((x, k) => x - V.pos[k]))])
+          .sort((q1, q2) => q1[1] - q2[1])[0],
+        nd = nb ? nb[0].pos.map((x, k) => (x - V.pos[k]) / nb[1]) : [0, 1, 0];
       let nt = a.sunDirFrom(V),
         I = V.gen,
         ot = null,
@@ -25813,7 +26423,7 @@ void main(){
           rt = [Math.cos(at) * X, $, Math.sin(at) * X],
           K = I.height(...rt),
           j = rt[0] * nt[0] + rt[1] * nt[1] + rt[2] * nt[2],
-          lt = -Math.abs(j - 0.42) * 3;
+          lt = -Math.abs(j - 0.42) * 3 + Math.min(0.6, Math.max(0, rt[0] * nd[0] + rt[1] * nd[1] + rt[2] * nd[2])) * 4;
         if (V.P.ocean) {
           if (K < 15 || K > 400) continue;
           (I.colorize(rt[0], rt[1], rt[2], K, 0.95, g), (lt += g.forest * 1.5));
@@ -25839,7 +26449,7 @@ void main(){
         } else lt += -Math.abs(K - V.P.relief * 0.1) / V.P.relief;
         lt > St && ((St = lt), (ot = rt));
       }
-      return ot;
+      return (E.c[V.P.name] = ot);
     }
     function v(V) {
       let nt = a.byName(V),
@@ -25881,7 +26491,9 @@ void main(){
             ((h.dampeners = !h.dampeners), C("Tr\xE4gheitsd\xE4mpfer " + (h.dampeners ? "an" : "aus"))),
           V.code === "KeyL" && (h.lightsOn = !h.lightsOn),
           V.code === "KeyR" && y && (M = ((M ?? ei[S].facing ?? 5) + 1) % 6),
-          V.code === "KeyM" && N(!0),
+          V.code === "KeyM" && openMap(),
+          V.code === "KeyT" && X && X.cycleTarget(expState()),
+          V.code === "KeyN" && X && C(X.toggleSound() ? "Ton an" : "Ton aus"),
           /^Digit[1-8]$/.test(V.code) && y && ((S = +V.code.slice(5) - 1), (M = null))));
     }),
       addEventListener("keyup", (V) => {
@@ -25911,10 +26523,48 @@ void main(){
         b() && document.exitPointerLock());
     }
     function w() {
-      ((P = !1), Te("menu").classList.add("hidden"), n.requestPointerLock?.());
+      (X && X.sound.init(), (P = !1), Te("menu").classList.add("hidden"), Te("mapov").classList.add("hidden"), n.requestPointerLock?.());
     }
+    function openMap() {
+      if (!X) return;
+      ((P = !0), b() && document.exitPointerLock(), Te("menu").classList.add("hidden"), Te("mapov").classList.remove("hidden"));
+      let st = expState();
+      (X.drawMap(Te("mapc"), st),
+        (Te("mapProg").textContent = X.found + "/" + X.total + " Relikte"),
+        (Te("mapList").innerHTML = a.planets
+          .map((V) => {
+            let rl = X.relics.filter((q) => q.planet === V),
+              fd = rl.filter((q) => q.found).length,
+              here = V === st.planet && st.alt < V.P.radius * 3;
+            return `<button data-p="${V.P.name}"><b>${V.P.name}${here ? " \xB7 hier" : ""}</b><small>${V.P.desc}<br>Relikte ${fd}/${rl.length} \xB7 g ${V.P.gravity.toFixed(1)} m/s\xB2 \xB7 Schnellreise</small></button>`;
+          })
+          .join("")),
+        Te("mapList")
+          .querySelectorAll("button")
+          .forEach((V) => (V.onclick = () => (v(V.dataset.p), w()))));
+    }
+    function expState() {
+      let ent = p === "pilot" ? h : d,
+        pl = a.nearest(ent.x),
+        loc = a.local(pl, ent.x);
+      return {
+        mode: p,
+        pos: ent.x,
+        cam: yt,
+        vel: ent.v,
+        planet: pl,
+        alt: loc.alt,
+        rho: a.airDensity(pl, loc.alt),
+        jetting: p === "walk" && !d.grounded && !d.swimming && !!m.Space && d.jet > 0 && !P,
+        menu: P,
+      };
+    }
+    let X = null;
     ((Te("bStart").onclick = w),
-      (Te("bMap").onclick = () => Te("planetList").classList.toggle("hidden")),
+      (Te("bMap").onclick = () => openMap()),
+      (Te("mapClose").onclick = w),
+      (Te("bSound").onclick = () => X && (Te("bSound").textContent = X.toggleSound() ? "Ton: an" : "Ton: aus")),
+      (Te("bReset").onclick = () => X && confirm("Expedition neu starten? Alle gefundenen Relikte gehen verloren.") && X.reset()),
       (Te("planetList").innerHTML = a.planets
         .map(
           (V) =>
@@ -25929,12 +26579,12 @@ void main(){
               (v(V.dataset.p), w());
             }),
         ));
-    function C(V) {
+    function C(V, ms = 2600) {
       let nt = Te("hToast");
       ((nt.textContent = V),
         (nt.style.opacity = 1),
         clearTimeout(C.t),
-        (C.t = setTimeout(() => (nt.style.opacity = 0), 2600)));
+        (C.t = setTimeout(() => (nt.style.opacity = 0), ms)));
     }
     function z() {
       let V = h.cockpitCell();
@@ -26153,6 +26803,14 @@ void main(){
       ((i.aspect = V / nt), i.updateProjectionMatrix(), t.resize(V, nt));
     }
     (addEventListener("resize", le), le(), v(ml.get("planet") || "Aurora"));
+    X = createExpedition({ uni: a, ship: h, player: d, camera: i, hull: s.hull, toast: C, renderer: t });
+    X.init(E(a.byName("Aurora")));
+    {
+      let mp = Te("menuProg");
+      mp && (mp.textContent = X.found ? "Fortschritt: " + X.found + "/" + X.total + " Relikte \xB7 " + X.stepText() : "Neue Expedition \xB7 " + X.total + " Relikte auf 4 Welten");
+      Te("bSound").textContent = X.sound.on ? "Ton: an" : "Ton: aus";
+      Te("bStart").textContent = X.found ? "Weiterspielen" : "Expedition starten";
+    }
     let Lt = performance.now(),
       qt = 0,
       Xt = 60,
@@ -26181,7 +26839,7 @@ void main(){
         let ot = a.nearest(yt);
         f.update(yt, ot, a.local(ot, yt).alt < 120);
       }
-      (Y(yt, W), pt(qt), nt && t.render(e, i, Bt(), qt, 1.25));
+      (Y(yt, W), pt(qt), X && X.update(V, expState()), nt && t.render(e, i, Bt(), qt, 1.25));
     }
     function ge(V) {
       let nt = Math.min(0.05, (V - Lt) / 1e3);
@@ -26193,6 +26851,11 @@ void main(){
         window.__test || requestAnimationFrame(ge));
     }
     window.__game = {
+      get exp() {
+        return X;
+      },
+      expState: () => expState(),
+      openMap: () => openMap(),
       uni: a,
       ship: h,
       player: d,
