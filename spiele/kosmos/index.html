@@ -285,6 +285,7 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 
 /* =====================================================================
    INHALT: Erkenntnis-Fragmente
@@ -422,6 +423,8 @@ const camera = new THREE.PerspectiveCamera(62, innerWidth/innerHeight, 1, 30000)
 scene.add(camera);
 const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
+// NaN/Inf-Schutz vor dem Bloom: einzelne fehlerhafte Pixel dürfen nicht zu schwarzen Flächen verschmieren
+composer.addPass(new ShaderPass({uniforms:{tDiffuse:{value:null}},vertexShader:'varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',fragmentShader:'uniform sampler2D tDiffuse;varying vec2 vUv;void main(){vec4 c=texture2D(tDiffuse,vUv);bool bad=!(c.r==c.r&&c.g==c.g&&c.b==c.b&&c.a==c.a)||any(greaterThan(abs(c.rgb),vec3(6.0e4)));gl_FragColor=bad?vec4(0.,0.,0.,1.):vec4(clamp(c.rgb,0.,64.),c.a);}'}));
 const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.9, 0.55, 0.78);
 composer.addPass(bloom);
 composer.addPass(new OutputPass());
@@ -486,7 +489,7 @@ void main(){
     albedo=mix(uC1,uC2,smoothstep(-1.,1.,bands));
     float st=fbm(p*3.+w*1.2+seed+vec3(0.,0.,uTime*.01));
     albedo=mix(albedo,uC3,smoothstep(.25,.75,st)*.8);
-    float vein=pow(1.-abs(snoise(p*5.+w*1.5+seed)),14.);
+    float vein=pow(max(1.-abs(snoise(p*5.+w*1.5+seed)),0.),14.);
     emis=uC4*vein*(.25+2.4*uPulse);
     emis+=uC4*smoothstep(.55,.9,st)*.25*(.5+uPulse);
     spec=.25;
@@ -504,7 +507,7 @@ void main(){
     vec2 v2=voronoi(p*15.+seed*2.); float line2=smoothstep(.05,0.,v2.y-v2.x);
     float facet=fbm(p*7.+seed);
     albedo=mix(uC1,uC2,facet*.5+.5);
-    float pulse=pow(.5+.5*sin(dot(p,vec3(13.,7.,11.))*3.-uTime*3.5),8.);
+    float pulse=pow(max(.5+.5*sin(dot(p,vec3(13.,7.,11.))*3.-uTime*3.5),0.),8.);
     albedo=mix(albedo,uC3,line*.7);
     emis=uC4*(line*(.45+2.6*pulse+uFlash*5.)+line2*.35*(.5+uFlash*4.));
     spec=.9;
@@ -532,7 +535,7 @@ void main(){
   } else if(t==5){ // Organisch, biolumineszent
     float r=1.-abs(snoise(p*6.+seed)); r*=r;
     float h=fbm(p*3.+seed);
-    float villi=pow(.5+.5*sin(snoise(p*28.+seed)*6.),3.);
+    float villi=pow(max(.5+.5*sin(snoise(p*28.+seed)*6.),0.),3.);
     albedo=mix(uC1,uC2,smoothstep(-.25,.5,h));
     albedo=mix(albedo,uC3,r*.55);
     albedo*=.75+.35*villi;
@@ -554,10 +557,10 @@ void main(){
   }
   float diff=smoothstep(-.18,1.,ndl);
   vec3 col=albedo*(diff*uSunColor*1.35+.025);
-  col+=albedo*uAtmo*.3*exp(-pow(ndl*3.5,2.)); // Dämmerungsstreifen
+  col+=albedo*uAtmo*.3*exp(-(ndl*3.5)*(ndl*3.5)); // Dämmerungsstreifen
   vec3 H=normalize(L+V);
   col+=spec*pow(max(dot(N,H),0.),70.)*uSunColor*step(0.,ndl)*.8;
-  float fr=pow(1.-ndv,3.);
+  float fr=pow(clamp(1.-ndv,0.,1.),3.);
   col+=uAtmo*fr*(.15+1.3*smoothstep(-.35,.6,ndl));
   col+=emis*(.4+.6*(1.-diff));
   gl_FragColor=vec4(col,1.);
@@ -570,7 +573,7 @@ void main(){
   vec3 N=normalize(vWN); vec3 V=normalize(cameraPosition-vWP);
   float ndv=abs(dot(N,V));
   float limb=sqrt(max(1.-uRatio*uRatio,0.));
-  float g=pow(smoothstep(0.,limb,ndv),2.4);
+  float g=pow(clamp(smoothstep(0.,max(limb,1e-4),ndv),0.,1.),2.4);
   vec3 L=normalize(uSunPos-vWP);
   float lit=.12+smoothstep(-.4,.5,dot(N,L));
   gl_FragColor=vec4(uAtmo,g*lit*uStrength);
@@ -585,7 +588,7 @@ void main(){
   float n=fbm(p*3.+vec3(uTime*.06)); float n2=fbm(p*9.-vec3(uTime*.1)+n);
   vec3 col=mix(uC2,uC1,smoothstep(-.4,.6,n+n2*.5));
   float limb=pow(max(dot(N,V),0.),.45);
-  gl_FragColor=vec4(col*(2.2+1.8*uPulse)*(.55+.45*limb)+uC1*pow(1.-max(dot(N,V),0.),2.)*2.,1.);
+  gl_FragColor=vec4(col*(2.2+1.8*uPulse)*(.55+.45*limb)+uC1*pow(clamp(1.-max(dot(N,V),0.),0.,1.),2.)*2.,1.);
 }`;
 
 const CORE_FS = `
@@ -645,7 +648,7 @@ const nebMat = new THREE.ShaderMaterial({ side:THREE.BackSide, depthWrite:false,
     vec3 col=vec3(.003,.004,.01);
     float neb=smoothstep(-.15,.8,n2)*smoothstep(-.35,.55,n1);
     col+=uA*neb*.5+uB*pow(max(n2,0.),2.2)*.9;
-    float band=exp(-pow(d.y*2.6+n1*.6,2.));
+    float band=exp(-(d.y*2.6+n1*.6)*(d.y*2.6+n1*.6));
     col+=uC*band*.16*(.5+n2);
     col*=1.-.75*smoothstep(.15,.6,fbm(d*5.+uSeed+3.))*band;
     vec3 sd=d*420.; vec3 id=floor(sd); vec3 hh=hash3(id+uSeed);
@@ -720,7 +723,7 @@ const ship=(()=>{
   const flames=[], nozzles=[];
   const flameMat=new THREE.ShaderMaterial({uniforms:{uCol:{value:C('#ffb070')},uT:{value:0}},transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
     vertexShader:`varying vec2 vUv; void main(){vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
-    fragmentShader:`uniform vec3 uCol; uniform float uT; varying vec2 vUv; void main(){ float f=1.-vUv.y; float a=pow(f,1.6)*(.75+.25*sin(uT*40.+f*20.)); gl_FragColor=vec4(mix(uCol,vec3(1.),f*f)*3.,a); }`});
+    fragmentShader:`uniform vec3 uCol; uniform float uT; varying vec2 vUv; void main(){ float f=1.-vUv.y; float a=pow(max(f,0.),1.6)*(.75+.25*sin(uT*40.+f*20.)); gl_FragColor=vec4(mix(uCol,vec3(1.),f*f)*3.,a); }`});
   [1,-1].forEach(sx=>{
     const eng=new THREE.Mesh(new THREE.CylinderGeometry(.42,.52,1.7,18),dark); eng.rotation.x=Math.PI/2; eng.position.set(sx*1.02,-.08,2.75); body.add(eng);
     const ring=new THREE.Mesh(new THREE.TorusGeometry(.4,.06,8,24),accent); ring.position.set(sx*1.02,-.08,3.6); body.add(ring);
@@ -785,7 +788,7 @@ function makeAnomaly(id, pos, normal, color){
   const beamGeo=new THREE.CylinderGeometry(.5,3.5,160,12,1,true); beamGeo.translate(0,80,0);
   const beam=new THREE.Mesh(beamGeo,new THREE.ShaderMaterial({uniforms:{uCol:{value:col.clone().multiplyScalar(2.5)},uTime:{value:0}},transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,side:THREE.DoubleSide,
     vertexShader:`varying float vH; void main(){ vH=uv.y; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
-    fragmentShader:`uniform vec3 uCol; uniform float uTime; varying float vH; void main(){ float a=pow(1.-vH,2.)*(.55+.45*sin(uTime*3.-vH*14.)); gl_FragColor=vec4(uCol,a*.7); }`}));
+    fragmentShader:`uniform vec3 uCol; uniform float uTime; varying float vH; void main(){ float a=pow(max(1.-vH,0.),2.)*(.55+.45*sin(uTime*3.-vH*14.)); gl_FragColor=vec4(uCol,a*.7); }`}));
   beam.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0), normal.clone().negate());
   beam.position.copy(normal).multiplyScalar(-2);
   const beamUp=beam.clone(); beamUp.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0), normal); beamUp.scale.set(.6,.9,.6);
