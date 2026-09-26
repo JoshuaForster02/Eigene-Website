@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /visite/
+Disallow: /spiele/
+Disallow: /notizen/
+
+Sitemap: https://joshuaforster.de/sitemap.xml

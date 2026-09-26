@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#02060c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="robots" content="index,follow">
+<meta name="description" content="ENCOM OS — ein Betriebssystem im TRON-Stil, komplett im Browser. Mit echtem x86-Kernel, Netzwerk-Tools und Krypto-Werkzeugen. Von Joshua Forster.">
+<meta property="og:title" content="ENCOM OS — Browser-Betriebssystem">
+<meta property="og:description" content="TRON-Style-OS im Browser: eigener x86-Kernel via WebAssembly, DNS-Recon, Passwort-Leak-Check, Crypto & CTF-Tools.">
+<meta property="og:type" content="website">
+<title>ENCOM OS</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="os.css">
+</head>
+<body>
+<div id="bg"><canvas id="bgcanvas"></canvas><div class="vignette"></div></div>
+
+<div id="boot">
+  <div class="logo">ENC<b>OM</b></div>
+  <div class="tag">operating system · web runtime</div>
+  <div class="barwrap"><div class="bar" id="bootbar"></div></div>
+  <div class="lines" id="bootlines"></div>
+</div>
+
+<div id="os">
+  <div class="topbar">
+    <div class="brand"><span class="g"><svg viewBox="0 0 24 24"><path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/></svg></span><span>ENC<span style="color:var(--cyan)">OM</span> OS</span></div>
+    <div class="menu">
+      <button onclick="location.href='/'">← joshuaforster.de</button>
+    </div>
+    <div class="spacer"></div>
+    <div class="stat hide-m"><span class="dot"></span>GRID ONLINE</div>
+    <div class="clock" id="clock">--:--:--</div>
+  </div>
+  <div class="desk" id="desk">
+    <div class="deskicons" id="deskicons"></div>
+    <div class="hint">Wähle eine App im <span class="k">Dock</span> · oder <span class="k">F1</span>–<span class="k">F4</span></div>
+    <div class="dock" id="dock"></div>
+  </div>
+</div>
+
+<script src="vendor/libv86.js" defer></script>
+<script src="os.js" defer></script>
+</body>
+</html>
