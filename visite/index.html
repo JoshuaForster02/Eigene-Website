@@ -744,7 +744,7 @@ Vit D 25-OH: 14 ng/ml -> Colecalciferol begonnen. Ca 2,3 mmol/l.
 Verlegung 13.09. in geriatrische Frühreha (Klinik für Geriatrie).`,
 muster:{
 diagnosen:`Mediale Schenkelhalsfraktur rechts, Garden IV (S72.01)
-– Zementierte Duokopfprothese rechts über anterolateralen Zugang am 06.09.2026
+Therapie: Implantation einer zementierten Duokopfprothese rechts über anterolateralen Zugang am 06.09.2026
 – Postoperative Blutungsanämie, Transfusion von 1 EK am 07.09.2026
 – Postoperatives hypoaktives Delir (POD 1–2), rückläufig
 Häuslicher Sturz, mechanisch
@@ -1073,6 +1073,110 @@ const ANATOMY=[
 ['Entlassmedikation','Tabellarisch, mit Änderungskennzeichnung.'],
 ['Grußformel & Unterschriften','„Für Rückfragen stehen wir Ihnen gerne zur Verfügung. Mit freundlichen kollegialen Grüßen“. Assistenzarzt, Oberarzt, Chefarzt.']
 ];
+
+/* ===== Zusätzliche Fälle Orthopädie/Unfallchirurgie im realen UCh-Briefstil ===== */
+CASES.push(
+{id:'radius',fach:'ortho',sub:'Unfallchirurgie',titel:'Distale Radiusfraktur, palmare Plattenosteosynthese',level:1,typ:'Kurzarztbrief',
+pat:{name:'Frau Ingrid W.',geb:'11.04.1955',sex:'w',alter:71},klinik:'Klinik für Unfall-, Hand- und Wiederherstellungschirurgie',von:'14.09.2026',bis:'16.09.2026',
+roh:`ZNA 14.09. 10:20, fußläufig mit Ehemann
+71 J., w. Heute 9:30 beim Einkaufen auf nassem Gehweg ausgerutscht, Sturz auf die ausgestreckte li. Hand. Kein Kopfanprall, keine Bewusstlosigkeit. Rechtshänderin. Kein BG-Fall.
+VE: aHT, Hypothyreose. Z. n. Hysterektomie. Keine Osteoporose-Diagnostik bisher.
+Vormed.: Candesartan 8 mg 1-0-0, L-Thyroxin 50 µg 1-0-0. Keine AK/TAH.
+Allergien: Pflaster (Hautreaktion).
+Sozial: lebt mit Ehemann, selbstständig, hobbymäßig Malerin.
+
+KU: Fourchette-Fehlstellung li. Handgelenk, Schwellung, DS distaler Radius. Tabatière frei. pDMS intakt, N. medianus Sensibilität intakt (2-PD 5 mm), Faustschluss schmerzbedingt eingeschränkt. Ellenbogen und Schulter li. frei.
+Rö li. Handgelenk 2 Eb. 14.09.: distale Radiusfraktur li., extraartikulär, dorsale Abkippung 28°, Radiusverkürzung 4 mm, dorsale Trümmerzone. Proc. styloideus ulnae intakt. AO 23-A3.
+Geschlossene Reposition in Bruchspaltanästhesie, dorsale Unterarmschiene. Rö nach Reposition: Abkippung noch 12° dorsal, Trümmerzone -> instabil (LaFontaine 3).
+Lab: Hb 13,4, Quick 98 %, Krea 0,8, TSH 1,9.
+
+OP 15.09. 08:30: offene Reposition und palmare winkelstabile Plattenosteosynthese li. (Zugang nach Henry, 2,4-mm-Platte, 3 winkelstabile distale Schrauben-Reihen). BV: anatomische Stellung, keine intraartikuläre Schraubenlage. Cefazolin 2 g single shot. Hautnaht Einzelknopf 4-0 nicht resorbierbar.
+Rö postop 15.09.: regelrechte Implantatlage, palmare Inklination wiederhergestellt (+8°).
+POD 1: Wunde reizlos, pDMS intakt, Schwellung rückläufig, Fingerbeweglichkeit frei. Schmerz NRS 2 unter Metamizol/Ibuprofen.
+Thromboseprophylaxe nicht erforderlich (mobil, OE).
+Osteoporose-Verdacht (Fragilitätsfraktur, 71 J.) -> DXA ambulant.
+Entlassung 16.09. Physio/Ergo verordnet. Fäden ex 12.–14. Tag. Rö-Kontrolle 6 Wo.`,
+muster:{
+diagnosen:`Distale Radiusextensionsfraktur links (AO 23-A3), dorsal abgekippt, instabil (S52.51)
+Therapie: Offene Reposition und palmare winkelstabile Plattenosteosynthese links am 15.09.2026
+
+Nebendiagnosen:
+– Arterielle Hypertonie
+– Hypothyreose, substituiert
+– V. a. Osteoporose (Fragilitätsfraktur)`,
+anamnese:`Frau W. stürzte am 14.09.2026 gegen 9:30 Uhr auf nassem Gehweg auf die ausgestreckte linke Hand. Kein Kopfanprall, keine Bewusstlosigkeit. Rechtshänderin. Kein Arbeits- oder Wegeunfall.
+Vorerkrankungen: arterielle Hypertonie, Hypothyreose.
+Vormedikation: Candesartan 8 mg 1-0-0, L-Thyroxin 50 µg 1-0-0. Keine Antikoagulation.
+Allergien: Pflaster (Hautreaktion).
+Sozialanamnese: lebt mit dem Ehemann, im Alltag selbstständig.`,
+befund:`Linkes Handgelenk: Fourchette-Fehlstellung, Schwellung und Druckschmerz über dem distalen Radius. Tabatière frei. Periphere Durchblutung, Motorik und Sensibilität intakt, insbesondere Sensibilität im Versorgungsgebiet des N. medianus regelrecht (2-PD 5 mm). Ellenbogen- und Schultergelenk links frei.`,
+diagnostik:`Röntgen linkes Handgelenk in 2 Ebenen (14.09.): extraartikuläre distale Radiusfraktur mit dorsaler Abkippung von 28°, Radiusverkürzung 4 mm und dorsaler Trümmerzone. Processus styloideus ulnae intakt.
+Nach geschlossener Reposition: Restabkippung 12° dorsal.
+Postoperatives Röntgen (15.09.): regelrechte Implantatlage, anatomische Stellung, palmare Inklination +8°.
+Labor (Aufnahme): unauffällig.`,
+epikrise:`Bei instabiler distaler Radiusfraktur (dorsale Trümmerzone, Alter > 60 Jahre, Redislokation nach geschlossener Reposition) stellten wir die Indikation zur Osteosynthese. Die palmare winkelstabile Plattenosteosynthese erfolgte am 15.09.2026 komplikationslos. Der postoperative Verlauf war unauffällig, die Wundverhältnisse reizlos, pDMS stets intakt. Unter oraler Analgesie war Frau W. schmerzarm. Wir entlassen sie am 16.09.2026 in Ihre ambulante Weiterbehandlung.`,
+procedere:`– Übungsstabil: sofortige aktive Bewegung von Fingern, Handgelenk und Unterarmdrehung ohne Belastung; kein Heben > 1 kg für 6 Wochen
+– Unterarmschiene nur nachts und zum Schutz im Freien für 2 Wochen
+– Physio- und Ergotherapie (Rezept mitgegeben)
+– Fäden ex am 12.–14. postoperativen Tag (27.–29.09.2026) durch den Hausarzt
+– Röntgenkontrolle nach 6 Wochen in unserer Sprechstunde
+– Metallentfernung nicht routinemäßig erforderlich
+– Bei Fragilitätsfraktur bitten wir um Osteoporose-Basisdiagnostik (DXA, Labor) und ggf. Therapieeinleitung
+– Bei zunehmender Schwellung, Taubheit der Finger oder Wundrötung bitte umgehende Wiedervorstellung`},
+med:[['Candesartan','8 mg','1-0-0-0','','unverändert'],['Levothyroxin','50 µg','1-0-0-0','nüchtern','unverändert'],['Ibuprofen','400 mg','bei Bedarf bis 1-1-1-0','max. 7 Tage','neu'],['Metamizol','500 mg','bei Bedarf bis 1-1-1-1','','neu']],
+check:['Seite, Klassifikation (AO) und Stabilität','OP-Verfahren und Datum in der Diagnosezeile','Unfallhergang kurz, BG-Fall ja/nein','Befund mit pDMS und N. medianus','Begründung der OP-Indikation (Instabilitätskriterien)','Konkrete Nachbehandlung (Belastung, Bewegung, Schiene)','Fäden mit Datum','Röntgenkontrolle mit Zeitpunkt','Osteoporose-Abklärung angesprochen'],
+fallen:['Keine Belastungsangabe: Physiotherapie und Patientin wissen nicht, was erlaubt ist.','N. medianus nicht dokumentiert: forensisch relevant (Karpaltunnelsyndrom nach Fraktur).','Fragilitätsfraktur ohne Osteoporose-Hinweis: verpasste Sekundärprävention.']},
+
+{id:'ktep',fach:'ortho',sub:'Orthopädie',titel:'Knie-TEP bei primärer Gonarthrose',level:2,typ:'Entlassungsbericht',
+pat:{name:'Herr Dieter K.',geb:'03.02.1958',sex:'m',alter:68},klinik:'Klinik für Orthopädie',von:'07.09.2026',bis:'14.09.2026',
+roh:`ELEKTIVE AUFNAHME 07.09.
+68 J., m. Seit ca. 6 J. zunehmende Schmerzen re. Knie, jetzt Ruhe- und Nachtschmerz, Gehstrecke ca. 300 m, Treppensteigen nur mit Geländer. Konservativ ausgeschöpft (Physio, NSAR, 3x Kortison-Inj., Einlagen). WOMAC hoch. Varusfehlstellung zunehmend.
+VE: aHT, DM2 (HbA1c 6,9 %), Adipositas (BMI 31), Z. n. Meniskus-OP re. 2004.
+Vormed.: Ramipril 5 mg 1-0-0, Metformin 1000 mg 1-0-1, Ibuprofen 600 mg b. B.
+Allergien: keine. Nichtraucher.
+Sozial: verh., Rentner (Schreiner), Haus mit 12 Stufen, Ehefrau unterstützt.
+
+KU: Gangbild rechtshinkend. Knie re.: Varus ca. 8°, kleiner Erguss, med. Gelenkspalt DS, Ext/Flex 0/5/100°, Bandapparat stabil, retropatellares Reiben. pDMS intakt, Fußpulse tastbar.
+Rö Knie re. 3 Eb. + Ganzbeinstandaufnahme: Gonarthrose re. Kellgren-Lawrence IV, med. betont, Varus-Achse 8°.
+
+OP 08.09.: Implantation einer bikondylären Oberflächenersatzprothese (zementiert, kreuzbanderhaltend, Patella nicht ersetzt) re. über medialen parapatellaren Zugang. Tourniquet. Tranexamsäure 1 g i.v. Cefazolin 2 g. Keine Komplikationen. Redon ex POD 1.
+Rö postop: regelrechte Implantatlage, Beinachse neutral.
+Hb 14,1 -> 11,6 (POD 1) -> 11,9. Keine Transfusion.
+Thromboseprophylaxe: Rivaroxaban 10 mg 1-0-0 ab POD 1 für insgesamt 14 Tage (bis 22.09.).
+Metformin 48 h perioperativ pausiert, BZ 120–190 unter Korrekturschema, wieder ab 10.09.
+Ibuprofen gestoppt -> Metamizol + Oxycodon/Naloxon 10/5 mg 1-0-1 (bis POD 5, dann reduziert auf b. B.).
+Physio: Mobilisation POD 1 mit UAGS, VB, Treppe geübt. Motorschiene. ROM bei Entlassung 0/0/95°. Wunde trocken, Klammern.
+Entlassung 14.09. -> AHB ab 16.09. (Reha-Klinik bereits zugesagt).`,
+muster:{
+diagnosen:`Primäre Gonarthrose rechts, Kellgren-Lawrence IV, varisch (M17.1)
+Therapie: Implantation einer zementierten bikondylären Knie-Oberflächenersatzprothese rechts (kreuzbanderhaltend, ohne Retropatellarersatz) am 08.09.2026
+
+Nebendiagnosen:
+– Arterielle Hypertonie
+– Diabetes mellitus Typ 2, nicht insulinpflichtig (HbA1c 6,9 %)
+– Adipositas Grad I (BMI 31 kg/m²)
+– Z. n. Meniskusoperation rechts 2004`,
+anamnese:`Die elektive Aufnahme erfolgte zur endoprothetischen Versorgung bei seit etwa sechs Jahren progredienten Schmerzen im rechten Kniegelenk, zuletzt mit Ruhe- und Nachtschmerz. Die schmerzfreie Gehstrecke betrug ca. 300 m, Treppensteigen war nur mit Geländer möglich. Konservative Maßnahmen (Physiotherapie, NSAR, intraartikuläre Infiltrationen, Einlagenversorgung) waren ausgeschöpft.
+Vorerkrankungen: arterielle Hypertonie, Diabetes mellitus Typ 2, Adipositas.
+Vormedikation: Ramipril 5 mg 1-0-0, Metformin 1000 mg 1-0-1, Ibuprofen 600 mg bei Bedarf.
+Allergien: keine bekannt. Nichtraucher.
+Sozialanamnese: verheiratet, berenteter Schreiner, Einfamilienhaus mit 12 Stufen.`,
+befund:`Rechtshinkendes Gangbild. Rechtes Kniegelenk: Varusfehlstellung von ca. 8°, geringer Erguss, Druckschmerz über dem medialen Gelenkspalt, Ext./Flex. 0/5/100°, Bandapparat in 0° und 30° stabil, retropatellares Reiben. Periphere Durchblutung, Motorik und Sensibilität intakt, Fußpulse tastbar.`,
+diagnostik:`Röntgen Knie rechts in 3 Ebenen und Ganzbeinstandaufnahme (07.09.): medial betonte Gonarthrose rechts, Kellgren-Lawrence IV, Varusachse 8°.
+Postoperatives Röntgen (09.09.): regelrechte Implantatlage, neutrale Beinachse.
+Labor: Hb 14,1 → 11,6 → 11,9 g/dl (keine Transfusion). HbA1c 6,9 %.`,
+epikrise:`Nach Ausschöpfung der konservativen Therapie erfolgte am 08.09.2026 die komplikationslose Implantation einer zementierten Knie-TEP rechts. Der postoperative Verlauf gestaltete sich regelrecht. Die Wundverhältnisse waren stets reizlos, die Redondrainage wurde am 1. postoperativen Tag entfernt. Unter physiotherapeutischer Anleitung wurde Herr K. ab dem 1. postoperativen Tag an Unterarmgehstützen unter Vollbelastung mobilisiert, Treppensteigen wurde geübt. Bei Entlassung beträgt das Bewegungsausmaß 0/0/95°. Metformin pausierten wir perioperativ für 48 Stunden, die Blutzuckerwerte waren unter Korrekturschema stabil. Die Analgesie erfolgte nach WHO-Stufenschema und konnte im Verlauf reduziert werden. Wir entlassen Herrn K. am 14.09.2026 in die bereits zugesagte Anschlussheilbehandlung.`,
+procedere:`– Vollbelastung an Unterarmgehstützen, Abtrainieren der Gehstützen nach Gangbild
+– Bewegungsumfang frei, Ziel Flexion ≥ 110° bis zur 6. Woche
+– Thromboseprophylaxe mit Rivaroxaban 10 mg 1-0-0 bis einschließlich 22.09.2026 (insgesamt 14 Tage)
+– Klammerentfernung am 12.–14. postoperativen Tag (20.–22.09.2026) in der Reha-Klinik
+– Klinische und radiologische Kontrolle nach 6 Wochen in unserer Endoprothetik-Sprechstunde
+– Ibuprofen bitte bei Diabetes und ACE-Hemmer-Therapie nicht wieder ansetzen
+– Bei Wundrötung, Fieber, zunehmender Schwellung oder Wadenschmerz bitte umgehende Vorstellung`},
+med:[['Rivaroxaban','10 mg','1-0-0-0','bis einschl. 22.09.2026','neu'],['Metamizol','500 mg','1-1-1-1','nach Schmerz reduzieren','neu'],['Oxycodon/Naloxon','10/5 mg','bei Bedarf bis 1-0-1-0','ausschleichen','neu'],['Macrogol','13 g','1-0-0-0','solange Opioid','neu'],['Ramipril','5 mg','1-0-0-0','','unverändert'],['Metformin','1000 mg','1-0-1-0','','unverändert'],['Ibuprofen','600 mg','–','Diabetes, ACE-Hemmer, Niere','abgesetzt']],
+check:['Seite, Diagnose mit Klassifikation','Implantat mit Verankerung und Datum in der Diagnosezeile','Konservative Vortherapie als Indikationsbegründung','Bewegungsausmaß bei Entlassung (NNM)','Belastungsvorgabe','Thromboseprophylaxe mit konkretem Enddatum','Klammerentfernung mit Datum','Kontrolltermin nach 6 Wochen','Perioperatives Metformin-Management'],
+fallen:['Thromboseprophylaxe ohne Enddatum: wird entweder zu früh gestoppt oder monatelang weitergeführt.','ROM bei Entlassung fehlt: Reha kann den Verlauf nicht beurteilen.','Opioid ohne Laxans und ohne Ausschleichplan.']}
+);
 
 const CALC_CATS=['Kardiologie','Pneumologie & Intensiv','Niere & Elektrolyte','Gastro & Leber','Neurologie','Notaufnahme & Chirurgie','Geriatrie','Pädiatrie & Gyn','Dosierung & Perfusor','Allgemein'];
 const r1=(x,d=1)=>Number.isFinite(x)?x.toLocaleString('de-DE',{minimumFractionDigits:d,maximumFractionDigits:d}):'–';
@@ -2516,7 +2620,7 @@ function vStart(){
 }
 function kisLabel(){const m=store.get('kis','off');return m==='off'?'KIS-Modus aus (unter „Mehr“)':m==='wrap'?'Kopiert als KIS-Klartext mit Umbruch':'Kopiert als KIS-Klartext'}
 function vMehr(){
- const it=[['kitteltasche','Nachschlagen','bag','Notfall, Normwerte, Textbausteine, Normalbefunde, Übergabe, Abkürzungen'],['ueben','Fälle & Grundlagen','school','12 Übungsfälle mit Musterbrief'],['tutor','KI-Tutor','chat','Fälle üben, Fragen stellen']];
+ const it=[['kitteltasche','Nachschlagen','bag','Notfall, Normwerte, Textbausteine, Normalbefunde, Übergabe, Abkürzungen'],['ueben','Fälle & Grundlagen','school',CASES.length+' Übungsfälle mit Musterbrief'],['tutor','KI-Tutor','chat','Fälle üben, Fragen stellen']];
  return `<div class="page-head"><div><h1>Mehr</h1></div></div><div class="stack">${it.map(([k,t,i,d])=>`<button class="tile more-row" data-nav="${k}"><span class="ueb-ic">${ic(i)}</span><span><h3>${t}</h3><p>${d}</p></span></button>`).join('')}
  <div class="panel rcard"><h3>Kopieren ins KIS (SAP, Meona, Orbis …)</h3><p class="muted" style="font-size:13.5px;margin-bottom:10px">Jeder „Kopieren“-Knopf kann Text so ausgeben, dass er in KIS-Textfeldern sauber ankommt: tiefgestellte Zeichen (SpO₂ → SpO2), Gedankenstriche, ≥/≤, Pfeile und Sonderleerzeichen werden ersetzt. Optional mit festem Zeilenumbruch für Felder, die lange Zeilen abschneiden.</p>
  <div class="theme-toggle" role="group" aria-label="KIS-Modus">${[['off','Aus'],['plain','Klartext'],['wrap','Klartext + Umbruch']].map(([k,t])=>`<button data-kis="${k}" aria-pressed="${store.get('kis','off')===k}">${t}</button>`).join('')}</div>
@@ -2608,37 +2712,67 @@ function drawRedactor(){
  cv.onpointermove=e=>{if(st)paint(rect(st,pos(e)))};
  cv.onpointerup=e=>{if(!st)return;const r=rect(st,pos(e));st=null;if(r[2]>4&&r[3]>4){im.rects.push(r);redactOk=false;const cb=$('#redact-ok');if(cb)cb.checked=false}paint();im.thumb=composed(im).toDataURL('image/jpeg',.6)};
 }
-async function imageBlobs(){return Promise.all(images.map(im=>new Promise(res=>composed(im).toBlob(b=>res(b),'image/jpeg',.9))))}
+async function imageBlobs(){return Promise.all(images.map(im=>new Promise(res=>{const c=composed(im);const sc=Math.min(1,1400/Math.max(c.width,c.height));if(sc<1){const d=document.createElement('canvas');d.width=Math.round(c.width*sc);d.height=Math.round(c.height*sc);d.getContext('2d').drawImage(c,0,0,d.width,d.height);d.toBlob(b=>res(b),'image/jpeg',.82)}else c.toBlob(b=>res(b),'image/jpeg',.82)})))}
 
 /* --- KI --- */
 let aiCtl=null,draftArmed=false,clearArmed=false;
 function aiErr(e){const c=e&&e.code;return c==='not_granted'||c==='sampling_disabled'||c==='not_declared'||c==='capability_disabled'?'KI-Zugriff wurde nicht erlaubt oder ist nicht verfügbar.':c==='rate_limited'?'Gerade zu viele Anfragen. Bitte in einer Minute erneut versuchen.':c==='invalid_json'?'Die Antwort war nicht auswertbar. Bitte erneut versuchen.':c==='prompt_too_large'?'Zu viel Text auf einmal. Kürze die Notizen.':c==='image_rejected'?'Ein Bild konnte nicht verarbeitet werden (Format oder Größe).':c==='images_unavailable'?'Bilder werden in dieser Ansicht nicht unterstützt.':c==='session_expired'?'Sitzung abgelaufen. Bitte neu anmelden.':c==='refused'?'Die Anfrage wurde abgelehnt.':'Verbindung unterbrochen. Bitte erneut versuchen.'}
 function thinking(txt){return `<div class="row" style="margin-top:10px"><span class="thinking"><i></i>${esc(txt)}</span><button class="btn ghost sm" data-aistop>Abbrechen</button></div>`}
+const FACH_STIL={
+ innere:'Innere Medizin: ausführliche Epikrise mit Differenzialdiagnostik und Begründung jeder Therapieentscheidung; Labor immer mit Verlauf; Medikationsänderungen einzeln begründet; Procedere mit konkreten Kontrollzeitpunkten (Labor, Echo, Spiegel). Typische Formulierungen: „Die stationäre Aufnahme erfolgte bei …“, „Laborchemisch zeigte sich …“, „Differenzialdiagnostisch …“.',
+ chir:'Allgemein-/Viszeralchirurgie: knapp und operationszentriert. Diagnose mit Stadium, darunter „Therapie: <OP-Verfahren> am <Datum>“. Verlauf kurz (Kostaufbau, Wundverhältnisse, Drainagen, Stuhlgang). Histologie immer nennen oder als ausstehend markieren. Procedere: Wundkontrolle, Fäden/Klammern mit Datum, Belastung/Sportkarenz, Thromboseprophylaxe ja/nein und wie lange.',
+ ortho:'Orthopädie/Unfallchirurgie: sehr knapp, stichwortartig-nüchtern, wie in einem echten unfallchirurgischen Entlassbrief. Diagnose mit Seite und Klassifikation (AO, Garden, Weber, Neer, Gustilo …), darunter „Therapie: <Osteosynthese/Endoprothese, Implantat> am <Datum>“. Anamnese: Unfallhergang in einem Satz (Mechanismus, Zeit, BG-Fall ja/nein). Befund fokussiert auf die verletzte Region mit pDMS. Verlauf: OP komplikationslos, Wundverhältnisse, Mobilisation mit Physiotherapie unter welcher Belastung, postoperative Röntgenkontrolle. Procedere als Liste: Belastung (kg TB/VB, Dauer), Bewegungslimits, Thromboseprophylaxe mit Dauer, Fäden/Klammern ex am <Datum>, Röntgenkontrolle nach <x> Wochen, AU, ggf. Metallentfernung, Osteoporose-Abklärung.',
+ neuro:'Neurologie: NIHSS/mRS bei Aufnahme und Entlassung, Ätiologie (TOAST), Zeitfenster, Sekundärprophylaxe begründet, Fahreignung dokumentiert.',
+ gyn:'Gynäkologie/Geburtshilfe: G/P, SSW, Rhesusfaktor und Anti-D, OP-Verfahren und Histologie, Beratung zu Kontrazeption/Kinderwunsch.',
+ paed:'Pädiatrie: Gewicht mit Perzentile, Dosierungen in mg/kg, Geburts- und Impfanamnese, Warnzeichen für Eltern klar formuliert.',
+ psych:'Psychiatrie: vollständiger psychopathologischer Befund (AMDP), Suizidalität bei Aufnahme und Entlassung explizit, Rechtsstatus, Psychometrie im Verlauf, ambulante Anschlusstermine.',
+ uro:'Urologie: Steingröße/-lage, Harnstaugrad, Schienen/Katheter mit Wechsel- bzw. Entfernungstermin, Kulturen mit Resistogramm.',
+ geri:'Geriatrie: Barthel-Index, Mobilität, Hilfsmittel, Wohnsituation, Delir, Stürze, Kognition, bewusstes Deprescribing mit Begründung.'
+};
+function draftBase(){return `Du bist erfahrene Stationsärztin / erfahrener Stationsarzt an einem deutschen Krankenhaus und schreibst einen ${freeMeta.typ} (Fach: ${FAECHER[freeMeta.fach]||freeMeta.fach}).
+Stil des Fachs: ${FACH_STIL[freeMeta.fach]||FACH_STIL.innere}
+Allgemein: echte Klinik-Fachsprache wie in realen deutschen Arztbriefen, natürlich und präzise, keine Floskeln, keine Aufzählung von Selbstverständlichem. Anamnese im Präteritum oder indirekter Rede, Befund im Präsens/Nominalstil, Epikrise in der Wir-Form. Werte immer mit Einheit, Verläufe mit Pfeil (CRP 186 → 42 mg/l).
+Erfinde KEINE Befunde, Werte, Daten oder Dosierungen. Fehlendes als [fehlt: …] markieren. Keine Namen, Geburtsdaten oder Fallnummern übernehmen.
+${freeMeta.von?`Aufenthalt: ${freeMeta.von}–${freeMeta.bis}.`:''}`}
 async function runDraft(){
  if(!SAMPLE)return;const out=$('#draftout');
  if(!(freeMeta.notes||'').trim()&&!images.length){out.innerHTML='<p class="note warn">Erst Stichpunkte eintragen oder Screenshots hinzufügen.</p>';return}
  if(images.length&&!redactOk){out.innerHTML='<p class="note warn">Bitte bestätige, dass alle Patientendaten auf den Bildern geschwärzt sind.</p>';return}
  if(!isEmpty(draftOf('__free'))&&!draftArmed){draftArmed=true;out.innerHTML='<p class="note warn">Vorhandener Text wird überschrieben. Zum Bestätigen erneut klicken.</p>';return}
  draftArmed=false;
- const prompt=`Du bist erfahrene Stationsärztin / erfahrener Stationsarzt in Deutschland. Erstelle aus den Stichpunkten${images.length?' und den angehängten Screenshots aus der Akte (Befunde, Labor, Kurve, Medikationsplan)':''} einen vollständigen ${freeMeta.typ} (Fach: ${FAECHER[freeMeta.fach]||freeMeta.fach}) im Stil deutscher Klinikbriefe.
-Regeln:
-- Fachsprache, Anamnese im Präteritum oder indirekter Rede, Befund knapp im Präsens, Epikrise als nachvollziehbare Geschichte mit Begründungen in der Wir-Form.
-- Diagnosen: Hauptdiagnose zuerst mit ICD-10-GM-Code, darunter eingerückt Befunde und Eingriffe mit Datum, dann Nebendiagnosen.
-- Labor mit Einheit und Verlauf (z. B. „CRP 186 → 42 mg/l“).
-- Procedere konkret: was, wann, durch wen, mit Enddaten von Therapien.
-- Medikation je Zeile: Wirkstoff Stärke Schema (1-0-1-0) [neu/geändert/pausiert/abgesetzt] mit kurzer Begründung bei Änderungen.
-- Erfinde KEINE Befunde, Werte, Daten oder Dosierungen. Fehlendes als [fehlt: …] markieren.
-- Übernimm keine Namen, Geburtsdaten oder Fallnummern, falls auf Bildern noch sichtbar.
-${freeMeta.von?`Aufenthalt: ${freeMeta.von}–${freeMeta.bis}.`:''}
+ const notes=(freeMeta.notes||'(keine, nur Bilder)').slice(0,9000);
+ const p1=`${draftBase()}
+
+AUFGABE (Teil 1 von 2): Schreibe aus den Stichpunkten${images.length?' und den angehängten Screenshots (Befunde, Labor, Kurve, Medikationsplan)':''} die Abschnitte Diagnosen, Anamnese, Aufnahmebefund sowie Labor & Diagnostik.
+- Diagnosen: Hauptdiagnose zuerst mit ICD-10-GM-Code, darunter eingerückt (mit „– “) Befunde, Klassifikation und Eingriffe mit Datum, dann „Nebendiagnosen:“.
+- Labor & Diagnostik: nur relevante bzw. pathologische Werte mit Verlauf, Bildgebung/EKG/Endoskopie jeweils mit Datum und Kernaussage.
 
 STICHPUNKTE:
-${(freeMeta.notes||'(keine, nur Bilder)').slice(0,14000)}
+${notes}
 
-Antworte ausschließlich mit JSON: {"diagnosen":"…","anamnese":"…","befund":"…","diagnostik":"…","epikrise":"…","procedere":"…","medikation":"…"} (Zeilenumbrüche als \\n).`;
- aiCtl=new AbortController();out.innerHTML=thinking(images.length?'Liest Notizen und Bilder …':'Brief wird entworfen …');
- try{const opt={signal:aiCtl.signal,cache:false};if(images.length)opt.images=await imageBlobs();
-  const r=await SAMPLE.json(prompt,opt);const d=draftOf('__free');SECTIONS.forEach(s=>{if(typeof r[s.k]==='string')d[s.k]=r[s.k]});store.set('drafts',drafts);render();toast('Entwurf eingefügt. Bitte jede Zeile prüfen.')}
- catch(e){const o=$('#draftout');if(o)o.innerHTML=e&&e.code==='cancelled'?'':`<p class="note warn">${esc(aiErr(e))}</p>`}
+Antworte nur mit JSON: {"diagnosen":"…","anamnese":"…","befund":"…","diagnostik":"…"} (Zeilenumbrüche als \\n).`;
+ const d=draftOf('__free');aiCtl=new AbortController();
+ try{
+  out.innerHTML=thinking(images.length?'Teil 1/2: liest Notizen und Bilder …':'Teil 1/2: Diagnosen, Anamnese, Befund …');
+  const o1={signal:aiCtl.signal,cache:false};if(images.length)o1.images=await imageBlobs();
+  const r1=await SAMPLE.json(p1,o1);['diagnosen','anamnese','befund','diagnostik'].forEach(k=>{if(typeof r1[k]==='string')d[k]=r1[k]});store.set('drafts',drafts);
+  out.innerHTML=thinking('Teil 2/2: Epikrise, Procedere, Medikation …');
+  const p2=`${draftBase()}
+
+AUFGABE (Teil 2 von 2): Schreibe Epikrise, Procedere und Entlassmedikation. Nutze die bereits geschriebenen Abschnitte und die Stichpunkte.
+- Epikrise: nachvollziehbare Geschichte mit Begründungen (warum aufgenommen, was gedacht, was getan, Ergebnis), keine Befundwiederholung.
+- Procedere: konkrete Liste mit „– “: was, wann, durch wen, Enddaten von Therapien, Warnzeichen.
+- Medikation: je Zeile „Wirkstoff Stärke Schema (1-0-1-0) [neu/geändert/pausiert/abgesetzt] – Grund bei Änderung“.
+
+BEREITS GESCHRIEBEN:
+${['diagnosen','anamnese','befund','diagnostik'].map(k=>'### '+k+'\n'+(d[k]||'')).join('\n\n').slice(0,6000)}
+
+STICHPUNKTE:
+${notes.slice(0,6000)}
+
+Antworte nur mit JSON: {"epikrise":"…","procedere":"…","medikation":"…"} (Zeilenumbrüche als \\n).`;
+  const r2=await SAMPLE.json(p2,{signal:aiCtl.signal,cache:false});['epikrise','procedere','medikation'].forEach(k=>{if(typeof r2[k]==='string')d[k]=r2[k]});store.set('drafts',drafts);render();toast('Entwurf eingefügt. Bitte jede Zeile prüfen.')}
+ catch(e){store.set('drafts',drafts);const o=$('#draftout');const part=SECTIONS.some(s=>(d[s.k]||'').trim())?' Die bereits fertigen Abschnitte wurden übernommen.':'';if(o)o.innerHTML=e&&e.code==='cancelled'?'':`<p class="note warn">${esc(aiErr(e)+part)}</p>`;if(part)render()}
  finally{aiCtl=null}
 }
 async function polishSection(k){
@@ -2740,18 +2874,19 @@ function briefChecklist(){
 }
 
 /* ================= Paper ================= */
+const akk=n=>String(n||'').replace(/^Herr\s/,'Herrn ');
 function letterHeader(meta){
  return `<div class="lh"><div><b>${meta.klinik?'Klinikum':'Universitätsklinikum'}</b>${esc(meta.klinik||'Klinik')}</div><div style="text-align:right">An: ${esc(meta.an||'Hausärztliche Praxis')}<br>Datum: ${esc(meta.bis||'')}</div></div>
- <div class="betreff">${esc(meta.typ||'Entlassungsbericht')} über ${esc(meta.name||'…')}${meta.geb?', geb. '+esc(meta.geb):''}${meta.von?`<br>Stationärer Aufenthalt vom ${esc(meta.von)} bis ${esc(meta.bis)}`:''}</div>
+ <div class="betreff">${esc(meta.typ||'Entlassungsbericht')} über ${esc(akk(meta.name)||'…')}${meta.geb?', geb. '+esc(meta.geb):''}${meta.von?`<br>Stationärer Aufenthalt vom ${esc(meta.von)} bis ${esc(meta.bis)}`:''}</div>
  <p>Sehr geehrte Frau Kollegin, sehr geehrter Herr Kollege,</p>
- <p style="margin-top:8px">wir berichten über ${meta.sex==='w'?'Ihre Patientin':meta.sex==='m'?'Ihren Patienten':'o. g. Patienten'} ${esc(meta.name||'')}, ${meta.sex==='w'?'die':'der'} sich ${meta.von?`vom ${esc(meta.von)} bis ${esc(meta.bis)} `:''}in unserer stationären Behandlung befand.</p>`;
+ <p style="margin-top:8px">wir berichten über ${meta.sex==='w'?'Ihre Patientin':meta.sex==='m'?'Ihren Patienten':'o. g. Patienten'} ${esc(akk(meta.name))}, ${meta.sex==='w'?'die':'der'} sich ${meta.von?`vom ${esc(meta.von)} bis ${esc(meta.bis)} `:''}in unserer stationären Behandlung befand.</p>`;
 }
 function letterBody(sec,medHtml){
  return SECTIONS.map(s=>{if(s.k==='medikation'&&medHtml)return `<h5>${esc(s.t)}</h5>${medHtml}`;const t=(sec[s.k]||'').trim();return `<h5>${esc(s.t)}</h5>${t?`<div class="p">${esc(t)}</div>`:'<div class="p missing">– noch leer –</div>'}`}).join('')+
  `<p style="margin-top:24px">Für Rückfragen stehen wir Ihnen jederzeit gerne zur Verfügung.</p><p>Mit freundlichen kollegialen Grüßen</p><div class="sig"><div>Assistenzarzt/-ärztin</div><div>Oberarzt/-ärztin</div><div>Chefarzt/-ärztin</div></div>`;
 }
 function letterPlain(meta,sec,medRows){
- let t=`${meta.typ||'Entlassungsbericht'} über ${meta.name||''}${meta.geb?', geb. '+meta.geb:''}\n${meta.von?`Stationärer Aufenthalt vom ${meta.von} bis ${meta.bis}\n`:''}\nSehr geehrte Frau Kollegin, sehr geehrter Herr Kollege,\n\nwir berichten über ${meta.sex==='w'?'Ihre Patientin':'Ihren Patienten'} ${meta.name||''}, ${meta.sex==='w'?'die':'der'} sich ${meta.von?`vom ${meta.von} bis ${meta.bis} `:''}in unserer stationären Behandlung befand.\n`;
+ let t=`${meta.typ||'Entlassungsbericht'} über ${akk(meta.name)}${meta.geb?', geb. '+meta.geb:''}\n${meta.von?`Stationärer Aufenthalt vom ${meta.von} bis ${meta.bis}\n`:''}\nSehr geehrte Frau Kollegin, sehr geehrter Herr Kollege,\n\nwir berichten über ${meta.sex==='w'?'Ihre Patientin':'Ihren Patienten'} ${akk(meta.name)}, ${meta.sex==='w'?'die':'der'} sich ${meta.von?`vom ${meta.von} bis ${meta.bis} `:''}in unserer stationären Behandlung befand.\n`;
  SECTIONS.forEach(s=>{t+=`\n${s.t.toUpperCase()}\n`;if(s.k==='medikation'&&medRows){t+=medRows.map(r=>`${r[0]} ${r[1]}  ${r[2]}${r[3]?'  ('+r[3]+')':''}  [${r[4]}]`).join('\n')+'\n'}else t+=((sec[s.k]||'').trim()||'–')+'\n'});
  return t+'\nFür Rückfragen stehen wir Ihnen jederzeit gerne zur Verfügung.\n\nMit freundlichen kollegialen Grüßen';
 }
