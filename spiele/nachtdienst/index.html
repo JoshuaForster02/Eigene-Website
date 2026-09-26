@@ -1,0 +1,1791 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nachtdienst · Ein Lernspiel von Joshua Forster</title>
+<meta name="description" content="Nachtdienst: 21:00 bis 07:00 als Dienstarzt. Piepser, Monitor, Triage unter Zeitdruck. Ein medizinisches Lernspiel – keine Therapieempfehlung.">
+<meta name="theme-color" content="#070d1a">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Karla:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#070d1a; --bg2:#0a1426; --panel:rgba(18,32,60,.46); --panel2:rgba(12,22,42,.8);
+  --line:rgba(127,168,255,.13); --line2:rgba(127,168,255,.26);
+  --text:#e6edf9; --muted:#8e9fbf; --dim:#5d6d8e;
+  --accent:#7fa8ff; --accent2:#b8cfff; --ice:#d4e3ff;
+  --ok:#7fe0b8; --warn:#ffb86b; --crit:#ff4d5e;
+  --ecg:#7ff0b8; --spo2:#7fd6ff; --resp:#ffe08a; --temp:#c9b6ff;
+  --r:14px;
+  --f-body:"Karla",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-disp:"Cormorant Garamond","Times New Roman",serif;
+  --f-mono:"DM Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --top:64px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--f-body);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+  background-image:radial-gradient(1200px 700px at 70% -10%,rgba(60,100,190,.16),transparent 60%),radial-gradient(900px 600px at -10% 110%,rgba(40,80,160,.12),transparent 60%);}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:var(--accent2)}
+kbd{font-family:var(--f-mono);font-size:10.5px;padding:1px 5px;border:1px solid var(--line2);border-radius:4px;color:var(--muted);background:rgba(127,168,255,.06)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+
+/* ambience */
+.grain{position:fixed;inset:-50%;pointer-events:none;z-index:50;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:grain 1.2s steps(6) infinite}
+@keyframes grain{0%{transform:translate(0,0)}33%{transform:translate(-3%,2%)}66%{transform:translate(2%,-3%)}100%{transform:translate(0,0)}}
+.vignette{position:fixed;inset:0;pointer-events:none;z-index:40;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.55) 100%);transition:background .8s}
+body.tired .vignette{background:radial-gradient(ellipse at center,transparent 35%,rgba(0,0,0,.8) 100%)}
+body.tired .board{filter:blur(.35px) saturate(.85)}
+#flash{position:fixed;inset:0;z-index:60;pointer-events:none;opacity:0;background:radial-gradient(ellipse at center,rgba(255,77,94,.08),rgba(255,77,94,.35));display:grid;place-items:center}
+#flash.on{animation:flash 2.4s ease-out}
+#flash span{font-family:var(--f-mono);letter-spacing:.2em;font-size:clamp(18px,4vw,34px);color:#fff;text-shadow:0 0 20px var(--crit)}
+@keyframes flash{0%{opacity:0}8%{opacity:1}20%{opacity:.6}30%{opacity:1}100%{opacity:0}}
+
+.screen{display:none;min-height:100vh;min-height:100dvh}
+.screen.active{display:block}
+.fade-in{animation:fadeIn .6s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ---------- INTRO ---------- */
+#intro{position:relative;overflow:hidden}
+#introBg{position:absolute;inset:0;width:100%;height:100%;z-index:0;opacity:.55}
+.intro-wrap{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:22px 20px 40px;display:flex;flex-direction:column;min-height:100vh;min-height:100dvh}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:13px}
+.nav a{color:var(--muted);text-decoration:none;letter-spacing:.02em}
+.nav a:hover{color:var(--ice)}
+.hero{margin-top:clamp(28px,8vh,90px)}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.28em;color:var(--accent);text-transform:uppercase}
+.hero h1{font-family:var(--f-disp);font-weight:400;font-style:italic;font-size:clamp(64px,13vw,150px);line-height:.9;margin:14px 0 10px;letter-spacing:-.02em;
+  background:linear-gradient(180deg,#f2f6ff 20%,#8fb0ec 110%);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 60px rgba(127,168,255,.15)}
+.hero p.lead{max-width:600px;color:#b9c7e0;font-size:clamp(15px,2.2vw,18px);margin:0}
+.hero .times{font-family:var(--f-mono);color:var(--muted);font-size:13px;margin-top:14px;letter-spacing:.08em}
+.diffs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:34px}
+.diff{position:relative;text-align:left;padding:18px 18px 16px;border-radius:var(--r);border:1px solid var(--line);background:linear-gradient(180deg,rgba(24,40,74,.55),rgba(10,18,34,.6));backdrop-filter:blur(6px);transition:border-color .2s,transform .2s,box-shadow .2s}
+.diff:hover{border-color:var(--line2);transform:translateY(-2px)}
+.diff[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 12px 40px rgba(127,168,255,.18)}
+.diff .dn{font-family:var(--f-disp);font-size:28px;font-style:italic;line-height:1}
+.diff .dk{position:absolute;right:14px;top:14px}
+.diff .dd{color:var(--muted);font-size:13.5px;margin-top:8px}
+.diff .dm{font-family:var(--f-mono);font-size:11px;color:var(--accent2);margin-top:10px;letter-spacing:.04em}
+.start-row{display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin-top:24px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border-radius:999px;border:1px solid var(--line2);background:rgba(127,168,255,.06);padding:10px 18px;font-weight:600;letter-spacing:.01em;transition:background .2s,border-color .2s,transform .15s}
+.btn:hover{background:rgba(127,168,255,.12);border-color:var(--accent)}
+.btn:active{transform:scale(.98)}
+.btn.primary{background:linear-gradient(180deg,#8db3ff,#6a93ec);color:#06101f;border-color:transparent;box-shadow:0 10px 30px rgba(127,168,255,.25)}
+.btn.primary:hover{background:linear-gradient(180deg,#a3c2ff,#7aa0f0)}
+.btn.big{padding:15px 28px;font-size:17px}
+.btn[disabled]{opacity:.4;pointer-events:none}
+.hint{color:var(--dim);font-size:12.5px}
+.intro-foot{margin-top:auto;padding-top:36px;display:grid;grid-template-columns:1.3fr 1fr;gap:18px;align-items:end}
+.howto{color:var(--muted);font-size:13.5px}
+.howto b{color:var(--ice);font-weight:600}
+.hs-mini{font-family:var(--f-mono);font-size:12px;color:var(--muted);text-align:right}
+.hs-mini b{color:var(--ice);font-weight:500}
+.disclaimer{font-size:12px;color:var(--dim);margin-top:14px;border-top:1px solid var(--line);padding-top:12px}
+
+/* ---------- GAME ---------- */
+.topbar{position:sticky;top:0;z-index:20;height:var(--top);display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;padding:0 18px;border-bottom:1px solid var(--line);background:rgba(7,13,26,.82);backdrop-filter:blur(10px)}
+.tb-left{display:flex;align-items:center;gap:12px;min-width:0}
+.brand{font-family:var(--f-disp);font-style:italic;font-size:24px;color:var(--ice);text-decoration:none;white-space:nowrap}
+.dtag{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);border:1px solid var(--line2);padding:2px 7px;border-radius:999px}
+.ff{font-family:var(--f-mono);font-size:10.5px;color:var(--resp);letter-spacing:.1em;display:none}
+.ff.on{display:inline}
+.tb-clock{text-align:center}
+#clock{font-family:var(--f-mono);font-size:26px;letter-spacing:.06em;color:var(--ice);text-shadow:0 0 18px rgba(127,168,255,.35);line-height:1}
+.shift{width:150px;height:3px;border-radius:3px;background:rgba(127,168,255,.12);margin:6px auto 0;overflow:hidden}
+.shift i{display:block;height:100%;width:0;background:linear-gradient(90deg,#3d63b8,var(--accent))}
+.tb-right{display:flex;justify-content:flex-end;align-items:center;gap:10px}
+.score{font-family:var(--f-mono);text-align:right;line-height:1.05;position:relative}
+.score small{display:block;font-size:9.5px;color:var(--dim);letter-spacing:.18em}
+.score b{font-weight:500;font-size:19px;color:var(--ice)}
+.floaty{position:absolute;right:0;top:-2px;font-family:var(--f-mono);font-size:13px;pointer-events:none;animation:floaty 1.3s ease-out forwards}
+@keyframes floaty{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-22px)}}
+.energy{display:flex;align-items:center;gap:8px}
+.ebar{width:70px;height:6px;border-radius:6px;background:rgba(127,168,255,.12);overflow:hidden}
+.ebar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#c58a4a,#f2c38a);transition:width .4s}
+.ebar.low i{background:var(--crit)}
+.ibtn{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:rgba(127,168,255,.05);display:grid;place-items:center;transition:background .2s,border-color .2s}
+.ibtn:hover{background:rgba(127,168,255,.12);border-color:var(--line2)}
+.ibtn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.ibtn[disabled]{opacity:.35}
+.board{display:grid;grid-template-columns:300px minmax(0,1fr) 290px;gap:16px;padding:16px 18px;height:calc(100vh - var(--top));height:calc(100dvh - var(--top));transition:filter .8s}
+.col{min-height:0;display:flex;flex-direction:column;gap:14px}
+.panel{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);backdrop-filter:blur(8px)}
+.ph{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 14px;border-bottom:1px solid var(--line);font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.ph b{color:var(--ice);font-weight:500}
+
+/* pager */
+.pager{position:relative;flex:none;border-radius:22px;padding:14px 14px 12px;background:linear-gradient(160deg,#1a2438,#0c1322);border:1px solid rgba(255,255,255,.06);box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 18px 40px rgba(0,0,0,.45);cursor:pointer}
+.pager.buzz{animation:buzz .09s linear 10}
+@keyframes buzz{0%{transform:translate(0,0) rotate(0)}25%{transform:translate(-2px,1px) rotate(-.6deg)}50%{transform:translate(2px,-1px) rotate(.6deg)}75%{transform:translate(-1px,-1px) rotate(-.3deg)}100%{transform:translate(0,0)}}
+.pg-screen{border-radius:10px;padding:10px 12px;background:linear-gradient(180deg,#0e2036,#0a1829);border:1px solid rgba(127,168,255,.25);box-shadow:inset 0 0 22px rgba(127,200,255,.12);font-family:var(--f-mono);color:#bfe2ff;text-shadow:0 0 8px rgba(127,200,255,.55);min-height:92px}
+.pg-top{display:flex;justify-content:space-between;font-size:10.5px;opacity:.75;letter-spacing:.08em}
+.pg-msg{font-size:13px;margin-top:6px;line-height:1.35}
+.pg-foot{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+.pg-foot .brandp{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.3em;color:var(--dim)}
+.pg-led{width:8px;height:8px;border-radius:50%;background:#1d3a2f;box-shadow:none}
+.pager.alert .pg-led{background:var(--crit);box-shadow:0 0 10px var(--crit);animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:.2}}
+
+/* queue */
+.queue-panel{flex:1;min-height:0;display:flex;flex-direction:column}
+#queue{flex:1;min-height:0;overflow:auto;padding:10px;display:flex;flex-direction:column;gap:9px}
+.qempty{color:var(--dim);font-size:13px;padding:18px 8px;text-align:center}
+.qcard{position:relative;text-align:left;width:100%;border-radius:12px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(24,40,74,.5),rgba(12,22,42,.5));padding:10px 11px 9px;transition:border-color .2s,background .2s,transform .2s;flex:none}
+.qcard:hover{border-color:var(--line2);background:rgba(30,50,92,.5)}
+.qcard.open{border-color:var(--accent);box-shadow:0 0 0 1px rgba(127,168,255,.5)}
+.qcard.new{animation:qin .6s cubic-bezier(.2,.8,.2,1)}
+@keyframes qin{from{opacity:0;transform:translateX(-14px) scale(.98)}to{opacity:1;transform:none}}
+.qcard.warn{border-color:rgba(255,184,107,.45)}
+.qcard.crit{border-color:rgba(255,77,94,.75);animation:critpulse 1.1s ease-in-out infinite}
+@keyframes critpulse{50%{box-shadow:0 0 0 1px rgba(255,77,94,.6),0 0 22px rgba(255,77,94,.3)}}
+.qcard.task{border-style:dashed;background:rgba(18,28,50,.4)}
+.qc-top{display:flex;align-items:center;gap:7px;font-family:var(--f-mono);font-size:10.5px;color:var(--muted);letter-spacing:.04em}
+.wchip{color:var(--wc);border:1px solid color-mix(in srgb,var(--wc) 40%,transparent);border-radius:999px;padding:0 6px;white-space:nowrap}
+.qc-top .wait{margin-left:auto}
+.qc-msg{font-size:13.5px;margin:6px 0 6px;color:var(--text);line-height:1.35}
+.qc-vit{display:flex;gap:10px;font-family:var(--f-mono);font-size:11px;color:var(--muted);flex-wrap:wrap}
+.qc-vit .w{color:var(--warn)}.qc-vit .c{color:var(--crit)}
+.qc-bar{height:3px;background:rgba(127,168,255,.1);border-radius:3px;margin-top:8px;overflow:hidden}
+.qc-bar i{display:block;height:100%;background:var(--accent);transition:width .5s,background .5s}
+.acu{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;padding:0 5px;border-radius:4px}
+.acu.a1{color:var(--crit);border:1px solid rgba(255,77,94,.5)}
+.acu.a2{color:var(--warn);border:1px solid rgba(255,184,107,.45)}
+.acu.a3{color:var(--ok);border:1px solid rgba(127,224,184,.4)}
+
+/* monitor */
+.monitor{flex:none;display:grid;grid-template-columns:minmax(0,1fr) 210px;border-radius:var(--r);overflow:hidden;border:1px solid var(--line);background:#040914;box-shadow:inset 0 0 60px rgba(40,90,180,.08),0 20px 50px rgba(0,0,0,.4);position:relative}
+.mon-waves{position:relative;height:236px}
+#mon{position:absolute;inset:0;width:100%;height:100%;display:block}
+.mon-label{position:absolute;left:12px;top:9px;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.12em;color:var(--muted);z-index:2;display:flex;gap:10px;align-items:center;max-width:calc(100% - 24px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mon-label b{color:var(--ice);font-weight:500}
+.mon-alarm{position:absolute;right:10px;top:8px;z-index:2;font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;padding:2px 8px;border-radius:5px;display:none}
+.mon-alarm.w{display:block;color:#1a0f02;background:var(--warn)}
+.mon-alarm.c{display:block;color:#fff;background:var(--crit);animation:blink .8s steps(2) infinite}
+.mon-nums{border-left:1px solid rgba(127,168,255,.1);display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1.25fr 1fr 1fr;font-family:var(--f-mono)}
+.num{padding:8px 10px;border-bottom:1px solid rgba(127,168,255,.07);border-right:1px solid rgba(127,168,255,.07);position:relative;min-width:0}
+.num small{display:block;font-size:9.5px;letter-spacing:.14em;opacity:.8}
+.num b{display:block;font-weight:400;font-size:28px;line-height:1.05;text-shadow:0 0 14px currentColor}
+.num.hr,.num.spo2{grid-row:1}
+.num.hr b,.num.spo2 b{font-size:38px}
+.num.bp{grid-column:1/3}
+.num.bp b{font-size:26px}
+.num.hr{color:var(--ecg)}.num.spo2{color:var(--spo2)}.num.bp{color:var(--ice)}.num.rr{color:var(--resp)}.num.tp{color:var(--temp)}
+.num.al b{color:var(--crit);animation:blink .9s steps(2) infinite}
+.num.wa b{color:var(--warn)}
+
+/* case */
+.case-panel{flex:1;min-height:0;overflow:auto;scroll-behavior:smooth}
+.case-empty{height:100%;min-height:240px;display:grid;place-items:center;text-align:center;padding:30px}
+.case-empty h3{font-family:var(--f-disp);font-style:italic;font-weight:400;font-size:30px;margin:0 0 6px;color:var(--ice)}
+.case-empty p{color:var(--muted);max-width:460px;margin:0 auto}
+.case{padding:16px 18px 22px}
+.case-head{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.case-head h2{font-family:var(--f-disp);font-weight:500;font-size:28px;line-height:1.05;margin:0;outline:none}
+.case-head .meta{font-family:var(--f-mono);font-size:11.5px;color:var(--muted);letter-spacing:.04em;margin-top:4px}
+.case-head .back{margin-left:auto}
+.story{margin:14px 0 12px;color:#cdd8ee;font-size:15px;border-left:2px solid var(--accent);padding:2px 0 2px 12px}
+.story .who{font-family:var(--f-mono);font-size:11px;color:var(--accent);letter-spacing:.12em;text-transform:uppercase;display:block;margin-bottom:2px}
+.info{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.info section{border:1px solid var(--line);border-radius:10px;padding:9px 11px;background:rgba(8,16,32,.45);min-width:0}
+.info h4{margin:0 0 5px;font-family:var(--f-mono);font-weight:400;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.info ul{margin:0;padding:0;list-style:none;font-size:13px;color:#d3dcee}
+.info li{padding:2px 0;border-bottom:1px dashed rgba(127,168,255,.08)}
+.info li:last-child{border-bottom:0}
+.results{margin-top:10px;border:1px solid rgba(127,224,184,.25);border-radius:10px;padding:9px 11px;background:rgba(20,50,44,.18)}
+.results h4{margin:0 0 5px;font-family:var(--f-mono);font-weight:400;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ok)}
+.results ul{margin:0;padding:0;list-style:none;font-size:13px}
+.results li{padding:3px 0}
+.results li b{color:var(--ice);font-weight:600}
+.results li.miss{color:var(--warn)}
+.results li.waste{color:#e6c9a0}
+.step{margin-top:16px;border:1px solid var(--line2);border-radius:12px;padding:14px;background:linear-gradient(180deg,rgba(28,46,86,.35),rgba(10,18,36,.35))}
+.step-meta{font-family:var(--f-mono);font-size:10.5px;color:var(--accent);letter-spacing:.16em;text-transform:uppercase;display:flex;gap:10px;flex-wrap:wrap}
+.step h3{margin:6px 0 12px;font-size:17px;font-weight:600;line-height:1.35}
+.opts{display:grid;gap:8px}
+.opts.dx{grid-template-columns:repeat(2,minmax(0,1fr))}
+.opt{display:flex;align-items:flex-start;gap:10px;text-align:left;width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:rgba(10,20,40,.55);transition:border-color .15s,background .15s,transform .1s;min-width:0}
+.opt:hover:not([disabled]){border-color:var(--line2);background:rgba(30,50,92,.5)}
+.opt:active:not([disabled]){transform:scale(.995)}
+.opt .k{flex:none;margin-top:1px}
+.opt .t{flex:1;min-width:0}
+.opt .m{flex:none;font-family:var(--f-mono);font-size:11px;color:var(--muted);margin-top:2px}
+.opt[aria-pressed="true"]{border-color:var(--accent);background:rgba(60,95,170,.35)}
+.opt[disabled]{cursor:default}
+.opt.right{border-color:rgba(127,224,184,.6);background:rgba(40,110,90,.22)}
+.opt.wrong{border-color:rgba(255,184,107,.6);background:rgba(120,70,20,.2)}
+.opt.harm{border-color:rgba(255,77,94,.7);background:rgba(120,20,34,.25)}
+.opt.dim{opacity:.72}
+.why{display:block;font-size:12.5px;color:var(--muted);margin-top:4px}
+.opt.right .why{color:#b9ecd6}.opt.harm .why{color:#ffc3ca}
+.step-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;flex-wrap:wrap}
+.verdict{font-weight:600}
+.verdict.good{color:var(--ok)}.verdict.bad{color:var(--warn)}.verdict.harm{color:var(--crit)}
+.summary{margin-top:16px;border-radius:12px;padding:16px;border:1px solid var(--line2);background:linear-gradient(160deg,rgba(40,64,120,.35),rgba(10,18,36,.4))}
+.summary .dxname{font-family:var(--f-disp);font-size:26px;font-style:italic;line-height:1.1}
+.oc{display:inline-block;font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:999px;margin-left:6px;vertical-align:middle}
+.oc.gut{color:#062016;background:var(--ok)}.oc.ok{color:#1d1204;background:var(--warn)}.oc.kompl,.oc.crash{color:#fff;background:var(--crit)}.oc.offen{color:var(--muted);border:1px solid var(--line2)}
+.summary h5{margin:12px 0 3px;font-family:var(--f-mono);font-weight:400;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+.summary p{margin:0;color:#d1dbef;font-size:14px}
+.summary .take{border-left:2px solid var(--ok);padding-left:10px;color:#e7f7ef}
+
+/* nurse feed */
+.nurse{flex:1;min-height:0;display:flex;flex-direction:column}
+.nurse-id{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line)}
+.ava{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-mono);font-size:13px;color:#0b1426;background:radial-gradient(circle at 30% 30%,#dfe9ff,#86a7e6);flex:none}
+.nurse-id b{display:block;font-weight:600}
+.nurse-id small{color:var(--muted);font-size:12px}
+#feed{flex:1;min-height:0;overflow:auto;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.msg{font-size:13.5px;padding:8px 10px;border-radius:10px 10px 10px 3px;background:rgba(127,168,255,.07);border:1px solid rgba(127,168,255,.1);animation:fadeIn .4s ease both}
+.msg time{display:block;font-family:var(--f-mono);font-size:10px;color:var(--dim);margin-bottom:1px}
+.msg.w{border-color:rgba(255,184,107,.35)}
+.msg.c{border-color:rgba(255,77,94,.55);background:rgba(255,77,94,.08)}
+.msg.g{border-color:rgba(127,224,184,.35)}
+.msg.sys{background:transparent;border-style:dashed;color:var(--muted)}
+.stats{flex:none;display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+.stats div{padding:10px 8px;text-align:center;border-right:1px solid var(--line)}
+.stats div:last-child{border-right:0}
+.stats b{display:block;font-family:var(--f-mono);font-weight:400;font-size:20px}
+.stats small{font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+
+/* overlays */
+.overlay{position:fixed;inset:0;z-index:70;display:none;place-items:center;background:rgba(3,7,16,.78);backdrop-filter:blur(8px);padding:20px}
+.overlay.on{display:grid}
+.ov-card{width:min(440px,100%);border-radius:18px;border:1px solid var(--line2);background:linear-gradient(180deg,#101c34,#0a1224);padding:24px;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.ov-card h2{font-family:var(--f-disp);font-style:italic;font-weight:400;font-size:40px;margin:0 0 6px}
+.ov-card p{color:var(--muted);margin:0 0 18px}
+.ov-card .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.ov-card .links{margin-top:18px;font-size:13px;display:flex;justify-content:center;gap:18px}
+.ov-card .links a{color:var(--muted);text-decoration:none}
+#toasts{position:fixed;left:12px;right:12px;top:calc(var(--top) + 8px);z-index:65;display:none;flex-direction:column;gap:8px;pointer-events:none}
+.toast{pointer-events:auto;border-radius:14px;padding:10px 12px;background:rgba(14,26,50,.96);border:1px solid var(--line2);box-shadow:0 14px 40px rgba(0,0,0,.5);font-size:13.5px;animation:tin .35s cubic-bezier(.2,.8,.2,1) both}
+.toast.pg{font-family:var(--f-mono);color:#bfe2ff;border-color:rgba(127,200,255,.45)}
+.toast.pg.c{border-color:var(--crit)}
+.toast small{display:block;color:var(--muted);font-size:10.5px;letter-spacing:.1em}
+.toast.out{animation:tout .3s ease forwards}
+@keyframes tin{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}
+@keyframes tout{to{opacity:0;transform:translateY(-10px)}}
+
+/* ---------- END ---------- */
+.end-wrap{max-width:1080px;margin:0 auto;padding:22px 20px 60px}
+.end-hero{text-align:center;margin-top:30px}
+.end-hero .eyebrow{display:block}
+.end-hero h1{font-family:var(--f-disp);font-style:italic;font-weight:400;font-size:clamp(46px,9vw,92px);margin:8px 0 0;line-height:1}
+.end-score{font-family:var(--f-mono);font-size:clamp(40px,8vw,72px);color:var(--ice);text-shadow:0 0 30px rgba(127,168,255,.35);margin-top:6px}
+.end-title{display:inline-block;margin-top:6px;font-family:var(--f-mono);letter-spacing:.2em;text-transform:uppercase;color:#06101f;background:var(--accent);padding:4px 14px;border-radius:999px;font-size:13px}
+.end-new{color:var(--ok);font-family:var(--f-mono);font-size:12px;margin-top:10px;letter-spacing:.1em}
+.end-grid{display:grid;grid-template-columns:1.25fr 1fr;gap:16px;margin-top:34px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:14px}
+.kpi{border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center;background:rgba(8,16,32,.4)}
+.kpi b{display:block;font-family:var(--f-mono);font-weight:400;font-size:24px}
+.kpi small{font-size:10.5px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.outlist{list-style:none;margin:0;padding:6px 14px 14px}
+.outlist li{display:flex;gap:10px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px;flex-wrap:wrap}
+.outlist li:last-child{border-bottom:0}
+.outlist .rm{font-family:var(--f-mono);font-size:11px;color:var(--muted);width:64px;flex:none}
+.outlist .nm{flex:1;min-width:140px}
+.outlist .nm small{display:block;color:var(--muted);font-size:12px}
+.outlist .pts{font-family:var(--f-mono);font-size:12px;color:var(--muted);width:48px;text-align:right}
+.oa{padding:16px 18px}
+.oa blockquote{margin:0;font-family:var(--f-disp);font-size:21px;line-height:1.35;color:#e5ecfa;font-style:italic}
+.oa cite{display:block;margin-top:10px;font-style:normal;font-family:var(--f-mono);font-size:11px;color:var(--muted);letter-spacing:.1em}
+.hst{width:100%;border-collapse:collapse;font-family:var(--f-mono);font-size:12.5px}
+.hst td,.hst th{padding:7px 14px;border-bottom:1px solid var(--line);text-align:left}
+.hst th{font-weight:400;color:var(--dim);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase}
+.hst tr.me td{color:var(--ok)}
+.end-actions{display:flex;justify-content:center;gap:12px;margin-top:28px;flex-wrap:wrap}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width:1180px){
+  .board{grid-template-columns:280px minmax(0,1fr)}
+  .col-right{grid-column:1;grid-row:2}
+  .col-left{grid-row:1}
+  .col-center{grid-column:2;grid-row:1/3}
+  .board{grid-template-rows:minmax(0,1.3fr) minmax(0,1fr)}
+}
+@media (max-width:860px){
+  :root{--top:56px}
+  body{font-size:14.5px}
+  .topbar{grid-template-columns:auto 1fr auto;padding:0 10px;gap:8px}
+  .brand,.dtag,.ff{display:none!important}
+  .tb-left{gap:0}
+  .tb-clock{text-align:left}
+  #clock{font-size:21px}
+  .shift{width:64px;margin:4px 0 0}
+  .tb-right{gap:6px}
+  .score b{font-size:16px}
+  .ebar{width:36px}
+  .ibtn{width:34px;height:34px}
+  .board{display:flex;flex-direction:column;height:auto;padding:10px 10px 30px;gap:12px}
+  .col{display:contents}
+  .pager{display:none}
+  .queue-panel{order:1;flex:none}
+  #queue{flex-direction:row;overflow-x:auto;overflow-y:hidden;padding:10px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+  .qcard{width:230px;scroll-snap-align:start}
+  .qempty{width:100%}
+  .monitor{order:2;grid-template-columns:1fr}
+  .mon-waves{height:150px}
+  .mon-nums{grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:auto;border-left:0;border-top:1px solid rgba(127,168,255,.1)}
+  .num{padding:6px 7px}
+  .num.hr,.num.spo2,.num.bp{grid-row:auto;grid-column:auto}
+  .num b,.num.hr b,.num.spo2 b{font-size:20px}
+  .num.bp b{font-size:15px;margin-top:4px}
+  .num small{font-size:8.5px}
+  .case-panel{order:3;overflow:visible;flex:none}
+  .nurse{order:4;flex:none}
+  #feed{max-height:230px}
+  .stats{order:5}
+  .case{padding:14px 12px 18px}
+  .case-head h2{font-size:24px}
+  .info{grid-template-columns:1fr}
+  .opts.dx{grid-template-columns:1fr}
+  #toasts{display:flex}
+  .diffs{grid-template-columns:1fr}
+  .intro-foot{grid-template-columns:1fr}
+  .hs-mini{text-align:left}
+  .end-grid{grid-template-columns:1fr}
+  .kpis{grid-template-columns:repeat(2,1fr)}
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+  .grain{animation:none}
+}
+</style>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+<div class="vignette" aria-hidden="true"></div>
+<div id="flash" aria-hidden="true"><span id="flashTxt">MET-ALARM</span></div>
+<div id="toasts" aria-hidden="true"></div>
+<div id="live" class="sr" aria-live="polite"></div>
+
+<!-- INTRO -->
+<section id="intro" class="screen active" aria-label="Startbildschirm">
+  <canvas id="introBg" aria-hidden="true"></canvas>
+  <div class="intro-wrap">
+    <nav class="nav"><a href="/">← joshuaforster.de</a><a href="/spiele/">Alle Spiele</a></nav>
+    <div class="hero fade-in">
+      <div class="eyebrow">Lernspiel · Innere · Unfallchirurgie · Notaufnahme · Intensiv · Geriatrie</div>
+      <h1>Nachtdienst</h1>
+      <p class="lead">Du bist Dienstarzt. Allein im Haus, ein Piepser, fünf Stationen. Die Rufe kommen gleichzeitig – und wer wartet, wird schlechter.</p>
+      <div class="times">21:00 → 07:00 · ca. 8–12 Minuten Echtzeit</div>
+    </div>
+    <div class="diffs" role="group" aria-label="Schwierigkeit">
+      <button class="diff" data-diff="pj" aria-pressed="false"><kbd class="dk">1</kbd><div class="dn">PJ</div><div class="dd">Die Pflege gibt dir Dringlichkeits-Hinweise. Patienten verschlechtern sich langsamer.</div><div class="dm">10 Rufe · Triage-Hilfe · Tempo ruhig</div></button>
+      <button class="diff" data-diff="ass" aria-pressed="true"><kbd class="dk">2</kbd><div class="dn">Assistenz</div><div class="dd">Keine Hilfen. Du liest Piepser und Vitalwerte selbst. Die Nacht ist voll.</div><div class="dm">13 Rufe · ×1,25 Punkte</div></button>
+      <button class="diff" data-diff="oa" aria-pressed="false"><kbd class="dk">3</kbd><div class="dn">Oberarzt</div><div class="dd">Alles gleichzeitig, alles schneller. Kaffee ist knapp, Geduld auch.</div><div class="dm">16 Rufe · ×1,5 Punkte</div></button>
+    </div>
+    <div class="start-row">
+      <button class="btn primary big" id="startBtn">Dienst antreten <kbd style="color:#0b1b36;border-color:rgba(6,16,31,.35)">Enter</kbd></button>
+      <button class="ibtn" id="muteIntro" aria-label="Ton an/aus" title="Ton an/aus (M)"></button>
+      <span class="hint">Ton empfohlen – alle Klänge werden live synthetisiert.</span>
+    </div>
+    <div class="intro-foot">
+      <div class="howto">
+        <b>So läuft der Dienst:</b> Der Piepser meldet Rufe von den Stationen. Öffne einen Ruf (Klick oder <kbd>1</kbd>–<kbd>9</kbd>), ordne Diagnostik an, entscheide die Therapie. Jede Anordnung kostet Dienstzeit – und die anderen Patienten warten währenddessen. Du kannst einen Fall jederzeit unterbrechen (<kbd>B</kbd>), wenn woanders etwas brennt. <kbd>K</kbd> Kaffee · <kbd>M</kbd> Ton · <kbd>Esc</kbd> Pause.
+        <div class="disclaimer"><b>Lernspiel, keine Therapieempfehlung.</b> Fälle frei erfunden, orientiert an ERC-, ESC- und AWMF-Leitlinien (Stand 2025). Dosierungen vereinfacht – im echten Leben gelten Fachinformation und Klinik-SOP.</div>
+      </div>
+      <div class="hs-mini" id="hsMini"></div>
+    </div>
+  </div>
+</section>
+
+<!-- GAME -->
+<section id="game" class="screen" aria-label="Nachtdienst">
+  <header class="topbar">
+    <div class="tb-left"><a class="brand" href="/spiele/" title="Alle Spiele">Nachtdienst</a><span class="dtag" id="dtag">Assistenz</span><span class="ff" id="ff">▸▸ ZEITRAFFER</span></div>
+    <div class="tb-clock"><div id="clock" aria-label="Uhrzeit">21:00</div><div class="shift"><i id="shiftBar"></i></div></div>
+    <div class="tb-right">
+      <div class="score"><small>PUNKTE</small><b id="score">0</b></div>
+      <div class="energy" title="Energie"><div class="ebar" id="ebar"><i></i></div></div>
+      <button class="ibtn" id="coffeeBtn" aria-label="Kaffee holen (K)" title="Kaffee holen (K) – kostet 6 min"><svg viewBox="0 0 24 24"><path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 11h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 3c0 1.5 1 1.5 1 3M12 3c0 1.5 1 1.5 1 3"/></svg></button>
+      <button class="ibtn" id="muteBtn" aria-label="Ton an/aus (M)" title="Ton an/aus (M)"></button>
+      <button class="ibtn" id="pauseBtn" aria-label="Pause (Esc)" title="Pause (Esc)"><svg viewBox="0 0 24 24"><path d="M9 6v12M15 6v12"/></svg></button>
+    </div>
+  </header>
+  <div class="board" id="board">
+    <aside class="col col-left">
+      <div class="pager" id="pager" role="button" tabindex="0" aria-label="Piepser – neuesten Ruf öffnen">
+        <div class="pg-screen"><div class="pg-top"><span>☎ 4712</span><span id="pgTime">21:00</span></div><div class="pg-msg" id="pgMsg">Dienst übernommen. Akku 3/3.</div></div>
+        <div class="pg-foot"><span class="brandp">DIENSTPIEPSER</span><span class="pg-led"></span></div>
+      </div>
+      <div class="panel queue-panel">
+        <div class="ph"><span>Offene Rufe</span><b id="qcount">0</b></div>
+        <div id="queue"><div class="qempty">Noch ruhig. Genieß es.</div></div>
+      </div>
+    </aside>
+    <main class="col col-center">
+      <div class="monitor" aria-label="Patientenmonitor">
+        <div class="mon-waves"><canvas id="mon" aria-hidden="true"></canvas><div class="mon-label" id="monLabel">ZENTRALE · <b>kein Patient</b></div><div class="mon-alarm" id="monAlarm"></div></div>
+        <div class="mon-nums">
+          <div class="num hr" id="nHR"><small>HF /min</small><b>--</b></div>
+          <div class="num spo2" id="nSP"><small>SpO₂ %</small><b>--</b></div>
+          <div class="num bp" id="nBP"><small>NIBP mmHg</small><b>--/--</b></div>
+          <div class="num rr" id="nRR"><small>AF /min</small><b>--</b></div>
+          <div class="num tp" id="nT"><small>TEMP °C</small><b>--</b></div>
+        </div>
+      </div>
+      <div class="panel case-panel" id="casePanel"></div>
+    </main>
+    <aside class="col col-right">
+      <div class="panel nurse">
+        <div class="nurse-id"><div class="ava">AK</div><div><b>Anke · Pflege</b><small>23 Jahre Nachtdienst. Hat alles gesehen.</small></div></div>
+        <div id="feed" aria-live="polite"></div>
+      </div>
+      <div class="panel stats">
+        <div><b id="stGood">0</b><small>Stabil</small></div>
+        <div><b id="stBad">0</b><small>Kompl.</small></div>
+        <div><b id="stCrash">0</b><small>MET</small></div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- END -->
+<section id="end" class="screen" aria-label="Dienstende">
+  <div class="end-wrap">
+    <nav class="nav"><a href="/">← joshuaforster.de</a><a href="/spiele/">Alle Spiele</a></nav>
+    <div id="endContent"></div>
+  </div>
+</section>
+
+<div class="overlay" id="pauseOv" role="dialog" aria-modal="true" aria-labelledby="pauseH">
+  <div class="ov-card">
+    <h2 id="pauseH">Pause</h2>
+    <p>Die Uhr steht. Die Station nicht – aber im Spiel schon.</p>
+    <div class="row"><button class="btn primary" id="resumeBtn">Weiter <kbd>Esc</kbd></button><button class="btn" id="quitBtn">Dienst beenden</button></div>
+    <div class="links"><a href="/">← joshuaforster.de</a><a href="/spiele/">Alle Spiele</a></div>
+  </div>
+</div>
+
+<script>
+(()=>{'use strict';
+const $=s=>document.querySelector(s);
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const lerp=(a,b,t)=>a+(b-a)*t;
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const RM=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MOB=()=>window.matchMedia('(max-width:860px)').matches;
+const store={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v);}catch(e){return d;}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}};
+
+/* ================= AUDIO ================= */
+const SFX={ctx:null,master:null,muted:store.get('nd.muted',false),
+  init(){
+    if(this.ctx){if(this.ctx.state==='suspended')this.ctx.resume().catch(()=>{});return;}
+    const AC=window.AudioContext||window.webkitAudioContext; if(!AC)return;
+    try{this.ctx=new AC();}catch(e){return;}
+    this.master=this.ctx.createGain(); this.master.gain.value=this.muted?0:0.9; this.master.connect(this.ctx.destination);
+    this.ambient();
+  },
+  setMuted(m){this.muted=m;store.set('nd.muted',m);if(this.master)this.master.gain.setTargetAtTime(m?0:0.9,this.ctx.currentTime,0.05);updMute();},
+  tone(f,dur,o={}){
+    if(!this.ctx||this.muted)return;
+    const {type='sine',vol=0.1,when=0,attack=0.004,release=0.04,slide=0}=o;
+    const c=this.ctx,t=c.currentTime+when,os=c.createOscillator(),g=c.createGain();
+    os.type=type; os.frequency.setValueAtTime(f,t); if(slide)os.frequency.exponentialRampToValueAtTime(f*slide,t+dur);
+    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(vol,t+attack); g.gain.setValueAtTime(vol,t+Math.max(attack,dur-release)); g.gain.linearRampToValueAtTime(0,t+dur);
+    os.connect(g); g.connect(this.master); os.start(t); os.stop(t+dur+0.03);
+  },
+  pager(){for(let r=0;r<2;r++)for(let i=0;i<3;i++)this.tone(2960,0.07,{type:'square',vol:0.03,when:r*0.55+i*0.12});},
+  beep(sp){this.tone(clamp(380+(sp-70)*16,300,900),0.07,{vol:0.04});},
+  alarmHigh(){const n=[523,659,784,784,1047],w=[0,0.17,0.34,0.68,0.85];n.forEach((f,i)=>this.tone(f,0.13,{type:'triangle',vol:0.065,when:w[i]}));},
+  alarmMed(){[523,659,784].forEach((f,i)=>this.tone(f,0.2,{type:'triangle',vol:0.04,when:i*0.3}));},
+  ok(){this.tone(660,0.12,{vol:0.05});this.tone(990,0.2,{vol:0.045,when:0.1});},
+  bad(){this.tone(233,0.3,{type:'triangle',vol:0.07,slide:0.72});},
+  click(){this.tone(1500,0.018,{vol:0.018});},
+  pour(){for(let i=0;i<6;i++)this.tone(rnd(700,1100),0.05,{vol:0.012,when:i*0.07});},
+  ambient(){
+    const c=this.ctx,len=c.sampleRate*4,buf=c.createBuffer(1,len,c.sampleRate),d=buf.getChannelData(0);let last=0;
+    for(let i=0;i<len;i++){const w=Math.random()*2-1;last=(last+0.02*w)/1.02;d[i]=last*3.2;}
+    for(let i=0;i<2000;i++){const k=i/2000;d[i]*=k;d[len-1-i]*=k;}
+    const src=c.createBufferSource();src.buffer=buf;src.loop=true;
+    const lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=300;
+    const g=c.createGain();g.gain.value=0.05;src.connect(lp);lp.connect(g);g.connect(this.master);src.start();
+    [[50,0.006],[150,0.0022]].forEach(([f,v])=>{const o=c.createOscillator();o.frequency.value=f;const gg=c.createGain();gg.gain.value=v;o.connect(gg);gg.connect(this.master);o.start();});
+  }
+};
+const ICON_ON='<svg viewBox="0 0 24 24"><path d="M4 10v4h4l5 4V6L8 10z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>';
+const ICON_OFF='<svg viewBox="0 0 24 24"><path d="M4 10v4h4l5 4V6L8 10z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>';
+function updMute(){['#muteBtn','#muteIntro'].forEach(s=>{const b=$(s);if(b){b.innerHTML=SFX.muted?ICON_OFF:ICON_ON;b.setAttribute('aria-pressed',String(SFX.muted));}});}
+
+/* ================= DATA ================= */
+const WARDS={
+  innere:{name:'Innere 4B',short:'INN',color:'#7fa8ff'},
+  uch:{name:'Unfallchirurgie/Ortho 3A',short:'UCH',color:'#8fe3c8'},
+  zna:{name:'Notaufnahme',short:'ZNA',color:'#f0c987'},
+  its:{name:'Intensivstation',short:'ITS',color:'#7ee0f0'},
+  geri:{name:'Geriatrie 2',short:'GER',color:'#c3b3ff'}
+};
+const NORMAL=[78,124,74,97,15,36.8];
+const D=(l,ok,min,res)=>({l,ok,min,res});
+const Q=(l,ok,why)=>({l,ok,why});
+
+const SC=[
+{id:'hyperk',dx:'Hyperkaliämie mit EKG-Veränderungen',ward:'innere',room:'Zi. 12',acuity:1,
+ pager:'Kontroll-K⁺ 7,2! Pat. schlapp, Puls langsam',name:'Herr Bauer',age:79,sex:'m',
+ story:'CKD Stadium 4, Herzinsuffizienz. Das Kontrolllabor von 20 Uhr kam gerade: Kalium 7,2 mmol/l. Er sagt, seine Beine fühlen sich „wie Gummi“ an.',
+ find:['Schlaffe Paresen beider Beine (Kraftgrad 4/5)','Wach, orientiert','Puls bradykard, regelmäßig'],
+ meds:['Ramipril 10 mg 1-0-0','Spironolacton 50 mg 1-0-0','Torasemid 10 mg','Kaliumchlorid-Brause (!) seit gestern'],
+ labs:['K⁺ 7,2 mmol/l','Kreatinin 2,9 mg/dl (Vorwert 2,1)','Hb 10,8 g/dl'],
+ v0:[46,102,60,95,18,36.6],v1:[28,68,40,88,24,36.4],rh:[[55,'peakedT'],[22,'wide'],[0,'vf']],
+ steps:[
+  {k:'dx',q:'Du stehst am Bett. Was ordnest du sofort an?',o:[
+   D('12-Kanal-EKG',1,3,'Zeltförmige T-Wellen, PQ 240 ms, QRS 128 ms – kardiale Toxizität!'),
+   D('BGA mit K⁺ (Hämolyse/Pseudohyperkaliämie ausschließen)',1,3,'K⁺ 7,0 mmol/l, pH 7,29, HCO₃⁻ 17 mmol/l – bestätigt.'),
+   D('Monitorüberwachung + sicherer i.v.-Zugang',1,2,'Pat. am Monitor, 18G liegt.'),
+   D('Röntgen-Thorax',0,15,'Stauungsfrei. Hat nichts verändert – 15 Minuten weg.'),
+   D('CT Abdomen (Nierenstatus)',0,25,'Schrumpfnieren bds. Für die Akuttherapie irrelevant.')]},
+  {k:'q',q:'K⁺ 7,0 + EKG-Veränderungen. Was gibst du ZUERST?',o:[
+   Q('Calciumgluconat 10 % 30 ml langsam i.v. unter Monitor',1,'Stabilisiert das Myokardmembranpotenzial binnen 1–3 min. Senkt das Kalium nicht – Wirkung hält ~30–60 min.'),
+   Q('Natriumpolystyrolsulfonat (Resonium®) p.o.',0,'Kaliumbinder wirken über Stunden – keine Akutmaßnahme bei EKG-Veränderungen.'),
+   Q('Furosemid 20 mg i.v.',0,'Bei CKD 4 kaum wirksam und zu langsam als Erstmaßnahme.'),
+   Q('Ringer-Lösung 1 l zügig zur Nierenspülung',2,'Ringer enthält Kalium (4 mmol/l) – und das Volumen hilft der Membran jetzt nicht.')]},
+  {k:'q',q:'Das Myokard ist geschützt. Wie verschiebst du Kalium nach intrazellulär?',o:[
+   Q('10 IE Altinsulin + 25 g Glukose i.v. über 15 min, plus Salbutamol-Vernebelung; engmaschig BZ',1,'Senkt K⁺ um ~0,6–1,2 mmol/l in 30–60 min. Hypoglykämie ist die häufigste Komplikation – BZ-Kontrollen über Stunden.'),
+   Q('Nur Glukose 40 % ohne Insulin',0,'Ohne Insulin kein verlässlicher Shift – beim Diabetiker kann K⁺ sogar steigen.'),
+   Q('Digoxin 0,25 mg i.v.',2,'Digitalis hemmt die Na⁺/K⁺-ATPase → Hyperkaliämie verschlimmert sich; bei Hyperkaliämie kontraindiziert.'),
+   Q('Natriumbicarbonat als alleinige Therapie',0,'Nur ergänzend bei schwerer metabolischer Azidose – allein unzureichend.')]}],
+ teach:{why:'Hyperkaliämie mit EKG-Veränderungen ist ein Notfall. Reihenfolge (ERC): 1. Myokard schützen (Calcium), 2. Kalium shiften (Insulin/Glukose, Salbutamol), 3. Kalium eliminieren (Binder, Diuretika, ggf. Dialyse), 4. Ursache beheben – hier ACE-Hemmer + Spironolacton + Kaliumsubstitution bei CKD.',take:'EKG vor Laborwert-Diskussion: Zeltförmige T-Wellen → Calcium sofort. Insulin/Glukose nie ohne BZ-Kontrollen.'}},
+
+{id:'sepsis',dx:'Urosepsis / septischer Schock',ward:'geri',room:'Zi. 7',acuity:1,
+ pager:'Pat. neu verwirrt, 39,1 °C, RR 88/50',name:'Frau Meier',age:84,sex:'w',
+ story:'Liegt seit 5 Tagen mit Dauerkatheter nach Sturz. Seit dem Abend „nicht sie selbst“, zupft an der Decke, atmet schnell. Urin im Beutel trüb.',
+ find:['Desorientiert (neu)','Warme, marmorierte Knie','DK-Urin trüb, übelriechend','Nierenlager rechts klopfdolent'],
+ meds:['Apixaban 2,5 mg 1-0-1','Bisoprolol 2,5 mg','Pantoprazol 20 mg'],
+ labs:['Leukozyten 18,4 /nl (Aufnahme)','CRP 212 mg/l'],
+ v0:[118,88,50,93,26,39.1],v1:[138,62,34,86,32,39.4],rh:[[0,'sinus']],
+ steps:[
+  {k:'q',q:'Wie viele qSOFA-Punkte hat sie?',o:[
+   Q('3 Punkte – AF ≥ 22/min, RR sys ≤ 100 mmHg, veränderte Bewusstseinslage',1,'Alle drei Kriterien erfüllt. qSOFA ≥ 2 = hohes Risiko für schlechtes Outcome, Sepsis aktiv suchen.'),
+   Q('2 Punkte',0,'Zu niedrig – AF 26, RR 88 sys UND akute Verwirrtheit zählen jeweils.'),
+   Q('1 Punkt – Fieber zählt, der Rest ist Alter',0,'Fieber ist kein qSOFA-Kriterium, neue Verwirrtheit schon.')]},
+  {k:'dx',q:'Hour-1-Bundle: Was ordnest du an?',o:[
+   D('2 Paar Blutkulturen – vor der Antibiose',1,3,'Abgenommen. Verzögert die Antibiose nicht.'),
+   D('Laktat (BGA)',1,3,'Laktat 4,3 mmol/l – Gewebshypoperfusion.'),
+   D('Urinstatus + Kultur aus frischem Katheter',1,4,'Leukozyten +++, Nitrit positiv. DK gewechselt.'),
+   D('Procalcitonin abwarten, dann Antibiose',0,15,'PCT ändert nichts an der Indikation – Warten kostet Überleben.'),
+   D('CT Thorax/Abdomen sofort',0,25,'Fokus ist klinisch klar; Bildgebung später zur Abszesssuche, nicht in der ersten Stunde.')]},
+  {k:'q',q:'Therapie in der ersten Stunde?',o:[
+   Q('Balancierte Kristalloide 30 ml/kg + Piperacillin/Tazobactam 4,5 g i.v. innerhalb 1 h, Noradrenalin bei MAP < 65 trotz Volumen',1,'Leitliniengerecht (SSC 2021 / S3 Sepsis): frühe kalkulierte Breitspektrum-Antibiose, Volumen, Vasopressor mit MAP-Ziel ≥ 65 mmHg.'),
+   Q('Antibiose erst nach Kulturbefund morgen – gezielt statt ungezielt',2,'Im septischen Schock steigt die Letalität mit jeder Stunde Verzögerung.'),
+   Q('Hydrocortison 200 mg/d als Erstmaßnahme',0,'Nur bei vasopressorrefraktärem Schock.'),
+   Q('Furosemid, damit der Urin wieder klar wird',2,'Diuretika in der hypotensiven Sepsis verschlechtern die Perfusion.')]}],
+ teach:{why:'Sepsis = lebensbedrohliche Organdysfunktion durch dysregulierte Wirtsantwort. qSOFA ist ein Screening-Warnsignal, kein Diagnosekriterium. Septischer Schock: Vasopressorbedarf für MAP ≥ 65 + Laktat > 2 trotz Volumen.',take:'Blutkulturen, Laktat, Antibiose < 1 h, Volumen, Fokussanierung (hier: Katheter wechseln/entfernen).'}},
+
+{id:'compartment',dx:'Kompartmentsyndrom Unterschenkel',ward:'uch',room:'Zi. 21',acuity:1,dk:0.8,
+ pager:'Schmerzen 9/10 trotz 2× Piritramid, Unterschenkel',name:'Herr Schulz',age:27,sex:'m',
+ story:'Motorradunfall heute Nachmittag, geschlossene Tibiaschaftfraktur rechts. Oberschenkel-Gipsschiene, Marknagelung morgen früh geplant. Er ist nicht wehleidig – aber er weint.',
+ find:['Wade prall-gespannt, glänzend','Passive Zehenextension: massiver Schmerz','Hypästhesie im 1. Zwischenzehenraum','Fußpulse tastbar, Rekap < 2 s'],
+ meds:['Piritramid 7,5 mg s.c. (2× erhalten)','Metamizol 1 g','Enoxaparin 40 mg s.c.'],labs:['Hb 13,1 g/dl','CK 1.840 U/l'],
+ v0:[112,146,86,99,20,37.2],v1:[132,150,90,98,24,37.6],rh:[[0,'sinus']],
+ steps:[
+  {k:'dx',q:'Was machst du jetzt?',o:[
+   D('Gipsschiene und Wicklung komplett bis auf die Haut spalten',1,2,'Druck lässt kaum nach, Schmerz unverändert – der Druck sitzt in der Faszienloge.'),
+   D('Kompartmentdruckmessung (tiefe Beugerloge / Tibialis-anterior-Loge)',1,6,'Anterior 64 mmHg, RR diast. 86 → ΔP = 22 mmHg (< 30 mmHg).'),
+   D('Doppler der Fußpulse',0,5,'Pulse erhalten – schließt ein Kompartmentsyndrom NICHT aus.'),
+   D('Röntgen Unterschenkel erneut',0,15,'Stellung unverändert. Hilft dir nicht weiter.'),
+   D('MRT Unterschenkel',0,35,'Nachts nicht verfügbar – und diagnostisch irrelevant.')]},
+  {k:'q',q:'Wie geht es weiter?',o:[
+   Q('Bein auf Herzhöhe, Oberarzt + OP-Team sofort: notfallmäßige Fasziotomie aller 4 Logen',1,'Klinische Diagnose + ΔP < 30 mmHg = OP-Indikation. Zeit ist Muskel: nach ~6 h drohen irreversible Nekrosen.'),
+   Q('Hochlagern, kühlen, Reevaluation in 2 Stunden',2,'Hochlagerung senkt den arteriellen Perfusionsdruck zusätzlich. Beim Kompartmentsyndrom: Herzhöhe.'),
+   Q('Opioid-PCA – Frakturschmerz ist nun mal stark',2,'Schmerz außer Verhältnis + passiver Dehnungsschmerz ist DAS Frühzeichen. Mehr Analgesie maskiert nur.'),
+   Q('Warten, bis die Fußpulse schwächer werden',2,'Pulsverlust ist ein Spätzeichen – dann ist die Muskulatur oft schon verloren.')]}],
+ teach:{why:'Frühzeichen: Schmerz außer Verhältnis zur Verletzung, passiver Dehnungsschmerz, gespannte Loge, Sensibilitätsstörung (N. peroneus profundus → 1. Zwischenzehenraum). Pulse bleiben oft lange tastbar. ΔP = diastolischer RR − Logendruck < 30 mmHg stützt die Indikation.',take:'Verband/Gips komplett öffnen, Bein auf Herzhöhe, sofort Fasziotomie. Das Kompartmentsyndrom ist eine klinische Diagnose.'}},
+
+{id:'delir',dx:'Postoperatives Delir (Harnverhalt + anticholinerge Last)',ward:'geri',room:'Zi. 3',acuity:2,dk:0.7,
+ pager:'Pat. agitiert, zieht Zugang, will heim',name:'Frau Weber',age:86,sex:'w',
+ story:'Tag 1 nach Duokopfprothese bei Schenkelhalsfraktur. Tagsüber freundlich, jetzt desorientiert, schlägt nach der Pflege, will „zu den Kindern“. Aufmerksamkeit schwankend.',
+ find:['CAM-ICU positiv (akuter Beginn, fluktuierend, Unaufmerksamkeit)','Unterbauch druckdolent, vorgewölbt','Hörgerät liegt in der Schublade'],
+ meds:['Oxybutynin 5 mg 1-0-1','Amitriptylin 25 mg 0-0-1','Tramadol 50 mg b.B.','Lorazepam 1 mg b.B.'],labs:['Na⁺ 137 mmol/l','CRP 48 mg/l (postop.)'],
+ v0:[98,152,86,94,18,37.3],v1:[124,176,98,90,24,37.6],rh:[[0,'sinus']],
+ steps:[
+  {k:'dx',q:'Ursachensuche – was checkst du?',o:[
+   D('Blasenscan',1,2,'Restharn 840 ml – Harnverhalt!'),
+   D('BZ',1,1,'BZ 132 mg/dl.'),
+   D('SpO₂ / BGA',1,3,'SpO₂ 94 %, keine Hyperkapnie.'),
+   D('Medikationsplan auf Delir-Auslöser prüfen',1,2,'Oxybutynin + Amitriptylin (anticholinerg), Tramadol, Lorazepam – hohe Delir-Last.'),
+   D('cCT nativ',0,25,'Kein Sturz, keine Fokalneurologie – keine Indikation. 25 Minuten weg.')]},
+  {k:'q',q:'Wie gehst du vor?',o:[
+   Q('Katheter (Harnverhalt), Schmerztherapie, Reorientierung (Licht, Hörgerät, Brille), anticholinerge Medikamente absetzen',1,'Ursachen behandeln + nicht-medikamentöse Maßnahmen sind die Basis jeder Delirtherapie.'),
+   Q('Lorazepam 1 mg i.v. zur Beruhigung',2,'Benzodiazepine verstärken und verlängern das Delir bei Älteren (Ausnahme: Alkohol-/Benzodiazepinentzug).'),
+   Q('Fixierung am Bett für die Nacht',2,'Nur als Ultima Ratio mit richterlicher Genehmigung; verlängert Delir, erhöht Verletzungen.'),
+   Q('Promethazin 25 mg',0,'Stark anticholinerg – verschlechtert das Delir.')]},
+  {k:'q',q:'Sie bleibt stark agitiert mit Eigengefährdung. Wenn medikamentös, dann?',o:[
+   Q('Haloperidol 0,5 mg (low dose, QTc beachten; kein Parkinson)',1,'Start low, go slow. Bei Parkinson/Lewy-Body: Quetiapin statt Haloperidol.'),
+   Q('Haloperidol 10 mg i.v.',2,'Viel zu hoch für eine 86-Jährige: EPMS, QT-Verlängerung, Sturz. Hier 0,5–1 mg.'),
+   Q('Diazepam 10 mg',2,'Lange HWZ, aktive Metaboliten – Delir- und Sturzrisiko (PRISCUS).'),
+   Q('Biperiden 2 mg',0,'Anticholinerg – macht das Delir schlimmer.')]}],
+ teach:{why:'Delir = akute, fluktuierende Störung von Aufmerksamkeit und Bewusstsein – ein Notfall mit erhöhter Letalität. Immer Auslöser suchen: Harnverhalt, Schmerz, Hypoxie, Infekt, Elektrolyte, BZ, Obstipation, Medikamente (anticholinerg, Benzos, Opioide), Entzug.',take:'Erst Ursachen und nicht-medikamentös. Wenn Medikament: Haloperidol 0,5 mg. Keine Benzos außer beim Entzug.'}},
+
+{id:'lae',dx:'Lungenembolie (intermediär-hohes Risiko)',ward:'uch',room:'Zi. 18',acuity:2,dk:1.3,
+ pager:'Plötzlich Luftnot + Thoraxschmerz, SpO₂ 88 %',name:'Herr Dietz',age:64,sex:'m',
+ story:'Tag 3 nach Knie-TEP rechts. Beim ersten Toilettengang plötzlich Luftnot, stechender Schmerz beim Einatmen. „Als ob mir jemand auf der Brust sitzt.“',
+ find:['Tachypnoe, ängstlich','Rechte Wade geschwollen, druckdolent','Halsvenen leicht gestaut','Lunge frei'],
+ meds:['Enoxaparin 40 mg s.c. 1× tgl. (letzte Gabe 18 Uhr)','Ibuprofen 600 mg','Metamizol'],labs:['Krea 0,9 mg/dl','Hb 11,9 g/dl'],
+ v0:[118,128,78,88,28,37.5],v1:[142,78,45,79,34,37.4],rh:[[0,'sinus']],
+ steps:[
+  {k:'dx',q:'Wells-Score hoch. Diagnostik?',o:[
+   D('BGA',1,3,'pO₂ 58 mmHg, pCO₂ 30 mmHg – Hypoxämie mit Hyperventilation.'),
+   D('12-Kanal-EKG',1,3,'Sinustachykardie 118/min, S1Q3-Typ, inkompletter RSB.'),
+   D('Troponin + NT-proBNP',1,5,'hs-TnT 38 ng/l ↑, NT-proBNP 1.140 pg/ml ↑.'),
+   D('CT-Pulmonalisangiographie',1,18,'Embolie rechte Pulmonalarterie + Segmentäste li., RV/LV 1,1.'),
+   D('D-Dimere',0,5,'3,8 mg/l – postoperativ ohnehin erhöht. Bei hoher klinischer Wahrscheinlichkeit direkt CTPA.')]},
+  {k:'q',q:'Normotensiv, aber RV-Dilatation + Troponin ↑. Therapie?',o:[
+   Q('Therapeutische Antikoagulation (z. B. UFH-Bolus 80 IE/kg, dann Perfusor) + Überwachung auf IMC',1,'ESC: intermediär-hohes Risiko → Antikoagulation und Monitoring; Rescue-Reperfusion nur bei hämodynamischer Verschlechterung. UFH ist gut steuerbar, falls Lyse/Katheter nötig wird.'),
+   Q('Systemische Lyse (Alteplase 100 mg über 2 h) sofort',0,'Nicht routinemäßig bei normotensiven Patienten (PEITHO: mehr schwere Blutungen/Schlaganfälle) – und 3 Tage postop. relative Kontraindikation.'),
+   Q('ASS 100 mg reicht',2,'Thrombozytenaggregationshemmer behandeln keine venöse Thromboembolie.'),
+   Q('O₂ und Antikoagulation erst morgen nach Stationsvisite',2,'Unbehandelte LAE mit RV-Belastung kann jederzeit dekompensieren.')]}],
+ teach:{why:'Risikostratifizierung nach ESC: hohes Risiko = Schock/Hypotonie → Reperfusion. Intermediär-hoch = RV-Dysfunktion (Echo/CT) + Troponin ↑ → Antikoagulation + Monitoring. D-Dimere sind nur bei niedriger/intermediärer Vortestwahrscheinlichkeit sinnvoll.',take:'Postoperativ + Luftnot + Tachykardie = LAE bis zum Beweis des Gegenteils. Hohe Vortestwahrscheinlichkeit → direkt CTPA.'}},
+
+{id:'hypo',dx:'Hypoglykämie unter Sulfonylharnstoff',ward:'innere',room:'Zi. 9',acuity:1,dk:1.1,
+ pager:'Pat. kaltschweißig, kaum erweckbar',name:'Herr Otto',age:71,sex:'m',
+ story:'Diabetes Typ 2, Abendessen kaum angerührt (Übelkeit). Die Pflege findet ihn schweißnass, spricht verwaschen, reagiert nur auf Schmerzreiz.',
+ find:['GCS 10','Keine Seitenzeichen','Haut feucht-kalt, Tremor'],
+ meds:['Glibenclamid 3,5 mg 1-0-1 (!)','Insulin glargin 18 IE abends','Metformin 1000 mg 1-0-1'],labs:['eGFR 38 ml/min'],
+ v0:[106,152,82,97,16,36.3],v1:[118,160,88,93,12,36.0],rh:[[0,'sinus']],
+ steps:[
+  {k:'dx',q:'Was machst du zuerst?',o:[
+   D('Kapillärer BZ',1,1,'BZ 32 mg/dl (1,8 mmol/l).'),
+   D('Orientierender Neurostatus',1,1,'Pupillen isokor, keine Seitenzeichen.'),
+   D('cCT nativ',0,25,'Unauffällig – aber der BZ war die ganze Zeit 32.'),
+   D('EEG',0,30,'Nachts nicht verfügbar und hier ohne Indikation.')]},
+  {k:'q',q:'BZ 32 mg/dl, somnolent, i.v.-Zugang liegt. Therapie?',o:[
+   Q('Glukose 40 % 20–40 ml i.v. (8–16 g) über gut laufenden Zugang, dann Glukose-Infusion',1,'Wirkt in Minuten. G40 ist venenreizend – mit Spülung/Infusion.'),
+   Q('Orangensaft trinken lassen',2,'Somnolent = Aspirationsgefahr. Orale Glukose nur beim wachen, schluckfähigen Patienten.'),
+   Q('Glukagon 1 mg i.m.',0,'Alternative ohne i.v.-Zugang. Bei Sulfonylharnstoff-Hypoglykämie (Insulin-Stimulation) unzuverlässig.'),
+   Q('Insulin nach Korrekturschema',2,'Insulin bei Hypoglykämie – potenziell tödlich.')]},
+  {k:'q',q:'Er ist wach, BZ 146. Und jetzt?',o:[
+   Q('Glibenclamid + Abendinsulin pausieren, Glukose-Infusion, BZ stündlich über viele Stunden',1,'Glibenclamid wirkt lange, bei Niereninsuffizienz noch länger → rezidivierende Hypoglykämien bis > 24 h.'),
+   Q('Alles gut, nächste BZ-Kontrolle morgen früh',2,'Rebound-Hypoglykämie in der Nacht ist programmiert.'),
+   Q('Glargin wie geplant geben, er hat ja jetzt Zucker',2,'Langwirksames Insulin + Sulfonylharnstoff + keine Nahrung = nächste Hypoglykämie.')]}],
+ teach:{why:'Jede Bewusstseinsstörung: BZ messen – immer, zuerst. Sulfonylharnstoffe (v. a. Glibenclamid) verursachen protrahierte Hypoglykämien, besonders bei Niereninsuffizienz und im Alter (PRISCUS).',take:'Glukose i.v. bei Bewusstseinsstörung, danach stationäre BZ-Überwachung – bei Sulfonylharnstoffen viele Stunden.'}},
+
+{id:'anaph',dx:'Anaphylaxie Grad III (Cefuroxim)',ward:'zna',room:'Box 4',acuity:1,dk:1.5,
+ pager:'Reaktion auf Antibiose! Quaddeln, Luftnot',name:'Frau Lange',age:45,sex:'w',
+ story:'Aufnahme wegen Erysipel. Cefuroxim-Kurzinfusion vor 4 Minuten gestartet. Jetzt Juckreiz, Quaddeln am ganzen Körper, heisere Stimme, inspiratorischer Stridor.',
+ find:['Generalisierte Urtikaria','Inspiratorischer Stridor, Heiserkeit','Lippen-/Zungenschwellung','Blass, kaltschweißig'],
+ meds:['Cefuroxim 1,5 g i.v. (läuft!)','Keine bekannten Allergien'],labs:[],
+ v0:[128,78,40,90,28,36.9],v1:[150,52,28,78,34,36.8],rh:[[0,'sinus']],
+ steps:[
+  {k:'q',q:'Was machst du ZUERST?',o:[
+   Q('Infusion stoppen + Adrenalin 0,5 mg i.m. (anterolateraler Oberschenkel)',1,'Adrenalin i.m. ist die Erstlinientherapie, nach 5 min wiederholbar. Allergen stoppen.'),
+   Q('Dimetinden 4 mg + Prednisolon 250 mg i.v.',0,'Adjuvant. Wirken zu langsam, verhindern weder Larynxödem noch Schock.'),
+   Q('Adrenalin 1 mg i.v. als Bolus',2,'Das ist die Reanimationsdosis. Beim Patienten mit Kreislauf: Arrhythmien, Myokardischämie. i.v. nur titriert (z. B. 50-µg-Boli) durch Erfahrene am Monitor.'),
+   Q('Salbutamol-Vernebelung',0,'Nur ergänzend bei Bronchospasmus – behandelt weder Ödem noch Schock.')]},
+  {k:'q',q:'5 min später: RR 84/50, Stridor rückläufig. Zusätzlich?',o:[
+   Q('Rasch 500–1000 ml Kristalloid, O₂, Beine hoch; ggf. 2. Adrenalin-Dosis i.m.; dann Antihistaminikum/Steroid',1,'Anaphylaxie ist auch ein distributiver Schock – großzügig Volumen. Adjuvantien erst nach Adrenalin.'),
+   Q('Wenn es besser wird: in 1 h entlassen',2,'Biphasische Reaktionen möglich → Überwachung (je nach Schwere 6–24 h).'),
+   Q('Cefuroxim langsamer weiterlaufen lassen',2,'Das Allergen bleibt gestoppt – Allergie dokumentieren, Allergiepass.')]}],
+ teach:{why:'Anaphylaxie: akute systemische Reaktion mit Haut + Atemweg/Kreislauf. Adrenalin i.m. 0,5 mg (Erwachsene) wirkt α (Vasokonstriktion, Ödemreduktion) und β (Bronchodilatation, Inotropie).',take:'Adrenalin i.m. zuerst – Antihistaminika und Kortison sind nur Beiwerk. 1 mg i.v. gehört zur Reanimation.'}},
+
+{id:'tep',dx:'Hüft-TEP-Luxation (dorsal)',ward:'uch',room:'Zi. 24',acuity:2,dk:0.6,
+ pager:'Hüft-TEP „hat geknackt“, Bein komisch',name:'Herr Graf',age:74,sex:'m',
+ story:'Tag 2 nach Hüft-TEP links (dorsaler Zugang). Hat sich im Schlaf auf die gesunde Seite gedreht, Knie nach innen gefallen – dann ein Knacken und massive Schmerzen.',
+ find:['Linkes Bein verkürzt, innenrotiert, adduziert','Federnde Fixation','Fußhebung li. fraglich schwächer'],
+ meds:['Rivaroxaban 10 mg (Thromboseprophylaxe)','Metamizol 1 g 1-1-1-1','Oxycodon/Naloxon 10/5 mg 1-0-1'],labs:['Hb 10,4 g/dl'],
+ v0:[104,158,90,97,20,37.1],v1:[118,168,94,96,22,37.2],rh:[[0,'sinus']],
+ steps:[
+  {k:'dx',q:'Was brauchst du?',o:[
+   D('Röntgen Beckenübersicht + Hüfte axial',1,12,'Luxation des Prothesenkopfes nach dorsokranial, keine periprothetische Fraktur.'),
+   D('pDMS: N. ischiadicus / N. peroneus prüfen und dokumentieren',1,2,'Fußhebung Kraftgrad 4/5, Sensibilität Fußrücken leicht gemindert – vor Reposition dokumentiert.'),
+   D('CT Becken',0,20,'Für die Diagnose nicht nötig; ggf. später bei V. a. Pfannenfehlstellung.'),
+   D('CK und Myoglobin',0,8,'Leicht erhöht – postoperativ ohne Aussagekraft.')]},
+  {k:'q',q:'Wie weiter?',o:[
+   Q('Analgesie, Operateur/OA informieren, zeitnahe geschlossene Reposition in Narkose/Analgosedierung, Röntgenkontrolle danach',1,'Zeitnah reponieren schont Weichteile und N. ischiadicus. Danach Ursachenanalyse (Komponentenstellung, Weichteile).'),
+   Q('Sofort selbst am Bett reponieren – ohne Sedierung, ohne Röntgen',2,'Muskeltonus verhindert die Reposition, Frakturgefahr, Nervenschaden – und eine periprothetische Fraktur wäre nicht ausgeschlossen.'),
+   Q('Bis zur Frühbesprechung in Extension lagern',0,'Längere Luxation: Druck auf den N. ischiadicus, Weichteilretraktion, schwierigere Reposition.')]}],
+ teach:{why:'Dorsale Luxation (häufigste nach dorsalem Zugang): Bein verkürzt, innenrotiert, adduziert. Ventrale Luxation: Außenrotation. Risikobewegungen nach dorsalem Zugang: Flexion > 90°, Adduktion, Innenrotation.',take:'Vor jeder Reposition: Röntgen (Fraktur?) + Neurostatus dokumentieren. Dann zeitnah in Narkose reponieren.'}},
+
+{id:'fat',dx:'Fettembolie-Syndrom',ward:'uch',room:'Zi. 15',acuity:1,dk:0.9,
+ pager:'Junger Pat. mit Femurfraktur: Luftnot + verwirrt',name:'Herr Neumann',age:22,sex:'m',
+ story:'Femurschaftfraktur links seit 34 h (Fahrradsturz), Extension, Marknagel morgen. Seit einer Stunde kurzatmig, redet wirres Zeug. Vorhin noch Playstation gespielt.',
+ find:['Petechien axillär und subkonjunktival','Unruhig, GCS 13','Tachypnoe, feinblasige RG bds.'],
+ meds:['Enoxaparin 40 mg s.c.','Ibuprofen 600 mg','Metamizol 1 g'],labs:['Thrombozyten 96 /nl (Vortag 210)','Hb 10,2 g/dl'],
+ v0:[124,118,70,86,30,38.4],v1:[146,86,50,74,38,38.8],rh:[[0,'sinus']],
+ steps:[
+  {k:'dx',q:'Diagnostik?',o:[
+   D('BGA',1,3,'pO₂ 54 mmHg unter Raumluft.'),
+   D('Haut und Konjunktiven inspizieren',1,1,'Petechien axillär + subkonjunktival.'),
+   D('Röntgen-Thorax',1,10,'Bilaterale fleckige Verschattungen („Schneegestöber“).'),
+   D('CT-Pulmonalisangiographie (LAE ausschließen)',1,18,'Keine zentrale LAE; diffuse Milchglasverdichtungen.'),
+   D('Lumbalpunktion',0,20,'Keine Indikation – und bei Thrombozytopenie gefährlich.')]},
+  {k:'q',q:'Arbeitsdiagnose?',o:[
+   Q('Fettembolie-Syndrom',1,'Gurd-Trias: respiratorische Insuffizienz, neurologische Symptome, Petechien – 24–72 h nach Frakturen langer Röhrenknochen.'),
+   Q('Beginnender Alkoholentzug',0,'Keine Anamnese, und Petechien + Hypoxämie passen nicht.'),
+   Q('Nosokomiale Pneumonie',0,'Zu akut, und erklärt weder Petechien noch Thrombozytenabfall.'),
+   Q('Anaphylaxie',0,'Kein Auslöser, keine Urtikaria, kein Stridor.')]},
+  {k:'q',q:'Therapie?',o:[
+   Q('Supportiv: O₂ → NIV/Intubation nach Bedarf, ITS, frühe operative Stabilisierung der Fraktur',1,'Es gibt keine spezifische Therapie – Prophylaxe ist die frühe Osteosynthese.'),
+   Q('Methylprednisolon-Hochdosis als Standard',0,'Nicht als Routinetherapie empfohlen; Evidenz allenfalls für Prophylaxe und schwach.'),
+   Q('Systemische Lyse',2,'Keine Thrombembolie – nur Blutungsrisiko.'),
+   Q('Abwarten, Osteosynthese in einer Woche',2,'Verzögerte Stabilisierung erhöht das Risiko weiterer Einschwemmung.')]}],
+ teach:{why:'Fettembolie: Einschwemmung von Markfett nach Frakturen langer Röhrenknochen/Becken oder Marknagelung, meist 24–72 h nach Trauma. Klinik: Hypoxämie, Neurologie, Petechien (oft spät), Thrombozytopenie, Fieber.',take:'Frühe Frakturstabilisierung ist die beste Prophylaxe. Therapie supportiv.'}},
+
+{id:'doak',dx:'Obere GI-Blutung unter Apixaban',ward:'zna',room:'Box 2',acuity:1,dk:1.1,
+ pager:'Teerstuhl, Hb 6,6, Pat. blass, RR fällt',name:'Herr Hofmann',age:78,sex:'m',
+ story:'Vorhofflimmern, Apixaban 5 mg 1-0-1, letzte Einnahme 19 Uhr. Seit gestern schwarzer Stuhl, heute zweimal kollabiert. Nimmt „wegen Rücken“ seit einer Woche Diclofenac.',
+ find:['Blass, kaltschweißig','Rektal: Teerstuhl','Epigastrium druckdolent'],
+ meds:['Apixaban 5 mg 1-0-1 (letzte Einnahme 19:00)','Diclofenac 75 mg 1-0-1','Ramipril 5 mg'],labs:['Hb 6,6 g/dl (Vorwert 12,1)','Krea 1,3 mg/dl'],
+ v0:[118,92,58,96,22,36.5],v1:[148,62,36,93,28,36.1],rh:[[0,'sinus']],
+ steps:[
+  {k:'dx',q:'Was ordnest du an?',o:[
+   D('Zwei großlumige Zugänge + Kreuzblut für 4 EK',1,4,'2× 16G, 4 EK gekreuzt.'),
+   D('Gerinnung + Apixaban-kalibrierte Anti-Xa-Aktivität',1,8,'Anti-Xa (Apixaban) 190 ng/ml – relevanter Effekt.'),
+   D('INR als Maß der Apixaban-Wirkung',0,4,'INR 1,3 – bei Xa-Inhibitoren nicht aussagekräftig.'),
+   D('CT Abdomen vor jeder Stabilisierung',0,25,'Instabiler Patient im CT – schlechte Idee. Endoskopie ist Diagnostik und Therapie.')]},
+  {k:'q',q:'Lebensbedrohliche Blutung unter Apixaban. Antagonisierung?',o:[
+   Q('Andexanet alfa bzw. PPSB (4-Faktoren-Konzentrat, 25–50 IE/kg) nach Klinik-SOP',1,'Andexanet alfa ist für lebensbedrohliche Blutungen unter Apixaban/Rivaroxaban zugelassen; PPSB ist die verbreitete Alternative.'),
+   Q('Vitamin K 10 mg i.v.',0,'Wirkt nur bei Vitamin-K-Antagonisten (Phenprocoumon).'),
+   Q('Idarucizumab 5 g',0,'Spezifisches Antidot für Dabigatran – bei Apixaban wirkungslos.'),
+   Q('Protamin',0,'Antagonisiert Heparin, nicht die Xa-Inhibitoren.')]},
+  {k:'q',q:'Was gehört noch dazu?',o:[
+   Q('Restriktive Transfusion (Ziel Hb 7–9 g/dl), PPI i.v. (z. B. Pantoprazol 80 mg), Notfall-Gastroskopie nach Stabilisierung, Diclofenac absetzen',1,'Restriktive Transfusion senkt bei oberer GI-Blutung Nachblutung und Letalität. Endoskopie idealerweise < 24 h, bei Instabilität früher.'),
+   Q('Liberal transfundieren, Ziel Hb > 12 g/dl',0,'Mehr Nachblutungen und höhere Letalität unter liberaler Strategie.'),
+   Q('Tranexamsäure hochdosiert',0,'Bei GI-Blutung kein Nutzen, mehr venöse Thromboembolien (HALT-IT).')]}],
+ teach:{why:'DOAK + NSAR ist eine klassische Blutungskombination. Antidote: Dabigatran → Idarucizumab; Apixaban/Rivaroxaban → Andexanet alfa (oder PPSB); VKA → Vitamin K + PPSB; Heparin → Protamin.',take:'Antidot passend zum Antikoagulans. Plus: Volumen, restriktive Transfusion, PPI, Endoskopie.'}},
+
+{id:'opioid',dx:'Opioid-Intoxikation (Morphin-Kumulation bei Niereninsuffizienz)',ward:'geri',room:'Zi. 5',acuity:1,dk:1.2,
+ pager:'Pat. atmet kaum, Pupillen winzig',name:'Frau Roth',age:83,sex:'w',
+ story:'LWK-1-Fraktur nach Sturz, starke Schmerzen. Seit gestern Morphin 10 mg s.c. alle 4 h. Heute kaum getrunken. Jetzt nur auf Schmerzreiz erweckbar.',
+ find:['Miosis bds. (stecknadelkopfgroß)','AF 6/min, flach','GCS 8'],
+ meds:['Morphin 10 mg s.c. 4-stündlich','Pregabalin 75 mg 1-0-1','Lorazepam 0,5 mg z. N.'],labs:['eGFR 21 ml/min'],
+ v0:[58,104,60,84,6,36.2],v1:[38,72,40,68,3,35.9],rh:[[0,'sinus']],
+ steps:[
+  {k:'q',q:'Erste Maßnahme?',o:[
+   Q('Atemwege frei, O₂, ggf. Beutel-Masken-Beatmung + Naloxon titriert (z. B. 0,04–0,1 mg i.v. alle 2–3 min)',1,'Ziel ist ausreichende Atmung, nicht ein hellwacher Patient mit Schmerzkrise.'),
+   Q('Naloxon 2 mg i.v. als Bolus',0,'Kann akuten Entzug, Schmerzkrise, Lungenödem und Arrhythmien auslösen – bei Opioid-Dauertherapie titrieren.'),
+   Q('Flumazenil 0,5 mg',0,'Benzodiazepin-Antagonist – hier nicht das Hauptproblem, und kann Krampfanfälle provozieren.'),
+   Q('Abwarten – enge Pupillen sind im Alter normal',2,'AF 6 + SpO₂ 84 % + Miosis = Opioid-Toxidrom. Warten = Atemstillstand.')]},
+  {k:'q',q:'AF jetzt 14/min, erweckbar. Wie weiter?',o:[
+   Q('IMC-Monitoring, ggf. Naloxon-Perfusor (HWZ Naloxon ~60–90 min < Morphin-Metabolit M6G), Morphin stoppen, Umstellung z. B. niedrig dosiertes Hydromorphon',1,'Morphin-6-Glucuronid kumuliert bei Niereninsuffizienz. Renarcotisierung nach Naloxon-Abklingen ist klassisch.'),
+   Q('Morphin wie angeordnet weitergeben',2,'Die Kumulation geht weiter.'),
+   Q('Zurück ins Zimmer, Kontrolle bei der Morgenrunde',2,'Naloxon wirkt kürzer als das Opioid → Renarcotisierung unbeobachtet.')]}],
+ teach:{why:'Opioid-Toxidrom: Bewusstseinsminderung, Bradypnoe, Miosis. Morphin wird zu M6G (aktiv, renal eliminiert) – bei Niereninsuffizienz Kumulation. Kombination mit Gabapentinoiden und Benzos erhöht das Risiko.',take:'Naloxon titrieren, Atmung sichern, Überwachung länger als die Naloxon-Wirkdauer.'}},
+
+{id:'etoh',dx:'Schweres Alkoholentzugssyndrom',ward:'uch',room:'Zi. 27',acuity:2,dk:0.9,
+ pager:'Pat. zittert, schwitzt, sieht Käfer an der Wand',name:'Herr Fischer',age:52,sex:'m',
+ story:'Tag 2 nach ORIF einer Sprunggelenksfraktur (Weber B). Bei Aufnahme „gelegentlich ein Bier“. Jetzt: grobschlägiger Tremor, nassgeschwitzt, sieht Käfer an der Wand, will „zur Arbeit“.',
+ find:['Grobschlägiger Tremor','Optische Halluzinationen','Desorientiert zu Zeit und Ort','Schwitzen, Unruhe'],
+ meds:['Enoxaparin 40 mg','Metamizol 1 g','Pantoprazol 40 mg'],labs:['GGT 312 U/l','MCV 104 fl','Na⁺ 134 mmol/l','K⁺ 3,4 mmol/l'],
+ v0:[118,168,98,97,22,37.8],v1:[138,188,108,95,26,38.5],rh:[[0,'sinus']],
+ steps:[
+  {k:'q',q:'CIWA-Ar = 24 Punkte. Einordnung?',o:[
+   Q('Schweres Entzugssyndrom (≥ 20): medikamentöse Therapie, engmaschige Überwachung, Delirium-tremens-Gefahr',1,'CIWA-Ar < 10 mild, 10–19 mittel, ≥ 20 schwer.'),
+   Q('Mild – CIWA < 30 braucht keine Medikation',0,'Ab ca. 10 Punkten wird symptomorientiert behandelt.'),
+   Q('CIWA gilt nur für Benzodiazepin-Entzug',0,'CIWA-Ar = Clinical Institute Withdrawal Assessment for Alcohol.')]},
+  {k:'q',q:'Medikation?',o:[
+   Q('Benzodiazepin symptomgesteuert (z. B. Lorazepam 1–2 mg oder Diazepam 10–20 mg), CIWA-Reassessment stündlich; alternativ Clomethiazol p.o.',1,'Benzodiazepine verhindern Krampfanfälle und Delirium tremens. Clomethiazol ist in Deutschland etablierte Alternative (Atemdepression beachten).'),
+   Q('Haloperidol 5 mg als Monotherapie',0,'Senkt die Krampfschwelle und behandelt den Entzug nicht – nur additiv gegen Halluzinationen.'),
+   Q('Nur mechanische Fixierung',2,'Behandelt nichts, erhöht Rhabdomyolyse, Aspiration und Verletzungen.')]},
+  {k:'q',q:'Er soll zusätzlich eine Glukose-Infusion bekommen. Was gehört davor?',o:[
+   Q('Thiamin 100–300 mg i.v. VOR Glukose',1,'Glukoseverwertung verbraucht Thiamin → Wernicke-Enzephalopathie (Ophthalmoplegie, Ataxie, Verwirrtheit).'),
+   Q('Vitamin B12 i.m.',0,'Nicht die akute Gefahr – Thiamin (B1) ist gemeint.'),
+   Q('Nichts – Reihenfolge egal',2,'Glukose ohne Thiamin kann eine Wernicke-Enzephalopathie auslösen.')]}],
+ teach:{why:'Alkoholentzug beginnt 6–24 h nach letztem Konsum, Krampfanfälle meist 12–48 h, Delirium tremens 48–72 h – typisch am 2.–3. stationären Tag nach Unfall/OP.',take:'Benzodiazepine symptomgesteuert nach CIWA-Ar. Thiamin vor Glukose.'}},
+
+{id:'stemi',dx:'Inferiorer STEMI mit RV-Beteiligung',ward:'zna',room:'Schockraum',acuity:1,dk:1.2,
+ pager:'Brustschmerz seit 40 min, kaltschweißig – EKG?!',name:'Herr Arslan',age:58,sex:'m',
+ story:'Raucher, Hypertonie. Seit 40 min retrosternaler Druck mit Ausstrahlung in den linken Arm, Übelkeit, erbricht einmal. „Wie ein Elefant auf der Brust.“',
+ find:['Kaltschweißig, blass','Halsvenen gestaut','Lunge frei'],
+ meds:['Amlodipin 5 mg','Keine Antikoagulation'],labs:['hs-TnT folgt (Labor ~40 min)'],
+ v0:[64,102,64,95,20,36.8],v1:[40,70,40,90,26,36.6],rh:[[45,'stemi'],[18,'vt'],[0,'vf']],fix:'sinus',
+ steps:[
+  {k:'dx',q:'Diagnostik?',o:[
+   D('12-Kanal-EKG + rechtspräkordiale Ableitungen (V4R)',1,3,'ST-Hebungen in II, III, aVF und V4R, ST-Senkung I/aVL → inferiorer STEMI mit RV-Beteiligung.'),
+   D('Bedside-Echo',1,5,'Inferiore Hypokinesie, RV dilatiert, kein Perikarderguss.'),
+   D('Troponin abwarten',0,20,'Beim STEMI ist das EKG die Diagnose – Warten kostet Myokard.'),
+   D('Röntgen-Thorax',0,10,'Keine Stauung. Aber 10 Minuten weniger Myokard.')]},
+  {k:'q',q:'Therapie?',o:[
+   Q('Herzkatheterlabor aktivieren (primäre PCI), ASS 150–300 mg (z. B. 250 mg i.v.), UFH 70–100 IE/kg i.v.',1,'Primäre PCI innerhalb 120 min (Door-to-Wire so schnell wie möglich). Loading nach ESC.'),
+   Q('Nitroglycerin 2 Hübe s.l. gegen den Schmerz',2,'RV-Infarkt + RR 102 sys: Nitrate (Vorlastsenkung) können schwere Hypotonie auslösen – kontraindiziert.'),
+   Q('Lyse, obwohl das Katheterlabor in 30 min bereit ist',0,'Primäre PCI ist überlegen, wenn sie innerhalb von 120 min möglich ist.'),
+   Q('Troponin-Kontrolle in 3 h, dann entscheiden',2,'Das 0/3-h-Schema ist für den NSTE-ACS, nicht für den STEMI.')]}],
+ teach:{why:'Inferiorer STEMI (RCA) – bei ST-Hebung in V4R RV-Beteiligung: vorlastabhängig, daher keine Nitrate/Diuretika, eher Volumen bei Hypotonie. Bradykardien/AV-Blöcke sind häufig.',take:'EKG innerhalb 10 min, bei inferiorem STEMI immer V4R. STEMI = Katheter, nicht Troponin abwarten.'}},
+
+{id:'vf',dx:'Kammerflimmern – beobachteter Kreislaufstillstand',ward:'its',room:'ITS Bett 3',acuity:1,dk:1.8,
+ pager:'REA!!! ITS Bett 3 – Monitor VF!',name:'Herr Engel',age:67,sex:'m',
+ story:'Aufgenommen mit NSTEMI, Koronarangiographie morgen geplant. Der Monitor alarmiert, er ist bewusstlos, atmet nicht. Defi steht am Bett, Pflege hat die Pads schon aufgeklebt.',
+ find:['Bewusstlos, keine normale Atmung','Kein Puls tastbar','Monitor: Kammerflimmern'],
+ meds:['ASS 100 mg','Ticagrelor 90 mg 1-0-1','Fondaparinux 2,5 mg','Bisoprolol 2,5 mg'],labs:['K⁺ 3,2 mmol/l (Abend)'],
+ v0:[0,0,0,0,0,36.6],v1:[0,0,0,0,0,36.5],rh:[[0,'vf']],fix:'sinus',vfix:[92,112,68,96,16,36.6],
+ steps:[
+  {k:'q',q:'Beobachtetes VF, Monitor + Defi am Bett. Sofort?',o:[
+   Q('Defibrillation (biphasisch 150–200 J); bei beobachtetem VF am Monitor bis zu 3 Schocks in Folge, dann sofort CPR 30:2',1,'ERC: Bei beobachtetem, monitorüberwachtem Kammerflimmern mit Defi in Reichweite – bis zu drei direkt aufeinanderfolgende Schocks.'),
+   Q('Erst 2 Minuten CPR, dann Rhythmusanalyse',0,'Bei beobachtetem VF mit sofort verfügbarem Defi: sofort schocken.'),
+   Q('Adrenalin 1 mg i.v. sofort',0,'Bei schockbarem Rhythmus Adrenalin erst nach dem 3. Schock.'),
+   Q('Amiodaron 300 mg vor dem ersten Schock',0,'Amiodaron nach dem 3. Schock.')]},
+  {k:'q',q:'Nach 3 Schocks weiter VF, CPR läuft. Medikamente?',o:[
+   Q('Adrenalin 1 mg i.v. + Amiodaron 300 mg i.v.; Adrenalin dann alle 3–5 min, Amiodaron 150 mg nach dem 5. Schock',1,'ALS-Algorithmus ERC 2021.'),
+   Q('Adrenalin 0,5 mg i.m.',0,'Das ist die Anaphylaxie-Dosis – im Kreislaufstillstand wirkungslos.'),
+   Q('Atropin 3 mg',0,'Seit 2010 nicht mehr im ALS-Algorithmus.'),
+   Q('Natriumbicarbonat routinemäßig',0,'Nur bei spezifischen Indikationen (z. B. Hyperkaliämie, TCA-Intoxikation).')]},
+  {k:'q',q:'Reversible Ursachen – woran denkst du?',o:[
+   Q('4 H + HITS: Hypoxie, Hypovolämie, Hypo-/Hyperkaliämie/metabolisch, Hypothermie; Herzbeuteltamponade, Intoxikation, Thrombose (koronar/pulmonal), Spannungspneumothorax',1,'Hier naheliegend: koronare Thrombose (NSTEMI) und Hypokaliämie (K⁺ 3,2) → nach ROSC Herzkatheter, Kalium ausgleichen.'),
+   Q('4 H: Hypertonie, Hyperthermie, Hyperglykämie, Hypernatriämie',0,'Falsche 4 H.'),
+   Q('Reversible Ursachen sucht man erst nach ROSC',0,'Die Suche läuft parallel zur CPR – manche Ursachen sind nur so behebbar.')]}],
+ teach:{why:'Überleben beim VF hängt an Minuten: jede Minute ohne Defibrillation senkt die Überlebenschance um ~10 %. Hochwertige Thoraxkompressionen (5–6 cm, 100–120/min), minimale Pausen.',take:'Schockbar: Schock – CPR 2 min – Analyse. Adrenalin + Amiodaron nach dem 3. Schock. 4 H + HITS parallel denken.'}},
+
+{id:'dka',dx:'Diabetische Ketoazidose',ward:'zna',room:'Box 6',acuity:2,dk:0.9,
+ pager:'19 J., Typ 1, erbricht, atmet tief und schnell',name:'Lea Krüger',age:19,sex:'w',
+ story:'Typ-1-Diabetes, seit zwei Tagen Magen-Darm-Infekt. Hat „weil sie nichts gegessen hat“ das Insulin weggelassen. Tiefe, schnelle Atmung, Obstgeruch im Zimmer.',
+ find:['Kussmaul-Atmung','Acetongeruch','Trockene Schleimhäute','Diffuser Bauchschmerz'],
+ meds:['Insulin aspart nach Schema','Insulin degludec 20 IE (seit 2 Tagen nicht gespritzt)'],labs:['BZ 486 mg/dl','pH 7,08, HCO₃⁻ 7 mmol/l','K⁺ 4,1 mmol/l','β-Hydroxybutyrat 6,2 mmol/l'],
+ v0:[124,102,64,98,30,37.1],v1:[146,78,44,96,36,37.0],rh:[[0,'sinus']],
+ steps:[
+  {k:'q',q:'Was machst du als Erstes?',o:[
+   Q('Volumen: 1 l isotone kristalloide Lösung in der ersten Stunde',1,'Volumendefizit oft 5–7 l. Flüssigkeit senkt auch den BZ und verbessert die Perfusion.'),
+   Q('Insulin 20 IE i.v. als Bolus sofort',2,'Ohne Volumen und Kaliumkontrolle: Hypokaliämie, Kreislaufkollaps. Kein hoher Bolus.'),
+   Q('Natriumbicarbonat zur pH-Korrektur',0,'Allenfalls bei pH < 6,9 erwägen – sonst kein Nutzen, dafür Hypokaliämie und paradoxe Liquor-Azidose.')]},
+  {k:'q',q:'Insulin-Perfusor – wie und worauf achten?',o:[
+   Q('Altinsulin 0,1 IE/kg/h i.v.; K⁺ ersetzen sobald < 5,0–5,5, Insulin pausieren bei K⁺ < 3,3; BZ-Senkung ~50–70 mg/dl/h; Glukose zugeben ab BZ < 250',1,'Insulin verschiebt Kalium nach intrazellulär – das Gesamtkörperkalium ist massiv erniedrigt, auch wenn K⁺ „normal“ wirkt.'),
+   Q('1 IE/kg/h – je schneller normal, desto besser',2,'Zu rasche Senkung von BZ/Osmolarität → Hirnödem-Risiko, v. a. bei jungen Patienten.'),
+   Q('Kalium nicht nötig, liegt ja bei 4,1',2,'Unter Insulin fällt K⁺ rasch ab → Rhythmusstörungen.')]}],
+ teach:{why:'DKA: Hyperglykämie + Ketose + metabolische Azidose durch absoluten Insulinmangel. Auslöser: Infekt, Insulin weggelassen. Merke: Basalinsulin nie komplett pausieren, auch wenn man nicht isst.',take:'Volumen → Insulin 0,1 IE/kg/h → Kalium engmaschig. Ketoazidose ist durch, wenn pH und Ketone normal sind – nicht der BZ.'}},
+
+{id:'htn',dx:'Hypertensive Entgleisung ohne Organschaden',ward:'geri',room:'Zi. 11',acuity:3,
+ pager:'RR 205/110!! Pat. beschwerdefrei, bitte Anordnung',name:'Herr Thomas',age:76,sex:'m',
+ story:'Aufgenommen wegen Exsikkose. Abendmedikation hat er ausgespuckt („zu groß“). Er schaut Fußball und versteht die Aufregung nicht.',
+ find:['Beschwerdefrei, kein Kopfschmerz, keine Sehstörung','Kein Brustschmerz, keine Dyspnoe','Neurologisch unauffällig'],
+ meds:['Amlodipin 10 mg 0-0-1 (ausgespuckt)','Candesartan 16 mg','HCT 12,5 mg'],labs:['Krea 1,1 mg/dl'],
+ v0:[82,205,110,96,16,36.7],v1:[90,215,116,96,18,36.8],rh:[[0,'sinus']],
+ steps:[
+  {k:'dx',q:'Was klärst du?',o:[
+   D('Nachmessen nach 5 min Ruhe, beide Arme, richtige Manschette',1,2,'198/106 re., 196/108 li.'),
+   D('Gezielt nach Organschäden fragen/untersuchen',1,2,'Keine Symptome, Neurostatus unauffällig, Lunge frei.'),
+   D('12-Kanal-EKG',1,3,'Linkshypertrophie-Zeichen, keine Ischämie.'),
+   D('cCT nativ',0,25,'Ohne neurologische Symptome keine Indikation.')]},
+  {k:'q',q:'Hypertensive Entgleisung ohne akuten Organschaden. Vorgehen?',o:[
+   Q('Dauermedikation geben / oral einstellen, Ruhe, langsame Senkung über 24–48 h, Kontrolle',1,'Ohne akuten Organschaden kein Notfall: orale Therapie, keine abrupte Senkung.'),
+   Q('Urapidil 25 mg i.v., Ziel 120/80 in 30 min',2,'Abrupte Senkung bei chronischer Hypertonie → zerebrale/koronare Minderperfusion. Beim echten Notfall max. ~25 % in der ersten Stunde.'),
+   Q('Nifedipin 10 mg (kurzwirksam) zerbeißen lassen',2,'Unkontrollierter RR-Abfall, Reflextachykardie – obsolet.')]}],
+ teach:{why:'Hypertensiver Notfall = hoher RR + akuter Organschaden (Enzephalopathie, ACS, Lungenödem, Dissektion, Eklampsie …) → i.v.-Therapie. Ohne Organschaden: Entgleisung → oral, langsam.',take:'Den Patienten behandeln, nicht die Zahl. Nicht zu schnell senken.'}},
+
+{id:'stroke',dx:'Akuter ischämischer Schlaganfall (M1-Verschluss links)',ward:'geri',room:'Zi. 2',acuity:1,dk:1,
+ pager:'Pat. spricht plötzlich nicht mehr, re. Arm schlaff!',name:'Frau Brandt',age:72,sex:'w',
+ story:'Liegt wegen Pneumonie. Die Pflege war vor 5 min im Zimmer: alles normal. Jetzt: kann nicht mehr sprechen, rechter Arm fällt herunter, Mundwinkel hängt.',
+ find:['Globale Aphasie','Hemiparese rechts (brachiofazial betont)','Blickwendung nach links','Last seen well: vor 5 min'],
+ meds:['Ampicillin/Sulbactam 3 g 1-1-1','Keine Antikoagulation','Metformin 500 mg'],labs:['Thrombozyten 245 /nl'],
+ v0:[88,188,102,96,16,36.9],v1:[96,196,106,94,18,37.0],rh:[[0,'sinus']],
+ steps:[
+  {k:'dx',q:'Time is brain. Was jetzt?',o:[
+   D('BZ',1,1,'128 mg/dl – Hypoglykämie ausgeschlossen.'),
+   D('cCT + CT-Angiographie sofort',1,15,'Keine Blutung, ASPECTS 9; Verschluss M1-Segment links.'),
+   D('Stroke-Team/Neurologie: NIHSS',1,3,'NIHSS 16.'),
+   D('Gerinnungswerte abwarten',0,15,'Ohne Antikoagulanzien-Anamnese muss für die Lyse nicht auf die Gerinnung gewartet werden.'),
+   D('MRT Schädel statt CT',0,40,'Im 4,5-h-Fenster mit klarem Zeitpunkt reicht das CT – MRT verzögert.')]},
+  {k:'q',q:'Keine Blutung, M1-Verschluss, Symptombeginn vor 25 min. Therapie?',o:[
+   Q('i.v.-Thrombolyse (Alteplase 0,9 mg/kg, 10 % Bolus, Rest über 60 min – oder Tenecteplase 0,25 mg/kg) + mechanische Thrombektomie',1,'Bridging-Lyse + Thrombektomie bei großem Gefäßverschluss. RR vor Lyse < 185/110 mmHg.'),
+   Q('ASS 300 mg und morgen auf die Stroke Unit',2,'Bei Lysekandidaten ASS erst 24 h nach Lyse; und die Zeit läuft.'),
+   Q('RR zuerst auf 120/80 senken',0,'Vor Lyse Ziel < 185/110 (hier erfüllt). Starke Senkung verschlechtert die Penumbra.'),
+   Q('Heparin therapeutisch',0,'Keine Indikation in der Akuttherapie des ischämischen Schlaganfalls.')]}],
+ teach:{why:'Pro Minute Verschluss gehen ~1,9 Mio. Neurone verloren. Lyse bis 4,5 h nach Symptombeginn (bzw. „last seen well“), Thrombektomie bei großen Gefäßverschlüssen bis 6 h (mit Bildgebungsselektion bis 24 h).',take:'BZ, CT/CTA, Lyse + Thrombektomie. Innerklinisch gilt: Schlaganfall-Alarm wie außerhalb.'}},
+
+{id:'edema',dx:'Akute Linksherzdekompensation / Lungenödem',ward:'innere',room:'Zi. 14',acuity:1,dk:1,
+ pager:'Pat. sitzt im Bett und ringt nach Luft, brodelt',name:'Frau Peters',age:81,sex:'w',
+ story:'HFrEF (EF 30 %). Wegen Exsikkose heute 2 l NaCl bekommen. Jetzt: sitzt an der Bettkante, rosa-schaumiges Sputum, man hört das Brodeln von der Tür.',
+ find:['Orthopnoe, Zyanose','Feuchte RG über allen Lungenfeldern','Halsvenenstauung','Beinödeme +'],
+ meds:['Bisoprolol 5 mg','Sacubitril/Valsartan 49/51 mg 1-0-1','Torasemid 10 mg (pausiert wegen Exsikkose)'],labs:['NT-proBNP (Vorwert) 4.200 pg/ml'],
+ v0:[112,186,98,84,32,36.8],v1:[134,200,108,72,38,36.8],rh:[[0,'sinus']],
+ steps:[
+  {k:'q',q:'Sofortmaßnahmen?',o:[
+   Q('Oberkörper hoch, Beine tief, O₂ → frühzeitig NIV/CPAP',1,'NIV senkt Vor- und Nachlast, verbessert die Oxygenierung und verringert die Intubationsrate.'),
+   Q('Flach lagern, Beine hoch',2,'Erhöht den venösen Rückstrom – verschlimmert das Lungenödem.'),
+   Q('Sofort intubieren, ohne NIV-Versuch',0,'Intubation bei NIV-Versagen, Bewusstseinsstörung oder Erschöpfung – nicht primär.')]},
+  {k:'q',q:'Medikamentös bei RR 186/98?',o:[
+   Q('Nitroglycerin s.l./i.v. (RR sys > 110 mmHg) + Furosemid 40 mg i.v. (mind. orale Tagesdosis-Äquivalent)',1,'Nitrate senken Vor-/Nachlast; Schleifendiuretikum bei Volumenüberladung (ESC 2021).'),
+   Q('Weitere 500 ml NaCl zur Nierenprotektion',2,'Volumen ist das Problem, nicht die Lösung.'),
+   Q('Metoprolol 5 mg i.v. gegen die Tachykardie',0,'Akute Betablockade bei dekompensierter HF kann in den kardiogenen Schock führen. Die Tachykardie ist kompensatorisch.'),
+   Q('Morphin 10 mg i.v. routinemäßig',0,'Nicht mehr routinemäßig empfohlen (Atemdepression, Übelkeit, ungünstige Registerdaten).')]}],
+ teach:{why:'Hypertensives Lungenödem („Flash pulmonary edema“): Nachlast-Krise + Volumen. Klassischer iatrogener Auslöser: großzügige Infusion bei bekannter Herzinsuffizienz.',take:'Sitzen, NIV, Nitro, Diuretikum. Infusionen bei HFrEF immer bilanzieren.'}},
+
+{id:'ptx',dx:'Spannungspneumothorax nach ZVK-Anlage',ward:'its',room:'ITS Bett 6',acuity:1,dk:1.5,
+ pager:'ITS: nach ZVK massiv dyspnoisch, RR 78!',name:'Herr Vogel',age:59,sex:'m',
+ story:'Um 22:15 ZVK in die V. subclavia links (schwierige Punktion, 3 Versuche). Seit 10 Minuten zunehmend Luftnot, jetzt panisch, fällt im Druck.',
+ find:['Atemgeräusch links aufgehoben','Hypersonorer Klopfschall links','Trachea nach rechts verlagert','Gestaute Halsvenen'],
+ meds:['Noradrenalin 0,05 µg/kg/min','Pip/Taz 4,5 g 1-1-1'],labs:['Röntgen-Kontrolle nach ZVK: noch nicht erfolgt (!)'],
+ v0:[132,78,48,82,34,37.2],v1:[40,50,30,68,40,37.0],rh:[[35,'sinus'],[0,'sinus']],
+ steps:[
+  {k:'q',q:'Verdachtsdiagnose?',o:[
+   Q('Spannungspneumothorax links',1,'Einseitig aufgehobenes Atemgeräusch + hypersonorer Klopfschall + Trachealverlagerung + Einflussstauung + Schock.'),
+   Q('Perikardtamponade',0,'Auch Einflussstauung und Hypotonie – aber einseitiger Auskultations-/Perkussionsbefund und Trachealverlagerung sprechen dagegen.'),
+   Q('Lungenembolie',0,'Kein seitendifferenter Lungenbefund, keine Trachealverlagerung.'),
+   Q('Anaphylaxie',0,'Kein Auslöser, keine Haut-/Schleimhautsymptome.')]},
+  {k:'q',q:'Vorgehen?',o:[
+   Q('Sofortige Entlastung (Nadeldekompression 4./5. ICR vordere/mittlere Axillarlinie oder 2. ICR MCL), dann Thoraxdrainage – nicht auf Röntgen warten',1,'Klinische Diagnose. Die Entlastung ist lebensrettend, die Drainage definitiv.'),
+   Q('Röntgen-Thorax abwarten, dann entscheiden',2,'Beim Spannungspneu führt Warten auf Bildgebung zum Kreislaufstillstand.'),
+   Q('ZVK ziehen',0,'Behandelt den Pneumothorax nicht.'),
+   Q('Noradrenalin hochdrehen',0,'Obstruktiver Schock – Vasopressoren überbrücken nicht die Ursache.')]}],
+ teach:{why:'Obstruktiver Schock: Ventilmechanismus → steigender intrathorakaler Druck → Mediastinalverlagerung → venöser Rückstrom sinkt. Iatrogene Ursache nach Subclavia-Punktion klassisch.',take:'Spannungspneumothorax ist eine klinische Diagnose: sofort entlasten. Nach jeder ZVK-Anlage Lagekontrolle/Pneu-Ausschluss.'}},
+
+{id:'hypona',dx:'Schwere symptomatische Hyponatriämie',ward:'geri',room:'Zi. 8',acuity:2,dk:0.9,
+ pager:'Pat. hat gekrampft, jetzt schläfrig. Na 114',name:'Frau Zimmermann',age:79,sex:'w',
+ story:'Aufgenommen wegen Übelkeit und Schwindel. Vor 10 min generalisierter Krampfanfall (ca. 1 min), jetzt somnolent, erbricht.',
+ find:['Somnolent (GCS 12)','Keine Fokalneurologie','Euvolämisch'],
+ meds:['HCT 25 mg 1-0-0','Citalopram 20 mg 1-0-0','Carbamazepin (seit 2 Wochen, Trigeminusneuralgie)'],labs:['Na⁺ 114 mmol/l (Aufnahme 121)','Serum-Osmolalität 242 mosmol/kg','Urin-Na⁺ 58 mmol/l'],
+ v0:[92,138,78,95,18,36.7],v1:[104,150,86,92,14,36.7],rh:[[0,'sinus']],
+ steps:[
+  {k:'q',q:'Schwer symptomatisch (Krampfanfall, Somnolenz, Erbrechen). Therapie?',o:[
+   Q('NaCl 3 % 150 ml i.v. über 20 min, Na⁺-Kontrolle, ggf. wiederholen bis Na⁺ +5 mmol/l',1,'Europäische Leitlinie: bei schweren Symptomen hypertone Kochsalzlösung als Bolus.'),
+   Q('Trinkmenge auf 800 ml begrenzen, morgen weitersehen',0,'Bei schweren Symptomen viel zu langsam.'),
+   Q('2 l NaCl 0,9 % zügig',0,'Bei SIADH unzuverlässig – das Natrium wird ausgeschieden, das Wasser bleibt (Na⁺ kann sogar fallen).'),
+   Q('Na⁺ innerhalb von 24 h auf 135 normalisieren',2,'Zu schnelle Korrektur → osmotische Demyelinisierung (pontine Myelinolyse).')]},
+  {k:'q',q:'Worauf achtest du bei der Korrektur?',o:[
+   Q('Max. 10 mmol/l in 24 h (bei Risikopatienten 8), Na⁺ engmaschig; HCT, Citalopram, Carbamazepin kritisch prüfen',1,'Alle drei Medikamente können eine Hyponatriämie verursachen (HCT; SSRI und Carbamazepin über SIADH).'),
+   Q('20 mmol/l in 24 h sind kein Problem',2,'ODS-Gefahr.'),
+   Q('Tolvaptan zusätzlich zur 3 %-Lösung',0,'Nicht in der Akutphase und nicht kombiniert mit hypertoner Lösung – Überkorrektur-Risiko.')]}],
+ teach:{why:'Akut-symptomatische Hyponatriämie: Ziel ist nicht Normalisierung, sondern +5 mmol/l – das reicht, um das Hirnödem zu entschärfen. Danach langsam.',take:'Schwere Symptome → 150 ml NaCl 3 % über 20 min. Max. 10 mmol/l in 24 h. Medikamente als Ursache prüfen.'}},
+
+{id:'status',dx:'Status epilepticus',ward:'zna',room:'Box 1',acuity:1,dk:1.3,
+ pager:'Krampft seit 6 min, hört nicht auf!',name:'Herr Jansen',age:35,sex:'m',
+ story:'Bekannte Epilepsie, hat laut Freundin seit Tagen „die Tabletten vergessen“. Generalisiert tonisch-klonisch seit 6 Minuten. i.v.-Zugang liegt.',
+ find:['Generalisiert tonisch-klonisch','Zungenbiss','Zyanotische Lippen'],
+ meds:['Levetiracetam 1000 mg 1-0-1 (nicht eingenommen)'],labs:['BZ 104 mg/dl'],
+ v0:[138,172,96,88,28,37.9],v1:[152,180,100,76,8,38.6],rh:[[0,'sinus']],
+ steps:[
+  {k:'q',q:'Erste Therapiestufe?',o:[
+   Q('Lorazepam 0,1 mg/kg i.v. (max. 4 mg pro Gabe, einmal wiederholbar); ohne Zugang Midazolam 10 mg i.m.',1,'DGN-Leitlinie: Benzodiazepin ausreichend dosiert – Unterdosierung ist der häufigste Fehler.'),
+   Q('Levetiracetam 60 mg/kg als Erstes',0,'Zweite Stufe – erst nach dem Benzodiazepin.'),
+   Q('Abwarten, das hört meist von allein auf',2,'Ab 5 min generalisiertem Anfall = Status epilepticus. Je länger, desto therapierefraktärer.'),
+   Q('Haloperidol 5 mg zur Sedierung',2,'Senkt die Krampfschwelle.')]},
+  {k:'q',q:'Nach 2× Lorazepam krampft er weiter. Nächste Stufe?',o:[
+   Q('Levetiracetam 60 mg/kg (max. 4.500 mg) oder Valproat 40 mg/kg (max. 3.000 mg) oder (Fos-)Phenytoin i.v.',1,'ESETT: die drei sind gleich wirksam. Valproat nicht bei Frauen im gebärfähigen Alter/Leberinsuffizienz.'),
+   Q('Noch zwei weitere Benzodiazepin-Gaben',0,'Mehr als zwei Benzodiazepin-Gaben: Atemdepression ohne relevanten Zusatznutzen.'),
+   Q('Propofol-Bolus auf Normalstation',0,'Refraktärer Status (Stufe 3) = Narkose + Intubation auf der ITS.')]}],
+ teach:{why:'Status epilepticus: generalisiert tonisch-klonisch ≥ 5 min oder Anfallsserie ohne Erholung. Stufenschema: Benzodiazepin → Levetiracetam/Valproat/Phenytoin → Narkose auf ITS.',take:'Benzo richtig dosiert (Lorazepam 0,1 mg/kg), dann rasch Stufe 2. BZ immer mitdenken.'}},
+
+{id:'fever',dx:'Frühes postoperatives Fieber (nicht-infektiös)',ward:'uch',room:'Zi. 30',acuity:3,
+ pager:'38,3 °C, Tag 1 nach Knie-TEP. Anordnung?',name:'Frau Ernst',age:69,sex:'w',
+ story:'Tag 1 nach Knie-TEP rechts. Hat heute kaum mobilisiert, atmet flach „weil’s zieht“. Sonst guter Dinge, Appetit ok.',
+ find:['Wunde reizlos, trockener Verband','Basal abgeschwächtes Atemgeräusch bds.','Waden weich'],
+ meds:['Enoxaparin 40 mg','Metamizol 1 g 1-1-1-1','Cefuroxim (perioperativ, beendet)'],labs:['CRP 86 mg/l (postop.)','Leukozyten 11,2 /nl'],
+ v0:[92,132,78,95,17,38.3],v1:[98,130,76,94,19,38.5],rh:[[0,'sinus']],
+ steps:[
+  {k:'dx',q:'Was machst du?',o:[
+   D('Gezielte Untersuchung: Wunde, Lunge, Waden, Zugänge, Urin',1,4,'Kein Fokus, basale Minderbelüftung.'),
+   D('CRP-Kontrolle heute Nacht',0,5,'Am 1. postoperativen Tag ohnehin erhöht – nicht verwertbar.'),
+   D('Punktion des Kniegelenks',0,15,'Ohne Infektzeichen am 1. Tag keine Indikation – und ein Infektionsrisiko.'),
+   D('CT Thorax',0,25,'Keine Indikation.')]},
+  {k:'q',q:'Vorgehen?',o:[
+   Q('Atemtherapie, Mobilisation, Paracetamol/Metamizol bei Bedarf, Verlaufskontrolle – keine Antibiose',1,'Frühes postoperatives Fieber (Tag 1–2) ist meist eine inflammatorische Reaktion auf das Gewebetrauma bzw. Atelektasen.'),
+   Q('Meropenem sofort',2,'Kein Fokus, keine Sepsiszeichen – ungezielte Reserveantibiose fördert Resistenzen und C. difficile.'),
+   Q('Revisions-OP heute Nacht',2,'Kein Anhalt für einen Frühinfekt.')]}],
+ teach:{why:'Faustregel „5 W“: Wind (Atelektase, Tag 1–2), Water (HWI, Tag 3–5), Wound (Wundinfekt, Tag 5–7), Walking (TVT/LAE, ab Tag 5), Wonder drugs (Medikamentenfieber).',take:'Nicht jedes Fieber braucht Antibiose. Untersuchen, dann entscheiden.'}},
+
+{id:'afib',dx:'Vorhofflimmern mit schneller Überleitung (hämodynamisch stabil)',ward:'innere',room:'Zi. 16',acuity:2,
+ pager:'Puls 160, unregelmäßig, Pat. merkt Herzrasen',name:'Herr Claßen',age:73,sex:'m',
+ story:'Bekanntes paroxysmales Vorhofflimmern. Seit dem Abendessen Herzrasen, „wie ein Kolibri“. Keine Brustschmerzen, keine Luftnot. Seit wann genau? „Keine Ahnung, Nachmittag?“',
+ find:['Pulsdefizit','Keine Stauungszeichen','Kein Thoraxschmerz'],
+ meds:['Apixaban 5 mg 1-0-1 – seit 4 Tagen pausiert (Koloskopie morgen)','Ramipril 5 mg'],labs:['K⁺ 3,4 mmol/l','Mg²⁺ 0,68 mmol/l'],
+ v0:[162,118,74,95,18,36.9],v1:[182,94,60,93,22,36.9],rh:[[0,'afib']],fix:'afib',
+ steps:[
+  {k:'dx',q:'Diagnostik?',o:[
+   D('12-Kanal-EKG',1,3,'Absolute Arrhythmie, schmale QRS, Kammerfrequenz 160/min, keine Ischämie.'),
+   D('Elektrolyte + TSH',1,5,'K⁺ 3,4, Mg²⁺ 0,68 – beides grenzwertig niedrig. TSH normal.'),
+   D('Koronarangiographie',0,30,'Keine Angina, keine Ischämie – keine Indikation.')]},
+  {k:'q',q:'Stabil, Beginn unklar, seit 4 Tagen keine Antikoagulation. Therapie?',o:[
+   Q('Frequenzkontrolle (z. B. Metoprolol 5 mg i.v., ggf. wiederholen), K⁺/Mg²⁺ ausgleichen, Antikoagulation mit Heparin, Kardioversion erst nach TEE/Antikoagulation',1,'Frequenzkontrolle ist beim stabilen Patienten mit unklarer Dauer der sichere Weg.'),
+   Q('Elektrische Kardioversion jetzt sofort',2,'Stabil + Dauer > 24 h/unklar + keine Antikoagulation → Thrombembolierisiko. Erst TEE oder ≥ 3 Wochen Antikoagulation.'),
+   Q('Adenosin 6 mg',0,'Beendet VHF nicht – nur diagnostisch bei regelmäßiger Schmalkomplextachykardie.'),
+   Q('Verapamil i.v. zusätzlich zum Betablocker i.v.',2,'Kombination i.v. → AV-Blockierung bis Asystolie, Hypotonie.')]}],
+ teach:{why:'Instabil (Schock, Synkope, Ischämie, schwere HF) → Kardioversion. Stabil → Frequenzkontrolle, Ursachen (Elektrolyte, Infekt, Schilddrüse), Antikoagulation nach CHA₂DS₂-VA.',take:'Stabiles VHF unklarer Dauer: Frequenz senken, antikoagulieren, nicht blind kardiovertieren.'}},
+
+{id:'avb',dx:'AV-Block III° mit Bradykardie (instabil)',ward:'geri',room:'Zi. 10',acuity:1,dk:1,
+ pager:'Puls 32, Pat. grau und schwindelig',name:'Herr Quast',age:84,sex:'m',
+ story:'Aufgenommen wegen Stürzen. Beim Toilettengang fast kollabiert. Jetzt grau-blass, antwortet verlangsamt, „mir wird schwarz vor Augen“.',
+ find:['Präsynkopal, kaltschweißig','Bradykarder regelmäßiger Puls','Keine Brustschmerzen'],
+ meds:['Bisoprolol 10 mg 1-0-0','Donepezil 10 mg (!)','Ramipril 5 mg'],labs:['K⁺ 5,1 mmol/l','Troponin folgt'],
+ v0:[32,82,50,93,16,36.5],v1:[22,60,36,88,14,36.4],rh:[[12,'avb3'],[0,'asys']],fix:'sinus',vfix:[68,118,70,96,15,36.6],
+ steps:[
+  {k:'q',q:'EKG: AV-Block III°, breiter Kammerersatzrhythmus 32/min. Instabil. Erstmaßnahme?',o:[
+   Q('Atropin 0,5 mg i.v. (wiederholbar bis 3 mg); bei fehlender Wirkung Adrenalin 2–10 µg/min und/oder transkutaner Schrittmacher',1,'ERC-Bradykardie-Algorithmus. Bei breitem Ersatzrhythmus (infranodal) wirkt Atropin oft nicht → früh Pacing.'),
+   Q('Bisoprolol wie gewohnt weitergeben',2,'Betablocker verschlimmern die Bradykardie.'),
+   Q('Amiodaron 300 mg',2,'Wirkt negativ dromotrop – kontraindiziert.'),
+   Q('Abwarten, EKG morgen früh wiederholen',2,'Instabile Bradykardie = Notfall.')]},
+  {k:'q',q:'Stabilisiert unter Schrittmacher. Was klärst du?',o:[
+   Q('Auslöser: Betablocker, Donepezil (vagoton), Hyperkaliämie, inferiore Ischämie → Kardiologie für temporären/permanenten Schrittmacher',1,'Reversible Ursachen zuerst ausschließen – sonst braucht er einen permanenten Schrittmacher.'),
+   Q('Nur TSH',0,'Hypothyreose ist eine seltene, langsam wirksame Ursache.'),
+   Q('Nichts weiter – stabil ist stabil',2,'Transkutanes Pacing ist eine Brücke, keine Lösung.')]}],
+ teach:{why:'Bradykardie + Instabilitätszeichen (Schock, Synkope, Ischämie, HF) → Behandlung. AV-Block III: keine Überleitung, Vorhöfe und Kammern schlagen unabhängig.',take:'Atropin, dann Adrenalin/Pacing. Medikamente wie Betablocker und Acetylcholinesterase-Hemmer als Auslöser im Blick haben.'}},
+
+{id:'fall',dx:'Sturz mit Kopfplatzwunde unter Phenprocoumon',ward:'geri',room:'Zi. 4',acuity:2,dk:0.5,
+ pager:'Sturz auf dem Weg zur Toilette, blutet am Kopf',name:'Herr Ulrich',age:88,sex:'m',
+ story:'Nachts allein aufgestanden, gestürzt. Platzwunde am Hinterkopf, blutet kräftig. „Mir fehlt nix, Doktor, lassen Sie mich schlafen.“',
+ find:['Platzwunde okzipital 3 cm','GCS 15, orientiert','Hüfte: Rotationsschmerz links?'],
+ meds:['Phenprocoumon nach INR (VHF)','Tamsulosin 0,4 mg z. N.','Torasemid 10 mg'],labs:['INR (gestern) 2,8'],
+ v0:[84,142,80,96,16,36.6],v1:[62,168,70,95,12,36.6],rh:[[0,'sinus']],
+ steps:[
+  {k:'dx',q:'Was ordnest du an?',o:[
+   D('Neurostatus, GCS, Pupillen – dokumentiert',1,2,'GCS 15, Pupillen isokor, keine Fokalneurologie.'),
+   D('INR',1,5,'INR 3,4.'),
+   D('cCT nativ (Antikoagulation!)',1,18,'Keine intrakranielle Blutung, keine Fraktur.'),
+   D('Hüfte klinisch + Röntgen Becken/Hüfte',1,12,'Keine Fraktur, Prellung.'),
+   D('MRT Schädel',0,40,'Keine Indikation.')]},
+  {k:'q',q:'cCT unauffällig. Wie weiter?',o:[
+   Q('Wunde versorgen, neurologische Überwachung (engmaschig GCS/Pupillen), Sturzursache abklären (Orthostase durch Tamsulosin/Torasemid, Rhythmus, Nykturie), INR morgen anpassen',1,'Verzögerte Blutungen unter Antikoagulation sind möglich. Sturz = Symptom, nicht Diagnose.'),
+   Q('Vitamin K + PPSB sofort, Phenprocoumon dauerhaft absetzen',0,'Ohne Blutung keine Antagonisierung; das Absetzen ist eine Nutzen-Risiko-Entscheidung am Tag, nicht nachts.'),
+   Q('Keine weitere Überwachung – GCS 15',2,'Unter Antikoagulation können intrakranielle Blutungen verzögert auftreten.')]}],
+ teach:{why:'Leichtes SHT unter Antikoagulation: cCT-Indikation auch bei GCS 15. Sturzabklärung: Medikamente (Alpha-Blocker, Diuretika, Sedativa), Orthostase, Rhythmus, Visus, Nykturie.',take:'Antikoagulation + Kopfanprall = CT + Überwachung. Hüfte nach Sturz immer mituntersuchen.'}},
+
+{id:'trans',dx:'Akute hämolytische Transfusionsreaktion',ward:'innere',room:'Zi. 19',acuity:1,dk:1,
+ pager:'EK läuft, Pat. hat Schüttelfrost + Rückenschmerzen',name:'Frau Nowak',age:66,sex:'w',
+ story:'MDS, transfusionspflichtig. Das zweite EK läuft seit 15 min. Plötzlich Schüttelfrost, Flankenschmerz, „ein Gefühl, als ob etwas Schlimmes passiert“. Der Urin im Beutel ist rötlich.',
+ find:['Schüttelfrost','Flankenschmerz beidseits','Urin rot-braun','Unruhe'],
+ meds:['EK Nr. 2 läuft (Blutgruppe auf Beutel: A pos.)','Pat.-Blutgruppe laut Akte: 0 pos. (!)'],labs:['Hb vor Transfusion 7,2 g/dl'],
+ v0:[122,94,58,94,24,39.0],v1:[144,66,38,90,30,39.6],rh:[[0,'sinus']],
+ steps:[
+  {k:'q',q:'Sofort?',o:[
+   Q('Transfusion stoppen, Zugang mit NaCl offen halten, Identität/Bedside-Test prüfen, Beutel + Blutproben ans Blutdepot',1,'AB0-Inkompatibilität – fast immer eine Verwechslung. Jeder weitere Milliliter verschlimmert die Hämolyse.'),
+   Q('Paracetamol und Transfusion langsamer weiterlaufen lassen',2,'Das wäre bei einer febrilen nicht-hämolytischen Reaktion allenfalls diskutabel – nicht bei Hämolysezeichen.'),
+   Q('Beutel sofort entsorgen',0,'Der Beutel wird zur Aufarbeitung gebraucht!')]},
+  {k:'q',q:'Weitere Therapie?',o:[
+   Q('Volumen, Diurese sichern (Ziel > 1 ml/kg/h), Hämolyse- und DIC-Labor, Intensivüberwachung, Meldung nach Transfusionsgesetz (Hämovigilanz)',1,'Gefahren: Schock, akutes Nierenversagen, DIC.'),
+   Q('Nächstes EK anhängen, der Hb ist ja noch niedrig',2,'Erst Aufarbeitung – sonst droht die nächste Reaktion.'),
+   Q('Kortison + Antihistaminikum genügt',0,'Behandelt allergische Reaktionen – nicht die intravasale Hämolyse.')]}],
+ teach:{why:'Akute hämolytische Transfusionsreaktion: meist durch AB0-Verwechslung. Symptome: Fieber, Schüttelfrost, Flanken-/Rückenschmerz, Hämoglobinurie, Schock, DIC.',take:'Stopp – Zugang offen – Beutel sichern – melden. Der Bedside-Test ist am Bett Pflicht.'}}
+];
+
+const TASKS=[
+{id:'t_relatives',task:1,dx:'Anruf von Angehörigen',ward:'innere',room:'Telefon',acuity:3,
+ pager:'Tochter von Hr. Bauer am Telefon, will Befunde',name:'Anruf',age:0,sex:'',
+ story:'Eine Frau am Telefon: „Ich bin die Tochter von Herrn Bauer. Wie sind seine Werte? Die Pflege sagt mir nichts.“ Im Hintergrund Autobahnlärm.',
+ steps:[{k:'q',q:'Was sagst du?',min:8,o:[
+  Q('Freundlich bleiben, Identität/Befugnis prüfen (Einwilligung des Patienten bzw. Rückruf über hinterlegte Nummer), dann in verständlichen Worten informieren',1,'Schweigepflicht gilt auch gegenüber Angehörigen. Am Telefon ist die Identität unklar.'),
+  Q('Alle Laborwerte vorlesen, damit sie beruhigt ist',0,'Verstoß gegen die Schweigepflicht (§ 203 StGB), solange Identität und Einwilligung unklar sind.'),
+  Q('„Keine Zeit“ und auflegen',0,'Angehörige sind Teil der Versorgung – kurz, freundlich, datenschutzkonform, ggf. Rückruf anbieten.')]}],
+ teach:{why:'Auskunft an Angehörige nur mit (mutmaßlicher) Einwilligung des Patienten. Ehepartner haben seit 2023 ein befristetes Notvertretungsrecht in Gesundheitsangelegenheiten – Kinder nicht automatisch.',take:'Identität prüfen, Einwilligung klären, dann empathisch informieren.'}},
+{id:'t_death',task:1,dx:'Leichenschau / Todesbescheinigung',ward:'geri',room:'Zi. 6',acuity:3,
+ pager:'Fr. Yilmaz verstorben (palliativ). Leichenschau bitte',name:'Frau Yilmaz',age:91,sex:'w',
+ story:'Metastasiertes Pankreaskarzinom, palliatives Konzept, Familie war bis 23 Uhr da. Um 00:50 friedlich verstorben. Die Pflege braucht die Todesbescheinigung.',
+ steps:[
+  {k:'q',q:'Welche Zeichen sind sichere Todeszeichen?',min:10,o:[
+   Q('Totenflecken, Totenstarre, Fäulnis, mit dem Leben nicht vereinbare Verletzungen',1,'Totenflecken ab ~20–30 min, Totenstarre ab ~2 h (Kiefergelenk zuerst).'),
+   Q('Atemstillstand und fehlender Puls',0,'Unsichere Todeszeichen – auch beim Kreislaufstillstand vorhanden.'),
+   Q('Asystolie im EKG für 1 Minute',0,'Allein kein sicheres Todeszeichen.')]},
+  {k:'q',q:'Todesart?',min:6,o:[
+   Q('Natürlich – bekannte, zum Tod führende Grunderkrankung, keine Anhaltspunkte für äußere Einwirkung (nach Untersuchung am vollständig entkleideten Leichnam)',1,'Nur bescheinigen, was man sicher weiß. Die Leichenschau erfolgt am entkleideten Körper.'),
+   Q('Ungeklärt – nachts grundsätzlich',0,'„Ungeklärt“ bei tatsächlichen Zweifeln, nicht aus Bequemlichkeit.'),
+   Q('Nicht-natürlich',0,'Kein Anhalt für Unfall, Suizid, Fremdeinwirkung oder Behandlungsfehler.')]}],
+ teach:{why:'Die Leichenschau ist ärztliche Pflicht und muss unverzüglich erfolgen (Bestattungsgesetze der Länder). Sie ist nicht delegierbar.',take:'Sichere Todeszeichen feststellen, vollständig entkleidet untersuchen, Todesart ehrlich angeben.'}},
+{id:'t_sleep',task:1,dx:'Schlafmedikation im Alter',ward:'geri',room:'Zi. 1',acuity:3,
+ pager:'Fr. Kraus (89) kann nicht schlafen – Bedarf?',name:'Frau Kraus',age:89,sex:'w',
+ story:'„Sie klingelt jede Viertelstunde und will eine Schlaftablette. Zuhause nimmt sie ‚die Blauen‘.“ Sie hat Schmerzen im Knie und muss oft zur Toilette.',
+ steps:[{k:'q',q:'Anordnung?',min:5,o:[
+  Q('Ursachen angehen (Schmerz, Harndrang, Lärm), nicht-medikamentös; falls nötig niedrig dosiert z. B. Melperon 25 mg p.o.',1,'Bei Älteren Schlafstörung zuerst kausal. Wenn medikamentös: kurz, niedrig, sturzarm.'),
+  Q('Diazepam 10 mg',0,'Lange Halbwertszeit, Kumulation, Sturz- und Delirrisiko (PRISCUS-Liste).'),
+  Q('Diphenhydramin 50 mg',0,'Stark anticholinerg: Delir, Harnverhalt, Obstipation (PRISCUS).')]}],
+ teach:{why:'PRISCUS 2.0 listet für Ältere potenziell inadäquate Medikamente, u. a. langwirksame Benzodiazepine und anticholinerge Antihistaminika.',take:'Erst Ursachen, dann – wenn überhaupt – kurz und niedrig dosiert.'}},
+{id:'t_doak',task:1,dx:'Elektive Aufnahme unter DOAK',ward:'uch',room:'Aufnahme',acuity:3,
+ pager:'Aufnahme für Hüft-TEP morgen 8 Uhr, Anordnungen fehlen',name:'Herr Lorenz',age:70,sex:'m',
+ story:'Elektive Aufnahme für Hüft-TEP morgen als erster Saal. Medikationsplan: Rivaroxaban 20 mg morgens – laut Patient „heute früh wie immer genommen“. Die Aufklärung ist erfolgt.',
+ steps:[{k:'q',q:'Was ordnest du an?',min:12,o:[
+  Q('Rivaroxaban pausieren und Operateur/Anästhesie informieren: bei hohem Blutungsrisiko (und rückenmarknaher Anästhesie) reicht 24 h Pause nicht – OP-Zeitpunkt anpassen',1,'Hohes Blutungsrisiko: letzte Einnahme ≥ 48 h vor OP (bei normaler Nierenfunktion), bei Spinalanästhesie je nach SOP auch länger.'),
+  Q('Rivaroxaban morgen früh wie gewohnt geben',0,'Dann operiert man unter voller Antikoagulation.'),
+  Q('Bridging mit Enoxaparin in therapeutischer Dosis heute Abend',0,'DOAK brauchen wegen kurzer Halbwertszeit kein Bridging – es erhöht nur das Blutungsrisiko.')]}],
+ teach:{why:'Periprozedurales DOAK-Management richtet sich nach Blutungsrisiko des Eingriffs, Nierenfunktion und Anästhesieverfahren. Kein Bridging.',take:'Letzte Einnahme erfragen, Pause nach Blutungsrisiko und Nierenfunktion.'}},
+{id:'t_bz',task:1,dx:'Nächtlicher BZ-Anruf',ward:'innere',room:'Zi. 22',acuity:3,
+ pager:'BZ 186 bei Hr. Pohl, Korrektur?',name:'Herr Pohl',age:74,sex:'m',
+ story:'Typ-2-Diabetes, Metformin + Basalinsulin. BZ um 2 Uhr: 186 mg/dl. Beschwerdefrei, schläft wieder.',
+ steps:[{k:'q',q:'Anordnung?',min:3,o:[
+  Q('Keine nächtliche Korrektur, Morgenwert abwarten, Therapie am Tag anpassen',1,'Nächtliche Korrekturen moderat erhöhter Werte beim schlafenden älteren Patienten erhöhen das Hypoglykämierisiko ohne Nutzen.'),
+  Q('8 IE Altinsulin s.c.',0,'Hypoglykämie-Risiko im Schlaf.'),
+  Q('Metformin zusätzlich jetzt',0,'Senkt akut kaum, und nicht als Nacht-Korrektur gedacht.')]}],
+ teach:{why:'Stationär bei Älteren: BZ-Ziel etwa 100–180 mg/dl. Hypoglykämien sind gefährlicher als moderate Hyperglykämien.',take:'Nicht jede Zahl nachts korrigieren.'}},
+{id:'t_line',task:1,dx:'Zugang verstopft, Antibiose fällig',ward:'innere',room:'Zi. 13',acuity:3,
+ pager:'Zugang bei Fr. Dahl zu, Pip/Taz fällig',name:'Frau Dahl',age:77,sex:'w',
+ story:'Pneumonie, Piperacillin/Tazobactam 4,5 g alle 8 h – die nächste Gabe ist fällig. Die Pflege hat es zweimal probiert, die Venen sind schlecht.',
+ steps:[{k:'q',q:'Was tust du?',min:10,o:[
+  Q('Neuen Zugang legen (ggf. Ultraschall-gesteuert), Gabe zeitgerecht',1,'Bei Betalaktamen zählt die Zeit über der MHK – Dosen nicht auf den Morgen schieben.'),
+  Q('Auf orale Antibiose umstellen – nachts',0,'Pip/Taz hat keine orale Entsprechung; ein Umstieg ist eine Tagesentscheidung nach klinischem Verlauf.'),
+  Q('Dosis auf die Morgenrunde verschieben',0,'Unterbricht die Therapie im Pneumonie-Verlauf.')]}],
+ teach:{why:'Kleine Aufgaben, die im Dienst Zeit kosten – aber nicht warten dürfen.',take:'Antibiotika-Zeitpunkte einhalten.'}}
+];
+
+const NURSE={
+ start:['Na, Doktor. Kaffee steht in der Küche der 4B, Piepser ist geladen – leider. Ich bin Anke, 23 Jahre Nachtdienst. Du rufst, ich komme.'],
+ crit:['Kommst du bitte sofort? Der gefällt mir gar nicht.','Das ist kein „Kannst du mal draufschauen“. Das ist ein „Komm JETZT“.','Ich hab den Notfallwagen schon hingestellt. Nur so.'],
+ worse:['{r}: Sättigung fällt, ich häng schon mal O₂ dran.','{r} wird schlechter. Nur zur Info. Also: bitte kommen.','Ich stehe in {r} und schaue auf den Monitor. Er schaut zurück. Nicht gut.'],
+ critical:['Doktor, ich brauch dich JETZT in {r}!','{r} – das kippt gleich! Wo bist du?!'],
+ crash:['MET ist alarmiert, {r}. Die ITS übernimmt. …Das hätte früher jemand sehen müssen.','{r}: Reanimation. Das Team ist da. Wir reden später.'],
+ good:['Sauber. Ich schreib’s in die Kurve.','Siehst du. Geht doch.','Ordentlich. Den übergeb ich morgen gern.','Hab ich schon schlechter gesehen. Viel schlechter.'],
+ ok:['Hm. Hat funktioniert. Irgendwie.','Nicht elegant, aber er lebt.'],
+ bad:['Hm. Das besprechen wir morgen mit dem Oberarzt, oder?','Ich dokumentiere das mal… neutral.','Das war… mutig.'],
+ tired:['Du siehst aus wie ein Laborwert außerhalb der Norm. Kaffee?','Du hast gerade „Frau Doktor Monitor“ zu mir gesagt. Hol dir einen Kaffee.'],
+ coffee:['Die Maschine auf der 4B ist besser als die in der Notaufnahme. Nur so als Tipp.','Milch ist alle. Wie immer.','Trink, solange er heiß ist. Der Piepser wartet nicht.'],
+ idle:['Ruhig. Sag das Wort nicht. Sag. Es. Nicht.','Ich mach mal die Kurven fertig. Genieß die Stille.','Irgendwo piepst gleich was. Ich spür’s.'],
+ three:['03:00. Die Stunde, in der alle Patienten gleichzeitig beschließen, dass heute ihre Nacht ist.'],
+ flavor:['Der Herr aus Zimmer 9 fragt, ob er jetzt nach Hause darf. Es ist {t}.','Das Nachtessen ist Brot mit Brot. Falls du Hunger hast.','Die Rohrpost ist wieder kaputt. Ich lauf das Labor selbst runter.','Der Aufzug steckt im 2. Stock. Treppe ist gesünder.','Wer hat den letzten Kaffee getrunken und keinen neuen gemacht? …Ach, du.'],
+ triageBad:['Übrigens: {r} ist stabil – woanders brennt’s aber gerade.','Kleiner Hinweis: Du bist grad beim Harmlosesten. Nur so.'],
+ triageGood:['Richtige Reihenfolge. Gut.','Zuerst der Kritischste. So macht man das.'],
+ end:['07:00. Frühdienst ist da. Geh nach Hause, Doktor. Du hast es dir verdient.']
+};
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+
+/* ================= STATE ================= */
+const DIFF={
+ pj:{label:'PJ',rate:0.9,decay:0.6,n:10,m:3,energy:0.13,help:true,mult:1},
+ ass:{label:'Assistenz',rate:1.0,decay:1.0,n:13,m:4,energy:0.16,help:false,mult:1.25},
+ oa:{label:'Oberarzt',rate:1.2,decay:1.4,n:16,m:5,energy:0.2,help:false,mult:1.5}
+};
+const SHIFT=600; // game minutes 21:00–07:00
+let diffKey=store.get('nd.diff','ass'); if(!DIFF[diffKey])diffKey='ass';
+let G=null, uidC=0;
+
+function newGame(){
+ const cfg=DIFF[diffKey];
+ // choose scenarios
+ const pool=SC.slice().sort(()=>Math.random()-0.5);
+ const med=pool.slice(0,cfg.n);
+ const tasks=TASKS.slice().sort(()=>Math.random()-0.5).slice(0,cfg.m);
+ if(!tasks.find(t=>t.id==='t_death')&&cfg.m>=3)tasks[0]=TASKS.find(t=>t.id==='t_death');
+ // order: first medical non-critical, VF not in first 3
+ let evs=[...med,...tasks].sort(()=>Math.random()-0.5);
+ const firstIdx=evs.findIndex(e=>!e.task&&e.acuity>=2); if(firstIdx>0){const [f]=evs.splice(firstIdx,1);evs.unshift(f);}
+ const vfi=evs.findIndex(e=>e.id==='vf'); if(vfi>=0&&vfi<3){const [v]=evs.splice(vfi,1);evs.splice(3+Math.floor(Math.random()*3),0,v);}
+ const N=evs.length, span=545, sp=span/N; const times=[];
+ for(let i=0;i<N;i++)times.push(4+i*sp+rnd(-0.3,0.3)*sp*(i?1:0));
+ // create 2 clusters (overlapping calls)
+ for(let c=0;c<2;c++){const i=2+Math.floor(Math.random()*(N-3));times[i]=times[i-1]+rnd(1.5,5);}
+ times.sort((a,b)=>a-b);
+ G={cfg,diff:diffKey,gm:0,running:true,paused:false,ended:false,patients:[],openId:null,events:evs.map((sc,i)=>({sc,t:Math.max(2,times[i])})),evIdx:0,
+  raw:0,shown:0,energy:100,coffees:0,lastCoffee:-999,stats:{good:0,ok:0,bad:0,crash:0,harm:0,triageOk:0,triageBad:0,wrongTopics:[],goodTopics:[]},
+  maxPossible:0,lastAlarm:0,lastMedAlarm:0,said:{},threeSaid:false,lastIdleMsg:0,lastFlavor:0,focusId:null,results:[]};
+ G.events.forEach(e=>G.maxPossible+=maxFor(e.sc)+(e.sc.task?10:100));
+}
+function maxFor(sc){return sc.steps.reduce((a,s)=>a+(s.k==='dx'?s.o.filter(o=>o.ok).length*15:(sc.task?25:40)),0);}
+
+function spawn(sc){
+ const p={uid:++uidC,sc,s:100,arrived:G.gm,opened:false,step:0,earned:0,max:maxFor(sc),harm:false,heal:0,done:false,outcome:null,
+  st:{sel:new Set(),answered:false,choice:null},results:[],said:{},sAtOpen:null,points:0,isNew:true};
+ G.patients.push(p);
+ SFX.pager(); try{navigator.vibrate&&navigator.vibrate([120,60,120,60,120]);}catch(e){}
+ const pgr=$('#pager'); pgr.classList.remove('buzz'); void pgr.offsetWidth; if(!RM)pgr.classList.add('buzz'); pgr.classList.add('alert');
+ const w=WARDS[sc.ward];
+ $('#pgMsg').innerHTML=`<b>${esc(w.short)} · ${esc(sc.room)}</b><br>${esc(sc.pager)}`;
+ announce(`Piepser: ${w.name}, ${sc.room}: ${sc.pager}`);
+ toast(`<small>PIEPSER · ${esc(w.short)} · ${esc(sc.room)}</small>${esc(sc.pager)}`,'pg'+(sc.acuity===1?' c':''),p.uid);
+ if(!sc.task&&sc.acuity===1&&Math.random()<0.7)nurse(pick(NURSE.crit),'c');
+ renderQueue();
+}
+
+/* vitals */
+function vitals(p){
+ const sc=p.sc; if(sc.task)return null;
+ const k=Math.pow(clamp((100-p.s)/100,0,1),1.15);
+ const base=sc.v0.map((v,i)=>lerp(v,sc.v1[i],k));
+ const tgt=sc.vfix||sc.v0.map((v,i)=>lerp(v,NORMAL[i],0.75));
+ const v=base.map((b,i)=>lerp(b,tgt[i],p.heal));
+ let rh='sinus';
+ if(p.heal>=0.55&&sc.fix)rh=sc.fix; else if(p.heal>=0.55)rh='sinus';
+ else{for(const [th,r] of sc.rh){if(p.s>=th){rh=r;break;}} }
+ if(sc.id==='ptx'&&p.s<30&&p.heal<0.55){rh='sinus';}
+ const o={hr:v[0],sys:v[1],dia:v[2],spo2:v[3],rr:v[4],t:v[5],rh};
+ if(rh==='vf'||rh==='asys'){o.hr=0;o.sys=0;o.dia=0;o.spo2=0;o.rr=0;}
+ if(rh==='vt'){o.hr=182;o.sys=Math.min(o.sys,72);o.dia=Math.min(o.dia,44);}
+ if(rh==='wide'){o.hr=Math.min(o.hr,34);}
+ return o;
+}
+function alarmLevel(v){
+ if(!v)return 0;
+ if(['vf','vt','asys'].includes(v.rh))return 2;
+ if(v.spo2<85||v.sys<80||v.hr>150||v.hr<40||v.rr<8)return 2;
+ if(v.spo2<90||v.sys<90||v.hr>120||v.hr<50||v.rr>28||v.sys>190)return 1;
+ return 0;
+}
+
+/* ================= TIME ================= */
+function fmtClock(gm){const m=Math.floor(21*60+gm)%(24*60);return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');}
+function activePatients(){return G.patients.filter(p=>!p.done);}
+function advance(dgm){
+ if(!G||G.ended)return;
+ G.gm+=dgm;
+ const cfg=G.cfg, base={1:100/40,2:100/110,3:100/260};
+ for(const p of G.patients){
+  if(p.done||p.uid===G.openId)continue;
+  const sc=p.sc;
+  let r=base[sc.acuity]*cfg.decay*(sc.dk||1)/(1+p.heal*3);
+  p.s-=r*dgm;
+  if(sc.acuity===3||sc.task){p.s=Math.max(p.s,12);}
+  else{
+   const room=sc.room;
+   if(p.s<55&&!p.said.w){p.said.w=1;nurse(pick(NURSE.worse).replace('{r}',room),'w');}
+   if(p.s<25&&!p.said.c){p.said.c=1;nurse(pick(NURSE.critical).replace('{r}',room),'c');}
+   if(p.s<=0){crash(p);}
+  }
+ }
+ // energy
+ const night=G.gm>330&&G.gm<480?1.5:1;
+ G.energy=clamp(G.energy-cfg.energy*night*dgm,0,100);
+ if(G.energy<25&&!G.said.tired){G.said.tired=1;nurse(pick(NURSE.tired),'w');}
+ if(G.energy>40)G.said.tired=0;
+ if(!G.threeSaid&&G.gm>=360){G.threeSaid=true;nurse(NURSE.three[0]);}
+ if(G.gm-G.lastFlavor>95&&Math.random()<0.02*dgm){G.lastFlavor=G.gm;nurse(pick(NURSE.flavor).replace('{t}',fmtClock(G.gm)));}
+ while(G.evIdx<G.events.length&&G.gm>=G.events[G.evIdx].t){spawn(G.events[G.evIdx].sc);G.evIdx++;}
+ if(G.gm>=SHIFT)endGame();
+}
+function timeCost(min){
+ const m=min*(G.energy<25?1.5:1);
+ advance(m);
+ floaty('+'+Math.round(m)+' min','#ffe08a',$('#clock'));
+ return m;
+}
+function crash(p){
+ p.done=true; p.outcome='crash'; p.s=0;
+ addScore(-120,true);
+ G.stats.crash++;
+ G.results.push({p,outcome:'crash',points:-120});
+ nurse(pick(NURSE.crash).replace('{r}',p.sc.room),'c');
+ SFX.alarmHigh();
+ const f=$('#flash'); $('#flashTxt').textContent=`MET-ALARM · ${p.sc.room}`; f.classList.remove('on'); void f.offsetWidth; f.classList.add('on');
+ announce(`Kritisches Ereignis in ${p.sc.room}. Medizinisches Notfallteam übernimmt.`);
+ renderQueue(); updStats();
+}
+
+/* ================= SCORE ================= */
+function addScore(n,silent){
+ G.raw+=n;
+ const disp=Math.round(n*G.cfg.mult);
+ floaty((disp>=0?'+':'')+disp, disp>=0?'var(--ok)':'var(--crit)',$('#score'));
+}
+function floaty(txt,color,anchor){
+ if(!anchor)return;
+ const host=anchor.closest('.score')||anchor.parentElement;
+ const s=document.createElement('span'); s.className='floaty'; s.textContent=txt; s.style.color=color;
+ if(host===anchor.parentElement&&anchor.id==='clock'){s.style.right='auto';s.style.left='100%';s.style.marginLeft='8px';s.style.top='0';host.style.position='relative';}
+ host.appendChild(s); setTimeout(()=>s.remove(),1400);
+}
+
+/* ================= NURSE / TOASTS ================= */
+function nurse(text,cls=''){
+ const f=$('#feed'); const d=document.createElement('div'); d.className='msg '+cls;
+ d.innerHTML=`<time>${G?fmtClock(G.gm):'21:00'} · Anke</time>${esc(text)}`;
+ f.prepend(d); while(f.children.length>40)f.lastChild.remove();
+ if(MOB()&&cls!=='sys')toast(`<small>ANKE · PFLEGE</small>${esc(text)}`,'');
+}
+function toast(html,cls,uid){
+ if(!MOB())return;
+ const box=$('#toasts'); const t=document.createElement('div'); t.className='toast '+cls; t.innerHTML=html;
+ if(uid){t.addEventListener('click',()=>{openCase(uid);});}
+ box.prepend(t); while(box.children.length>2)box.lastChild.remove();
+ setTimeout(()=>{t.classList.add('out');setTimeout(()=>t.remove(),320);},uid?4200:3400);
+}
+function announce(t){const l=$('#live');l.textContent='';setTimeout(()=>l.textContent=t,30);}
+
+/* ================= QUEUE ================= */
+function renderQueue(){
+ const q=$('#queue'); const act=activePatients();
+ $('#qcount').textContent=act.length;
+ if(!act.length){q.innerHTML='<div class="qempty">Keine offenen Rufe. Genieß es, solange es dauert.</div>';return;}
+ const emp=q.querySelector('.qempty'); if(emp)emp.remove();
+ const seen=new Set();
+ act.forEach((p,i)=>{
+  seen.add(String(p.uid));
+  let el=q.querySelector(`[data-uid="${p.uid}"]`);
+  const w=WARDS[p.sc.ward];
+  if(!el){
+   el=document.createElement('button'); el.className='qcard'+(p.sc.task?' task':'')+(RM?'':' new'); el.dataset.uid=p.uid;
+   el.innerHTML=`<div class="qc-top"><span class="wchip" style="--wc:${w.color}">${esc(w.short)}</span><span>${esc(p.sc.room)}</span>${G.cfg.help&&!p.sc.task?`<span class="acu a${p.sc.acuity}">${['','Kritisch','Dringlich','Stabil'][p.sc.acuity]}</span>`:''}${p.sc.task?'<span class="acu a3">Orga</span>':''}<span class="wait"></span><kbd></kbd></div><div class="qc-msg">${esc(p.sc.pager)}</div>${p.sc.task?'':'<div class="qc-vit"></div>'}<div class="qc-bar"><i></i></div>`;
+   el.addEventListener('click',()=>{SFX.click();openCase(p.uid);});
+   q.appendChild(el);
+  }
+  el.querySelector('kbd').textContent=i+1;
+ });
+ q.querySelectorAll('.qcard').forEach(el=>{if(!seen.has(el.dataset.uid))el.remove();});
+ updQueueDyn();
+}
+function updQueueDyn(){
+ if(!G)return;
+ for(const p of activePatients()){
+  const el=document.querySelector(`.qcard[data-uid="${p.uid}"]`); if(!el)continue;
+  const waited=Math.max(0,Math.floor(G.gm-p.arrived));
+  el.querySelector('.wait').textContent=p.opened?(p.uid===G.openId?'● offen':'unterbrochen'):`+${waited} min`;
+  el.classList.toggle('open',p.uid===G.openId);
+  const v=vitals(p);
+  const vit=el.querySelector('.qc-vit');
+  if(vit&&v){
+   const c=(bad,warn)=>bad?'c':warn?'w':'';
+   const hr=v.hr<1?'---':Math.round(v.hr), sp=v.spo2<1?'--':Math.round(v.spo2), bp=v.sys<1?'--/--':Math.round(v.sys)+'/'+Math.round(v.dia);
+   vit.innerHTML=`<span class="${c(v.hr>150||v.hr<40,v.hr>120||v.hr<50)}">HF ${hr}</span><span class="${c(v.spo2<85,v.spo2<90)}">SpO₂ ${sp}</span><span class="${c(v.sys<80,v.sys<90||v.sys>190)}">RR ${bp}</span>`;
+  }
+  const bar=el.querySelector('.qc-bar i'); const s=clamp(p.s,0,100);
+  bar.style.width=s+'%'; bar.style.background=s<25?'var(--crit)':s<55?'var(--warn)':'var(--accent)';
+  const lvl=p.sc.task?0:(p.s<25?2:(p.s<55?1:0));
+  el.classList.toggle('crit',lvl===2&&p.uid!==G.openId); el.classList.toggle('warn',lvl===1&&p.uid!==G.openId);
+  if(p.isNew){p.isNew=false;setTimeout(()=>el.classList.remove('new'),700);}
+ }
+}
+
+/* ================= CASE ================= */
+function openCase(uid){
+ if(!G||G.ended)return;
+ const p=G.patients.find(x=>x.uid===uid); if(!p||p.done)return;
+ if(G.openId===uid){scrollCase();return;}
+ G.openId=uid;
+ $('#pager').classList.remove('alert');
+ if(!p.opened){
+  p.opened=true; p.sAtOpen=p.s;
+  // triage evaluation
+  const waiting=activePatients().filter(x=>x.uid!==uid&&!x.opened);
+  if(waiting.length){
+   const worse=waiting.filter(x=>x.sc.acuity<p.sc.acuity||(!x.sc.task&&x.s<30&&x.s<p.s-20));
+   if(worse.length){G.stats.triageBad++;addScore(-20);if(Math.random()<0.8)nurse(pick(NURSE.triageBad).replace('{r}',p.sc.room),'w');p.triage=-1;}
+   else{G.stats.triageOk++;addScore(20);p.triage=1;if(Math.random()<0.35)nurse(pick(NURSE.triageGood),'g');}
+  } else p.triage=0;
+  timeCost(p.sc.task?1:3);
+ }
+ renderQueue(); renderCase(); scrollCase(true);
+}
+function scrollCase(focus){
+ const cp=$('#casePanel');
+ if(MOB()){const y=cp.getBoundingClientRect().top+window.scrollY-60;window.scrollTo({top:y,behavior:RM?'auto':'smooth'});}
+ else cp.scrollTop=0;
+ if(focus){const h=cp.querySelector('h2');if(h)h.focus({preventScroll:true});}
+}
+function closeCase(){
+ G.openId=null; renderQueue(); renderCase();
+ if(MOB()){window.scrollTo({top:0,behavior:RM?'auto':'smooth'});}
+}
+function renderEmpty(){
+ const act=G?activePatients().length:0;
+ const lines=act?['Rufe warten.','Wähle einen Ruf aus der Liste – Klick oder Taste 1–9. Wer zuerst?']:
+  [pick(['Stationsflur. Neonlicht summt.','Es ist still. Zu still.','Irgendwo tropft ein Perfusor.']),'Keine offenen Rufe. Die Zeit läuft im Zeitraffer, bis der Piepser wieder geht. Guter Moment für einen Kaffee (K).'];
+ $('#casePanel').innerHTML=`<div class="case-empty"><div><h3>${esc(lines[0])}</h3><p>${esc(lines[1])}</p></div></div>`;
+}
+function renderCase(){
+ if(!G)return;
+ const p=G.patients.find(x=>x.uid===G.openId);
+ if(!p){renderEmpty();return;}
+ const sc=p.sc, w=WARDS[sc.ward];
+ const li=a=>(a&&a.length?a.map(x=>`<li>${esc(x)}</li>`).join(''):'<li>–</li>');
+ let h=`<article class="case fade-in"><div class="case-head"><div><h2 tabindex="-1">${sc.task?esc(sc.pager.split(',')[0].split('–')[0]):esc(sc.name)+(sc.age?`, ${sc.age} J.`:'')}</h2>
+  <div class="meta"><span class="wchip" style="--wc:${w.color}">${esc(w.name)}</span> · ${esc(sc.room)} · Ruf ${fmtClock(p.arrived)}</div></div>
+  <button class="btn back" id="backBtn" title="Zurück zur Liste (B)">← Liste <kbd>B</kbd></button></div>
+  <p class="story"><span class="who">${sc.task?'Anliegen':'Pflege-Übergabe'}</span>${esc(sc.story)}</p>`;
+ if(!sc.task){
+  h+=`<div class="info"><section><h4>Befund</h4><ul>${li(sc.find)}</ul></section><section><h4>Medikation</h4><ul>${li(sc.meds)}</ul></section><section><h4>Labor / Akte</h4><ul>${li(sc.labs)}</ul></section></div>`;
+ }
+ if(p.results.length){
+  h+=`<div class="results"><h4>Ergebnisse</h4><ul>${p.results.map(r=>`<li class="${r.cls||''}">${r.html}</li>`).join('')}</ul></div>`;
+ }
+ if(p.step<sc.steps.length){h+=renderStep(p);}
+ else h+=renderSummary(p);
+ h+='</article>';
+ const cp=$('#casePanel'); const keep=cp.scrollTop; cp.innerHTML=h; cp.scrollTop=keep;
+ bindCase(p);
+}
+function renderStep(p){
+ const sc=p.sc, s=sc.steps[p.step], st=p.st;
+ const n=sc.steps.length;
+ let h=`<div class="step" id="stepBox"><div class="step-meta"><span>Schritt ${p.step+1}/${n}</span><span>${s.k==='dx'?'Anordnen · Mehrfachauswahl':'Entscheidung'}</span>${s.k==='dx'?'<span style="color:var(--muted)">jede Anordnung kostet Zeit</span>':''}</div><h3>${esc(s.q)}</h3>`;
+ if(s.k==='dx'){
+  h+=`<div class="opts dx">`+s.o.map((o,i)=>{
+   let cls='opt'; let extra='';
+   if(st.answered){const chosen=st.sel.has(i); cls+=chosen?(o.ok?' right':' wrong'):(o.ok?' dim':' dim'); if(chosen||o.ok)extra=`<span class="why">${o.ok?(chosen?'✓ indiziert':'✗ verpasst – wäre indiziert gewesen'):'Nicht indiziert'}</span>`;}
+   return `<button class="${cls}" data-i="${i}" aria-pressed="${st.sel.has(i)}" ${st.answered?'disabled':''}><kbd class="k">${i+1}</kbd><span class="t">${esc(o.l)}${extra}</span><span class="m">+${o.min}′</span></button>`;}).join('')+`</div>`;
+  const tot=[...st.sel].reduce((a,i)=>a+s.o[i].min,0);
+  h+=`<div class="step-foot">${st.answered?`<span class="verdict ${st.verdict.cls}">${esc(st.verdict.t)}</span><button class="btn primary" data-primary id="nextBtn">Weiter <kbd>Enter</kbd></button>`:
+   `<span class="hint">${st.sel.size?`${st.sel.size} ausgewählt · ${tot} min`:'Auswählen, dann anordnen'}</span><button class="btn primary" data-primary id="orderBtn" ${st.sel.size?'':'disabled'}>Anordnen <kbd>Enter</kbd></button>`}</div>`;
+ } else {
+  h+=`<div class="opts">`+s.o.map((o,i)=>{
+   let cls='opt';
+   if(st.answered){ if(i===st.choice)cls+=o.ok===1?' right':(o.ok===2?' harm':' wrong'); else cls+=o.ok===1?' right dim':' dim'; }
+   return `<button class="${cls}" data-i="${i}" ${st.answered?'disabled':''}><kbd class="k">${i+1}</kbd><span class="t">${esc(o.l)}${st.answered?`<span class="why">${o.ok===1?'✓ ':o.ok===2?'⚠ ':'✗ '}${esc(o.why)}</span>`:''}</span></button>`;}).join('')+`</div>`;
+  if(st.answered)h+=`<div class="step-foot"><span class="verdict ${st.verdict.cls}">${esc(st.verdict.t)}</span><button class="btn primary" data-primary id="nextBtn">${p.step+1<n?'Weiter':'Fall abschließen'} <kbd>Enter</kbd></button></div>`;
+ }
+ return h+'</div>';
+}
+function renderSummary(p){
+ const sc=p.sc, oc=p.outcome;
+ const lab={gut:'Stabil',ok:'Stabilisiert',kompl:'Komplikation'}[oc];
+ return `<div class="summary fade-in" id="stepBox"><div class="step-meta"><span>Fallabschluss</span><span>${p.points>=0?'+':''}${Math.round(p.points*G.cfg.mult)} Punkte</span></div>
+  <div class="dxname">${esc(sc.dx)} <span class="oc ${oc}">${lab}</span></div>
+  <h5>Warum</h5><p>${esc(sc.teach.why)}</p><h5>Take-home</h5><p class="take">${esc(sc.teach.take)}</p>
+  <div class="step-foot"><span class="hint">${p.triage===1?'Triage ✓':p.triage===-1?'Triage ✗ – jemand Kritischeres wartete':''}</span><button class="btn primary" data-primary id="doneBtn">Zurück in die Nacht <kbd>Enter</kbd></button></div></div>`;
+}
+function bindCase(p){
+ const cp=$('#casePanel');
+ const b=$('#backBtn'); if(b)b.onclick=()=>{SFX.click();closeCase();};
+ cp.querySelectorAll('.opt').forEach(el=>el.addEventListener('click',()=>chooseOpt(p,+el.dataset.i)));
+ const ob=$('#orderBtn'); if(ob)ob.onclick=()=>confirmDx(p);
+ const nb=$('#nextBtn'); if(nb)nb.onclick=()=>nextStep(p);
+ const db=$('#doneBtn'); if(db)db.onclick=()=>finishCase(p);
+}
+function chooseOpt(p,i){
+ const s=p.sc.steps[p.step]; if(!s||p.st.answered||i>=s.o.length)return;
+ SFX.click();
+ if(s.k==='dx'){p.st.sel.has(i)?p.st.sel.delete(i):p.st.sel.add(i);renderCase();return;}
+ // single choice
+ const o=s.o[i]; p.st.answered=true; p.st.choice=i;
+ const pts=p.sc.task?25:40;
+ if(o.ok===1){p.earned+=pts;addScore(pts);p.heal=clamp(p.heal+(p.sc.steps.filter(x=>x.k==='q').length>1?0.4:0.7),0,1);p.s=Math.min(100,p.s+25);SFX.ok();p.st.verdict={cls:'good',t:pick(['Richtig.','Genau so.','Sitzt.','Korrekt.'])};}
+ else if(o.ok===2){p.harm=true;addScore(-40);p.s=Math.max(p.s-25,1);SFX.bad();p.st.verdict={cls:'harm',t:'Gefährlich – das schadet dem Patienten.'};G.stats.harm++;G.stats.wrongTopics.push(p.sc.dx);}
+ else{addScore(-15);p.s=Math.max(p.s-10,1);SFX.bad();p.st.verdict={cls:'bad',t:'Nicht optimal.'};G.stats.wrongTopics.push(p.sc.dx);}
+ timeCost(s.min||2);
+ if(G.ended)return;
+ renderCase(); updQueueDyn(); focusPrimary();
+}
+function confirmDx(p){
+ const s=p.sc.steps[p.step]; if(p.st.answered||!p.st.sel.size)return;
+ let pts=0,mins=0,waste=0,miss=0;
+ s.o.forEach((o,i)=>{
+  const ch=p.st.sel.has(i);
+  if(ch){mins+=o.min; if(o.ok){pts+=15;p.results.push({html:`<b>${esc(o.l)}:</b> ${esc(o.res)}`});} else {pts-=10;waste++;p.results.push({html:`<b>${esc(o.l)}:</b> ${esc(o.res)}`,cls:'waste'});}}
+  else if(o.ok){pts-=8;miss++;p.results.push({html:`Nicht angeordnet: <b>${esc(o.l)}</b>`,cls:'miss'});}
+ });
+ p.earned+=Math.max(0,pts); addScore(pts);
+ p.st.answered=true;
+ p.st.verdict=(!waste&&!miss)?{cls:'good',t:'Zielgerichtet – genau das Richtige.'}:{cls:'bad',t:`${miss?miss+' verpasst':''}${miss&&waste?' · ':''}${waste?waste+' unnötig':''}`};
+ if(!waste&&!miss)SFX.ok(); else SFX.click();
+ if(waste||miss)G.stats.wrongTopics.push(p.sc.dx);
+ timeCost(mins);
+ if(G.ended)return;
+ renderCase(); focusPrimary();
+}
+function nextStep(p){
+ SFX.click();
+ p.step++; p.st={sel:new Set(),answered:false,choice:null};
+ if(p.step>=p.sc.steps.length)evaluate(p);
+ renderCase();
+ const sb=$('#stepBox'); if(sb&&!MOB())sb.scrollIntoView({block:'nearest',behavior:RM?'auto':'smooth'});
+ if(MOB()&&sb){const y=sb.getBoundingClientRect().top+window.scrollY-70;window.scrollTo({top:y,behavior:RM?'auto':'smooth'});}
+ focusPrimary();
+}
+function evaluate(p){
+ const q=p.max?p.earned/p.max:0;
+ let oc=p.harm?'kompl':q>=0.75?'gut':q>=0.45?'ok':'kompl';
+ let bonus=p.sc.task?(oc==='gut'?10:0):({gut:60,ok:25,kompl:-30}[oc]+Math.round((p.sAtOpen||0)/100*20));
+ p.outcome=oc; p.points=p.earned+bonus+(p.triage===1?20:p.triage===-1?-20:0);
+ addScore(bonus);
+ if(oc==='gut'){p.heal=1;p.s=100;G.stats.good++;G.stats.goodTopics.push(p.sc.dx);}
+ else if(oc==='ok'){p.heal=Math.max(p.heal,0.7);p.s=Math.max(p.s,70);G.stats.ok++;}
+ else {G.stats.bad++;}
+ if(!p.sc.task)nurse(pick(NURSE[oc==='gut'?'good':oc==='ok'?'ok':'bad']),oc==='gut'?'g':oc==='kompl'?'w':'');
+ updStats();
+}
+function finishCase(p){
+ SFX.click();
+ p.done=true; G.results.push({p,outcome:p.outcome,points:p.points});
+ closeCase();
+}
+function focusPrimary(){const b=$('#casePanel [data-primary]');if(b&&!MOB())b.focus({preventScroll:true});}
+function updStats(){$('#stGood').textContent=G.stats.good+G.stats.ok;$('#stBad').textContent=G.stats.bad;$('#stCrash').textContent=G.stats.crash;}
+
+/* coffee */
+function coffee(){
+ if(!G||G.ended||G.paused)return;
+ if(G.gm-G.lastCoffee<45){nurse('Noch einer? Dein Puls ist schon höher als der von Zimmer 16.','w');return;}
+ G.lastCoffee=G.gm; G.coffees++; SFX.pour();
+ G.energy=clamp(G.energy+45,0,100);
+ timeCost(6);
+ if(Math.random()<0.6)nurse(pick(NURSE.coffee));
+}
+
+/* ================= MONITOR ================= */
+const gs=(x,mu,sd,a)=>{const z=(x-mu)/sd;return a*Math.exp(-0.5*z*z);};
+function beatShape(dt,rh,rr){
+ if(dt<-0.35||dt>0.9)return 0;
+ const tp=0.17+0.12*Math.min(rr,1.2);
+ switch(rh){
+  case 'peakedT': return gs(dt,-0.17,0.03,0.06)+gs(dt,-0.03,0.012,-0.1)+gs(dt,0,0.016,0.95)+gs(dt,0.035,0.014,-0.3)+gs(dt,tp-0.02,0.032,0.78);
+  case 'wide': return gs(dt,0.0,0.04,0.75)+gs(dt,0.09,0.05,-0.55)+gs(dt,0.26,0.07,0.5);
+  case 'stemi': {const st=(dt>0.03&&dt<tp)?0.28*(1/(1+Math.exp(-(dt-0.045)*120)))*(1/(1+Math.exp((dt-tp+0.02)*60))):0;return gs(dt,-0.16,0.025,0.1)+gs(dt,-0.025,0.009,-0.25)+gs(dt,0,0.011,0.95)+gs(dt,0.025,0.01,-0.1)+st+gs(dt,tp,0.055,0.42);}
+  case 'vt': return gs(dt,0.04,0.045,1.0)+gs(dt,0.17,0.055,-0.75);
+  case 'avb3': return gs(dt,0,0.03,0.9)+gs(dt,0.06,0.03,-0.4)+gs(dt,0.34,0.07,-0.25);
+  case 'afib': return gs(dt,-0.025,0.009,-0.1)+gs(dt,0,0.011,1)+gs(dt,0.025,0.01,-0.24)+gs(dt,tp,0.05,0.22);
+  default: return gs(dt,-0.16,0.025,0.12)+gs(dt,-0.025,0.009,-0.12)+gs(dt,0,0.011,1)+gs(dt,0.025,0.01,-0.24)+gs(dt,tp,0.05,0.28);
+ }
+}
+const pulse=d=>d<0||d>1.2?0:gs(d,0.12,0.055,1)+gs(d,0.34,0.08,0.38);
+class Monitor{
+ constructor(c){this.c=c;this.x=c.getContext('2d');this.t=0;this.acc=0;this.head=0;this.pid='x';this.lb=-10;this.pb=-10;this.nb=0.4;this.onBeat=null;this.src=null;this.resize();
+  if(window.ResizeObserver)new ResizeObserver(()=>this.resize()).observe(c); else window.addEventListener('resize',()=>this.resize());}
+ resize(){const r=this.c.getBoundingClientRect(),dpr=Math.min(2,window.devicePixelRatio||1);this.w=Math.max(20,Math.floor(r.width));this.h=Math.max(20,Math.floor(r.height));this.c.width=this.w*dpr;this.c.height=this.h*dpr;this.x.setTransform(dpr,0,0,dpr,0,0);
+  this.e=new Float32Array(this.w).fill(NaN);this.p=new Float32Array(this.w).fill(NaN);this.r=new Float32Array(this.w).fill(NaN);this.head=0;}
+ set(id,fn){if(id!==this.pid){this.pid=id;this.e.fill(NaN);this.p.fill(NaN);this.r.fill(NaN);this.head=0;this.lb=this.t-10;this.pb=this.t-10;this.nb=this.t+0.3;}this.src=fn;}
+ step(dt){
+  dt=Math.min(dt,0.1);
+  const pps=Math.max(60,this.w/6); this.acc+=dt*pps;
+  const v=this.src?this.src():null;
+  while(this.acc>=1){
+   this.acc-=1; this.t+=1/pps;
+   let e=NaN,p=NaN,r=NaN;
+   if(v){
+    const rh=v.rh, beating=!['vf','asys'].includes(rh);
+    if(beating&&this.t>=this.nb){this.pb=this.lb;this.lb=this.nb;let rr=60/Math.max(v.hr,15);if(rh==='afib')rr*=rnd(0.62,1.38);this.nb=this.lb+rr;this.onBeat&&this.onBeat(v);}
+    if(!beating)this.nb=this.t+0.4;
+    const rr=this.nb-this.lb;
+    if(rh==='vf'){const t=this.t,a=0.35+0.22*Math.sin(t*0.9)+0.1*Math.sin(t*2.3);e=a*(Math.sin(t*2*Math.PI*4.7)+0.6*Math.sin(t*2*Math.PI*6.9+0.7)+0.35*Math.sin(t*2*Math.PI*3.1+2))/1.6;}
+    else if(rh==='asys'){e=(Math.random()-0.5)*0.015;}
+    else{e=beatShape(this.t-this.lb,rh,rr)+beatShape(this.t-this.nb,rh,rr);
+     if(rh==='afib')e+=0.035*Math.sin(this.t*2*Math.PI*6.3)+0.025*Math.sin(this.t*2*Math.PI*8.7+1);
+     if(rh==='avb3'){const pp=((this.t%0.74)+0.74)%0.74;e+=gs(pp,0.37,0.028,0.13);} }
+    e+=(Math.random()-0.5)*0.012;
+    const perf=clamp((v.sys-45)/75,0.08,1);
+    if(beating&&v.sys>0){p=perf*(pulse(this.t-this.lb-0.2)+pulse(this.t-this.pb-0.2))+(Math.random()-0.5)*0.01;} else p=(Math.random()-0.5)*0.03;
+    r=v.rr>0?0.5*Math.sin(this.t*2*Math.PI*(v.rr/60)):0;
+   }
+   this.e[this.head]=e;this.p[this.head]=p;this.r[this.head]=r;
+   for(let k=1;k<=14;k++){const j=(this.head+k)%this.w;this.e[j]=NaN;this.p[j]=NaN;this.r[j]=NaN;}
+   this.head=(this.head+1)%this.w;
+  }
+ }
+ draw(alarm){
+  const x=this.x,w=this.w,h=this.h;
+  x.clearRect(0,0,w,h);
+  x.strokeStyle='rgba(127,168,255,0.05)';x.lineWidth=1;x.beginPath();
+  for(let gx=0;gx<w;gx+=24){x.moveTo(gx+.5,0);x.lineTo(gx+.5,h);} for(let gy=0;gy<h;gy+=24){x.moveTo(0,gy+.5);x.lineTo(w,gy+.5);} x.stroke();
+  const ch=[[this.e,h*0.30,h*0.2,'#7ff0b8','II'],[this.p,h*0.72,-h*0.16,'#7fd6ff','Pleth'],[this.r,h*0.92,h*0.05,'#ffe08a','Resp']];
+  ch[1][1]=h*0.74; ch[1][2]=h*0.17;
+  x.font='10px "DM Mono",monospace';
+  for(const [buf,y0,amp,col,lab] of ch){
+   x.fillStyle='rgba(142,159,191,.6)';x.fillText(lab,10,lab==='II'?y0-amp*1.1-4+14:y0-amp-2);
+   x.strokeStyle=(lab==='II'&&alarm===2)?'#ff6b78':col;x.lineWidth=1.6;x.shadowColor=x.strokeStyle;x.shadowBlur=RM?0:6;
+   x.beginPath();let pen=false;
+   for(let i=0;i<w;i++){const v=buf[i];if(Number.isNaN(v)){pen=false;continue;}const yy=lab==='Pleth'?y0-v*amp:y0-v*amp;if(!pen){x.moveTo(i,yy);pen=true;}else x.lineTo(i,yy);}
+   x.stroke();
+  }
+  x.shadowBlur=0;
+  // head dot
+  const hi=(this.head-1+w)%w,ev=this.e[hi];if(!Number.isNaN(ev)){x.fillStyle='#e9fff4';x.beginPath();x.arc(hi,h*0.30-ev*h*0.2,2,0,Math.PI*2);x.fill();}
+ }
+}
+
+/* ================= LOOP ================= */
+let mon, last=0, numsT=0;
+function focusPatient(){
+ if(!G)return null;
+ const open=G.patients.find(p=>p.uid===G.openId);
+ if(open&&!open.sc.task)return open;
+ const act=activePatients().filter(p=>!p.sc.task);
+ if(!act.length)return null;
+ return act.slice().sort((a,b)=>a.s-b.s)[0];
+}
+function frame(ts){
+ requestAnimationFrame(frame);
+ const dt=last?Math.min(0.1,(ts-last)/1000):0; last=ts;
+ if(!G||!$('#game').classList.contains('active'))return;
+ const idle=!G.openId&&!activePatients().length;
+ if(G.running&&!G.paused&&!G.ended){
+  let rate=G.cfg.rate*(G.openId?0.55:1);
+  const allDone=G.evIdx>=G.events.length&&idle;
+  if(idle)rate*=allDone?14:6;
+  $('#ff').classList.toggle('on',idle);
+  advance(dt*rate);
+  if(idle&&G.gm-G.lastIdleMsg>120&&!allDone){G.lastIdleMsg=G.gm;if(Math.random()<0.5)nurse(pick(NURSE.idle));}
+ }
+ // monitor
+ const fp=focusPatient();
+ const fv=fp?vitals(fp):null;
+ if(!G.paused){mon.set(fp?fp.uid:'none',fp?()=>vitals(fp):null);mon.step(dt);}
+ const al=alarmLevel(fv);
+ mon.draw(al);
+ // alarms
+ if(!G.paused&&!G.ended){
+  const now=ts/1000;
+  let hi=0; for(const p of activePatients()){if(p.sc.task)continue;const l=alarmLevel(vitals(p));if(l===2&&(p.uid===G.openId||p.s<30||['vf','asys','vt'].includes(vitals(p).rh)))hi=2;}
+  if(hi===2&&now-G.lastAlarm>3.4){G.lastAlarm=now;SFX.alarmHigh();}
+  else if(al===1&&now-G.lastMedAlarm>9){G.lastMedAlarm=now;SFX.alarmMed();}
+ }
+ numsT+=dt;
+ if(numsT>0.25){numsT=0;updNums(fp,fv,al);updQueueDyn();updTop();}
+}
+function updNums(fp,v,al){
+ const set=(id,val,bad,warn)=>{const el=$(id);el.querySelector('b').textContent=val;el.classList.toggle('al',!!bad);el.classList.toggle('wa',!bad&&!!warn);};
+ if(!v){['#nHR','#nSP','#nRR','#nT'].forEach(i=>set(i,'--'));set('#nBP','--/--');
+  $('#monLabel').innerHTML='ZENTRALE · <b>kein Patient am Monitor</b>';$('#monAlarm').className='mon-alarm';return;}
+ const j=()=>Math.round(rnd(-1,1));
+ const hr=v.hr<1?'---':Math.round(v.hr)+j();
+ set('#nHR',hr,v.hr<40||v.hr>150,v.hr<50||v.hr>120);
+ set('#nSP',v.spo2<1?'--':Math.round(v.spo2),v.spo2>0&&v.spo2<85||v.spo2<1,v.spo2<90);
+ set('#nBP',v.sys<1?'--/--':Math.round(v.sys)+'/'+Math.round(v.dia),v.sys<80,v.sys<90||v.sys>190);
+ set('#nRR',v.rr<1?'--':Math.round(v.rr),v.rr<8,v.rr>28);
+ set('#nT',v.t.toFixed(1),false,v.t>=38.5);
+ const own=fp.uid===G.openId;
+ $('#monLabel').innerHTML=`${own?'BETT':'ZENTRALE · kritischster'} · <b>${esc(fp.sc.room)} · ${esc(fp.sc.name)}</b> <span>${rhName(v.rh)}</span>`;
+ const ma=$('#monAlarm');
+ const txt=v.rh==='vf'?'VF':v.rh==='vt'?'VT':v.rh==='asys'?'ASYSTOLIE':v.spo2<85?'SpO₂ ↓↓':v.sys<80?'RR ↓↓':v.hr<40?'BRADY':v.hr>150?'TACHY':v.spo2<90?'SpO₂ ↓':v.sys<90?'RR ↓':v.hr>120?'HF ↑':v.sys>190?'RR ↑':'!';
+ ma.className='mon-alarm'+(al===2?' c':al===1?' w':''); ma.textContent=al?txt:'';
+}
+function rhName(r){return {sinus:'Sinusrhythmus',peakedT:'Sinus · hohe T',wide:'breite QRS',vf:'Kammerflimmern',vt:'Kammertachykardie',afib:'Vorhofflimmern',stemi:'ST-Hebung',avb3:'AV-Block III°',asys:'Asystolie'}[r]||'';}
+function updTop(){
+ $('#clock').textContent=fmtClock(G.gm); $('#pgTime').textContent=fmtClock(G.gm);
+ $('#shiftBar').style.width=clamp(G.gm/SHIFT*100,0,100)+'%';
+ const target=Math.round(G.raw*G.cfg.mult); G.shown+=(target-G.shown)*0.35; if(Math.abs(target-G.shown)<1)G.shown=target;
+ $('#score').textContent=Math.round(G.shown);
+ const eb=$('#ebar'); eb.querySelector('i').style.width=G.energy+'%'; eb.classList.toggle('low',G.energy<25);
+ document.body.classList.toggle('tired',G.energy<25&&!RM);
+ $('#coffeeBtn').disabled=G.gm-G.lastCoffee<45;
+}
+
+/* ================= FLOW ================= */
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.id===id));window.scrollTo(0,0);}
+function startGame(){
+ SFX.init(); SFX.click();
+ store.set('nd.diff',diffKey);
+ newGame();
+ $('#feed').innerHTML=''; $('#queue').innerHTML=''; $('#toasts').innerHTML='';
+ $('#dtag').textContent=G.cfg.label;
+ $('#pgMsg').textContent='Dienst übernommen. Akku 3/3.';
+ show('game'); renderQueue(); renderEmpty(); updStats();
+ requestAnimationFrame(()=>{mon.resize();});
+ nurse(NURSE.start[0]);
+ nurse(G.cfg.help?'Tipp von mir: Ich schreib dir dazu, wie dringend ich die Rufe einschätze. Kritisch zuerst.':'Du liest die Piepser selbst. Achte auf die Vitalwerte in der Liste.','sys');
+}
+function setPaused(v){
+ if(!G||G.ended)return; G.paused=v; $('#pauseOv').classList.toggle('on',v);
+ if(v){$('#resumeBtn').focus();}
+}
+function endGame(){
+ if(G.ended)return; G.ended=true; G.running=false;
+ // unresolved
+ for(const p of activePatients()){
+  p.done=true; const pen=p.sc.task?(p.sc.id==='t_death'?-30:-15):(p.sc.acuity===3?-15:-40);
+  G.raw+=pen; G.results.push({p,outcome:'offen',points:pen}); if(p.sc.task&&p.sc.id==='t_death')G.stats.deathOpen=1;
+ }
+ G.openId=null;
+ nurse(NURSE.end[0],'g');
+ setTimeout(renderEnd,650);
+}
+function titleFor(pct){
+ if(pct<0.2)return 'Famulant:in';
+ if(pct<0.4)return 'PJler:in';
+ if(pct<0.6)return 'Assistenzarzt/-ärztin';
+ if(pct<0.78)return 'Facharzt-Niveau';
+ return 'Oberarzt-Material';
+}
+function oaFeedback(pct){
+ const s=G.stats, L=[];
+ const open=G.results.filter(r=>r.outcome==='offen').length;
+ if(s.crash===0&&s.harm===0&&pct>=0.78)L.push('Saubere Nacht. Niemand ist uns entglitten, und die Entscheidungen waren leitliniennah. Ich hab nichts zu meckern – und das sage ich nicht oft.');
+ else{
+  if(s.crash>0)L.push(`${s.crash===1?'Ein Patient ist':s.crash+' Patienten sind'} uns in der Warteschlange gekippt. Triage heißt: der Kritischste zuerst, nicht der Erste in der Liste.`);
+  else if(s.triageBad>=2)L.push('Du bist mehrfach zum Lautesten statt zum Kritischsten gelaufen. Lies die Vitalwerte, bevor du losläufst.');
+  if(s.harm>0){const t=[...new Set(s.wrongTopics)].slice(0,2).join(' und ');L.push(`Bei ${t||'einigen Fällen'} waren Entscheidungen dabei, die dem Patienten schaden können. Das schauen wir uns morgen in Ruhe an – nicht als Vorwurf, sondern damit es beim nächsten Mal sitzt.`);}
+  else if(s.wrongTopics.length){const t=[...new Set(s.wrongTopics)].slice(0,2).join(' und ');L.push(`Nacharbeiten würde ich ${t}. Das Grundgerüst stimmt, die Details noch nicht.`);}
+  if(open)L.push(`${open} offene Baustelle${open>1?'n':''} bei der Übergabe. ${G.stats.deathOpen?'Und die Leichenschau war auch noch offen – die ist nicht delegierbar.':'Der Frühdienst freut sich nicht.'}`);
+ }
+ if(s.goodTopics.length&&pct<0.78)L.push(`Gut gelöst: ${[...new Set(s.goodTopics)].slice(0,2).join(', ')}.`);
+ if(G.coffees>=5)L.push(`${G.coffees} Kaffee in einer Nacht? Dein Troponin würde ich gern sehen.`);
+ else if(G.coffees===0)L.push('Ohne einen einzigen Kaffee durch die Nacht. Respekt – oder Wahnsinn.');
+ L.push(pct>=0.6?'Weiter so. Nächste Woche bist du wieder eingeteilt.':'Kopf hoch. Jeder Dienst macht dich besser – genau dafür sind Nachtdienste da.');
+ return L.join(' ');
+}
+function renderEnd(){
+ const final=Math.max(0,Math.round(G.raw*G.cfg.mult));
+ const pct=clamp(G.raw/G.maxPossible,0,1);
+ const title=titleFor(pct);
+ // highscore
+ const hs=store.get('nd.hs.v1',{});
+ const list=hs[G.diff]||[]; const entry={s:final,t:title,d:new Date().toISOString().slice(0,10),id:Date.now()};
+ const prevBest=list.length?list[0].s:0;
+ list.push(entry); list.sort((a,b)=>b.s-a.s); hs[G.diff]=list.slice(0,5); store.set('nd.hs.v1',hs);
+ const isBest=final>prevBest&&final>0;
+ const s=G.stats; const medRes=G.results.filter(r=>!r.p.sc.task);
+ const stable=medRes.filter(r=>r.outcome==='gut'||r.outcome==='ok').length;
+ const lab={gut:'Stabil',ok:'Stabilisiert',kompl:'Komplikation',crash:'MET / REA',offen:'Übergabe offen'};
+ const outs=G.results.slice().sort((a,b)=>a.p.arrived-b.p.arrived).map(r=>`<li><span class="rm">${fmtClock(r.p.arrived)}</span><span class="nm">${esc(r.p.sc.task?r.p.sc.dx:r.p.sc.name+', '+r.p.sc.age)}<small>${esc(r.p.sc.task?WARDS[r.p.sc.ward].name:r.p.sc.dx)}</small></span><span class="oc ${r.outcome}">${lab[r.outcome]}</span><span class="pts">${r.points>=0?'+':''}${Math.round(r.points*G.cfg.mult)}</span></li>`).join('');
+ const rows=hs[G.diff].map((e,i)=>`<tr class="${e.id===entry.id?'me':''}"><td>${i+1}.</td><td>${e.s}</td><td>${esc(e.t)}</td><td>${esc(e.d)}</td></tr>`).join('');
+ $('#endContent').innerHTML=`<div class="end-hero fade-in"><span class="eyebrow">07:00 · Übergabe an den Frühdienst · ${esc(G.cfg.label)}</span>
+  <h1>Dienst vorbei.</h1><div class="end-score" id="endScore">0</div><span class="end-title">${esc(title)}</span>${isBest?'<div class="end-new">NEUER BESTWERT</div>':''}</div>
+  <div class="end-grid">
+   <div class="panel"><div class="ph"><span>Patienten</span><b>${G.results.length} Rufe</b></div>
+    <div class="kpis"><div class="kpi"><b style="color:var(--ok)">${stable}</b><small>Stabil</small></div><div class="kpi"><b style="color:var(--warn)">${s.bad}</b><small>Komplikation</small></div><div class="kpi"><b style="color:var(--crit)">${s.crash}</b><small>MET/REA</small></div><div class="kpi"><b>${s.triageOk}/${s.triageOk+s.triageBad}</b><small>Triage</small></div></div>
+    <ul class="outlist">${outs}</ul></div>
+   <div style="display:flex;flex-direction:column;gap:16px">
+    <div class="panel oa"><blockquote>„${esc(oaFeedback(pct))}“</blockquote><cite>— DR. HARTMANN, OBERARZT · ÜBERGABE 07:05</cite></div>
+    <div class="panel"><div class="ph"><span>Bestenliste · ${esc(G.cfg.label)}</span><b>lokal</b></div><table class="hst"><thead><tr><th>#</th><th>Punkte</th><th>Titel</th><th>Datum</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <div class="panel" style="padding:12px 14px;font-size:13px;color:var(--muted)">Kaffee: ${G.coffees} · Punkte-Multiplikator ×${G.cfg.mult} · ${Math.round(pct*100)} % der möglichen Punkte. <br><b style="color:var(--ice)">Lernspiel, keine Therapieempfehlung.</b></div>
+   </div></div>
+  <div class="end-actions"><button class="btn primary big" id="againBtn">Neuer Dienst <kbd>Enter</kbd></button><a class="btn big" href="/spiele/">Alle Spiele</a></div>`;
+ show('end');
+ const el=$('#endScore'); const t0=performance.now();
+ const tick=now=>{const k=clamp((now-t0)/1400,0,1);el.textContent=Math.round(final*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(tick);};
+ RM?el.textContent=final:requestAnimationFrame(tick);
+ $('#againBtn').onclick=()=>{show('intro');renderHsMini();};
+ $('#againBtn').focus({preventScroll:true});
+ SFX.ok();
+}
+function renderHsMini(){
+ const hs=store.get('nd.hs.v1',{}); const parts=Object.keys(DIFF).map(k=>hs[k]&&hs[k][0]?`${DIFF[k].label}: <b>${hs[k][0].s}</b>`:null).filter(Boolean);
+ $('#hsMini').innerHTML=parts.length?'BESTWERTE<br>'+parts.join(' · '):'Noch kein Dienst absolviert.';
+}
+
+/* ================= INTRO BG ================= */
+function introBg(){
+ const c=$('#introBg'),x=c.getContext('2d');let t=0,lt=0;
+ function size(){const d=Math.min(2,devicePixelRatio||1);c.width=c.clientWidth*d;c.height=c.clientHeight*d;x.setTransform(d,0,0,d,0,0);}
+ size(); window.addEventListener('resize',size);
+ function draw(ts){
+  if(!$('#intro').classList.contains('active')){lt=ts;requestAnimationFrame(draw);return;}
+  const dt=lt?Math.min(0.05,(ts-lt)/1000):0;lt=ts;t+=dt;
+  const w=c.clientWidth,h=c.clientHeight;x.clearRect(0,0,w,h);
+  const y0=h*0.62,amp=Math.min(90,h*0.1),speed=160,head=RM?w*0.8:(t*speed)%(w+300);
+  x.lineWidth=1.5;x.shadowBlur=12;x.shadowColor='#7fa8ff';
+  x.beginPath();
+  for(let i=0;i<w;i+=2){const tt=i/speed;const beat=((tt%0.95)+0.95)%0.95-0.4;const v=beatShape(beat,'sinus',0.95);const dist=head-i;const a=dist<0?0:Math.max(0,1-dist/(w*0.9));
+   if(a<=0){continue;} x.strokeStyle=`rgba(127,168,255,${0.55})`; x.lineTo(i,y0-v*amp);}
+  x.stroke();
+  // fading overlay
+  const g=x.createLinearGradient(head-w*0.9,0,head,0);g.addColorStop(0,'rgba(7,13,26,1)');g.addColorStop(1,'rgba(7,13,26,0)');
+  x.shadowBlur=0;x.fillStyle=g;x.fillRect(0,0,Math.max(0,head),h);
+  if(head>0&&head<w){x.fillStyle='#dfe9ff';x.beginPath();const tt=head/speed;const beat=((tt%0.95)+0.95)%0.95-0.4;x.arc(head,y0-beatShape(beat,'sinus',0.95)*amp,2.5,0,7);x.fill();}
+  if(!RM)requestAnimationFrame(draw);
+ }
+ requestAnimationFrame(draw);
+}
+
+/* ================= INPUT ================= */
+function selectDiff(k){diffKey=k;document.querySelectorAll('.diff').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.diff===k)));}
+document.querySelectorAll('.diff').forEach(b=>b.addEventListener('click',()=>{SFX.init();SFX.click();selectDiff(b.dataset.diff);}));
+$('#startBtn').addEventListener('click',startGame);
+$('#muteIntro').addEventListener('click',()=>{SFX.init();SFX.setMuted(!SFX.muted);});
+$('#muteBtn').addEventListener('click',()=>{SFX.init();SFX.setMuted(!SFX.muted);});
+$('#pauseBtn').addEventListener('click',()=>setPaused(true));
+$('#resumeBtn').addEventListener('click',()=>setPaused(false));
+$('#quitBtn').addEventListener('click',()=>{setPaused(false);endGame();});
+$('#coffeeBtn').addEventListener('click',coffee);
+const pg=$('#pager');
+const pagerOpen=()=>{if(!G)return;const act=activePatients().filter(p=>!p.opened);const n=act[act.length-1];if(n)openCase(n.uid);};
+pg.addEventListener('click',pagerOpen); pg.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pagerOpen();}});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&G&&!G.ended&&$('#game').classList.contains('active'))setPaused(true);});
+document.addEventListener('keydown',e=>{
+ if(e.metaKey||e.ctrlKey||e.altKey)return;
+ const k=e.key;
+ if($('#intro').classList.contains('active')){
+  if(k==='1'||k==='2'||k==='3'){selectDiff(['pj','ass','oa'][+k-1]);SFX.init();SFX.click();}
+  else if(k==='Enter'&&document.activeElement&&document.activeElement.tagName!=='A'){e.preventDefault();startGame();}
+  else if(k==='m'||k==='M'){SFX.init();SFX.setMuted(!SFX.muted);}
+  return;
+ }
+ if($('#end').classList.contains('active')){if(k==='Enter'&&document.activeElement.tagName!=='A'){e.preventDefault();show('intro');renderHsMini();}return;}
+ if(!G||G.ended)return;
+ if(k==='Escape'||k==='p'||k==='P'){e.preventDefault();setPaused(!G.paused);return;}
+ if(G.paused)return;
+ if(k==='m'||k==='M'){SFX.setMuted(!SFX.muted);return;}
+ if(k==='k'||k==='K'){coffee();return;}
+ const p=G.patients.find(x=>x.uid===G.openId);
+ if(p){
+  if(/^[1-9]$/.test(k)){e.preventDefault();chooseOpt(p,+k-1);return;}
+  if(k==='Enter'){const b=$('#casePanel [data-primary]');if(b&&!b.disabled){e.preventDefault();b.click();}return;}
+  if(k==='b'||k==='B'||k==='Backspace'){e.preventDefault();closeCase();return;}
+ } else if(/^[1-9]$/.test(k)){
+  const act=activePatients(); const t=act[+k-1]; if(t){e.preventDefault();openCase(t.uid);}
+ }
+});
+
+/* ================= BOOT ================= */
+updMute(); selectDiff(diffKey); renderHsMini(); introBg();
+mon=new Monitor($('#mon')); mon.onBeat=v=>{if(G&&!G.paused&&!G.ended&&v&&v.spo2>0)SFX.beep(v.spo2);};
+requestAnimationFrame(frame);
+window.__ND={get G(){return G;},SC,TASKS,advance:m=>advance(m)};
+})();
+</script>
+</body>
+</html>
