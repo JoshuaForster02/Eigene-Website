@@ -225,6 +225,9 @@ footer a{text-decoration:none;margin-left:20px}footer a:hover{color:var(--crim)}
 .egg i{font-style:normal;font-size:15px;letter-spacing:0}
 @keyframes eggpulse{0%{box-shadow:0 0 0 0 rgba(143,177,255,.45)}70%{box-shadow:0 0 0 16px rgba(143,177,255,0)}100%{box-shadow:0 0 0 0 rgba(143,177,255,0)}}
 @media (prefers-reduced-motion:reduce){.egg.on{animation:none}}
+.lng{background:none;border:1px solid var(--line);color:var(--fg2);font-family:var(--mono);font-size:11px;letter-spacing:.12em;height:38px;min-width:44px;border-radius:999px;cursor:pointer;margin-right:8px;transition:border-color .3s,color .3s}.lng:hover{border-color:var(--crim);color:var(--crim)}
+.cvbtn{display:inline-flex;align-items:center;gap:10px;margin-top:22px;padding:14px 22px;background:none;border:1px solid var(--crim);color:var(--fg);font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:background .3s,color .3s}.cvbtn:hover{background:var(--crim);color:var(--bg)}
+.form.flash{animation:fflash 1.4s var(--ease)}@keyframes fflash{0%{box-shadow:0 0 0 2px var(--crim)}100%{box-shadow:0 0 0 0 transparent}}
 </style>
 </head>
 <body>
@@ -232,12 +235,13 @@ footer a{text-decoration:none;margin-left:20px}footer a:hover{color:var(--crim)}
 <div class="veil" aria-hidden="true"></div>
 <div class="grain" aria-hidden="true"></div>
 <div class="prog" aria-hidden="true"></div>
-<a class="skip" href="#main">Zum Inhalt springen</a>
+<a class="skip" href="#main" data-i="skip">Zum Inhalt springen</a>
 <nav id="nav" aria-label="Hauptnavigation">
   <a class="logo" href="#hero">Joshua <i>Forster</i></a>
   <a class="egg" id="egg" href="/spiele/" aria-hidden="true" tabindex="-1"><i>◆</i>Easter Egg</a>
   <div class="nav-r">
-    <ul class="links"><li><a href="#about">Über mich</a></li><li><a href="#stationen">Stationen</a></li><li><a href="#projekte">Projekte</a></li><li><a href="#ausgleich">Sport</a></li><li><a href="#kontakt">Kontakt</a></li></ul>
+    <ul class="links"><li><a href="#about" data-i="n1">Über mich</a></li><li><a href="#stationen" data-i="n2">Stationen</a></li><li><a href="#projekte" data-i="n3">Projekte</a></li><li><a href="#ausgleich">Sport</a></li><li><a href="#kontakt" data-i="n5">Kontakt</a></li></ul>
+    <button class="lng" id="lng" type="button">EN</button>
     <button class="tgl" id="tgl" aria-label="Hell/Dunkel umschalten"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.4 1.4M17.6 17.6 19 19M5 19l1.4-1.4M17.6 6.4 19 5"/></svg></button>
   </div>
 </nav>
@@ -247,33 +251,33 @@ footer a{text-decoration:none;margin-left:20px}footer a:hover{color:var(--crim)}
   <div class="stage">
     <div class="mono-bg" aria-hidden="true">Jf</div>
     <div class="hero-in">
-      <div class="kicker">Medizinstudent · 7. Semester · Homburg</div>
+      <div class="kicker" data-i="kick">Medizinstudent · 7. Semester · Homburg</div>
       <h1 class="name" data-chars><span class="ln">Joshua</span><span class="ln"><em>Forster</em></span></h1>
       <div class="hero-sub">
-        <p>Orthopädie, Sportmedizin und Prävention.</p>
-        <div class="hero-cta"><a class="btn solid" href="#projekte">Projekte</a><a class="btn" href="#kontakt">Kontakt</a></div>
+        <p data-i="sub">Orthopädie, Sportmedizin und Prävention.</p>
+        <div class="hero-cta"><a class="btn solid" href="#projekte" data-i="c1">Projekte</a><a class="btn" href="#kontakt" data-i="c2">Kontakt</a></div>
       </div>
     </div>
-    <div class="scroll-cue">Scrollen</div>
+    <div class="scroll-cue" data-i="scr">Scrollen</div>
   </div>
 </section>
 
 <section id="about" class="pin" data-pin aria-label="Über mich">
   <div class="stage">
-    <div class="label">01 · Über mich</div>
-    <p class="stmt" data-words>Ich studiere Medizin im klinischen Abschnitt an der Universität des Saarlandes. Mich fasziniert der <span class="hl">Bewegungsapparat</span>: wie Menschen sich bewegen, sich verletzen und wieder zurückkommen. Außerhalb der Klinik fechte ich und <span class="hl">trainiere</span>.</p>
+    <div class="label" data-i="l1">01 · Über mich</div>
+    <p class="stmt" data-words data-i="stmt">Ich studiere Medizin im klinischen Abschnitt an der Universität des Saarlandes. Mich fasziniert der <span class="hl">Bewegungsapparat</span>: wie Menschen sich bewegen, sich verletzen und wieder zurückkommen. Außerhalb der Klinik fechte ich und <span class="hl">trainiere</span>.</p>
   </div>
 </section>
 
 <section id="stationen" class="pin" data-pin aria-label="Stationen">
   <div class="stage">
-    <div class="st-top"><h2>Stationen<br><em>bis Zürich.</em></h2><span class="st-count">02 · Werdegang</span></div>
+    <div class="st-top"><h2 data-i="sth">Stationen<br><em>bis Zürich.</em></h2><span class="st-count" data-i="stc">02 · Werdegang</span></div>
     <div class="track" id="track">
-      <div class="st"><span class="tag">Studium</span><div class="yr">2022</div><h3>Start Medizinstudium</h3><p>Universität des Saarlandes, Campus Homburg.</p></div>
-      <div class="st"><span class="tag">Prüfung</span><div class="yr">2025</div><h3>Physikum</h3><p>Erster Abschnitt der Ärztlichen Prüfung, danach Wechsel in den klinischen Abschnitt.</p></div>
-      <div class="st now"><span class="tag">Famulatur</span><div class="yr">2026</div><h3>Orthopädie</h3><p>Famulatur am Universitätsklinikum des Saarlandes in Homburg.</p></div>
-      <div class="st"><span class="tag">Praktisches Jahr</span><div class="yr">28/29</div><h3>PJ in Basel</h3><p>Innere Medizin und Chirurgie am Universitätsspital Basel.</p></div>
-      <div class="st"><span class="tag">Wahltertial</span><div class="yr">III</div><h3>Orthopädie in Zürich</h3><p>Wahltertial an der Schulthess Klinik Zürich.</p></div>
+      <div class="st"><span class="tag" data-i="st0">Studium</span><div class="yr">2022</div><h3 data-i="st1">Start Medizinstudium</h3><p data-i="st2">Universität des Saarlandes, Campus Homburg.</p></div>
+      <div class="st"><span class="tag" data-i="st3">Prüfung</span><div class="yr">2025</div><h3>Physikum</h3><p data-i="st4">Erster Abschnitt der Ärztlichen Prüfung, danach Wechsel in den klinischen Abschnitt.</p></div>
+      <div class="st now"><span class="tag" data-i="st5">Famulatur</span><div class="yr">2026</div><h3 data-i="st6">Orthopädie</h3><p data-i="st7">Famulatur am Universitätsklinikum des Saarlandes in Homburg.</p></div>
+      <div class="st"><span class="tag" data-i="st8">Praktisches Jahr</span><div class="yr">28/29</div><h3 data-i="st9">PJ in Basel</h3><p data-i="st10">Innere Medizin und Chirurgie am Universitätsspital Basel.</p></div>
+      <div class="st"><span class="tag" data-i="st11">Wahltertial</span><div class="yr">III</div><h3 data-i="st12">Orthopädie in Zürich</h3><p data-i="st13">Wahltertial an der Schulthess Klinik Zürich.</p></div>
     </div>
     <div class="bar"><i></i></div>
   </div>
@@ -281,11 +285,11 @@ footer a{text-decoration:none;margin-left:20px}footer a:hover{color:var(--crim)}
 
 <section id="projekte" class="sec">
   <div class="wrap">
-    <div class="rv"><div class="sec-label">03 · Projekte</div><h2 class="h2">Was ich<br><em>gebaut habe.</em></h2></div>
+    <div class="rv"><div class="sec-label" data-i="l3">03 · Projekte</div><h2 class="h2" data-i="h3">Was ich<br><em>gebaut habe.</em></h2></div>
     <div class="proj">
       <a class="pr" href="visite/">
         <div class="pimg" data-view><img src="images/kitteltasche.webp" alt="Startseite von Visite" loading="lazy"></div>
-        <div class="rv"><div class="pnum">Live · joshuaforster.de/visite</div><h3>Vi<em>site</em></h3><p>Ein Klinikbegleiter für Station und Notaufnahme: Arztbrief-Assistent, Medikations-Check, über 160 klinische Scores und Rechner, dazu Übungsfälle mit Musterbrief.</p><div class="ptags"><span>Arztbriefe</span><span>Medikation</span><span>Scores</span></div><span class="more">Öffnen</span></div>
+        <div class="rv"><div class="pnum">Live · joshuaforster.de/visite</div><h3>Vi<em>site</em></h3><p data-i="pv">Ein Klinikbegleiter für Station und Notaufnahme: Arztbrief-Assistent, Medikations-Check, über 160 klinische Scores und Rechner, dazu Übungsfälle mit Musterbrief.</p><div class="ptags"><span data-i="pt1">Arztbriefe</span><span data-i="pt2">Medikation</span><span>Scores</span></div><span class="more">Öffnen</span></div>
       </a>
       <a class="pr" href="https://apkg.joshuaforster.de" target="_blank" rel="noopener">
         <div class="pimg" data-view><div class="ph"><div class="cards3">
@@ -293,7 +297,7 @@ footer a{text-decoration:none;margin-left:20px}footer a:hover{color:var(--crim)}
           <div style="--r:7deg;--x:40px;--y:-14px"><small>FOLIE 12</small>Innervation der Rotatorenmanschette?</div>
           <div style="--r:-1deg;--x:0px;--y:0px"><small>FOLIE 8 · ANKI</small>Was prüft der Lachman-Test?</div>
         </div></div></div>
-        <div class="rv"><div class="pnum">Live · apkg.joshuaforster.de</div><h3>medi.<em>cards</em></h3><p>Folien als PDF oder PPTX hochladen, die KI erzeugt daraus quellenbasierte Anki-Karten mit Seitenangabe. Gebaut fürs Medizinstudium.</p><div class="ptags"><span>KI</span><span>Anki / APKG</span></div><span class="more">Öffnen</span></div>
+        <div class="rv"><div class="pnum">Live · apkg.joshuaforster.de</div><h3>medi.<em>cards</em></h3><p data-i="pm">Folien als PDF oder PPTX hochladen, die KI erzeugt daraus quellenbasierte Anki-Karten mit Seitenangabe. Gebaut fürs Medizinstudium.</p><div class="ptags"><span>KI</span><span>Anki / APKG</span></div><span class="more">Öffnen</span></div>
       </a>
     </div>
   </div>
@@ -301,47 +305,56 @@ footer a{text-decoration:none;margin-left:20px}footer a:hover{color:var(--crim)}
 
 <section id="ausgleich" class="sec" style="padding-top:0">
   <div class="wrap">
-    <div class="rv"><div class="sec-label">04 · Außerhalb der Klinik</div><h2 class="h2">Der <em>Ausgleich.</em></h2></div>
+    <div class="rv"><div class="sec-label" data-i="l4">04 · Außerhalb der Klinik</div><h2 class="h2" data-i="h4">Der <em>Ausgleich.</em></h2></div>
     <div class="list">
-      <a class="li" href="fechten.html"><span class="n">01</span><div><h3>Fechten, <em>Degen</em></h3><p>Distanz, Timing und Entscheidungen unter Druck.</p></div><span class="arr">↗</span></a>
-      <div class="li"><span class="n">02</span><div><h3>Laufen &amp; <em>Kraft</em></h3><p>Ausdauer auf der Straße, Krafttraining seit 2021.</p>
+      <a class="li" href="fechten.html"><span class="n">01</span><div><h3 data-i="f1">Fechten, <em>Degen</em></h3><p data-i="f2">Distanz, Timing und Entscheidungen unter Druck.</p></div><span class="arr">↗</span></a>
+      <div class="li"><span class="n">02</span><div><h3 data-i="r1">Laufen &amp; <em>Kraft</em></h3><p data-i="r2">Ausdauer auf der Straße, Krafttraining seit 2021.</p>
         <div class="run" id="run">
-          <div><b>22:07</b><span>Schnellster Lauf · 5 km</span></div>
-          <div class="live" data-k="longest"><b>–</b><span>Längster Lauf</span></div>
-          <div class="live" data-k="ytd"><b>–</b><span>Laufkilometer <span data-yr></span></span></div>
-          <div><b>2021</b><span>Krafttraining seit</span></div>
+          <div><b>22:07</b><span data-i="r3">Schnellster Lauf · 5 km</span></div>
+          <div class="live" data-k="longest"><b>–</b><span data-i="r4">Längster Lauf</span></div>
+          <div class="live" data-k="ytd"><b>–</b><span data-i="r5">Laufkilometer <span data-yr></span></span></div>
+          <div><b>2021</b><span data-i="r6">Krafttraining seit</span></div>
         </div>
-        <div class="next"><b>Als Nächstes</b><span>Halbmarathon · Oktober 2026</span><span>2027 Triathlon</span><span>Ende 2027 Ironman</span></div>
+        <div class="next"><b data-i="x1">Als Nächstes</b><span data-i="x2">Halbmarathon · Oktober 2026</span><span>2027 Triathlon</span><span data-i="x3">Ende 2027 Ironman</span></div>
         <div class="stamp" id="stamp"></div>
       </div></div>
     </div>
     <div class="social">
-      <a class="soc ig rv" href="https://www.instagram.com/iamjoshuaforster/" target="_blank" rel="noopener"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></span><span><b>Instagram</b><small>@iamjoshuaforster · Sport, Outdoor, Fotografie</small></span><span class="arr">↗</span></a>
-      <a class="soc st rv" id="stravaLink" href="https://www.strava.com/athletes/55105958" target="_blank" rel="noopener"><span class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.4 17.9 13.3 13.7h-3.1l5.2 10.3 5.2-10.3h-3.1zM10.2 0 3.3 13.7h4.1l2.8-5.5 2.8 5.5h4.1z"/></svg></span><span><b>Strava</b><small>Läufe und Training, täglich aktualisiert</small></span><span class="arr">↗</span></a>
+      <a class="soc ig rv" href="https://www.instagram.com/iamjoshuaforster/" target="_blank" rel="noopener"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></span><span><b>Instagram</b><small data-i="so1">@iamjoshuaforster · Sport, Outdoor, Fotografie</small></span><span class="arr">↗</span></a>
+      <a class="soc st rv" id="stravaLink" href="https://www.strava.com/athletes/55105958" target="_blank" rel="noopener"><span class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.4 17.9 13.3 13.7h-3.1l5.2 10.3 5.2-10.3h-3.1zM10.2 0 3.3 13.7h4.1l2.8-5.5 2.8 5.5h4.1z"/></svg></span><span><b>Strava</b><small data-i="so2">Läufe und Training, täglich aktualisiert</small></span><span class="arr">↗</span></a>
     </div>
   </div>
 </section>
 
 <section id="kontakt" class="sec contact">
   <div class="wrap">
-    <div class="sec-label">05 · Kontakt</div>
+    <div class="sec-label" data-i="l5">05 · Kontakt</div>
     <div class="cgrid">
-      <div class="rv"><h2 class="h2" style="margin-top:0">Lass uns<br><em>sprechen.</em></h2><p style="font-size:17px;line-height:1.75;color:var(--fg3);margin-top:26px;max-width:40ch">Für fachlichen Austausch oder Fragen zu meinen Projekten. Den Lebenslauf verschicke ich auf Anfrage per E-Mail.</p><a class="mail" href="mailto:joshuaforster02@gmail.com">joshuaforster02@gmail.com</a></div>
+      <div class="rv"><h2 class="h2" style="margin-top:0" data-i="h5">Lass uns<br><em>sprechen.</em></h2><p style="font-size:17px;line-height:1.75;color:var(--fg3);margin-top:26px;max-width:40ch" data-i="cp">Für fachlichen Austausch oder Fragen zu meinen Projekten. Den Lebenslauf verschicke ich auf Anfrage per E-Mail.</p><a class="mail" href="mailto:joshuaforster02@gmail.com">joshuaforster02@gmail.com</a>
+        <button type="button" class="cvbtn" id="cvbtn"><span data-i="cvb">Lebenslauf anfragen</span> <span aria-hidden="true">→</span></button></div>
       <form class="form rv" action="https://formspree.io/f/xqeajnve" method="POST">
         <input type="hidden" name="_subject" value="Website-Anfrage von joshuaforster.de">
         <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
         <div class="row"><input id="b-name" name="name" placeholder="Name" autocomplete="name" required aria-label="Name"><input id="b-mail" type="email" name="email" placeholder="E-Mail" autocomplete="email" required aria-label="E-Mail"></div>
         <textarea id="b-msg" name="message" placeholder="Nachricht" required aria-label="Nachricht"></textarea>
-        <label class="cb"><input type="checkbox" name="request_cv" value="yes"> Ich möchte den Lebenslauf per E-Mail erhalten.</label>
-        <button type="submit">Nachricht senden →</button>
-        <small>Mit dem Absenden willigst du in die Verarbeitung deiner Angaben ein. Mehr unter <a href="datenschutz.html">Datenschutz</a>.</small>
+        <label class="cb" id="cvcb"><input type="checkbox" name="request_cv" value="yes"> <span data-i="cv">Ich möchte den Lebenslauf per E-Mail erhalten.</span></label>
+        <button type="submit" data-i="sb">Nachricht senden →</button>
+        <small data-i="fs">Mit dem Absenden willigst du in die Verarbeitung deiner Angaben ein. Mehr unter <a href="datenschutz.html">Datenschutz</a>.</small>
       </form>
     </div>
   </div>
 </section>
 </main>
-<footer><span>© 2026 Joshua Forster</span><span><a href="#hero">Nach oben ↑</a><a href="datenschutz.html">Datenschutz</a></span></footer>
+<footer><span>© 2026 Joshua Forster</span><span><a href="#hero" data-i="ft1">Nach oben ↑</a><a href="datenschutz.html">Datenschutz</a></span></footer>
 
+<script>
+(()=>{let L='de';try{L=localStorage.getItem('jf-lang')||''}catch(e){}
+if(!L)L=(navigator.languages||[navigator.language||'de']).some(l=>/^de/i.test(l))?'de':'en';
+window.JF_LANG=L;const EN={"skip": "Skip to content", "n1": "About", "n2": "Path", "n3": "Projects", "n5": "Contact", "kick": "Medical student · 7th semester · Homburg, Germany", "sub": "Orthopaedics, sports medicine and prevention.", "c1": "Projects", "c2": "Contact", "scr": "Scroll", "l1": "01 · About", "stmt": "I study medicine in the clinical phase at Saarland University. I am fascinated by the <span class=\"hl\">musculoskeletal system</span>: how people move, get injured and find their way back. Outside the hospital I fence and <span class=\"hl\">train</span>.", "sth": "The path<br><em>to Zurich.</em>", "stc": "02 · Path", "st0": "Medical school", "st1": "Start of medical school", "st2": "Saarland University, Homburg campus.", "st3": "Exam", "st4": "First state medical examination, then the move into the clinical years.", "st5": "Clerkship", "st6": "Orthopaedics", "st7": "Clinical clerkship at Saarland University Medical Center, Homburg.", "st8": "Final year (PJ)", "st9": "Final year in Basel", "st10": "Internal medicine and surgery at University Hospital Basel.", "st11": "Elective", "st12": "Orthopaedics in Zurich", "st13": "Elective rotation at Schulthess Klinik, Zurich.", "l3": "03 · Projects", "h3": "What I<br><em>have built.</em>", "pv": "A clinical companion for the ward and emergency department: discharge letter assistant, medication check, more than 160 clinical scores and calculators, plus practice cases with model letters. In German.", "pt1": "Discharge letters", "pt2": "Medication", "pm": "Upload lecture slides as PDF or PPTX and the AI turns them into source-referenced Anki cards with page numbers. Built for medical school.", "l4": "04 · Outside the hospital", "h4": "The <em>balance.</em>", "f1": "Fencing, <em>épée</em>", "f2": "Distance, timing and decisions under pressure.", "r1": "Running &amp; <em>strength</em>", "r2": "Endurance on the road, strength training since 2021.", "r3": "Fastest run · 5 km", "r4": "Longest run", "r5": "Running km <span data-yr></span>", "r6": "Strength training since", "x1": "Up next", "x2": "Half marathon · October 2026", "x3": "Ironman · late 2027", "so2": "Runs and training, updated daily", "l5": "05 · Contact", "h5": "Let's<br><em>talk.</em>", "cp": "For professional exchange or questions about my projects. My CV is available on request by email.", "sb": "Send message →", "fs": "By sending, you agree to the processing of your details. More in the <a href=\"datenschutz.html\">privacy policy</a> (German).", "ft1": "Back to top ↑", "so1": "@iamjoshuaforster · Sport, outdoors, photography", "cv": "I'd like to receive the CV by email.", "cvb": "Request CV"};const PH={"b-name": "Name", "b-mail": "Email", "b-msg": "Message"};
+if(L==='en'){document.documentElement.lang='en';document.querySelectorAll('[data-i]').forEach(e=>{const v=EN[e.dataset.i];if(v!=null)e.innerHTML=v});for(const k in PH){const e=document.getElementById(k);if(e)e.placeholder=PH[k]};const d=document.querySelector('meta[name=description]');if(d)d.content='Joshua Forster, medical student in Homburg, Germany. Orthopaedics, sports medicine and prevention.';}
+const b=document.getElementById('lng');if(b){b.textContent=L==='en'?'DE':'EN';b.setAttribute('aria-label',L==='en'?'Auf Deutsch wechseln':'Switch to English');b.addEventListener('click',()=>{try{localStorage.setItem('jf-lang',L==='en'?'de':'en')}catch(e){}location.reload()})}
+})();
+</script>
 <script>
 (()=>{
 const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -426,7 +439,7 @@ fetch('data/strava.json',{cache:'no-cache'}).then(r=>r.ok?r.json():null).then(d=
  if(d.longest_run_km)set('longest',fmt(d.longest_run_km,1),'km');
  if(d.ytd_run_km!=null){set('ytd',fmt(d.ytd_run_km),'km');if(d.year)document.querySelectorAll('[data-yr]').forEach(e=>e.textContent=d.year)}
  if(d.athlete_url)document.getElementById('stravaLink').href=d.athlete_url;
- if(d.updated){const t=new Date(d.updated);document.getElementById('stamp').textContent=(d.demo?'Beispielwerte · ':'')+'Strava-Stand: '+t.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'})}
+ if(d.updated){const t=new Date(d.updated);document.getElementById('stamp').textContent=(window.JF_LANG==='en'?'Strava, as of ':(d.demo?'Beispielwerte · ':'')+'Strava-Stand: ')+t.toLocaleDateString(window.JF_LANG==='en'?'en-GB':'de-DE',{day:'2-digit',month:'2-digit',year:'numeric'})}
 }).catch(()=>{});
 })();
 </script>
@@ -434,6 +447,9 @@ fetch('data/strava.json',{cache:'no-cache'}).then(r=>r.ok?r.json():null).then(d=
 <script>
 (()=>{const logo=document.querySelector('#nav .logo'),egg=document.getElementById('egg');if(!logo||!egg)return;let n=0,t=0;
 logo.addEventListener('click',()=>{const now=Date.now();n=now-t<1500?n+1:1;t=now;if(n>=7){n=0;egg.classList.add('on');egg.removeAttribute('aria-hidden');egg.removeAttribute('tabindex');egg.focus({preventScroll:true});clearTimeout(egg._h);egg._h=setTimeout(()=>{egg.classList.remove('on');egg.setAttribute('aria-hidden','true');egg.setAttribute('tabindex','-1')},12000)}});})();
+</script>
+<script>
+(()=>{const b=document.getElementById('cvbtn');if(!b)return;b.addEventListener('click',()=>{const en=window.JF_LANG==='en';const cb=document.querySelector('#cvcb input');if(cb)cb.checked=true;const m=document.getElementById('b-msg');if(m&&!m.value.trim())m.value=en?'Hello Joshua,\n\nI would like to request your CV.\n\nKind regards':'Hallo Joshua,\n\nich würde gerne deinen Lebenslauf anfragen.\n\nViele Grüße';const f=document.querySelector('.form');if(f){f.classList.remove('flash');void f.offsetWidth;f.classList.add('flash');f.scrollIntoView({behavior:'smooth',block:'center'})}setTimeout(()=>{const n=document.getElementById('b-name');n&&n.focus({preventScroll:true})},500)})})();
 </script>
 </body>
 </html>
