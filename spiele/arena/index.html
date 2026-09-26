@@ -43,6 +43,13 @@ h2{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--mute
 .mode{position:relative;text-align:left;cursor:pointer;background:var(--panel2);border:1px solid var(--line2);border-radius:12px;padding:14px 14px 12px;transition:transform .12s,border-color .12s,box-shadow .12s}
 .mode:hover,.mode:focus-visible{transform:translateY(-2px);border-color:var(--cyan);box-shadow:0 0 0 1px var(--cyan),0 8px 30px rgba(95,242,255,.18);outline:none}
 .mode:disabled{opacity:.5;cursor:wait;transform:none}
+.mode.wide{grid-column:1/-1}
+.din{display:flex;gap:8px;margin-top:10px}
+.din input{flex:1;min-width:0;font:600 18px var(--mono);letter-spacing:.3em;text-transform:uppercase;color:#fff;background:rgba(255,255,255,.06);border:1px solid var(--line2);border-radius:10px;padding:10px 12px;outline:none}
+.din input:focus{border-color:var(--cyan)}
+#dLinkIn{font:13px var(--mono);letter-spacing:0;text-transform:none}
+.dcode{font:700 40px var(--mono);letter-spacing:.3em;color:var(--cyan);text-shadow:0 0 18px rgba(95,242,255,.5);margin:10px 0 2px}
+#over.duel .stats,#over.duel #oBoard,#over.duel #oNew{display:none}
 .mode b{display:block;font-size:17px;letter-spacing:.03em}
 .mode small{display:block;color:var(--muted);margin-top:4px;font-size:12.5px;line-height:1.35}
 .mode .best{display:block;margin-top:10px;font-family:var(--mono);font-size:12px;color:var(--cyan)}
@@ -230,9 +237,9 @@ input[type=range]{width:100%;accent-color:var(--cyan)}
   <div id="dnums"></div>
   <div id="popups"></div>
   <div id="topbar">
-    <div class="tb"><span>Welle</span><b id="hWave">1</b></div>
+    <div class="tb"><span id="hWaveLbl">Welle</span><b id="hWave">1</b></div>
     <div class="tb main" id="tbTime"><span id="hTimeLbl">Zeit</span><b id="hTime">2:00</b></div>
-    <div class="tb"><span>Punkte</span><b id="hScore">0</b></div>
+    <div class="tb"><span id="hScoreLbl">Punkte</span><b id="hScore">0</b></div>
   </div>
   <div id="boss"><span id="bossName">Mutterschiff</span><div class="bbar"><i id="bossBar"></i></div></div>
   <div id="callout"></div>
@@ -277,6 +284,7 @@ input[type=range]{width:100%;accent-color:var(--cyan)}
     <div class="modes">
       <button class="mode" id="bTimer" disabled><span class="key">2:00</span><b>Zeitmodus</b><small>Zwei Minuten, so viele Punkte wie möglich.</small><span class="best" id="bestTimer">Bestwert: –</span></button>
       <button class="mode" id="bEndless" disabled><span class="key">∞</span><b>Endlos-Wellen</b><small>Wellen werden stärker. Wie weit kommst du?</small><span class="best" id="bestEndless">Bestwert: –</span></button>
+      <button class="mode wide" id="bDuel" disabled><span class="key">1 v 1</span><b>Online-Duell</b><small>Raum erstellen, Link schicken, gegeneinander antreten. Wer zuerst 10 Treffer landet, gewinnt.</small></button>
     </div>
     <div id="loadMsg">Lade 3D-Engine …</div>
     <h2>Steuerung</h2>
@@ -306,6 +314,25 @@ input[type=range]{width:100%;accent-color:var(--cyan)}
   <div class="set"><label for="sVol">Lautstärke</label><input id="sVol" type="range" min="0" max="100" step="1"><output id="oVol"></output></div>
   <div class="set"><span>Grafik</span><div class="seg"><button type="button" data-q="low">Niedrig</button><button type="button" data-q="high">Hoch</button></div></div>
   <div class="set"><span>Musik · Ton</span><div class="seg"><button type="button" id="sMusic">Musik</button><button type="button" id="sMute">Stumm</button><button type="button" id="sFps">FPS</button></div></div>
+</div>
+
+<!-- ============ Online-Duell ============ -->
+<div id="duel" class="overlay center hidden">
+  <div class="card" role="dialog" aria-labelledby="dTitle">
+    <p class="kicker">Online-Duell · 1 gegen 1</p>
+    <h1 id="dTitle" style="font-size:40px">Neon <span>Duell</span></h1>
+    <p class="sub">Ihr verbindet euch direkt Browser zu Browser. Einer erstellt einen Raum und schickt Link oder Code, der andere tritt bei.</p>
+    <div id="dStart">
+      <button class="btn" id="dCreate" style="width:100%">Raum erstellen</button>
+      <div class="din"><input id="dCode" maxlength="5" placeholder="CODE" autocomplete="off" spellcheck="false" aria-label="Raumcode"><button class="btn ghost" id="dJoin">Beitreten</button></div>
+    </div>
+    <div id="dRoom" class="hidden">
+      <div class="dcode" id="dCodeShow"></div>
+      <div class="din"><input id="dLinkIn" readonly aria-label="Einladungslink"><button class="btn ghost" id="dCopy">Kopieren</button></div>
+    </div>
+    <p class="note" id="dStatus">Wähle: Raum erstellen oder mit Code beitreten.</p>
+    <div class="row"><button class="btn" id="dReady" disabled>Bereit</button><button class="btn ghost" id="dBack">Zurück</button></div>
+  </div>
 </div>
 
 <!-- ============ Pause ============ -->
@@ -1434,6 +1461,8 @@ function drawMinimap() {
     g.fillStyle = b.charge > 0 ? '#ffffff' : (b.type === 'heavy' ? '#b05cff' : b.type === 'stinger' ? '#ff7a2f' : '#ff3dbb');
     g.beginPath(); g.arc(mmX(b.pos.x), mmZ(b.pos.z), b.type === 'boss' ? 5.5 : b.type === 'heavy' ? 3.4 : 2.5, 0, TAU); g.fill();
   }
+  // Gegner nur zeigen, wenn er gerade geschossen hat (wie ein Radar-Ping)
+  if (G.mode === 'duel' && AV && AV.g.visible && G.time - NET.lastPeerShot < 1.6) { g.fillStyle = '#ff3dbb'; g.beginPath(); g.arc(mmX(AV.g.position.x), mmZ(AV.g.position.z), 4, 0, TAU); g.fill(); }
   const x = mmX(P.pos.x), z = mmZ(P.pos.z);
   g.save(); g.translate(x, z); g.rotate(-P.yaw);
   g.fillStyle = 'rgba(95,242,255,.18)'; g.beginPath(); g.moveTo(0, 0); g.arc(0, 0, 26, -Math.PI / 2 - 0.6, -Math.PI / 2 + 0.6); g.fill();
@@ -1489,8 +1518,16 @@ function startGame(mode) {
   $('menu').classList.add('hidden'); $('over').classList.add('hidden'); $('pause').classList.add('hidden');
   $('hud').classList.remove('hidden'); $('links').classList.add('hidden');
   if (IS_TOUCH) $('touch').classList.remove('hidden');
-  hud.timeLbl.textContent = mode === 'timer' ? 'Zeit' : 'Zeit';
+  hud.timeLbl.textContent = 'Zeit';
+  $('hWaveLbl').textContent = mode === 'duel' ? 'Du' : 'Welle'; $('hScoreLbl').textContent = mode === 'duel' ? 'Gegner' : 'Punkte';
+  $('over').classList.toggle('duel', mode === 'duel');
+  G.freezeT = 0;
   G.state = 'playing';
+  if (mode === 'duel') {
+    G.timeLeft = DUEL.time; G.freezeT = 3.5; NET.kills = NET.deaths = 0; NET.down = false; NET.snaps.length = 0;
+    duelSpawn(true);
+    banner('Online-Duell', 'Erster mit ' + DUEL.target + ' Treffern gewinnt', 1);
+  } else
   banner(mode === 'timer' ? 'Zeitmodus' : 'Endlos-Wellen', 'Mach dich bereit …', 1.4);
   requestLock();
   updateMusic();
@@ -1505,18 +1542,27 @@ function requestLock() {
 }
 function pauseGame() {
   if (G.state !== 'playing') return;
+  if (G.mode === 'duel') {
+    // Im Duell läuft die Zeit weiter – nur Eingaben stoppen
+    G.menuOpen = true; input.fire = false; input.ads = false; keys.clear(); input.f = input.b = input.l = input.r = 0;
+    $('pauseSettings').appendChild($('settings'));
+    $('pause').classList.remove('hidden'); $('pTitle').innerHTML = 'Duell <span>läuft weiter</span>';
+    return;
+  }
   G.state = 'paused'; input.fire = false; input.ads = false; keys.clear();
   $('pauseSettings').appendChild($('settings'));
   $('pause').classList.remove('hidden'); $('links').classList.remove('hidden');
   updateMusic();
 }
 function resumeGame() {
+  if (G.mode === 'duel' && G.menuOpen) { G.menuOpen = false; $('pause').classList.add('hidden'); $('pTitle').innerHTML = 'Kurze <span>Pause</span>'; requestLock(); return; }
   if (G.state !== 'paused') return;
   $('pause').classList.add('hidden'); $('links').classList.add('hidden');
   G.state = 'playing'; requestLock(); updateMusic();
 }
 function toMenu() {
-  G.state = 'menu';
+  G.state = 'menu'; G.menuOpen = false; G.mode = G.mode === 'duel' ? 'endless' : G.mode;
+  $('over').classList.remove('duel'); $('bAgain').textContent = 'Nochmal';
   $('settingsHost').appendChild($('settings'));
   $('pause').classList.add('hidden'); $('over').classList.add('hidden'); $('hud').classList.add('hidden'); $('touch').classList.add('hidden');
   $('menu').classList.remove('hidden'); $('links').classList.remove('hidden');
@@ -1576,6 +1622,7 @@ function pickSpawn() {
   return best;
 }
 function updateWaves(dt) {
+  if (G.mode === 'duel') { updateDuel(dt); return; }
   if (G.mode === 'timer') {
     G.timeLeft -= dt;
     const sec = Math.ceil(G.timeLeft);
@@ -1642,6 +1689,7 @@ function updatePlayer(dt) {
   // Eingabe → Wunschrichtung
   let fx = input.r - input.l, fz = input.b - input.f;
   if (IS_TOUCH) { fx = input.stickX; fz = input.stickY; }
+  const locked = duelLocked(); if (locked) { fx = 0; fz = 0; }
   const sy = Math.sin(P.yaw), cy = Math.cos(P.yaw);
   _wish.set(fx * cy + fz * sy, 0, -fx * sy + fz * cy);
   const wl = _wish.length(); if (wl > 1) _wish.divideScalar(wl);
@@ -1653,7 +1701,7 @@ function updatePlayer(dt) {
   const sprinting = input.sprint && input.f && !W.ads && W.reload <= 0 && P.slide <= 0;
   let maxSpeed = W.ads > 0.5 ? MOVE.ads : sprinting ? MOVE.sprint : MOVE.walk;
 
-  const wantJump = P.jumpBuf > 0 || input.jump;
+  const wantJump = !locked && (P.jumpBuf > 0 || input.jump);
   if (P.grounded) P.coyote = 0.1; else P.coyote -= dt;
 
   if ((P.grounded || P.coyote > 0) && wantJump && P.vel.y <= 0.5) {
@@ -1816,7 +1864,7 @@ function botRay(ox, oy, oz, dx, dy, dz, maxT) {
 const _hitAcc = new Map();
 function fire() {
   const w = WEAPONS[W.cur];
-  if (W.cd > 0 || W.reload > 0 || W.swap > 0) return false;
+  if (W.cd > 0 || W.reload > 0 || W.swap > 0 || duelLocked()) return false;
   const od = P.overdrive > 0;
   if (W.ammo[W.cur] <= 0) { Audio.empty(); startReload(); W.cd = 0.25; return false; }
   if (!od) W.ammo[W.cur]--;
@@ -1829,7 +1877,7 @@ function fire() {
   _mz.set(scoped ? 0 : lerp(0.2, 0, W.ads), scoped ? -0.12 : lerp(-0.18, -0.1, W.ads), -0.7).applyMatrix4(camera.matrixWorld);
   const n = w.pellets || 1, spread = currentSpread();
   _hitAcc.clear();
-  let anyHit = false;
+  let anyHit = false, pvp = null;
   for (let k = 0; k < n; k++) {
     // Richtung aus Kamera + Streuung (Schrot: Kegel)
     camera.getWorldDirection(_dir);
@@ -1842,9 +1890,20 @@ function fire() {
     const tw = rayWorld(_o.x, _o.y, _o.z, _dir.x, _dir.y, _dir.z, 200);
     const nx = RH.nx, ny = RH.ny, nz = RH.nz;
     const hb = botRay(_o.x, _o.y, _o.z, _dir.x, _dir.y, _dir.z, tw);
-    const t = hb.bot ? hb.t : tw;
+    const rh = G.mode === 'duel' ? remoteRay(_o.x, _o.y, _o.z, _dir.x, _dir.y, _dir.z, hb.bot ? hb.t : tw) : null;
+    if (rh) { hb.bot = null; }
+    const t = rh ? rh.t : hb.bot ? hb.t : tw;
     const hx = _o.x + _dir.x * t, hy = _o.y + _dir.y * t, hz = _o.z + _dir.z * t;
+    if (G.mode === 'duel' && k < 3) netSend({ k: 'shot', a: [+_mz.x.toFixed(2), +_mz.y.toFixed(2), +_mz.z.toFixed(2)], b: [+hx.toFixed(2), +hy.toFixed(2), +hz.toFixed(2)], w: W.cur }, false);
+    if (rh) {
+      let dmg = w.dmg * (rh.crit ? w.crit : 1) * 0.8;
+      if (w.near && t > w.near) dmg *= lerp(1, 0.3, clamp((t - w.near) / (w.far - w.near), 0, 1));
+      pvp = pvp || { dmg: 0, crit: false, x: hx, y: hy, z: hz };
+      pvp.dmg += dmg; pvp.crit = pvp.crit || rh.crit; anyHit = true;
+      sparks(hx, hy, hz, 6, rh.crit ? COL.amber : COL.mag, 4, 0.3, 0.5);
+    }
     if (k < 5) tracer(_mz.x, _mz.y, _mz.z, hx, hy, hz, w.color, w.tracerW * (scoped ? 0.6 : 1), w.id === 'photon' ? 0.18 : w.pellets ? 0.06 : 0.07);
+    if (rh) continue;
     if (hb.bot) {
       let dmg = w.dmg * (hb.crit ? w.crit : 1);
       if (w.near && t > w.near) dmg *= lerp(1, 0.3, clamp((t - w.near) / (w.far - w.near), 0, 1));
@@ -1857,6 +1916,7 @@ function fire() {
     }
   }
   for (const [b, acc] of _hitAcc) if (bots.includes(b)) damageBot(b, acc.dmg, acc.crit, acc.x, acc.y, acc.z, acc.dist);
+  if (pvp) { netSend({ k: 'hit', d: Math.round(pvp.dmg), c: pvp.crit ? 1 : 0 }, true); dmgNumber(pvp.x, pvp.y, pvp.z, pvp.dmg, pvp.crit); hitmarker(pvp.crit ? 'crit' : ''); Audio.hit(pvp.crit); if (pvp.crit) G.crits++; }
   if (anyHit) G.hits++;
   if (w.id === 'photon') Audio.snipe(); else if (w.id === 'scatter') Audio.scatter(); else Audio.shoot();
   // Rückstoß
@@ -2184,7 +2244,7 @@ function damagePlayer(dmg, from) {
   const dx = from.x - P.pos.x, dz = from.z - P.pos.z;
   dmgDirAng = Math.atan2(dx, -dz); dmgDirT = 1;
   P.recoil -= 0.01;
-  if (P.hp <= 0) { P.hp = 0; endGame('down'); }
+  if (P.hp <= 0) { P.hp = 0; if (G.mode === 'duel') duelDown(); else endGame('down'); }
 }
 
 /* =====================================================================
@@ -2216,6 +2276,311 @@ function updatePicks(dt) {
       }
     }
   }
+}
+
+/* =====================================================================
+   Online-Duell: WebRTC direkt zwischen zwei Browsern.
+   Signalisierung (Angebot/Antwort) über die Spiele-API, danach läuft alles P2P.
+   Treffer entscheidet der Schütze (was er sieht, zählt) – bei zwei Spielern fair genug.
+   ===================================================================== */
+const DUEL = { target: 10, time: 240, respawn: 2.6 };
+const DUEL_SPAWNS = [
+  { x: 0, y: 0, z: 28, yaw: 0 }, { x: 0, y: 0, z: -28, yaw: Math.PI },
+  { x: -28, y: 0, z: 0, yaw: -Math.PI / 2 }, { x: 28, y: 0, z: 0, yaw: Math.PI / 2 },
+  { x: -20, y: 4.5, z: 31, yaw: 0 }, { x: 20, y: 4.5, z: -31, yaw: Math.PI },
+];
+const NET = { pc: null, sch: null, rch: null, role: null, room: null, open: false, ready: false, peerReady: false,
+  snaps: [], sendT: 0, kills: 0, deaths: 0, down: false, respawnT: 0, remote: null, lastPeerShot: -99, answered: false };
+const ICE_SERVERS = [{ urls: ['stun:stun.l.google.com:19302', 'stun:stun.cloudflare.com:3478'] }];
+const rtcApi = () => (window.Bestenliste && Bestenliste.api) || 'https://hybrid-os-blush.vercel.app/api/games';
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+function roomCode() { const A = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let c = ''; for (let i = 0; i < 5; i++) c += A[(Math.random() * A.length) | 0]; return c; }
+function waitIce(pc) {
+  return new Promise(res => {
+    if (pc.iceGatheringState === 'complete') return res();
+    const f = () => { if (pc.iceGatheringState === 'complete') { pc.removeEventListener('icegatheringstatechange', f); res(); } };
+    pc.addEventListener('icegatheringstatechange', f); setTimeout(res, 3000);
+  });
+}
+async function sig(room, kind, sdp) {
+  const r = await fetch(`${rtcApi()}/rtc/${room}/${kind}`, sdp
+    ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sdp, replace: true }) }
+    : { cache: 'no-store' });
+  return r.json();
+}
+function duelStatus(t) { $('dStatus').textContent = t; }
+function duelDuelUI(state) {
+  $('dStart').classList.toggle('hidden', state !== 'start');
+  $('dRoom').classList.toggle('hidden', state !== 'room');
+}
+function netReset() {
+  const pc = NET.pc; NET.pc = null;
+  try { pc && pc.close(); } catch (e) {}
+  Object.assign(NET, { sch: null, rch: null, role: null, room: null, open: false, ready: false, peerReady: false, snaps: [], kills: 0, deaths: 0, down: false, respawnT: 0, answered: false });
+  if (AV) AV.g.visible = false;
+  $('dReady').disabled = true; $('dReady').textContent = 'Bereit';
+}
+function watchPc(pc) {
+  pc.onconnectionstatechange = () => {
+    if (NET.pc !== pc) return;
+    if (pc.connectionState === 'failed') netLost('Verbindung fehlgeschlagen – vermutlich blockiert eine Firewall. Probier ein anderes Netz, z. B. mobile Daten.');
+    if (pc.connectionState === 'disconnected' || pc.connectionState === 'closed') netLost('Verbindung getrennt.');
+  };
+}
+function bindChannels() {
+  for (const ch of [NET.sch, NET.rch]) {
+    if (!ch || ch._bound) continue; ch._bound = true;
+    ch.onopen = () => { if (NET.sch && NET.rch && NET.sch.readyState === 'open' && NET.rch.readyState === 'open' && !NET.open) { NET.open = true; onNetOpen(); } };
+    ch.onmessage = e => { let m; try { m = JSON.parse(e.data); } catch (err) { return; } onNet(m); };
+    ch.onclose = () => { if (NET.open) netLost('Verbindung getrennt.'); };
+  }
+}
+function netSend(m, reliable) { const ch = reliable ? NET.rch : NET.sch; if (ch && ch.readyState === 'open') ch.send(JSON.stringify(m)); }
+async function hostRoom() {
+  netReset(); NET.role = 'host'; NET.room = roomCode();
+  const pc = NET.pc = new RTCPeerConnection({ iceServers: ICE_SERVERS });
+  NET.sch = pc.createDataChannel('s', { ordered: false, maxRetransmits: 0 });
+  NET.rch = pc.createDataChannel('r');
+  bindChannels(); watchPc(pc);
+  duelStatus('Raum wird angelegt …');
+  try {
+    await pc.setLocalDescription(await pc.createOffer());
+    await waitIce(pc);
+    const r = await sig(NET.room, 'offer', pc.localDescription.sdp);
+    if (!r.ok) throw new Error(r.error || 'Signalisierung fehlgeschlagen');
+  } catch (e) { duelStatus('Raum konnte nicht angelegt werden: ' + e.message); return; }
+  const link = location.origin + location.pathname + '?duell=' + NET.room;
+  $('dCodeShow').textContent = NET.room; $('dLinkIn').value = link; duelDuelUI('room');
+  duelStatus('Warte auf Gegner … Link oder Code schicken. Der Raum bleibt 10 Minuten offen.');
+  const t0 = performance.now();
+  while (NET.pc === pc && !NET.answered && performance.now() - t0 < 10 * 60 * 1000) {
+    const a = await sig(NET.room, 'answer').catch(() => ({}));
+    if (NET.pc !== pc) return;
+    if (a.ok && pc.signalingState === 'have-local-offer') {
+      NET.answered = true; duelStatus('Gegner gefunden – verbinde …');
+      try { await pc.setRemoteDescription({ type: 'answer', sdp: a.sdp }); } catch (e) { duelStatus('Verbindung fehlgeschlagen: ' + e.message); }
+      setTimeout(() => { if (NET.pc === pc && !NET.open) duelStatus('Verbindung klappt nicht (Firewall/NAT). Anderes Netz probieren, z. B. mobile Daten.'); }, 20000);
+      return;
+    }
+    await sleep(1500);
+  }
+}
+async function joinRoom(code) {
+  code = String(code || '').trim().toUpperCase();
+  if (!/^[A-Z0-9]{4,8}$/.test(code)) { duelStatus('Bitte einen gültigen Code eingeben.'); return; }
+  netReset(); NET.role = 'guest'; NET.room = code;
+  duelStatus('Suche Raum ' + code + ' …');
+  let offer = null; const t0 = performance.now();
+  while (performance.now() - t0 < 20000 && NET.role === 'guest' && NET.room === code) {
+    const o = await sig(code, 'offer').catch(() => ({}));
+    if (o.ok) { offer = o.sdp; break; }
+    await sleep(1200);
+  }
+  if (!offer) { if (NET.room === code) duelStatus('Raum nicht gefunden. Code prüfen oder selbst einen Raum erstellen.'); return; }
+  const pc = NET.pc = new RTCPeerConnection({ iceServers: ICE_SERVERS });
+  pc.ondatachannel = e => { if (e.channel.label === 's') NET.sch = e.channel; else NET.rch = e.channel; bindChannels(); };
+  watchPc(pc);
+  try {
+    await pc.setRemoteDescription({ type: 'offer', sdp: offer });
+    await pc.setLocalDescription(await pc.createAnswer());
+    await waitIce(pc);
+    await sig(code, 'answer', pc.localDescription.sdp);
+    NET.answered = true;
+  } catch (e) { duelStatus('Beitreten fehlgeschlagen: ' + e.message); return; }
+  duelStatus('Verbinde …');
+  setTimeout(() => { if (NET.pc === pc && !NET.open) duelStatus('Verbindung klappt nicht (Firewall/NAT). Anderes Netz probieren, z. B. mobile Daten.'); }, 20000);
+}
+function onNetOpen() {
+  duelStatus('Verbunden! Beide drücken „Bereit“.');
+  $('dReady').disabled = false; Audio.pickup();
+}
+function netLost(msg) {
+  if (!NET.pc && !NET.open) return;
+  const wasPlaying = G.state === 'playing' && G.mode === 'duel';
+  netReset();
+  if (wasPlaying) endDuel(null, msg);
+  else { duelStatus(msg + ' Neuen Raum erstellen oder erneut beitreten.'); duelDuelUI('start'); }
+}
+function duelReady() {
+  if (!NET.open) return;
+  Audio.init();
+  NET.ready = true; $('dReady').disabled = true; $('dReady').textContent = 'Warte auf Gegner …';
+  netSend({ k: 'ready' }, true);
+  maybeGo();
+}
+function maybeGo() {
+  if (NET.role === 'host' && NET.ready && NET.peerReady) { NET.ready = NET.peerReady = false; netSend({ k: 'go' }, true); startDuel(); }
+}
+function onNet(m) {
+  switch (m.k) {
+    case 's': {
+      NET.snaps.push({ t: performance.now(), p: m.p, y: m.y, pt: m.pt, sl: m.sl, w: m.w, dn: m.dn, hp: m.hp });
+      if (NET.snaps.length > 30) NET.snaps.shift();
+      break;
+    }
+    case 'ready': NET.peerReady = true; if (G.state === 'over' && G.mode === 'duel') duelStatusOver('Gegner will eine Revanche.'); maybeGo(); break;
+    case 'go': NET.ready = NET.peerReady = false; startDuel(); break;
+    case 'hit': {
+      if (G.state !== 'playing' || G.mode !== 'duel' || NET.down || G.freezeT > 0) break;
+      const from = AV ? AV.g.position : P.pos;
+      damagePlayer(m.d, from);
+      if (m.c) hint('Kopftreffer!', 0.8);
+      break;
+    }
+    case 'shot': {
+      if (!m.a || !m.b) break;
+      tracer(m.a[0], m.a[1], m.a[2], m.b[0], m.b[1], m.b[2], WEAPONS[m.w] ? WEAPONS[m.w].color : COL.mag, m.w === 1 ? 0.05 : 0.03, m.w === 1 ? 0.18 : 0.08);
+      sparks(m.b[0], m.b[1], m.b[2], 5, COL.mag, 4, 0.3, 0.6);
+      const [pan, vol] = spatial({ x: m.a[0], z: m.a[2] }); Audio.enemyShot(pan, vol);
+      NET.lastPeerShot = G.time;
+      break;
+    }
+    case 'down': {
+      if (G.mode !== 'duel' || G.state !== 'playing') break;
+      NET.kills++;
+      hitmarker('kill'); Audio.kill(); callout(NET.kills >= DUEL.target ? 'Sieg' : 'Treffer ' + NET.kills);
+      feed('<b>Gegner</b> markiert<em>' + NET.kills + ' : ' + NET.deaths + '</em>');
+      if (AV) { const g = AV.g.position; shards({ x: g.x, y: g.y + 1, z: g.z }, 30, COL.mag, 7, 1); flash(g.x, g.y + 1, g.z, COL.mag, 4, 0.4, 2); }
+      if (NET.kills >= DUEL.target) { netSend({ k: 'end' }, true); endDuel(true); }
+      break;
+    }
+    case 'end': if (G.mode === 'duel' && G.state === 'playing') endDuel(false); break;
+    case 'bye': netLost('Dein Gegner hat das Duell verlassen.'); break;
+  }
+}
+function startDuel() {
+  $('duel').classList.add('hidden');
+  startGame('duel');
+}
+function duelSpawn(first) {
+  let sp;
+  if (first) sp = DUEL_SPAWNS[NET.role === 'host' ? 0 : 1];
+  else {
+    const rp = AV && AV.g.visible ? AV.g.position : null;
+    sp = DUEL_SPAWNS.slice().sort((a, b) => rp ? Math.hypot(b.x - rp.x, b.z - rp.z) - Math.hypot(a.x - rp.x, a.z - rp.z) : 0)[(Math.random() * 2) | 0];
+  }
+  P.pos.set(sp.x, sp.y, sp.z); P.vel.set(0, 0, 0); P.yaw = sp.yaw; P.pitch = 0;
+  P.hp = P.maxHp; P.shield = P.maxShield; P.slide = 0; P.lastDmg = -99;
+}
+function duelDown() {
+  if (NET.down) return;
+  NET.down = true; NET.deaths++; NET.respawnT = DUEL.respawn;
+  netSend({ k: 'down' }, true);
+  banner('Markiert', NET.deaths + ' : ' + NET.kills + ' · zurück in ' + DUEL.respawn.toFixed(0) + ' s', DUEL.respawn);
+  feed('<b>Du</b> wurdest markiert<em>' + NET.kills + ' : ' + NET.deaths + '</em>', true);
+  input.fire = false; input.ads = false;
+}
+function duelLocked() { return G.mode === 'duel' && (G.freezeT > 0 || NET.down); }
+function updateDuel(dt) {
+  if (G.freezeT > 0) {
+    const before = Math.ceil(G.freezeT); G.freezeT -= dt; const after = Math.ceil(G.freezeT);
+    if (after !== before && after > 0) { banner(String(after), 'Erster mit ' + DUEL.target + ' Treffern gewinnt', 0.9); Audio.tick(); }
+    if (G.freezeT <= 0) { banner('Los!', '', 0.8); Audio.wave(); }
+    return;
+  }
+  G.timeLeft -= dt;
+  const sec = Math.ceil(G.timeLeft);
+  if (sec <= 10 && sec !== G.lastTickSec && sec > 0) { G.lastTickSec = sec; Audio.tick(); }
+  if (G.timeLeft <= 0) { G.timeLeft = 0; endDuel(NET.kills > NET.deaths ? true : NET.kills < NET.deaths ? false : null, 'Zeit abgelaufen'); return; }
+  if (NET.down) { NET.respawnT -= dt; if (NET.respawnT <= 0) { NET.down = false; duelSpawn(false); Audio.pickup(); } }
+}
+function netTick(dt) {
+  if (!NET.open || G.mode !== 'duel') return;
+  NET.sendT -= dt;
+  if (NET.sendT <= 0) {
+    NET.sendT = 1 / 30;
+    netSend({ k: 's', p: [+P.pos.x.toFixed(3), +P.pos.y.toFixed(3), +P.pos.z.toFixed(3)], y: +P.yaw.toFixed(3), pt: +P.pitch.toFixed(3), sl: P.slide > 0 ? 1 : 0, w: W.cur, dn: NET.down ? 1 : 0, hp: Math.ceil(P.hp) });
+  }
+}
+function endDuel(won, reason) {
+  if (G.state !== 'playing') return;
+  G.state = 'over';
+  if (document.pointerLockElement) document.exitPointerLock();
+  input.fire = false; input.ads = false; keys.clear();
+  won === true ? Audio.clear() : Audio.over(); updateMusic();
+  $('over').classList.add('duel');
+  $('oKicker').textContent = 'Online-Duell' + (reason ? ' · ' + reason : '');
+  $('oTitle').innerHTML = won === true ? 'Du hast <span>gewonnen</span>' : won === false ? 'Knapp <span>verloren</span>' : reason && /Verbindung|verlassen/.test(reason) ? 'Duell <span>beendet</span>' : '<span>Unentschieden</span>';
+  $('oScore').textContent = NET.kills + ' : ' + NET.deaths;
+  $('bAgain').textContent = NET.open ? 'Revanche' : 'Neues Duell';
+  duelStatusOver(NET.open ? 'Revanche? Beide drücken den Knopf.' : '');
+  setTimeout(() => { $('over').classList.remove('hidden'); $('links').classList.remove('hidden'); $('hud').classList.add('hidden'); $('touch').classList.add('hidden'); if (AV) AV.g.visible = false; }, 700);
+}
+function duelStatusOver(t) { let el = $('oDuelMsg'); if (!el) { el = document.createElement('p'); el.id = 'oDuelMsg'; el.className = 'sub'; $('oScore').after(el); } el.textContent = t; }
+function duelRematch() {
+  if (!NET.open) { $('over').classList.add('hidden'); openDuel(); return; }
+  NET.ready = true; $('bAgain').textContent = 'Warte auf Gegner …';
+  netSend({ k: 'ready' }, true); maybeGo();
+}
+function openDuel(code) {
+  Audio.init();
+  $('menu').classList.add('hidden'); $('over').classList.add('hidden'); $('over').classList.remove('duel');
+  $('duel').classList.remove('hidden');
+  if (!NET.open) { duelDuelUI('start'); duelStatus('Wähle: Raum erstellen oder mit Code beitreten.'); }
+  if (code) { $('dCode').value = code; joinRoom(code); }
+}
+function leaveDuel() {
+  netSend({ k: 'bye' }, true);
+  netReset(); $('duel').classList.add('hidden'); $('over').classList.remove('duel'); $('bAgain').textContent = 'Nochmal';
+  const m = $('oDuelMsg'); if (m) m.textContent = '';
+  toMenu();
+}
+
+// ---------- Gegner-Figur ----------
+let AV = null;
+function buildAvatar() {
+  const g = new THREE.Group();
+  const suit = new THREE.MeshStandardMaterial({ color: 0x1b1234, roughness: 0.45, metalness: 0.35, emissive: 0x2a0a22, flatShading: true });
+  const glow = new THREE.MeshBasicMaterial({ color: COL.mag, toneMapped: false });
+  const body = new THREE.Mesh(new THREE.CapsuleGeometry(0.36, 0.62, 4, 10), suit); body.position.y = 1.08;
+  const hips = new THREE.Mesh(new THREE.BoxGeometry(0.46, 0.5, 0.28), suit); hips.position.y = 0.52;
+  const legs = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.42, 0.24), suit); legs.position.y = 0.2;
+  const head = new THREE.Mesh(new THREE.SphereGeometry(0.24, 14, 10), suit); head.position.y = 1.64;
+  const visor = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.08, 0.12), glow); visor.position.set(0, 1.66, -0.19);
+  const belt = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.38, 0.05, 20, 1, true), glow); belt.position.y = 0.86;
+  const gun = new THREE.Group(); gun.position.set(0.3, 1.2, -0.12);
+  const gb = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.12, 0.62), suit); gb.position.z = -0.25; gun.add(gb);
+  const gs = new THREE.Mesh(new THREE.BoxGeometry(0.095, 0.02, 0.5), glow); gs.position.set(0, 0.05, -0.25); gun.add(gs);
+  const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: COL.mag, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0.45, toneMapped: false }));
+  halo.scale.set(2.4, 3.2, 1); halo.position.y = 1;
+  g.add(body, hips, legs, head, visor, belt, gun, halo);
+  [body, hips, legs, head, gb].forEach(m => { m.castShadow = true; });
+  g.visible = false; scene.add(g);
+  return { g, body, head, visor, gun, hips, legs, halo };
+}
+const _snapA = new THREE.Vector3(), _snapB = new THREE.Vector3();
+function updateAvatar() {
+  if (!AV) return;
+  if (G.mode !== 'duel' || !NET.open || G.state === 'menu' || !NET.snaps.length) { AV.g.visible = false; return; }
+  // 100 ms hinter der Echtzeit rendern und zwischen zwei Zuständen interpolieren
+  const rt = performance.now() - 100, S = NET.snaps;
+  let a = S[0], b = S[S.length - 1];
+  for (let i = S.length - 1; i > 0; i--) if (S[i - 1].t <= rt) { a = S[i - 1]; b = S[i]; break; }
+  const k = b.t > a.t ? clamp((rt - a.t) / (b.t - a.t), 0, 1.2) : 1;
+  _snapA.fromArray(a.p); _snapB.fromArray(b.p);
+  AV.g.position.lerpVectors(_snapA, _snapB, k);
+  let dy = b.y - a.y; while (dy > Math.PI) dy -= TAU; while (dy < -Math.PI) dy += TAU;
+  AV.g.rotation.y = a.y + dy * k;
+  const sl = b.sl, dn = b.dn;
+  AV.g.visible = !dn;
+  AV.body.position.y = sl ? 0.72 : 1.08; AV.head.position.y = sl ? 1.18 : 1.64; AV.visor.position.y = sl ? 1.2 : 1.66; AV.gun.position.y = sl ? 0.82 : 1.2;
+  AV.gun.rotation.x = -(b.pt || 0) * 0.8; AV.head.rotation.x = -(b.pt || 0) * 0.5;
+  AV.halo.material.opacity = 0.35 + 0.15 * Math.sin(G.clock * 4);
+  NET.remote = { pos: AV.g.position, slide: !!sl, down: !!dn };
+}
+// Strahl gegen die Gegner-Figur: Kopf (kritisch) + drei Körperkugeln
+function remoteRay(ox, oy, oz, dx, dy, dz, maxT) {
+  const R = NET.remote; if (!R || R.down || !AV || !AV.g.visible) return null;
+  const parts = R.slide ? [[1.18, 0.27, 1], [0.8, 0.42, 0], [0.45, 0.42, 0]] : [[1.64, 0.27, 1], [1.2, 0.42, 0], [0.82, 0.42, 0], [0.38, 0.36, 0]];
+  let best = null;
+  for (const [hy, r, crit] of parts) {
+    const lx = ox - R.pos.x, ly = oy - (R.pos.y + hy), lz = oz - R.pos.z;
+    const bq = lx * dx + ly * dy + lz * dz, c = lx * lx + ly * ly + lz * lz - r * r, disc = bq * bq - c;
+    if (disc < 0) continue;
+    const t = -bq - Math.sqrt(disc);
+    if (t > 0 && t < maxT && (!best || t < best.t)) best = { t, crit: !!crit };
+  }
+  return best;
 }
 
 /* =====================================================================
@@ -2277,12 +2642,12 @@ function updateCamera(dt) {
 let fpsAcc = 0, fpsN = 0, fpsVal = 0;
 function updateHud(dt) {
   const w = WEAPONS[W.cur];
-  setText(hud.wave, 'wave', String(Math.max(1, G.wave)));
-  if (G.mode === 'timer') {
+  setText(hud.wave, 'wave', String(G.mode === 'duel' ? NET.kills : Math.max(1, G.wave)));
+  if (G.mode === 'timer' || G.mode === 'duel') {
     setText(hud.time, 'time', fmtTime(G.timeLeft));
     hud.tbTime.classList.toggle('warn', G.timeLeft <= 10);
   } else setText(hud.time, 'time', fmtTime(G.time));
-  setText(hud.score, 'score', G.score.toLocaleString('de-DE'));
+  setText(hud.score, 'score', G.mode === 'duel' ? String(NET.deaths) : G.score.toLocaleString('de-DE'));
   setText(hud.shield, 'sh', String(Math.ceil(P.shield)));
   setText(hud.hp, 'hp', String(Math.ceil(P.hp)));
   hud.bShield.style.transform = 'scaleX(' + (P.shield / P.maxShield).toFixed(3) + ')';
@@ -2336,8 +2701,8 @@ function updateHud(dt) {
 const KEYMAP = { KeyW: 'f', ArrowUp: 'f', KeyS: 'b', ArrowDown: 'b', KeyA: 'l', ArrowLeft: 'l', KeyD: 'r', ArrowRight: 'r' };
 addEventListener('keydown', e => {
   if (e.code === 'KeyM') { toggleMute(); return; }
-  if (G.state === 'over' && (e.code === 'Enter' || e.code === 'Space')) { e.preventDefault(); startGame(G.mode); return; }
-  if (G.state !== 'playing') return;
+  if (G.state === 'over' && (e.code === 'Enter' || e.code === 'Space')) { e.preventDefault(); if (G.mode === 'duel') duelRematch(); else startGame(G.mode); return; }
+  if (G.state !== 'playing' || G.menuOpen) return;
   if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(e.code)) e.preventDefault();
   if (keys.has(e.code) && e.repeat) return;
   keys.add(e.code);
@@ -2406,9 +2771,16 @@ $('boardWrap').addEventListener('toggle', () => { if ($('boardWrap').open && win
 $('bTimer').addEventListener('click', () => startGame('timer'));
 $('bEndless').addEventListener('click', () => startGame('endless'));
 $('bResume').addEventListener('click', resumeGame);
-$('bQuit').addEventListener('click', toMenu);
-$('bAgain').addEventListener('click', () => startGame(G.mode));
-$('bMenu').addEventListener('click', toMenu);
+$('bQuit').addEventListener('click', () => { G.menuOpen = false; $('pTitle').innerHTML = 'Kurze <span>Pause</span>'; if (G.mode === 'duel') leaveDuel(); else toMenu(); });
+$('bAgain').addEventListener('click', () => { if (G.mode === 'duel') duelRematch(); else startGame(G.mode); });
+$('bMenu').addEventListener('click', () => { if (G.mode === 'duel') leaveDuel(); else toMenu(); });
+$('bDuel').addEventListener('click', () => openDuel());
+$('dCreate').addEventListener('click', () => { Audio.init(); hostRoom(); });
+$('dJoin').addEventListener('click', () => { Audio.init(); joinRoom($('dCode').value); });
+$('dCode').addEventListener('keydown', e => { e.stopPropagation(); if (e.key === 'Enter') joinRoom($('dCode').value); });
+$('dCopy').addEventListener('click', () => { const v = $('dLinkIn').value; (navigator.clipboard ? navigator.clipboard.writeText(v) : Promise.reject()).then(() => duelStatus('Link kopiert – schick ihn deinem Gegner.')).catch(() => { $('dLinkIn').select(); duelStatus('Link markiert – kopieren und schicken.'); }); if (navigator.share && IS_TOUCH) navigator.share({ title: 'Neon Arena · Duell', url: v }).catch(() => {}); });
+$('dReady').addEventListener('click', duelReady);
+$('dBack').addEventListener('click', () => { netSend({ k: 'bye' }, true); netReset(); $('duel').classList.add('hidden'); toMenu(); });
 
 // ---------- Touch (Twin-Stick) ----------
 if (IS_TOUCH) {
@@ -2483,7 +2855,9 @@ function loop(now) {
     updatePlayer(dt);
     updateWeapon(dt);
     updateWaves(dt);
+    netTick(dt);
   }
+  updateAvatar();
   if (G.state === 'playing' || G.state === 'menu') { updateBots(dt); updatePicks(dt); }
   if (G.state === 'playing' || G.state === 'over') updateOrbs(dt);
   updateFx(dt);
@@ -2503,6 +2877,7 @@ buildNodes();
 buildPicks();
 buildMinimap();
 W.models = [buildTagger(0), buildTagger(1), buildTagger(2)];
+AV = buildAvatar();
 syncSettingsUI();
 applyQuality();
 onResize();
@@ -2510,7 +2885,8 @@ showBest();
 G.state = 'menu';
 spawnMenuBots();
 requestAnimationFrame(loop);
-$('bTimer').disabled = false; $('bEndless').disabled = false;
+$('bTimer').disabled = false; $('bEndless').disabled = false; $('bDuel').disabled = !window.RTCPeerConnection;
+{ const dc = params.get('duell'); if (dc) setTimeout(() => openDuel(dc.toUpperCase()), 300); }
 $('loadMsg').textContent = IS_TOUCH ? 'Touch-Gerät erkannt: vereinfachte Steuerung aktiv.' : 'Klick auf einen Modus fängt die Maus ein. Esc pausiert.';
 window.__arenaReady = true;
 // Musik im Menü erst nach erster Interaktion (Autoplay-Regeln)
@@ -2534,6 +2910,9 @@ if (TEST) {
     damage: n => damagePlayer(n, new THREE.Vector3(P.pos.x + 5, 2, P.pos.z)),
     end: r => endGame(r || 'time'),
     menu: () => toMenu(),
+    NET, host: () => hostRoom(), join: c => joinRoom(c), ready: () => duelReady(), openDuel: c => openDuel(c),
+    duelState: () => ({ open: NET.open, role: NET.role, room: NET.room, kills: NET.kills, deaths: NET.deaths, down: NET.down, state: G.state, mode: G.mode, freeze: +(G.freezeT || 0).toFixed(2), hp: Math.round(P.hp), avVis: AV && AV.g.visible, avPos: AV && AV.g.position.toArray().map(v => +v.toFixed(1)), status: $('dStatus').textContent }),
+    aimAtRemote: () => { if (!AV) return false; eyePos(_eye); const d = _t1.set(AV.g.position.x, AV.g.position.y + 1.2, AV.g.position.z).sub(_eye); P.yaw = Math.atan2(-d.x, -d.z); P.pitch = Math.atan2(d.y, Math.hypot(d.x, d.z)); return true; },
     pause: () => pauseGame(),
     resume: () => { $('pause').classList.add('hidden'); G.state = 'playing'; },
   };
