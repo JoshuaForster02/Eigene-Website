@@ -228,7 +228,23 @@ footer a{text-decoration:none;margin-left:20px}footer a:hover{color:var(--crim)}
 .lng{background:none;border:1px solid var(--line);color:var(--fg2);font-family:var(--mono);font-size:11px;letter-spacing:.12em;height:38px;min-width:44px;border-radius:999px;cursor:pointer;margin-right:8px;transition:border-color .3s,color .3s}.lng:hover{border-color:var(--crim);color:var(--crim)}
 .cvbtn{display:inline-flex;align-items:center;gap:10px;margin-top:22px;padding:14px 22px;background:none;border:1px solid var(--crim);color:var(--fg);font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:background .3s,color .3s}.cvbtn:hover{background:var(--crim);color:var(--bg)}
 .form.flash{animation:fflash 1.4s var(--ease)}@keyframes fflash{0%{box-shadow:0 0 0 2px var(--crim)}100%{box-shadow:0 0 0 0 transparent}}
+  /* Klavier: dezente Klangwelle statt Spielzeug-Tastatur */
+  .wave{display:flex;align-items:flex-end;gap:4px;height:40px;margin-top:16px}
+  .wave i{width:3px;border-radius:3px;background:linear-gradient(180deg,var(--crim),rgba(143,177,255,.25));
+    height:22%;transform-origin:bottom;animation:wavepulse 1.9s var(--ease) infinite}
+  .wave i:nth-child(1){animation-delay:-.1s}.wave i:nth-child(2){animation-delay:-.5s}
+  .wave i:nth-child(3){animation-delay:-.9s}.wave i:nth-child(4){animation-delay:-.3s}
+  .wave i:nth-child(5){animation-delay:-.7s}.wave i:nth-child(6){animation-delay:-1.2s}
+  .wave i:nth-child(7){animation-delay:-.2s}.wave i:nth-child(8){animation-delay:-.6s}
+  .wave i:nth-child(9){animation-delay:-1.0s}.wave i:nth-child(10){animation-delay:-.4s}
+  .wave i:nth-child(11){animation-delay:-.8s}.wave i:nth-child(12){animation-delay:-1.3s}
+  .wave i:nth-child(13){animation-delay:-.15s}.wave i:nth-child(14){animation-delay:-.55s}
+  @keyframes wavepulse{0%,100%{height:18%}50%{height:100%}}
+  @media (prefers-reduced-motion:reduce){.wave i{animation:none;height:50%}}
 </style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Person","name":"Joshua Forster","url":"https://joshuaforster.de/","email":"joshuaforster02@gmail.com","jobTitle":"Medizinstudent","description":"Medizinstudent im klinischen Abschnitt mit Fokus auf Orthopädie, Sportmedizin und medizinischer Datenanalyse.","knowsAbout":["Orthopädie","Sportmedizin","Medizinische Informatik","Softwareentwicklung"],"alumniOf":{"@type":"CollegeOrUniversity","name":"Universität des Saarlandes"},"sameAs":["https://www.instagram.com/iamjoshuaforster/","https://www.strava.com/athletes/55105958","https://github.com/JoshuaForster02"]}
+</script>
 </head>
 <body>
 <canvas id="bg" aria-hidden="true"></canvas>
@@ -320,7 +336,7 @@ footer a{text-decoration:none;margin-left:20px}footer a:hover{color:var(--crim)}
         <div class="next"><b data-i="x1">Als Nächstes</b><span data-i="x2">Halbmarathon · Oktober 2026</span><span>2027 Triathlon</span><span data-i="x3">Ende 2027 Ironman</span></div>
         <div class="stamp" id="stamp"></div>
       </div></div>
-      <div class="li"><span class="n">03</span><div><h3 data-i="k1">Kla<em>vier</em></h3><p data-i="k2">Der ruhige Gegenpol zu Klinik und Training.</p></div></div>
+      <div class="li"><span class="n">03</span><div><h3 data-i="k1">Kla<em>vier</em></h3><p data-i="k2">Der ruhige Gegenpol zu Klinik und Training.</p><div class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div>
     </div>
     <div class="social">
       <a class="soc ig rv" href="https://www.instagram.com/iamjoshuaforster/" target="_blank" rel="noopener"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></span><span><b>Instagram</b><small data-i="so1">@iamjoshuaforster · Sport, Outdoor, Fotografie</small></span><span class="arr">↗</span></a>
