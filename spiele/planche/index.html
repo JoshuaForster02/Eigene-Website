@@ -29,8 +29,9 @@ h1 i{color:var(--ac)}
 .btn{display:flex;justify-content:space-between;align-items:center;padding:15px 20px;border:1px solid var(--line);background:rgba(12,21,38,.7);color:var(--fg);font-family:"DM Mono",monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;transition:border-color .25s,background .25s}
 .btn:hover,.btn:focus-visible{border-color:var(--ac);background:rgba(143,177,255,.1);outline:none}
 .btn small{color:var(--fg4);letter-spacing:.1em}
-.row{display:flex;gap:10px}.row .btn{flex:1;justify-content:center}
+.row{display:flex;gap:10px}.row .btn{flex:1;justify-content:center;min-width:0;padding-left:6px;padding-right:6px}
 .btn.sel{border-color:var(--ac);color:var(--ac)}
+.rec{font-family:"DM Mono",monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg4);margin-top:2px;min-height:1.2em}
 .help{margin-top:22px;color:var(--fg4);font-family:"DM Mono",monospace;font-size:11px;letter-spacing:.08em;line-height:1.9}
 .help b{color:var(--fg2);font-weight:500}
 .call{position:fixed;left:50%;top:24%;transform:translate(-50%,-50%);font-family:"Cormorant Garamond",serif;font-style:italic;font-size:clamp(40px,7vw,86px);color:var(--fg);text-shadow:0 0 40px rgba(143,177,255,.45);pointer-events:none;z-index:6;opacity:0;transition:opacity .25s;white-space:nowrap}
@@ -45,6 +46,9 @@ h1 i{color:var(--ac)}
 @media (pointer:coarse){.touch.on{display:flex}}
 @media (prefers-reduced-motion:reduce){.call{transition:none}}
 @media (max-height:520px){.call{top:40%}}
+@media (max-height:780px){#menu h1{font-size:clamp(52px,9vw,100px);margin-top:4px}#menu .sub{margin-bottom:16px}#menu .help{margin-top:14px}}
+#menu{overflow-y:auto;align-items:safe center}
+@media (max-width:480px){#diffRow{gap:6px}#diffRow .btn{font-size:10.5px;letter-spacing:.06em}}
 </style>
 </head>
 <body>
@@ -58,13 +62,15 @@ h1 i{color:var(--ac)}
   <h1>Plan<i>che</i></h1>
   <p class="sub">Distanz, Timing, eine Klinge. Im Degen zählt der ganze Körper, es gibt kein Angriffsrecht, und wer gleichzeitig trifft, bekommt beide Lampen.</p>
   <div class="menu">
-    <div class="row" id="diffRow"><button class="btn" data-d="0">Leicht</button><button class="btn sel" data-d="1">Mittel</button><button class="btn" data-d="2">Schwer</button></div>
+    <div class="row" id="diffRow"><button class="btn" data-d="0">Leicht</button><button class="btn sel" data-d="1">Mittel</button><button class="btn" data-d="2">Schwer</button><button class="btn" data-d="3" title="Lernt deine Angriffsmuster">Weltcup</button></div>
+    <div class="rec" id="recLine"></div>
     <button class="btn" id="bAI">Gegen die KI <small>Enter</small></button>
     <button class="btn" id="b2P">Zwei Spieler <small>eine Tastatur</small></button>
     <button class="btn" id="bTut">Training <small>alle Aktionen</small></button>
     <div class="row" id="toRow"><button class="btn sel" data-to="5">Bis 5</button><button class="btn" data-to="15">Bis 15</button></div>
+    <button class="btn" id="bRep">Replays <small id="repState">an</small></button>
   </div>
-  <div class="help"><b>Links</b> A / D bewegen · W / S Linie hoch/tief · F Angriff (2× schnell = Flèche) · G Parade (beim Vorgehen: Battement)<br><b>Rechts</b> ← / → bewegen · ↑ / ↓ Linie · K Angriff · L Parade · <b>Esc</b> Pause · <b>M</b> Ton</div>
+  <div class="help"><b>Links</b> A / D bewegen · W / S Linie hoch/tief · F Angriff (2× schnell = Flèche) · G Parade (beim Vorgehen: Battement)<br><b>Rechts</b> ← / → bewegen · ↑ / ↓ Linie · K Angriff · L Parade · <b>Esc</b> Pause · <b>M</b> Ton · <b>R</b> Replay überspringen</div>
 </div></div>
 
 <div class="ov hide" id="pause"><div class="panel">
@@ -124,11 +130,14 @@ function Fencer(side){return{side,dir:side==='L'?1:-1,x:side==='L'?-ENGARDE:ENGA
 let F=[Fencer('L'),Fencer('R')];
 
 /* ================= SPIELZUSTAND ================= */
-const G={mode:'menu',ai:true,diff:1,to:5,score:[0,0],phase:'idle',phaseT:0,time:0,slow:1,slowT:0,shake:0,flash:null,flashT:0,lights:{L:0,R:0},paused:false,msg:'',tutStep:0,firstHit:null,camX:0,camZ:1,sparks:[],lastSide:null};
+const G={mode:'menu',ai:true,diff:1,to:5,score:[0,0],phase:'idle',phaseT:0,time:0,slow:1,slowT:0,shake:0,flash:null,flashT:0,lights:{L:0,R:0},paused:false,msg:'',tutStep:0,firstHit:null,camX:0,camZ:1,sparks:[],lastSide:null,replays:store.get('replays',true),touchAt:0,rep:null};
 $('diffRow').querySelectorAll('.btn').forEach(b=>b.onclick=()=>{$('diffRow').querySelectorAll('.btn').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');G.diff=+b.dataset.d});
 $('toRow').querySelectorAll('.btn').forEach(b=>b.onclick=()=>{$('toRow').querySelectorAll('.btn').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');G.to=+b.dataset.to});
 const diffSel=store.get('diff',1);G.diff=diffSel;$('diffRow').querySelectorAll('.btn').forEach(x=>x.classList.toggle('sel',+x.dataset.d===diffSel));
 
+const DIFF=['Leicht','Mittel','Schwer','Weltcup'];
+function recLine(){const w=store.get('wins',[0,0,0,0]);const m=M.n>=6?` · KI kennt ${M.n} Angriffe`:'';$('recLine').textContent='Siege '+DIFF.map((d,i)=>d[0]+' '+(w[i]||0)).join(' · ')+m}
+$('bRep').onclick=()=>{G.replays=!G.replays;store.set('replays',G.replays);$('repState').textContent=G.replays?'an':'aus'};$('repState').textContent=G.replays?'an':'aus';
 function call(t,ms=900){const e=$('call');e.textContent=t;e.classList.add('on');clearTimeout(call._h);call._h=setTimeout(()=>e.classList.remove('on'),ms)}
 function resetPositions(){F.forEach(f=>{f.x=f.side==='L'?-ENGARDE:ENGARDE;f.st='idle';f.t=0;f.lunge=0;f.arm=0;f.fle=0;f.parry=0;f.vx=0;f.hitAt=-1;f.touched=false;f.stun=0;f.line='high'});G.lights={L:0,R:0};G.firstHit=null}
 function startBout(ai){A.init();G.ai=ai;G.mode='bout';G.score=[0,0];store.set('diff',G.diff);['menu','end','pause'].forEach(i=>$(i).classList.add('hide'));$('tut').style.display='none';resetPositions();engarde();$('touch').classList.toggle('on',ai)}
@@ -137,7 +146,7 @@ function engarde(){G.phase='engarde';G.phaseT=0;resetPositions();call('En garde 
 $('bAI').onclick=()=>startBout(true);$('b2P').onclick=()=>startBout(false);$('bTut').onclick=startTutorial;
 $('bAgain').onclick=()=>startBout(G.ai);$('bMenu').onclick=toMenu;$('bQuit').onclick=toMenu;$('bResume').onclick=()=>setPause(false);
 $('pauseBtn').onclick=()=>{if(G.mode!=='menu')setPause(!G.paused)};
-function toMenu(){G.mode='menu';G.paused=false;['end','pause'].forEach(i=>$(i).classList.add('hide'));$('menu').classList.remove('hide');$('tut').style.display='none';$('touch').classList.remove('on');resetPositions();G.score=[0,0]}
+function toMenu(){G.rep=null;recLine();G.mode='menu';G.phase='fence';G.paused=false;['end','pause'].forEach(i=>$(i).classList.add('hide'));$('menu').classList.remove('hide');$('tut').style.display='none';$('touch').classList.remove('on');resetPositions();G.score=[0,0]}
 function setPause(p){G.paused=p;$('pause').classList.toggle('hide',!p)}
 
 /* ================= EINGABE ================= */
@@ -145,6 +154,7 @@ const KEYS={KeyA:[0,'l'],KeyD:[0,'r'],KeyW:[0,'up'],KeyS:[0,'dn'],KeyF:[0,'atk']
 addEventListener('keydown',e=>{
  if(e.code==='Escape'){if(G.mode!=='menu'&&$('end').classList.contains('hide'))setPause(!G.paused);return}
  if(e.code==='KeyM'){A.init();A.setMute(!A.muted);return}
+ if(G.phase==='replay'&&(e.code==='KeyR'||e.code==='Enter'||e.code==='Space')){endReplay();return}
  if(e.code==='Enter'){if(G.mode==='menu'){startBout(true);return}if(!$('end').classList.contains('hide')){startBout(G.ai);return}}
  const k=KEYS[e.code];if(!k)return;e.preventDefault();if(G.ai&&k[0]===1&&G.mode!=='menu')return;F[k[0]].inp[k[1]]=1});
 addEventListener('keyup',e=>{const k=KEYS[e.code];if(!k)return;if(G.ai&&k[0]===1)return;F[k[0]].inp[k[1]]=0});
@@ -152,11 +162,17 @@ const TMAP={L:'l',R:'r',UP:'up',DN:'dn',ATK:'atk',PAR:'par'};
 document.querySelectorAll('#touch button').forEach(b=>{const k=TMAP[b.dataset.k];
  b.addEventListener('pointerdown',e=>{e.preventDefault();A.init();F[0].inp[k]=1;b.setPointerCapture(e.pointerId)});
  ['pointerup','pointercancel','lostpointercapture'].forEach(ev=>b.addEventListener(ev,()=>F[0].inp[k]=0))});
+cv.addEventListener('pointerdown',()=>{if(G.phase==='replay')endReplay()});
 addEventListener('blur',()=>F.forEach(f=>Object.keys(f.inp).forEach(k=>f.inp[k]=0)));
+
+/* ================= SPIELERMODELL (Weltcup-KI lernt dich, über Gefechte hinweg) ================= */
+const M=Object.assign({n:0,high:0,low:0,fle:0,dist:2.2},store.get('model',{}));
+function learnAttack(f,o,fle){if(fle){M.fle++;return}const d=Math.abs(f.x-o.x);M.n++;M[f.line]++;if(fle)M.fle++;M.dist+=(d-M.dist)*.15;if(M.n%5===0)store.set('model',M)}
+function predLine(){const t=M.high+M.low;if(t<4)return null;const p=M.high/t;return Math.abs(p-.5)<.12?null:{line:p>.5?'high':'low',conf:Math.abs(p-.5)*2}}
 
 /* ================= KI ================= */
 const AI={t:0,react:0,plan:null,planT:0,wantLine:'high',
- params(){return[{react:.34,parryP:.35,atkP:.35,err:.35,dist:3.1},{react:.22,parryP:.62,atkP:.55,err:.18,dist:2.9},{react:.13,parryP:.85,atkP:.75,err:.07,dist:2.75}][G.diff]},
+ params(){return[{react:.34,parryP:.35,atkP:.35,err:.35,dist:3.1},{react:.22,parryP:.62,atkP:.55,err:.18,dist:2.9},{react:.13,parryP:.85,atkP:.75,err:.07,dist:2.75},{react:.1,parryP:.9,atkP:.8,err:.04,dist:2.75}][G.diff]},
  update(me,op,dt){const P=this.params();const inp=me.inp;inp.l=inp.r=inp.atk=inp.par=inp.up=inp.dn=0;if(G.phase!=='fence')return;
   const d=Math.abs(me.x-op.x);const toward=me.dir>0?'r':'l',away=me.dir>0?'l':'r';
   // Gefahr erkennen
@@ -165,6 +181,8 @@ const AI={t:0,react:0,plan:null,planT:0,wantLine:'high',
   if(threat&&this.react<=0&&!this.seen){this.seen=true;this.react=P.react*(0.7+Math.random()*.6);this.parryPlan=Math.random()<P.parryP?'parry':(Math.random()<.5?'retreat':'counter')}
   if(!threat)this.seen=false;
   if(this.seen&&this.react<=0){
+   // Weltcup: gegen erwartbare Flèche lieber ausweichen als parieren
+   if(G.diff===3&&(op.st==='fwind'||op.st==='fext')&&M.fle/Math.max(1,M.n)>.2&&this.parryPlan==='counter')this.parryPlan='retreat';
    if(this.parryPlan==='parry'){const wantL=Math.random()<P.err?(op.line==='high'?'low':'high'):op.line;if(me.line!==wantL)inp[wantL==='high'?'up':'dn']=1;else inp.par=1}
    else if(this.parryPlan==='retreat'){inp[away]=1}
    else{inp.atk=1}
@@ -172,14 +190,18 @@ const AI={t:0,react:0,plan:null,planT:0,wantLine:'high',
   // Riposte nach Parade
   if(me.ripUntil>G.time&&d<REACH.lunge+.2){inp.atk=1;return}
   // Linie wechseln
-  this.planT-=dt;if(this.planT<=0){this.planT=.6+Math.random()*1.4;this.wantLine=Math.random()<.5?'high':'low';this.mode=Math.random()}
+  this.planT-=dt;if(this.planT<=0){this.planT=.6+Math.random()*1.4;this.wantLine=Math.random()<.5?'high':'low';this.mode=Math.random();
+   // Weltcup: Klinge vorab in die Linie legen, aus der du meistens angreifst -> Parade kommt ohne Linienwechsel
+   const pl=G.diff===3&&predLine();if(pl&&Math.random()<.45+pl.conf*.5)this.wantLine=pl.line}
   if(me.line!==this.wantLine&&me.st==='idle')inp[this.wantLine==='high'?'up':'dn']=1;
   // Distanz & Angriff
   const behind=me.dir*me.x; // positiv = vor der eigenen Seite
   const myEnd=-me.dir*HALF; const room=Math.abs(me.x-myEnd);
   if(d<REACH.lunge+.05&&op.st!=='parry'&&Math.random()<P.atkP*dt*4){ if(d>REACH.lunge-.1&&Math.random()<.25*G.diff)this.fleche=true; inp.atk=1;return}
   if(op.st==='rec'&&d<REACH.lunge+.4){inp.atk=1;return} // in die Erholung stoßen
-  if(d>P.dist+.25)inp[toward]=1;else if(d<P.dist-.45&&room>1)inp[away]=1;
+  // Weltcup: Distanz knapp außerhalb deiner gewohnten Angriffsdistanz halten -> dein Ausfall fällt kurz, KI stößt in die Erholung
+  const dist=G.diff===3&&M.n>=6?Math.max(P.dist,Math.min(REACH.lunge+.55,M.dist+.3)):P.dist;
+  if(d>dist+.25)inp[toward]=1;else if(d<dist-.45&&room>1)inp[away]=1;
   else if(this.mode<.25)inp[toward]=1; else if(this.mode>.85&&room>1.2)inp[away]=1;
   if(this.mode>.6&&this.mode<.7&&d<REACH.lunge+.6&&me.st==='idle')inp.par=1; // Battement/Finte
  }};
@@ -188,8 +210,21 @@ const AI={t:0,react:0,plan:null,planT:0,wantLine:'high',
 function pressed(f,k){return f.inp[k]&&!f.prev[k]}
 function tipX(f){const reach=f.st==='fext'||f.st==='fhold'?REACH.idle+(REACH.fleche-REACH.idle)*f.arm:REACH.idle+(REACH.lunge-REACH.idle)*f.arm;return f.x+f.dir*reach}
 function bodyFront(f){return f.x+f.dir*BODY}
+/* ================= REPLAY ================= */
+const REC=[],RKEYS=['x','line','st','t','lunge','arm','fle','crouch','parry','walk','vx','stun','touched'];
+function record(){REC.push({t:G.time,ph:G.phase,lights:{...G.lights},f:F.map(f=>{const o={};RKEYS.forEach(k=>o[k]=f[k]);return o})});while(REC.length&&G.time-REC[0].t>3)REC.shift()}
+function startReplay(){const fr=REC.filter(r=>r.t>=G.touchAt-1.3&&r.t<=G.touchAt+.45);if(fr.length<10)return false;
+ G.rep={fr,cur:fr[0].t,i:0};G.phase='replay';G.phaseT=0;G.slow=1;G.slowT=0;call('Wiederholung',900);return true}
+function endReplay(){if(G.phase!=='replay')return;G.rep=null;G.phase='touch';G.phaseT=99;nextOrEnd()}
+function vph(){return G.phase==='replay'&&G.rep?G.rep.fr[G.rep.i].ph:G.phase}
+function playReplay(dt){const R=G.rep;R.cur+=dt*.38;while(R.i<R.fr.length-1&&R.fr[R.i+1].t<=R.cur)R.i++;
+ const fr=R.fr[R.i];fr.f.forEach((s,i)=>Object.assign(F[i],s));G.lights=fr.lights;
+ if(fr.ph==='touch'&&R.fr[Math.max(0,R.i-1)].ph!=='touch'){G.shake=RM?0:6;G.flash=fr.lights.L&&fr.lights.R?'both':fr.lights.L?'L':'R';G.flashT=.5;A.clash(.6)}
+ if(R.i>=R.fr.length-1)endReplay()}
+
 function update(dt){
  G.time+=dt;
+ if(G.phase==='replay'){playReplay(dt);camera(dt);G.shake*=Math.pow(.02,dt);G.flashT=Math.max(0,G.flashT-dt);return}
  if(G.mode==='menu'){ // Demo im Hintergrund
   const a=F[0],b=F[1];if(!a._demo){a._demo=1}
   AI.update(F[1],F[0],dt);demoAI(F[0],F[1],dt);
@@ -199,15 +234,18 @@ function update(dt){
  G.phaseT+=dt;
  for(const f of F)fencerUpdate(f,F[f===F[0]?1:0],dt);
  if(G.phase==='fence')resolve();
- if(G.phase==='touch'&&G.phaseT>1.9){ if(G.mode==='menu'){resetPositions();G.phase='fence'} else nextOrEnd()}
- // Kamera
- const mid=(F[0].x+F[1].x)/2, dist=Math.abs(F[0].x-F[1].x);
- G.camX+=(mid-G.camX)*Math.min(1,dt*3);
- const tz=G.phase==='touch'&&!RM?1.25:Math.max(.85,Math.min(1.15,4.2/Math.max(dist,2.4)));
- G.camZ+=(tz-G.camZ)*Math.min(1,dt*2.5);
+ if(G.mode==='bout'&&(G.phase==='fence'||G.phase==='touch'))record();
+ if(G.phase==='touch'&&G.phaseT>1.9){ if(G.mode==='menu'){resetPositions();G.phase='fence'} else if(!(G.mode==='bout'&&G.replays&&G.touchAt&&startReplay()))nextOrEnd();G.touchAt=0}
+ camera(dt);
  G.shake*=Math.pow(.02,dt);G.flashT=Math.max(0,G.flashT-dt);
  G.sparks=G.sparks.filter(s=>(s.t-=dt)>0);G.sparks.forEach(s=>{s.x+=s.vx*dt;s.y+=s.vy*dt;s.vy+=9*dt});
  for(const f of F){f.prev.atk=f.inp.atk;f.prev.par=f.inp.par;f.prev.up=f.inp.up;f.prev.dn=f.inp.dn}
+}
+function camera(dt){
+ const mid=(F[0].x+F[1].x)/2, dist=Math.abs(F[0].x-F[1].x);
+ G.camX+=(mid-G.camX)*Math.min(1,dt*3);
+ const tz=(G.phase==='touch'||G.phase==='replay')&&!RM?1.25:Math.max(.85,Math.min(1.15,4.2/Math.max(dist,2.4)));
+ G.camZ+=(tz-G.camZ)*Math.min(1,dt*2.5);
 }
 function demoAI(me,op,dt){const s=AI.seen,r=AI.react,pp=AI.parryPlan,pt=AI.planT,wl=AI.wantLine,m=AI.mode;const save={...AI};AI.seen=me._s;AI.react=me._r||0;AI.parryPlan=me._pp;AI.planT=me._pt||0;AI.wantLine=me._wl||'high';AI.mode=me._m||0;AI.update(me,op,dt);me._s=AI.seen;me._r=AI.react;me._pp=AI.parryPlan;me._pt=AI.planT;me._wl=AI.wantLine;me._m=AI.mode;Object.assign(AI,save)}
 function fencerUpdate(f,o,dt){
@@ -215,10 +253,13 @@ function fencerUpdate(f,o,dt){
  // Linie
  if(pressed(f,'up'))f.line='high';if(pressed(f,'dn'))f.line='low';
  // Zustandsmaschine
+ // Flèche: zweiter Stoß-Tipp kurz nach dem ersten wandelt den laufenden Ausfall in einen Sturmangriff um
+ if(fence&&pressed(f,'atk')&&(f.st==='wind'||(f.st==='ext'&&f.t<.08))&&G.time-f.lastAtk<.28){f.st='fwind';f.t=0;f.lastAtk=-9;A.swish();if(f===F[0]&&G.ai&&G.mode==='bout')learnAttack(f,o,true)}
  const canAct=f.st==='idle'||f.st==='move';
  if(fence&&canAct){
   if(pressed(f,'atk')){ const dbl=G.time-f.lastAtk<.28; f.lastAtk=G.time;
-    if(dbl||(f===F[1]&&AI.fleche&&G.ai)){AI.fleche=false;f.st='fwind';f.t=0;A.swish()} else {f.st='wind';f.t=0;if(f.ripUntil>G.time)f.rip=true;else f.rip=false}}
+    if(dbl||(f===F[1]&&AI.fleche&&G.ai)){AI.fleche=false;f.st='fwind';f.t=0;A.swish()} else {f.st='wind';f.t=0;if(f.ripUntil>G.time)f.rip=true;else f.rip=false}
+    if(f===F[0]&&G.ai&&G.mode==='bout')learnAttack(f,o,f.st==='fwind')}
   else if(pressed(f,'par')){ const fwd=(f.dir>0?f.inp.r:f.inp.l); const d=Math.abs(f.x-o.x);
     if(fwd&&d<REACH.lunge+.3){f.st='beat';f.t=0;A.clash(.5);if(o.st==='idle'||o.st==='move'||o.st==='parry'){o.stun=.28;o.line=o.line==='high'?'low':'high';spark((f.x+o.x)/2,1.05,6)}}
     else{f.st='parry';f.t=0;A.swish()}}
@@ -283,7 +324,7 @@ function scoreTouch(){
  if(both){G.lights={L:1,R:1};A.buzz('d');call('Coup double',1300)}else if(hits[0]){G.lights={L:1,R:0};A.buzz('L');call(G.mode==='menu'?'Touché':'Touché · Links',1100)}else if(hits[1]){G.lights={L:0,R:1};A.buzz('R');call(G.mode==='menu'?'Touché':'Touché · Rechts',1100)}else return;
  if(G.mode!=='menu'){ if(hits[0])G.score[0]++; if(hits[1])G.score[1]++; }
  F.forEach((f,i)=>{if(hits[i]){f.st='hit';f.t=0;const o=F[1-i];spark(bodyFront(o),1.1,18,i===0?'#FF4D4D':'#3DFF8A')}});
- G.phase='touch';G.phaseT=0;G.slow=RM?1:.25;G.slowT=.9;G.shake=RM?0:9;G.flash=both?'both':hits[0]?'L':'R';G.flashT=.5;A.cheer();
+ G.phase='touch';G.phaseT=0;G.touchAt=G.time;G.slow=RM?1:.25;G.slowT=.9;G.shake=RM?0:9;G.flash=both?'both':hits[0]?'L':'R';G.flashT=.5;A.cheer();
  if(G.mode==='tut')tutEvent('touch',hits);
 }
 function awardOffPiste(f){if(G.phase!=='fence')return;const i=f===F[0]?1:0;G.score[i]++;G.lights={L:i===0?1:0,R:i===1?1:0};A.buzz(i===0?'L':'R');call('Hinter der Endlinie',1400);G.phase='touch';G.phaseT=0;G.flash=i===0?'L':'R';G.flashT=.4}
@@ -291,13 +332,17 @@ function nextOrEnd(){
  if(G.mode==='tut'){resetPositions();G.phase='fence';return}
  const [a,b]=G.score;
  if(a>=G.to||b>=G.to){if(a===b){engarde();return} // Gleichstand: weiter
-  G.mode='over';const win=a>b;$('endEy').textContent=G.ai?'Gegen die KI · '+['Leicht','Mittel','Schwer'][G.diff]:'Zwei Spieler';
+  G.mode='over';G.phase='over';const win=a>b;$('endEy').textContent=G.ai?'Gegen die KI · '+DIFF[G.diff]:'Zwei Spieler';store.set('model',M);
   $('endH').innerHTML=G.ai?(win?'Sie<i>g</i>':'Nieder<i>lage</i>'):(win?'Links <i>gewinnt</i>':'Rechts <i>gewinnt</i>');
-  $('endP').textContent=`${a} : ${b}`+(G.ai&&win?' · '+['Solide. Jetzt Mittel.','Sauber gefochten.','Das war Weltcup-Niveau.'][G.diff]:G.ai?' · Distanz halten, Linie wechseln, in die Erholung stoßen.':'');
-  if(G.ai&&win){const best=store.get('wins',[0,0,0]);best[G.diff]++;store.set('wins',best)}
+  $('endP').textContent=`${a} : ${b}`+(G.ai&&win?' · '+['Solide. Jetzt Mittel.','Sauber gefochten.','Das war Weltcup-Niveau.','Sie kannte dich — und du hast trotzdem gewonnen.'][G.diff]:G.ai?' · '+(G.diff===3?tipFor():'Distanz halten, Linie wechseln, in die Erholung stoßen.'):'');
+  if(G.ai&&win){const best=store.get('wins',[0,0,0,0]);best[G.diff]=(best[G.diff]||0)+1;store.set('wins',best)}
   $('end').classList.remove('hide');$('touch').classList.remove('on');return}
  engarde();
 }
+function tipFor(){const t=M.high+M.low,p=t?Math.round(M.high/t*100):50;
+ if(Math.abs(p-50)>=12)return `Du greifst zu ${p>50?p:100-p} % ${p>50?'hoch':'tief'} an — sie liegt schon in der Linie. Mischen.`;
+ if(M.fle/Math.max(1,M.n)>.2)return 'Zu viele Flèches — sie weicht aus und trifft dich in der Erholung.';
+ return `Deine Angriffsdistanz ist ~${M.dist.toFixed(1)} m — sie steht knapp dahinter. Erst Distanz stehlen, dann stoßen.`}
 function spark(x,y,n,col){for(let i=0;i<n;i++)G.sparks.push({x,y,vx:(Math.random()-.5)*6,vy:-Math.random()*4-.5,t:.25+Math.random()*.35,col:col||'#DDE8FF'})}
 
 /* ================= TRAINING ================= */
@@ -333,8 +378,13 @@ function draw(){
  drawSparks();
  ctx.restore();
  drawBox();
+ if(G.phase==='replay')drawReplay();
  if(G.flashT>0){const a=G.flashT/.5*.35;ctx.fillStyle=G.flash==='L'?`rgba(255,77,77,${a})`:G.flash==='R'?`rgba(61,255,138,${a})`:`rgba(200,220,255,${a})`;ctx.fillRect(0,0,W,H)}
 }
+function drawReplay(){ctx.fillStyle='rgba(0,0,0,.35)';ctx.fillRect(0,0,W,24);ctx.fillRect(0,H-24,W,24);
+ ctx.fillStyle='#FF4D4D';ctx.globalAlpha=.6+.4*Math.sin(G.time*6);ctx.beginPath();ctx.arc(20,H-44,5,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;
+ ctx.fillStyle='rgba(234,240,248,.75)';ctx.font='11px "DM Mono",monospace';ctx.textAlign='left';ctx.fillText('WIEDERHOLUNG · 0.4×',32,H-40);
+ ctx.textAlign='right';ctx.fillText(matchMedia('(pointer:coarse)').matches?'TIPPEN ZUM ÜBERSPRINGEN':'R ÜBERSPRINGEN',W-16,H-40)}
 function drawArena(){
  const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#050A15');g.addColorStop(.55,'#0A1428');g.addColorStop(1,'#050913');ctx.fillStyle=g;ctx.fillRect(-20,-20,W+40,H+40);
  // Publikum, 3 Reihen Parallax
@@ -428,10 +478,10 @@ function drawFencer(f){
  // Klinge
  const [tx,ty]=w2s(p.tip[0],p.tip[1]);const bg=ctx.createLinearGradient(gx,gy,tx,ty);bg.addColorStop(0,'#EEF3FF');bg.addColorStop(1,'#8FA2C2');
  ctx.strokeStyle=bg;ctx.lineWidth=Math.max(1.4,S*.018);ctx.lineCap='round';ctx.beginPath();ctx.moveTo(gx,gy);
- const bend=(f.st==='hit'?.06:0)+(f.touched&&G.phase==='touch'?.08:0);
+ const bend=(f.st==='hit'?.06:0)+(f.touched&&vph()==='touch'?.08:0);
  ctx.quadraticCurveTo((gx+tx)/2,(gy+ty)/2-bend*S,tx,ty+bend*S*.6);ctx.stroke();
  // Spitze leuchtet bei Treffer
- if(G.phase==='touch'&&G.lights[f.side]){ctx.fillStyle=accent;ctx.shadowColor=accent;ctx.shadowBlur=18;ctx.beginPath();ctx.arc(tx,ty+bend*S*.6,S*.03,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0}
+ if(vph()==='touch'&&G.lights[f.side]){ctx.fillStyle=accent;ctx.shadowColor=accent;ctx.shadowBlur=18;ctx.beginPath();ctx.arc(tx,ty+bend*S*.6,S*.03,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0}
 }
 function foot(p,d,col){const [x,y]=w2s(p[0],p[1]);ctx.fillStyle=col;ctx.beginPath();ctx.ellipse(x+d*S*.06,y-S*.02,S*.1,S*.035,0,0,Math.PI*2);ctx.fill()}
 function drawSparks(){G.sparks.forEach(s=>{const [x,y]=w2s(s.x,s.y);ctx.fillStyle=s.col;ctx.globalAlpha=Math.min(1,s.t*3);ctx.fillRect(x-1.5,y-1.5,3,3)});ctx.globalAlpha=1}
@@ -440,7 +490,7 @@ function drawBox(){
  const bw=Math.min(420,W*.62),bh=64,bx=W/2-bw/2,by=16;
  ctx.fillStyle='rgba(5,9,20,.88)';ctx.strokeStyle='rgba(234,240,248,.14)';ctx.lineWidth=1;ctx.beginPath();ctx.roundRect?ctx.roundRect(bx,by,bw,bh,6):ctx.rect(bx,by,bw,bh);ctx.fill();ctx.stroke();
  const lamp=(x,on,col)=>{ctx.fillStyle=on?col:'#1A2236';if(on){ctx.shadowColor=col;ctx.shadowBlur=24}ctx.beginPath();ctx.roundRect?ctx.roundRect(x,by+14,58,36,4):ctx.rect(x,by+14,58,36);ctx.fill();ctx.shadowBlur=0};
- const on=G.phase==='touch'||G.phase==='engarde'&&G.phaseT<.3;
+ const on=vph()==='touch'||G.phase==='engarde'&&G.phaseT<.3;
  lamp(bx+12,on&&G.lights.L,'#FF3B3B');lamp(bx+bw-70,on&&G.lights.R,'#2BFF7E');
  ctx.fillStyle='#EAF0F8';ctx.font='500 34px "DM Mono",monospace';ctx.textAlign='center';ctx.textBaseline='middle';
  ctx.fillText(String(G.score[0]).padStart(2,'0'),W/2-44,by+bh/2+1);ctx.fillText(String(G.score[1]).padStart(2,'0'),W/2+44,by+bh/2+1);
@@ -458,8 +508,8 @@ function frame(now){let dt=Math.min(.05,(now-last)/1000);last=now;
   if(G.slowT>0){G.slowT-=dt;dt*=G.slow;if(G.slowT<=0)G.slow=1}
   update(dt)}
  draw();requestAnimationFrame(frame)}
-G.phase='fence';requestAnimationFrame(frame);
-window.__planche={G,F};
+recLine();G.phase='fence';requestAnimationFrame(frame);
+window.__planche={G,F,M};
 })();
 </script>
 </body>
