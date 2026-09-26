@@ -151,7 +151,10 @@ a{color:inherit}
 .mnode{cursor:pointer}
 .mnode text{font-family:var(--serif);fill:#fff;font-size:20px}
 .mnode .sm{font-family:var(--sans);font-size:13px;fill:#a8b3c4}
-#pause .wrap{width:min(420px,100%);padding:26px;align-items:stretch;gap:10px;text-align:center}
+#pause .wrap,#board .wrap{width:min(420px,100%);padding:26px;align-items:stretch;gap:10px;text-align:center}
+#board .wrap{width:min(460px,100%);max-height:min(88vh,860px);overflow:auto;display:flex;flex-direction:column}
+#board h2{font-family:var(--serif);font-weight:400;font-size:28px;margin:0 0 6px}
+#boardBody{--bl-acc:var(--acc2)}
 #pause h2{font-family:var(--serif);font-weight:400;font-size:30px;margin:0 0 8px}
 #pause .btn{width:100%}
 #pause .links{display:flex;gap:10px;justify-content:center;margin-top:8px;font-size:13px}
@@ -210,6 +213,7 @@ body.touch .ib .k{display:none}
   "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
 }}
 </script>
+<script src="../shared/bestenliste.js" defer></script>
 </head>
 <body>
 <canvas id="c" tabindex="0"></canvas>
@@ -302,8 +306,17 @@ body.touch .ib .k{display:none}
     <button class="btn primary" id="pResume">Weiterfliegen</button>
     <button class="btn" id="pCodex">Kodex</button>
     <button class="btn" id="pMap">Sternenkarte</button>
+    <button class="btn" id="pBoard">Weltbestenliste</button>
     <button class="btn" id="pTitle">Zum Titelbildschirm</button>
     <div class="links"><a href="/">← joshuaforster.de</a><a href="/spiele/">Alle Spiele</a></div>
+  </div>
+</div>
+
+<div id="board" class="overlay hidden">
+  <div class="wrap glass">
+    <h2>Weltbestenliste</h2>
+    <div id="boardBody"></div>
+    <button class="btn" id="boardX">Zurück</button>
   </div>
 </div>
 
@@ -1171,7 +1184,7 @@ function startGame(fresh){
   } else toast(`Willkommen zurück im System <b>${SYSTEMS[S.sys].name}</b>.`,3500);
 }
 function pause(){ if(S.mode!=='play') return; S.mode='pause'; $('pause').classList.remove('hidden'); document.exitPointerLock?.(); }
-function resume(){ $('pause').classList.add('hidden'); S.mode='play'; }
+function resume(){ $('pause').classList.add('hidden'); $('board').classList.add('hidden'); S.mode='play'; }
 function closeOverlay(){ ['codex','map','pause'].forEach(id=>$(id).classList.add('hidden')); S.mode=S.prevMode==='title'?'title':'play'; S.prevMode=null; }
 $('bStart').onclick=()=>{ audio.click(); startGame(S.found.size===0); };
 $('bContinue').onclick=()=>{ audio.click(); startGame(false); };
@@ -1184,6 +1197,9 @@ $('pResume').onclick=resume;
 $('pCodex').onclick=()=>{ $('pause').classList.add('hidden'); S.mode='play'; openCodex(); };
 $('pMap').onclick=()=>{ $('pause').classList.add('hidden'); S.mode='play'; openMap(); };
 $('pTitle').onclick=()=>{ $('pause').classList.add('hidden'); toTitle(); };
+$('pBoard').onclick=()=>{ $('pause').classList.add('hidden'); $('board').classList.remove('hidden');
+  if(window.Bestenliste) Bestenliste.mount($('boardBody'),{game:'soma',score:S.score,meta:{facts:S.found.size},title:'SOMA · Gesamtpunkte'}); };
+$('boardX').onclick=()=>{ $('board').classList.add('hidden'); $('pause').classList.remove('hidden'); };
 $('codexX').onclick=closeOverlay; $('mapX').onclick=closeOverlay; $('fClose').onclick=()=>closeFact();
 function refreshTitle(){ const has=S.found.size>0; $('bContinue').classList.toggle('hidden',!has); $('bReset').classList.toggle('hidden',!has); $('bStart').textContent=has?'Neues Spiel':'Start';
   $('bStart').onclick=()=>{ audio.click(); if(has && !confirm('Neues Spiel starten? Der bisherige Fortschritt wird überschrieben.')) return; startGame(true); };
@@ -1294,6 +1310,8 @@ function startEnding(){ S.mode='ending'; S.done=true; save(); audio.ending(); hu
     `<div class="l btnrow" style="animation-delay:${1.2+lines.length*2.4}s;margin-top:22px"><button class="btn primary" id="eGo">Weiter erkunden</button><button class="btn" id="eTitle">Zum Titel</button></div>
      <div class="l" style="animation-delay:${1.6+lines.length*2.4}s;margin-top:18px;font-size:13px"><a href="/" style="color:var(--muted)">← joshuaforster.de</a> &nbsp;·&nbsp; <a href="/spiele/" style="color:var(--muted)">Alle Spiele</a></div>`;
   $('ending').classList.remove('hidden');
+  { const eb=document.createElement('div'); eb.className='l'; eb.style.cssText=`animation-delay:${2+lines.length*2.4}s;max-width:420px;margin:22px auto 0;text-align:left;--bl-acc:var(--acc2)`; inner.appendChild(eb);
+    if(window.Bestenliste) Bestenliste.mount(eb,{game:'soma',score:S.score,meta:{facts:S.found.size},title:'Weltbestenliste'}); }
   $('eGo').onclick=()=>{ $('ending').classList.add('hidden'); hud.classList.remove('hidden'); if(isTouch) $('touch').classList.remove('hidden'); S.mode='play'; toast('Alle Systeme stehen dir offen. Finde die übrigen Fragmente!',5000); };
   $('eTitle').onclick=()=>toTitle();
 }

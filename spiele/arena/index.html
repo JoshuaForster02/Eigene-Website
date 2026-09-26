@@ -208,6 +208,7 @@ input[type=range]{width:100%;accent-color:var(--cyan)}
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}
 </script>
+<script src="../shared/bestenliste.js" defer></script>
 </head>
 <body>
 <div id="game" aria-label="Spielfeld"></div>
@@ -294,6 +295,7 @@ input[type=range]{width:100%;accent-color:var(--cyan)}
       <kbd>ZIELEN · ⇄ · R</kbd><span>Zielen · Waffe wechseln · Nachladen</span>
     </div>
     <p class="note">Funktioniert am besten mit Maus &amp; Tastatur am Laptop oder Desktop. <span id="touchNote">Auf Touch-Geräten gibt es eine vereinfachte Twin-Stick-Steuerung (Beta).</span></p>
+    <details id="boardWrap"><summary>Weltbestenliste</summary><div id="menuBoard" style="margin-top:10px;--bl-acc:var(--cyan)"></div></details>
     <details id="setWrap"><summary>Einstellungen</summary><div id="settingsHost"></div></details>
   </div>
 </div>
@@ -332,6 +334,7 @@ input[type=range]{width:100%;accent-color:var(--cyan)}
       <div class="stat"><span>Beste Kombo</span><b id="oCombo">×1.0</b></div>
       <div class="stat"><span>Bestwert</span><b id="oBest">0</b></div>
     </div>
+    <div id="oBoard" style="margin-top:16px;--bl-acc:var(--cyan)"></div>
     <div class="row"><button class="btn" id="bAgain">Nochmal</button><button class="btn ghost" id="bMenu">Zum Menü</button></div>
   </div>
 </div>
@@ -1537,6 +1540,7 @@ function endGame(reason) {
   $('oWave').textContent = G.wave; $('oTags').textContent = G.tags;
   $('oAcc').textContent = G.shots ? Math.round(100 * G.hits / G.shots) + '%' : '–';
   $('oCrit').textContent = G.crits; $('oCombo').textContent = '×' + G.bestCombo.toFixed(2).replace(/\.?0+$/, '');
+  if (window.Bestenliste && !TEST) Bestenliste.mount($('oBoard'), { game: G.mode === 'timer' ? 'arena-timer' : 'arena', score: G.score, meta: { wave: G.wave, acc: G.shots ? Math.round(100 * G.hits / G.shots) : 0 }, title: 'Weltbestenliste · ' + (G.mode === 'timer' ? 'Zeitmodus' : 'Endlos') });
   $('oBest').textContent = (highscores[key] || 0).toLocaleString('de-DE');
   setTimeout(() => { $('over').classList.remove('hidden'); $('links').classList.remove('hidden'); $('hud').classList.add('hidden'); $('touch').classList.add('hidden'); }, reason === 'time' ? 300 : 900);
 }
@@ -2398,6 +2402,7 @@ document.addEventListener('pointerlockerror', () => {
 });
 document.addEventListener('visibilitychange', () => { if (document.hidden && G.state === 'playing' && !TEST) pauseGame(); });
 
+$('boardWrap').addEventListener('toggle', () => { if ($('boardWrap').open && window.Bestenliste) Bestenliste.mount($('menuBoard'), { game: 'arena', title: 'Top 10 · Endlos-Wellen' }); });
 $('bTimer').addEventListener('click', () => startGame('timer'));
 $('bEndless').addEventListener('click', () => startGame('endless'));
 $('bResume').addEventListener('click', resumeGame);

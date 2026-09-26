@@ -369,6 +369,7 @@ body.tired .board{filter:blur(.35px) saturate(.85)}
   .grain{animation:none}
 }
 </style>
+<script src="../shared/bestenliste.js" defer></script>
 </head>
 <body>
 <div class="grain" aria-hidden="true"></div>
@@ -1714,10 +1715,12 @@ function renderEnd(){
    <div style="display:flex;flex-direction:column;gap:16px">
     <div class="panel oa"><blockquote>„${esc(oaFeedback(pct))}“</blockquote><cite>— DR. HARTMANN, OBERARZT · ÜBERGABE 07:05</cite></div>
     <div class="panel"><div class="ph"><span>Bestenliste · ${esc(G.cfg.label)}</span><b>lokal</b></div><table class="hst"><thead><tr><th>#</th><th>Punkte</th><th>Titel</th><th>Datum</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <div class="panel" id="ndGlobal" style="padding:14px 16px;--bl-acc:var(--ice)"></div>
     <div class="panel" style="padding:12px 14px;font-size:13px;color:var(--muted)">Kaffee: ${G.coffees} · Punkte-Multiplikator ×${G.cfg.mult} · ${Math.round(pct*100)} % der möglichen Punkte. <br><b style="color:var(--ice)">Lernspiel, keine Therapieempfehlung.</b></div>
    </div></div>
   <div class="end-actions"><button class="btn primary big" id="againBtn">Neuer Dienst <kbd>Enter</kbd></button><a class="btn big" href="/spiele/">Alle Spiele</a></div>`;
  show('end');
+ if(window.Bestenliste) Bestenliste.mount($('#ndGlobal'),{game:'nachtdienst',score:final,meta:{mode:G.cfg.label,acc:Math.round(pct*100)},title:'Weltbestenliste · alle Stufen'});
  const el=$('#endScore'); const t0=performance.now();
  const tick=now=>{const k=clamp((now-t0)/1400,0,1);el.textContent=Math.round(final*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(tick);};
  RM?el.textContent=final:requestAnimationFrame(tick);
