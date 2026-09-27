@@ -31,6 +31,10 @@ a.card:hover{border-color:var(--ac);transform:translateY(-3px)}
 .card.soon{opacity:.55}
 .card.soon .no::after{content:" · in Arbeit";color:var(--ac)}
 .art{position:absolute;right:-30px;top:-30px;width:190px;height:190px;border-radius:50%;filter:blur(2px);opacity:.55;pointer-events:none}
+h2.sec{font-family:"Cormorant Garamond",serif;font-weight:400;font-size:clamp(40px,7vw,76px);line-height:1;margin:88px 0 10px}
+h2.sec i{color:var(--ac)}
+.card.app{min-height:230px}
+.card.app h2{font-size:38px}
 .foot{margin-top:56px;color:var(--fg4);font-size:13px}
 @media (prefers-reduced-motion:reduce){a.card:hover{transform:none}}
 </style>
@@ -104,12 +108,73 @@ a.card:hover{border-color:var(--ac);transform:translateY(-3px)}
       <p>Light Cycles wie im Film: Gegner in die eigene Lichtwand drängen, an Wänden entlang grinden, mit Turbo durchziehen. Solo über Levels oder zu zweit.</p>
       <span class="tags">3D · Handy &amp; Desktop · 2 Spieler · Weltbestenliste</span>
     </a>
-    <a class="card" href="/study/">
+  </div>
+
+  <h2 class="sec">Apps &amp; <i>Werkzeuge</i></h2>
+  <p class="lead">Was ich im Alltag benutze. Study OS und Hybrid OS brauchen mein Login.</p>
+  <div class="grid">
+    <a class="card app" href="/study/">
       <div class="art" style="background:radial-gradient(circle,#6d4dff 0%,transparent 65%)"></div>
-      <span class="no">10 · Privat</span>
+      <span class="no">A1 · Privat</span>
       <h2>Study <i>OS</i></h2>
-      <p>Mein Lern-Betriebssystem: Anki, iCloud-Kalender, Fokus-Timer, Notion und Training in Fenstern wie am Mac. Mit Login.</p>
-      <span class="tags">Login · Handy &amp; Desktop · als App installierbar</span>
+      <p>Mein Lern-Betriebssystem: Anki, iCloud-Kalender, Fokus-Timer, Notion und Training in Fenstern wie am Mac.</p>
+      <span class="tags">Login · als App installierbar</span>
+    </a>
+    <a class="card app" href="/study/?ziel=hybrid">
+      <div class="art" style="background:radial-gradient(circle,#2563eb 0%,transparent 65%)"></div>
+      <span class="no">A2 · Privat</span>
+      <h2>Hybrid <i>OS</i></h2>
+      <p>Trainings-OS für Kraft und Ausdauer: Wochenplan, adaptiver Coach, Bestleistungen, Apple-Watch-Werte und Strava.</p>
+      <span class="tags">Login · Training · Kalender-Abo</span>
+    </a>
+    <a class="card app" href="/visite/">
+      <div class="art" style="background:radial-gradient(circle,#2b8a6e 0%,transparent 65%)"></div>
+      <span class="no">A3 · Klinik</span>
+      <h2>Vi<i>site</i></h2>
+      <p>Klinikbegleiter: Arztbrief-Assistent, Medikations-Check, über 160 Scores und Rechner für Station und Notaufnahme.</p>
+      <span class="tags">Station · Notaufnahme · Handy</span>
+    </a>
+    <a class="card app" href="https://apkg.joshuaforster.de" target="_blank" rel="noopener">
+      <div class="art" style="background:radial-gradient(circle,#8FB1FF 0%,transparent 65%)"></div>
+      <span class="no">A4 · Lernen</span>
+      <h2>medi.<i>cards</i></h2>
+      <p>Aus Vorlesungsfolien fertige Anki-Decks machen.</p>
+      <span class="tags">Web-App · Anki · ↗</span>
+    </a>
+    <a class="card app" href="https://klinik-trainer.vercel.app" target="_blank" rel="noopener">
+      <div class="art" style="background:radial-gradient(circle,#e11d48 0%,transparent 65%)"></div>
+      <span class="no">A5 · Lernen</span>
+      <h2>Klinik-<i>Trainer</i></h2>
+      <p>Fälle aus Notfall und Innere Medizin zum Durchspielen.</p>
+      <span class="tags">Web-App · Fälle · ↗</span>
+    </a>
+    <a class="card app" href="/notizen/">
+      <div class="art" style="background:radial-gradient(circle,#c2a14d 0%,transparent 65%)"></div>
+      <span class="no">A6 · Wissen</span>
+      <h2>No<i>tizen</i></h2>
+      <p>Fachliche Notizen aus Studium und Klinik.</p>
+      <span class="tags">Lesen</span>
+    </a>
+    <a class="card app" href="https://nap-app-teal.vercel.app" target="_blank" rel="noopener">
+      <div class="art" style="background:radial-gradient(circle,#7c6cff 0%,transparent 65%)"></div>
+      <span class="no">A7 · Alltag</span>
+      <h2>Schlaf-<i>Timer</i></h2>
+      <p>Power Nap oder voller Schlafzyklus, mit 4-7-8-Atemübung und Rauschen.</p>
+      <span class="tags">Web-App · Ton · ↗</span>
+    </a>
+    <a class="card app" href="https://pi-dash-five.vercel.app" target="_blank" rel="noopener">
+      <div class="art" style="background:radial-gradient(circle,#c2410c 0%,transparent 65%)"></div>
+      <span class="no">A8 · Technik</span>
+      <h2>Pi <i>Control</i></h2>
+      <p>Mein Raspberry Pi: Status, Dienste, Logs, Neustart.</p>
+      <span class="tags">nur im Heimnetz · ↗</span>
+    </a>
+    <a class="card app" href="https://mcconaughey-philosophy.vercel.app" target="_blank" rel="noopener">
+      <div class="art" style="background:radial-gradient(circle,#b45309 0%,transparent 65%)"></div>
+      <span class="no">A9 · Nebenbei</span>
+      <h2>Green<i>lights</i></h2>
+      <p>Matthew McConaugheys Lebensphilosophie auf einer Seite.</p>
+      <span class="tags">Lesen · ↗</span>
     </a>
   </div>
   <p class="foot">Lernspiele ersetzen keine Leitlinie. Spielstände bleiben lokal im Browser.</p>

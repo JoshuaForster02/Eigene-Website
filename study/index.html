@@ -42,20 +42,22 @@ a.b small{display:block;font-weight:400;font-size:12.5px;opacity:.75}
 <script>
 (async () => {
   const C = window.STUDY_OS || {}, pi = (C.PI || '').replace(/\/$/, ''), fb = (C.FALLBACK || '').replace(/\/$/, '');
-  const stay = new URLSearchParams(location.search).has('wahl');
+  const q = new URLSearchParams(location.search), stay = q.has('wahl'), hybrid = q.get('ziel') === 'hybrid';
+  const path = hybrid ? '/' : '/study/', name = hybrid ? 'Hybrid OS' : 'Study OS';
+  if (hybrid) { document.title = name; document.querySelector('h1').textContent = name; document.querySelector('main > p').textContent = 'Training: Wochenplan, Coach, Bestleistungen und Watch-Daten.'; }
   const st = document.getElementById('st'), btns = document.getElementById('btns');
   const reach = async url => {
     try { const c = new AbortController(); const t = setTimeout(() => c.abort(), 3000); await fetch(url + '/api/health', { mode: 'no-cors', cache: 'no-store', signal: c.signal }); clearTimeout(t); return true; }
     catch (e) { return false; }
   };
-  const go = url => location.replace(url + '/study/');
+  const go = url => location.replace(url + path);
   const piOk = pi ? await reach(pi) : false;
-  if (!stay && piOk) { st.lastChild.textContent = 'Öffne Study OS auf deinem Pi …'; return go(pi); }
-  if (!stay && !pi && fb) { st.lastChild.textContent = 'Öffne Study OS …'; return go(fb); }
+  if (!stay && piOk) { st.lastChild.textContent = 'Öffne ' + name + ' auf deinem Pi …'; return go(pi); }
+  if (!stay && !pi && fb) { st.lastChild.textContent = 'Öffne ' + name + ' …'; return go(fb); }
   st.innerHTML = stay ? '<span>Wohin?</span>' : '<span>Dein Pi ist gerade nicht erreichbar.</span>';
   btns.hidden = false;
-  btns.innerHTML = (pi ? `<a class="b ${piOk || stay ? 'p' : 'g'}" href="${pi}/study/">Study OS auf dem Pi<small>komplett, mit Anki${piOk ? '' : ' · gerade offline'}</small></a>` : '')
-    + (fb ? `<a class="b ${pi && (piOk || stay) ? 'g' : 'p'}" href="${fb}/study/">Study OS in der Cloud<small>ohne Anki-Karten</small></a>` : '');
+  btns.innerHTML = (pi ? `<a class="b ${piOk || stay ? 'p' : 'g'}" href="${pi}${path}">${name} auf dem Pi<small>${hybrid ? 'mit deinen Pi-Daten' : 'komplett, mit Anki'}${piOk ? '' : ' · gerade offline'}</small></a>` : '')
+    + (fb ? `<a class="b ${pi && (piOk || stay) ? 'g' : 'p'}" href="${fb}${path}">${name} in der Cloud<small>${hybrid ? 'Vercel-Version' : 'ohne Anki-Karten'}</small></a>` : '');
 })();
 </script>
 </body>
