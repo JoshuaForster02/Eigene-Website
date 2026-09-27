@@ -24770,7 +24770,7 @@ void main(){
           (this.fxaaMat = new Se({ ...dl, uniforms: _n.clone(dl.uniforms), depthTest: !1, depthWrite: !1 })),
           (this.fxaaMat.uniforms.tDiffuse.value = this.ldrRT.texture),
           (this.quad = new fs(this.atmoMat)),
-          (this.bloom = new ps(new Ct(256, 256), 0.32, 0.55, 1.6)),
+          (this.bloom = new ps(new Ct(256, 256), 0.24, 0.5, 2)),
           (this.size = [0, 0]));
       }
       resize(t, e) {
@@ -24953,23 +24953,129 @@ void main(){
           ce("cube", "HullDark", [0, 0, 0], [0.2, 2.5, 2.5]),
         ],
       },
+      { id: "slope", name: "Schr\xE4ge", hint: "Panzerschr\xE4ge \xB7 R/X drehen", mass: 420, dir: !0, facing: 5, shape: "slope", parts: [ce("slope", "Hull", [0, 0, 0], 2.5)] },
+      { id: "corner", name: "Ecke", hint: "Panzerecke \xB7 R/X drehen", mass: 180, dir: !0, facing: 5, shape: "corner", parts: [ce("corner", "Hull", [0, 0, 0], 2.5)] },
+      { id: "incorner", name: "Innenecke", hint: "Innenecke \xB7 R/X drehen", mass: 600, dir: !0, facing: 5, shape: "incorner", parts: [ce("incorner", "Hull", [0, 0, 0], 2.5)] },
     ],
     ms = Object.fromEntries(ei.map((n, t) => [n.id, t])),
-    ZE = {
+    // Bauleiste (Reihenfolge wie im Unreal-Build): Index in ei
+    HB = ["armor", "slope", "corner", "incorner", "cockpit", "thruster", "gyro", "tank", "gear", "light", "window"].map((n) => ms[n]),
+    // Lackfarben wie in Unreal (0 = Standard-Rumpf)
+    PAL = [
+      ["Stahlgrau", [0.72, 0.73, 0.75]],
+      ["Wei\xDF", [0.92, 0.92, 0.9]],
+      ["Anthrazit", [0.1, 0.105, 0.115]],
+      ["Signalorange", [0.95, 0.36, 0.05]],
+      ["Gelb", [0.95, 0.75, 0.08]],
+      ["Rot", [0.72, 0.07, 0.06]],
+      ["Blau", [0.08, 0.25, 0.7]],
+      ["Gr\xFCn", [0.12, 0.45, 0.16]],
+      ["Sand", [0.76, 0.66, 0.46]],
+      ["Petrol", [0.04, 0.4, 0.44]],
+    ],
+    // Einheits-Formen (-0.5..0.5). Lokal -Z = Blickrichtung (facing), +Y = oben (vor Roll).
+    SH = (() => {
+      let h = 0.5,
+        P = (x, y, z) => [x * h, y * h, z * h];
+      return {
+        // Schräge: Boden + Rückwand voll, Fläche steigt von vorne-unten nach hinten-oben
+        slope: [
+          [P(-1, -1, -1), P(1, -1, -1), P(1, -1, 1), P(-1, -1, 1)],
+          [P(-1, -1, 1), P(1, -1, 1), P(1, 1, 1), P(-1, 1, 1)],
+          [P(-1, -1, -1), P(-1, -1, 1), P(-1, 1, 1)],
+          [P(1, -1, -1), P(1, -1, 1), P(1, 1, 1)],
+          [P(-1, -1, -1), P(1, -1, -1), P(1, 1, 1), P(-1, 1, 1)],
+        ],
+        corner: [
+          [P(-1, -1, -1), P(-1, -1, 1), P(1, -1, 1)],
+          [P(-1, -1, 1), P(1, -1, 1), P(-1, 1, 1)],
+          [P(-1, -1, -1), P(-1, -1, 1), P(-1, 1, 1)],
+          [P(-1, -1, -1), P(1, -1, 1), P(-1, 1, 1)],
+        ],
+        incorner: [
+          [P(-1, -1, -1), P(-1, -1, 1), P(-1, 1, 1), P(-1, 1, -1)],
+          [P(-1, -1, -1), P(1, -1, -1), P(1, -1, 1), P(-1, -1, 1)],
+          [P(-1, -1, 1), P(1, -1, 1), P(1, 1, 1), P(-1, 1, 1)],
+          [P(1, -1, -1), P(1, -1, 1), P(1, 1, 1)],
+          [P(-1, 1, -1), P(-1, 1, 1), P(1, 1, 1)],
+          [P(-1, -1, -1), P(1, -1, -1), P(-1, 1, -1)],
+          [P(-1, 1, -1), P(1, -1, -1), P(1, 1, 1)],
+        ],
+      };
+    })();
+  function shapeGeo(polys) {
+    let pos = [],
+      nor = [],
+      uv = [],
+      a = new F(),
+      b = new F(),
+      c = new F();
+    for (let p of polys) {
+      // konvexe Form: Normale nach außen richten
+      let cen = p.reduce((s, v) => [s[0] + v[0] / p.length, s[1] + v[1] / p.length, s[2] + v[2] / p.length], [0, 0, 0]);
+      a.set(...p[0]);
+      b.set(...p[1]).sub(a);
+      c.set(...p[2]).sub(a);
+      let n = new F().crossVectors(b, c).normalize(),
+        q = p;
+      if (n.dot(new F(...cen)) < 0) (n.negate(), (q = p.slice().reverse()));
+      let ax = Math.abs(n.x) > Math.abs(n.y) ? (Math.abs(n.x) > Math.abs(n.z) ? 0 : 2) : Math.abs(n.y) > Math.abs(n.z) ? 1 : 2,
+        uvOf = (v) => (ax === 0 ? [v[2] + 0.5, v[1] + 0.5] : ax === 1 ? [v[0] + 0.5, v[2] + 0.5] : [v[0] + 0.5, v[1] + 0.5]);
+      for (let i = 1; i < q.length - 1; i++)
+        for (let v of [q[0], q[i], q[i + 1]]) (pos.push(...v), nor.push(n.x, n.y, n.z), uv.push(...uvOf(v)));
+    }
+    let g = new ve();
+    return (
+      g.setAttribute("position", new ie(pos, 3)),
+      g.setAttribute("normal", new ie(nor, 3)),
+      g.setAttribute("uv", new ie(uv, 2)),
+      g.setIndex([...Array(pos.length / 3).keys()]),
+      g
+    );
+  }
+  var ZE = {
       cube: new bi(1, 1, 1),
       cyl: new Zi(0.5, 0.5, 1, 20, 1),
       sphere: new Yi(0.5, 20, 14),
       cone: new Sn(0.5, 1, 20, 1, !0),
+      slope: shapeGeo(SH.slope),
+      corner: shapeGeo(SH.corner),
+      incorner: shapeGeo(SH.incorner),
     },
     Lu = new Vt(),
     Fo = new Vt(),
     $u = new Vt(),
     zu = new Vt(),
     YE = new F();
-  function jE(n, t = new Vt()) {
+  var rollM = new Vt();
+  function jE(n, t = new Vt(), roll = 0) {
     let e = dr[n],
       i = n === 2 ? [0, 0, 1] : n === 3 ? [0, 0, -1] : [0, 1, 0];
-    return t.lookAt(YE, new F(...e), new F(...i));
+    return (t.lookAt(YE, new F(...e), new F(...i)), roll && t.multiply(rollM.makeRotationZ((roll * Math.PI) / 2)), t);
+  }
+  // Punktmenge, an der Orientierungen verglichen werden (Formecken bzw. Richtungsmarker)
+  function blockPts(type) {
+    let d = ei[type];
+    if (d.shape) {
+      let m = new Map();
+      for (let p of SH[d.shape]) for (let v of p) m.set(v.join(","), v);
+      return [...m.values()];
+    }
+    return [
+      [0, 0, -0.5],
+      [0, 0.3, 0],
+    ];
+  }
+  // Spiegelung an der Schiffs-Mittelebene (Gitter-X = 0): passende Orientierung suchen
+  function mirrorOrient(type, facing, roll) {
+    let pts = blockPts(type),
+      m = new Vt(),
+      key = (arr) => arr.map((v) => v.map((x) => Math.round(x * 4)).join(",")).sort().join("|"),
+      want = key(pts.map((v) => { let p = new F(...v).applyMatrix4(jE(facing, m, roll)); return [-p.x, p.y, p.z]; }));
+    for (let f = 0; f < 6; f++)
+      for (let r = 0; r < 4; r++)
+        if (key(pts.map((v) => new F(...v).applyMatrix4(jE(f, m, r)).toArray())) === want) return [f, r];
+    return [facing === 0 ? 1 : facing === 1 ? 0 : facing, roll];
   }
   function tg(n) {
     let [t, e, i] = n.loc;
@@ -24991,20 +25097,50 @@ void main(){
     for (let [s, r] of n) {
       let [a, o, l] = s.split(",").map(Number),
         c = ei[r.type];
-      (jE(r.facing, i),
+      (jE(r.facing, i, r.roll || 0),
         i.setPosition(a * Wt, o * Wt, l * Wt),
         c.parts.forEach((u, f) => {
           let h = ZE[u.mesh].clone();
           (Lu.multiplyMatrices(i, eg[r.type][f]), h.applyMatrix4(Lu));
-          let d = u.glow ? "Glow:" + t(r) : u.mat;
+          let d = u.glow ? "Glow:" + t(r) : u.mat === "Hull" && r.color ? "Paint:" + r.color : u.mat;
           (e[d] || (e[d] = [])).push(h);
         }));
     }
     return e;
   }
-  function Gu(n, t) {
-    return fl(new Map([["0,0,0", { type: n, facing: t }]]), () => "x");
+  function Gu(n, t, roll = 0) {
+    return fl(new Map([["0,0,0", { type: n, facing: t, roll }]]), () => "x");
   }
+  var PLASMA_VS = `
+    #include <common>
+    #include <logdepthbuf_pars_vertex>
+    varying vec3 vN; varying vec3 vV; varying vec3 vL;
+    void main(){
+      vL = normalize(position);
+      vec4 mv = modelViewMatrix * vec4(position, 1.0);
+      vV = normalize(-mv.xyz); vN = normalize(normalMatrix * normal);
+      gl_Position = projectionMatrix * mv;
+      #include <logdepthbuf_vertex>
+    }`,
+    PLASMA_FS = `
+    #include <common>
+    #include <logdepthbuf_pars_fragment>
+    uniform float uHeat; uniform float uTime; uniform vec3 uDir;
+    varying vec3 vN; varying vec3 vV; varying vec3 vL;
+    void main(){
+      #include <logdepthbuf_fragment>
+      // lokal -Z = Flugrichtung (Form wird entlang der Geschwindigkeit gestreckt)
+      float fres = pow(1.0 - abs(dot(vN, vV)), 2.0);
+      float front = -vL.z;
+      float shock = smoothstep(0.35, 1.0, front);
+      float ang = atan(vL.y, vL.x);
+      float streak = pow(0.5 + 0.5 * sin(ang * 13.0 + uTime * 9.0 + vL.z * 7.0), 3.0) * (0.6 + 0.4 * sin(ang * 5.0 - uTime * 13.0));
+      float tailFade = smoothstep(-0.95, 0.1, front);
+      float fl = 0.8 + 0.2 * sin(uTime * 41.0 + ang * 7.0);
+      vec3 hot = mix(vec3(1.0, 0.25, 0.04), vec3(1.0, 0.7, 0.4), shock);
+      float a = (shock * shock * 1.4 + fres * tailFade * (0.2 + streak * 0.9)) * uHeat * uHeat * fl;
+      gl_FragColor = vec4(hot * (2.0 + a * 4.0), clamp(a * 1.6, 0.0, 0.92));
+    }`;
   var ig = 9e3,
     Rn = () => new F(),
     Ei = Rn(),
@@ -25040,6 +25176,32 @@ void main(){
           (this.pulseActive = !1),
           (this.status = ""),
           (this.glowMats = {}),
+          (this.scene = i),
+          (this.horizon = !1),
+          (this.axisMoment = [0, 1, 2, 3, 4, 5].map(() => Rn())),
+          (this.impacts = []),
+          (this.debris = []),
+          (this.heat = 0),
+          (this.shake = 0),
+          (this.dropT = 0),
+          (this.pulseLock = !1),
+          (this.pulseTarget = null),
+          (this.plasma = new Ee(
+            new Yi(1, 32, 20),
+            new Se({
+              vertexShader: PLASMA_VS,
+              fragmentShader: PLASMA_FS,
+              uniforms: { uHeat: { value: 0 }, uTime: { value: 0 }, uDir: { value: new F(0, 0, -1) } },
+              transparent: !0,
+              depthWrite: !1,
+              depthTest: !1,
+              blending: 1,
+            }),
+          )),
+          (this.plasma.visible = !1),
+          (this.plasma.frustumCulled = !1),
+          (this.plasma.renderOrder = 4),
+          // wird nach dem Atmosphären-Pass gezeichnet (renderer.fx), sonst übermalt der Himmel das Plasma
           (this.spot = new Xs(14543103, 0, 180, 0.45, 0.5, 1.5)),
           this.spot.position.set(0, 0, -6),
           this.spot.target.position.set(0, -3, -40),
@@ -25048,10 +25210,10 @@ void main(){
       }
       buildDefault() {
         let t = new Map(),
-          e = (i, s, r, a, o) => {
+          e = (i, s, r, a, o, col = 0, roll = 0) => {
             let l = ms[a],
               c = o === void 0 ? (ei[l].facing ?? 5) : Bu[o];
-            t.set(`${-s},${r},${-i}`, { type: l, facing: c });
+            t.set(`${-s},${r},${-i}`, { type: l, facing: c, roll, color: col });
           };
         (e(2, 0, 0, "cockpit", 0),
           e(2, -1, 0, "light", 0),
@@ -25067,8 +25229,10 @@ void main(){
           e(-1, 1, 0, "armor"));
         for (let i = -1; i <= 1; i++) e(-2, i, 0, "thruster", 1);
         for (let i of [-1, 1])
-          (e(0, 2 * i, 0, "armor"),
+          (e(0, 2 * i, 0, "armor", void 0, 3),
             e(-1, 2 * i, 0, "armor"),
+            e(1, 3 * i, 0, "corner", 0, 3, i > 0 ? 0 : 1),
+            e(-2, 3 * i, 0, "slope", 1, 0, i > 0 ? 1 : 3),
             e(1, 2 * i, 0, "thruster", 0),
             e(-1, 3 * i, 0, "thruster", i > 0 ? 2 : 3),
             e(0, 3 * i, 0, "armor"),
@@ -25081,10 +25245,17 @@ void main(){
           e(-1, 0, -1, "gear", 5),
           e(0, -2, -1, "gear", 5),
           e(0, 2, -1, "gear", 5),
-          e(0, 0, -1, "armor"),
+          e(0, 0, -1, "armor", void 0, 2),
           e(0, 0, 1, "thruster", 4),
-          e(-1, 0, 1, "armor"),
+          e(-1, 0, 1, "armor", void 0, 3),
           e(1, 0, 1, "window"),
+          e(1, -1, 1, "slope", 0, 3),
+          e(1, 1, 1, "slope", 0, 3),
+          e(-1, -1, 1, "slope", 1, 2),
+          e(-1, 1, 1, "slope", 1, 2),
+          e(0, -1, 1, "armor", void 0, 2),
+          e(0, 1, 1, "armor", void 0, 2),
+          e(-2, 0, 1, "slope", 1, 3),
           (this.blocks = t),
           this.recalc(!0),
           (this.fuel = this.fuelCap));
@@ -25141,6 +25312,15 @@ void main(){
             (o[2] += f * (h.x * h.x + h.y * h.y) + d));
         }
         this.inertia = o.map((c) => Math.max(c, 100));
+        for (let c of this.axisMoment) c.set(0, 0, 0);
+        for (let [c, u] of this.blocks) {
+          let f = ei[u.type];
+          if (!f.thrust) continue;
+          let h = dr[u.facing],
+            d = new F(-h[0], -h[1], -h[2]),
+            E = this.cellPos(c).sub(this.com);
+          this.axisMoment[this.axisIndex([d.x, d.y, d.z])].add(new F().crossVectors(E, d.multiplyScalar(f.thrust)));
+        }
         let l = new Set();
         for (let c of this.blocks.keys()) {
           let [u, f, h] = c.split(",").map(Number);
@@ -25197,6 +25377,11 @@ void main(){
             ((o = (i = this.glowMats)[c] || (i[c] = this.mats.hull.Glow.clone())),
               c.startsWith("a") && o.emissive.setRGB(0.4, 0.75, 1),
               c === "light" && o.emissive.setRGB(1, 0.95, 0.85));
+          } else if (s.startsWith("Paint:")) {
+            let c = +s.slice(6);
+            ((this.paintMats || (this.paintMats = {}))[c] ||
+              ((this.paintMats[c] = this.mats.hull.Hull.clone()), this.paintMats[c].color.setRGB(...PAL[c][1])),
+              (o = this.paintMats[c]));
           } else o = this.mats.hull[s];
           let l = new Ee(a, o);
           ((l.castShadow = s !== "Glass"), (l.receiveShadow = !0), this.visual.add(l));
@@ -25231,6 +25416,29 @@ void main(){
         )
           for (let o = 0; o < 4; o++) this.simulate(Math.min(t, 0.05) / 4);
         t > 0 && (this.input.look[0] = this.input.look[1] = 0);
+        if (this.impacts.length) {
+          let o = this.impacts;
+          this.impacts = [];
+          this.applyImpacts(o);
+        }
+        this.updateDebris(t, e);
+        ((this.impactCool = Math.max(0, (this.impactCool || 0) - t)), (this.shake = Math.max(0, this.shake - t * 1.8)), (this.dropT = Math.max(0, this.dropT - t * 1.5)));
+        {
+          let o = Math.hypot(...this.v),
+            l = this.rho || 0,
+            c = Math.min(1, (l * Math.max(0, o - 260) ** 2) / 1.2e5);
+          this.heat += (c - this.heat) * Math.min(1, t * 4);
+          let u = this.plasma;
+          if (((u.visible = this.heat > 0.02), u.visible)) {
+            let f = this.bound * 1.25;
+            let h = new F(...this.v).normalize();
+            (u.quaternion.setFromUnitVectors(new F(0, 0, -1), h),
+              u.position.copy(this.com).applyQuaternion(this.q).add(this.group.position).addScaledVector(h, -0.35 * f),
+              u.scale.set(f, f, f * 1.8),
+              (u.material.uniforms.uHeat.value = this.heat),
+              (u.material.uniforms.uTime.value = i));
+          }
+        }
         let r = this.gridOrigin();
         (this.group.position.set(r[0] - e[0], r[1] - e[1], r[2] - e[2]), this.group.quaternion.copy(this.q));
         for (let [a, o] of Object.entries(this.glowMats))
@@ -25253,9 +25461,38 @@ void main(){
           l = this.input,
           c = this.piloted && this.hasCockpit(),
           u = Math.max(8e3, r.P.atmo.has ? r.P.atmo.height * 1e3 * 0.6 : 5e3);
-        if (c && l.pulse && this.fuel > 0 && a.alt > u)
+        l.pulse || (this.pulseLock = !1);
+        if (c && l.pulse && this.fuel > 0 && a.alt > u && !this.pulseLock) {
           ((this.pulseActive = !0), (this.pulseCharge = Math.min(1, this.pulseCharge + t * 0.35)));
-        else {
+          // Zielerfassung: Planet innerhalb 12° vor dem Bug
+          let A = new F(0, 0, -1).applyQuaternion(this.q),
+            L = null,
+            G = Math.cos((12 * Math.PI) / 180);
+          for (let et of e.planets) {
+            let J = new F(et.pos[0] - this.x[0], et.pos[1] - this.x[1], et.pos[2] - this.x[2]),
+              Y = J.length();
+            Y > et.P.radius * 1.3 && J.divideScalar(Y).dot(A) > G && (G = J.dot(A), (L = et));
+          }
+          this.pulseTarget = L;
+          // Austritt vor dem Planeten: Strahl gegen Anflugkugel (R·1,25 + 20 km)
+          let D = Math.hypot(...this.v);
+          if (D > 1500)
+            for (let et of e.planets) {
+              let J = et.P.radius * 1.25 + 2e4,
+                Y = [this.x[0] - et.pos[0], this.x[1] - et.pos[1], this.x[2] - et.pos[2]],
+                it = (Y[0] * this.v[0] + Y[1] * this.v[1] + Y[2] * this.v[2]) / D,
+                ft = Y[0] * Y[0] + Y[1] * Y[1] + Y[2] * Y[2] - J * J,
+                ct = it * it - ft,
+                ee = ct > 0 ? -it - Math.sqrt(ct) : -1;
+              if ((ft < 0 && it < 0) || (ee > 0 && ee < Math.max(2e4, D * 1))) {
+                ((this.pulseActive = !1), (this.pulseLock = !0), (this.pulseCharge = 0), (this.pulseTarget = null));
+                let Dt = Math.min(1, 1e3 / D);
+                ((this.v = this.v.map((yt) => yt * Dt)), (this.dropT = 1), (this.shake = 0.8), (this.dropPlanet = et.P.name));
+                break;
+              }
+            }
+        } else {
+          this.pulseTarget = null;
           if (this.pulseActive) {
             this.pulseActive = !1;
             let A = Math.hypot(...this.v);
@@ -25299,11 +25536,26 @@ void main(){
           ((T[1] = Math.max(-1.6, Math.min(1.6, -l.look[0] * 0.0022 * A))),
             (T[0] = Math.max(-1.4, Math.min(1.4, -l.look[1] * 0.0022 * A))),
             (T[2] = -l.roll * 1.3));
+          if (this.horizon && !this.pulseActive) {
+            let L = new F(...a.up).applyQuaternion(f);
+            (l.look[1] || (T[0] += Math.max(-0.8, Math.min(0.8, L.z * 2))),
+              Math.abs(l.roll) < 0.01 && (T[2] += Math.max(-0.8, Math.min(0.8, -L.x * 2))));
+          }
+          if (this.pulseTarget && !l.look[0] && !l.look[1]) {
+            let L = this.pulseTarget,
+              G = new F(L.pos[0] - this.x[0], L.pos[1] - this.x[1], L.pos[2] - this.x[2]).normalize().applyQuaternion(f);
+            ((T[0] += G.y * 1.5), (T[1] += -G.x * 1.5));
+          }
         }
         let x = [this.w.x, this.w.y, this.w.z];
         if (c || !this.landed)
           for (let A = 0; A < 3; A++)
             P[A] = Math.max(-this.gyro, Math.min(this.gyro, (T[A] - x[A]) * this.inertia[A] * 5));
+        if (!this.pulseActive)
+          for (let A = 0; A < 6; A++) {
+            let L = this.axisUsage[A] * E * 0.3;
+            L > 0 && ((P[0] += this.axisMoment[A].x * L), (P[1] += this.axisMoment[A].y * L), (P[2] += this.axisMoment[A].z * L));
+          }
         let b = 0,
           N = 0,
           w = [0, 0, 0],
@@ -25331,9 +25583,12 @@ void main(){
               le = 0,
               Lt = 0,
               qt = 0;
-            if (Bt > 0) {
+            let wasC = it.contact;
+            if (((it.contact = Bt > 0), Bt > 0)) {
               (b++, it.gear && N++);
-              let Xt = pt.x * W + pt.y * Z + pt.z * xt,
+              let Xt = pt.x * W + pt.y * Z + pt.z * xt;
+              !wasC && !(this.impactCool > 0) && -Xt > (it.gear ? 18 : 11) && this.impacts.push({ p: it.p.clone(), s: -Xt - (it.gear ? 7 : 0) });
+              let
                 $t = it.gear ? G : G * 2,
                 Zt = Math.max(0, $t * Math.min(Bt, 1.5) - D * Xt),
                 ge = pt.x - W * Xt,
@@ -25389,6 +25644,104 @@ void main(){
           (this.planet = r),
           (this.rho = o),
           (this.vSpeed = this.v[0] * a.up[0] + this.v[1] * a.up[1] + this.v[2] * a.up[2]));
+      }
+      // Aufprall: Schaden an Blöcken nahe der Kontaktstelle (Cockpit unzerstörbar), Trümmer fliegen weg
+      applyImpacts(list) {
+        let t = [],
+          e = 0,
+          dm = new Map();
+        this.impactCool = 0.8;
+        // pro Block zählt der stärkste Treffer dieses Aufpralls (nicht die Summe aller Kontaktpunkte)
+        for (let i of list) {
+          let s = i.s,
+            r = 0.006 * s * s + 0.03 * s;
+          e = Math.max(e, s);
+          for (let [a, o] of this.blocks) {
+            if (o.type === ms.cockpit) continue;
+            let l = this.cellPos(a).sub(this.com).distanceTo(i.p),
+              c = r * Math.max(0, 1 - l / (Wt * 1.5));
+            c > (dm.get(a) || 0) && dm.set(a, c);
+          }
+        }
+        for (let [a, c] of dm) {
+          let o = this.blocks.get(a),
+            u = ei[o.type].mass / 700;
+          ((o.hp = (o.hp ?? u) - c), o.hp <= 0 && t.push(a));
+        }
+        this.shake = Math.min(1.5, this.shake + e / 25);
+        if (!t.length) return;
+        let i = this.gridOrigin(),
+          s = [...new Set(t)];
+        for (let r of s) {
+          let a = this.blocks.get(r);
+          if (!a) continue;
+          let o = this.cellPos(r).applyQuaternion(this.q);
+          this.spawnDebris([i[0] + o.x, i[1] + o.y, i[2] + o.z], a, this.debris.length > 70 ? 1 : 2);
+          this.blocks.delete(r);
+        }
+        if (!this.blocks.size) return;
+        // Knautschzone: zerstörte Blöcke nehmen Energie auf
+        let r = Math.max(0.35, 1 - s.length * 0.08);
+        ((this.v = this.v.map((a) => a * r)), this.w.multiplyScalar(r));
+        (this.recalc(), (this.sleeping = !1), (this.sleepT = 0));
+        for (let a of this.probes) a.contact = !0;
+      }
+      spawnDebris(t, e, i) {
+        let s = e.color ? PAL[e.color][1] : [0.72, 0.73, 0.75];
+        this.debrisGeo || (this.debrisGeo = new bi(1, 1, 1));
+        this.debrisMat || (this.debrisMat = {});
+        let r = e.color || 0,
+          a = this.debrisMat[r] || (this.debrisMat[r] = this.mats.hull.Hull.clone());
+        a.color.setRGB(...s);
+        let o = this.uni.local(this.uni.nearest(t), t).up;
+        for (let l = 0; l < i; l++) {
+          let c = new Ee(this.debrisGeo, a),
+            u = 0.5 + Math.random() * 0.9;
+          (c.scale.set(u, u * (0.4 + Math.random() * 0.6), u * (0.5 + Math.random())), (c.castShadow = !0), this.scene.add(c));
+          let f = () => (Math.random() - 0.5) * 10;
+          this.debris.push({
+            m: c,
+            x: t.map((h) => h + (Math.random() - 0.5) * 2),
+            v: [this.v[0] + f() + o[0] * 6, this.v[1] + f() + o[1] * 6, this.v[2] + f() + o[2] * 6],
+            w: new F(f(), f(), f()).multiplyScalar(0.8),
+            q: new ye().random(),
+            r: u * 0.5,
+            t: 14 + Math.random() * 6,
+          });
+        }
+      }
+      updateDebris(t, e) {
+        let i = this.uni;
+        for (let s = this.debris.length - 1; s >= 0; s--) {
+          let r = this.debris[s];
+          if (((r.t -= t), r.t <= 0)) {
+            (this.scene.remove(r.m), this.debris.splice(s, 1));
+            continue;
+          }
+          let a = i.gravity(r.x),
+            o = i.nearest(r.x);
+          for (let d = 0; d < 3; d++) ((r.v[d] += a[d] * t), (r.x[d] += r.v[d] * t));
+          let l = [r.x[0] - o.pos[0], r.x[1] - o.pos[1], r.x[2] - o.pos[2]],
+            c = Math.hypot(...l),
+            u = l.map((d) => d / c),
+            f = o.P.radius + Math.max(o.gen.height(...u), o.P.ocean ? 0 : -1e9) + r.r;
+          if (c < f) {
+            for (let E = 0; E < 3; E++) r.x[E] += u[E] * (f - c);
+            let d = r.v[0] * u[0] + r.v[1] * u[1] + r.v[2] * u[2];
+            if (d < 0) for (let E = 0; E < 3; E++) r.v[E] = (r.v[E] - u[E] * d) * 0.6 - u[E] * d * 0.3;
+            r.w.multiplyScalar(0.9);
+          }
+          let h = r.w.length();
+          (h > 1e-4 && r.q.premultiply(new ye().setFromAxisAngle(r.w.clone().divideScalar(h), h * t)),
+            r.m.position.set(r.x[0] - e[0], r.x[1] - e[1], r.x[2] - e[2]),
+            r.m.quaternion.copy(r.q),
+            (r.m.visible = r.t > 1 || Math.sin(r.t * 30) > 0));
+        }
+      }
+      damagedCount() {
+        let t = 0;
+        for (let e of this.blocks.values()) e.hp !== void 0 && e.hp < ei[e.type].mass / 700 - 1e-6 && t++;
+        return t;
       }
       thrustToWeight() {
         let t = Math.hypot(...this.uni.gravity(this.x));
@@ -26472,6 +26825,9 @@ void main(){
       Q = "chase",
       S = 0,
       M = null,
+      RL = 0,
+      COL = 0,
+      SYM = !1,
       P = !0,
       T = 0,
       x = 0,
@@ -26490,11 +26846,18 @@ void main(){
             p === "pilot" &&
             ((h.dampeners = !h.dampeners), C("Tr\xE4gheitsd\xE4mpfer " + (h.dampeners ? "an" : "aus"))),
           V.code === "KeyL" && (h.lightsOn = !h.lightsOn),
-          V.code === "KeyR" && y && (M = ((M ?? ei[S].facing ?? 5) + 1) % 6),
+          V.code === "KeyR" && y && (M = ((M ?? ei[HB[S]].facing ?? 5) + 1) % 6),
+          V.code === "KeyX" && y && (RL = (RL + 1) % 4),
+          V.code === "KeyK" && y && ((COL = (COL + 1) % PAL.length), C("Farbe: " + PAL[COL][0], 1200)),
+          V.code === "KeyY" && y && ((SYM = !SYM), C("Symmetrie " + (SYM ? "an" : "aus"), 1200)),
+          V.code === "KeyP" && y && p === "walk" && paint(),
+          V.code === "KeyG" &&
+            p === "pilot" &&
+            ((h.horizon = !h.horizon), C("Horizont-Lock " + (h.horizon ? "an" : "aus"), 1400)),
           V.code === "KeyM" && openMap(),
           V.code === "KeyT" && X && X.cycleTarget(expState()),
           V.code === "KeyN" && X && C(X.toggleSound() ? "Ton an" : "Ton aus"),
-          /^Digit[1-8]$/.test(V.code) && y && ((S = +V.code.slice(5) - 1), (M = null))));
+          /^Digit[0-9]$/.test(V.code) && y && ((S = (+V.code.slice(5) + 9) % 10), (M = null), (RL = 0))));
     }),
       addEventListener("keyup", (V) => {
         m[V.code] = !1;
@@ -26511,8 +26874,15 @@ void main(){
           P || n.requestPointerLock();
           return;
         }
-        y && p === "walk" && it(V.button);
+        y && p === "walk" && (V.button === 1 ? paint() : it(V.button));
       }),
+      n.addEventListener(
+        "wheel",
+        (V) => {
+          y && p === "walk" && b() && ((S = (S + (V.deltaY > 0 ? 1 : -1) + HB.length) % HB.length), (M = null), (RL = 0));
+        },
+        { passive: !0 },
+      ),
       document.addEventListener("pointerlockchange", () => {
         !b() && !P && !window.__test && N(!1);
       }));
@@ -26618,29 +26988,66 @@ void main(){
           (h.piloted = !1));
       }
     }
-    let L = new pi({ color: 8376575, transparent: !0, opacity: 0.35, depthWrite: !1 }),
+    let L = new pi({ color: 8376575, transparent: !0, opacity: 0.45, depthWrite: !1 }),
       G = new ke(),
-      D = new Hs(new zs(new bi(Wt * 1.02, Wt * 1.02, Wt * 1.02)), new ts({ color: 16737860 }));
-    h.visual.add(G, D);
+      G2 = new ke(),
+      D = new Hs(new zs(new bi(Wt * 1.02, Wt * 1.02, Wt * 1.02)), new ts({ color: 16737860 })),
+      SP = new Ee(new qs(1, 1), new pi({ color: 4500223, transparent: !0, opacity: 0.12, depthWrite: !1, side: ai })),
+      ARW = new Ee(new Sn(0.35, 0.9, 12), new pi({ color: 16755200 }));
+    (SP.rotation.y = Math.PI / 2), h.visual.add(G, G2, D, SP), G.add(ARW);
+    // Orientierung des gewählten Blocks
+    let curFacing = () => M ?? ei[HB[S]].facing ?? 5,
+      symCell = (c) => [-c[0], c[1], c[2]];
+    function paint() {
+      if (!J) return;
+      let V = J.cell.join(","),
+        nt = h.blocks.get(V);
+      if (!nt) return;
+      ((nt.color = COL), SYM && J.cell[0] !== 0 && h.blocks.get(symCell(J.cell).join(",")) && (h.blocks.get(symCell(J.cell).join(",")).color = COL), h.rebuildVisual());
+    }
     let et = "",
       J = null;
     function Y(V, nt) {
-      if (((G.visible = D.visible = !1), (J = null), !y || p !== "walk")) return;
+      if (((G.visible = G2.visible = D.visible = SP.visible = !1), (J = null), !y || p !== "walk")) return;
       let I = new F(0, 0, -1).applyQuaternion(nt),
         ot = h.raycast(V, [I.x, I.y, I.z], 14);
       if (!ot) return;
       J = ot;
       let St = [ot.cell[0] + ot.normal[0], ot.cell[1] + ot.normal[1], ot.cell[2] + ot.normal[2]];
       J.place = St;
-      let R = M ?? ei[S].facing ?? 5,
-        g = S + ":" + R;
+      let R = curFacing(),
+        TY = HB[S],
+        g = TY + ":" + R + ":" + RL + ":" + SYM;
       if (g !== et) {
         et = g;
-        for (let H of [...G.children]) (G.remove(H), H.geometry.dispose());
-        for (let H of Object.values(Gu(S, R))) for (let $ of H) G.add(new Ee($, L));
+        for (let H of [...G.children]) H !== ARW && (G.remove(H), H.geometry.dispose());
+        for (let H of [...G2.children]) (G2.remove(H), H.geometry.dispose());
+        for (let H of Object.values(Gu(TY, R, RL))) for (let $ of H) G.add(new Ee($, L));
+        let [mf, mr] = mirrorOrient(TY, R, RL);
+        for (let H of Object.values(Gu(TY, mf, mr))) for (let $ of H) G2.add(new Ee($, L));
+        // Pfeil zeigt die Blickrichtung (Düsen, Cockpit, Schrägen)
+        let d = dr[R];
+        ((ARW.visible = !!ei[TY].dir),
+          ARW.position.set(d[0] * 1.9, d[1] * 1.9, d[2] * 1.9),
+          ARW.quaternion.setFromUnitVectors(new F(0, 1, 0), new F(...d)));
+      }
+      L.color.setRGB(...PAL[COL][1].map((c) => 0.35 + c * 0.65));
+      let sc = symCell(St);
+      ((G2.visible = SYM && St[0] !== 0 && !h.blocks.has(sc.join(","))), G2.position.set(sc[0] * Wt, sc[1] * Wt, sc[2] * Wt));
+      if (SYM) {
+        let a1 = 1e9,
+          a2 = -1e9,
+          b1 = 1e9,
+          b2 = -1e9;
+        for (let k of h.blocks.keys()) {
+          let [, yy, zz] = k.split(",").map(Number);
+          ((a1 = Math.min(a1, yy)), (a2 = Math.max(a2, yy)), (b1 = Math.min(b1, zz)), (b2 = Math.max(b2, zz)));
+        }
+        (SP.scale.set((b2 - b1 + 3) * Wt, (a2 - a1 + 3) * Wt, 1), SP.position.set(0, ((a1 + a2) / 2) * Wt, ((b1 + b2) / 2) * Wt));
       }
       (G.position.set(St[0] * Wt, St[1] * Wt, St[2] * Wt),
         (G.visible = !0),
+        (SP.visible = SYM),
         D.position.set(ot.cell[0] * Wt, ot.cell[1] * Wt, ot.cell[2] * Wt),
         (D.visible = !0));
     }
@@ -26650,10 +27057,17 @@ void main(){
           let nt = h.gridOrigin(),
             I = new F(...J.place).multiplyScalar(Wt).applyQuaternion(h.q);
           if (Math.hypot(nt[0] + I.x - d.x[0], nt[1] + I.y - d.x[1], nt[2] + I.z - d.x[2]) < 1.6) return;
-          h.setBlock(J.place, { type: S, facing: M ?? ei[S].facing ?? 5 });
+          let R = curFacing(),
+            TY = HB[S];
+          if (SYM && J.place[0] !== 0) {
+            let sc = symCell(J.place),
+              [mf, mr] = mirrorOrient(TY, R, RL);
+            h.blocks.has(sc.join(",")) || h.blocks.set(sc.join(","), { type: TY, facing: mf, roll: mr, color: COL });
+          }
+          h.setBlock(J.place, { type: TY, facing: R, roll: RL, color: COL });
         } else if (V === 2) {
           if (h.blocks.size <= 1) return;
-          h.setBlock(J.cell, null);
+          (SYM && J.cell[0] !== 0 && h.blocks.size > 2 && h.blocks.delete(symCell(J.cell).join(",")), h.setBlock(J.cell, null));
         }
       }
     }
@@ -26686,15 +27100,19 @@ void main(){
         <div class="stat"><b>${(h.vSpeed || 0) >= 0 ? "+" : ""}${Math.round(h.vSpeed || 0)}</b><small>Steigrate</small></div>
         <div class="stat"><b>${h.thrustToWeight().toFixed(1)}</b><small>Schub/Gew.</small></div>
         <div class="stat"><b>${Math.round($ * 100)}%</b><small>Treibstoff</small><div class="bar"><i style="width:${$ * 100}%;background:${$ < 0.2 ? "var(--warn)" : ""}"></i></div></div>
-        ${h.pulseCharge > 0 ? `<div class="stat"><b>${Math.round(h.pulseCharge * 100)}%</b><small>Puls</small></div>` : ""}`;
+        ${h.pulseCharge > 0 ? `<div class="stat"><b>${Math.round(h.pulseCharge * 100)}%</b><small>${h.pulseTarget ? "Ziel erfasst \xB7 " + h.pulseTarget.P.name : "Puls"}</small></div>` : ""}
+        ${h.heat > 0.15 ? `<div class="stat" style="color:var(--warn)"><b>${Math.round(h.heat * 100)}%</b><small>Hitze \xB7 Wiedereintritt</small></div>` : ""}
+        ${h.damagedCount() ? `<div class="stat" style="color:var(--warn)"><b>${h.damagedCount()}</b><small>Besch\xE4digt</small></div>` : ""}`;
+        h.dropT > 0.5 && h.dropPlanet && (ft.status.textContent = "ANFLUG \xB7 " + h.dropPlanet);
+        h.horizon && (ft.status.textContent += " \xB7 HORIZONT");
         let X = ot.alt > Math.max(8e3, I.P.atmo.has ? I.P.atmo.height * 600 : 5e3);
-        ft.help.innerHTML = `<kbd>F</kbd>aussteigen <kbd>V</kbd>Kamera <kbd>Z</kbd>D\xE4mpfer ${X ? "<kbd>J</kbd>Pulsantrieb" : ""}`;
+        ft.help.innerHTML = `<kbd>F</kbd>aussteigen <kbd>V</kbd>Kamera <kbd>Z</kbd>D\xE4mpfer <kbd>G</kbd>Horizont ${X ? "<kbd>J</kbd>Pulsantrieb (Planet anpeilen)" : ""}`;
       } else
         ((ft.status.textContent = y ? "Baumodus" : d.swimming ? "Schwimmen" : d.grounded ? "Zu Fu\xDF" : "Jetpack"),
           (ft.bars.innerHTML = `<div class="stat"><b>${ct(ot.alt)}</b><small>H\xF6he</small></div>
         <div class="stat"><b>${Math.round(d.jet * 100)}%</b><small>Jetpack</small><div class="bar"><i style="width:${d.jet * 100}%"></i></div></div>`),
           (ft.help.innerHTML = y
-            ? "<kbd>1-8</kbd>Block <kbd>R</kbd>drehen <kbd>LMB</kbd>setzen <kbd>RMB</kbd>abbauen <kbd>B</kbd>fertig"
+            ? `<kbd>1-0</kbd>/<kbd>Rad</kbd>Block <kbd>R</kbd>Richtung <kbd>X</kbd>kippen <kbd>K</kbd>Farbe <span style="display:inline-block;width:10px;height:10px;border-radius:2px;vertical-align:-1px;background:rgb(${PAL[COL][1].map((c) => Math.round(Math.pow(c, 1 / 2.2) * 255))})"></span> ${PAL[COL][0]} <kbd>P</kbd>/<kbd>MMB</kbd>lackieren <kbd>Y</kbd>Symmetrie ${SYM ? "an" : "aus"}<br><kbd>LMB</kbd>setzen <kbd>RMB</kbd>abbauen <kbd>B</kbd>fertig`
             : "<kbd>B</kbd>bauen <kbd>M</kbd>Karte"));
       let St = z(),
         R = p === "walk" && St && Math.hypot(St[0] - d.x[0], St[1] - d.x[1], St[2] - d.x[2]) < 7;
@@ -26702,9 +27120,9 @@ void main(){
         (ft.prompt.innerHTML = "<kbd>F</kbd> Einsteigen"),
         (ft.hot.style.display = y && p === "walk" ? "flex" : "none"),
         y &&
-          (ft.hot.innerHTML = ei
-            .map((H, $) => `<div class="${$ === S ? "on" : ""}"><span>${$ + 1}</span>${H.name}</div>`)
-            .join("")));
+          (ft.hot.innerHTML = HB.map(
+            (H, $) => `<div class="${$ === S ? "on" : ""}"><span>${$ < 9 ? $ + 1 : $ === 9 ? 0 : "\u21C5"}</span>${ei[H].name}</div>`,
+          ).join("")));
       let g = a.planets.reduce((H, $) => H + ($.stats.visible ? 0 : 1), 0);
       ft.load.textContent = r.pending > 20 ? "LADE GEL\xC4NDE \u2026" : "";
     }
@@ -26741,7 +27159,23 @@ void main(){
         let ot = 0.6 - I.altTerrain;
         for (let St = 0; St < 3; St++) yt[St] += I.up[St] * ot;
       }
-      (i.position.set(0, 0, 0), i.quaternion.copy(W), i.updateMatrixWorld());
+      let sk = p === "pilot" ? Math.min(1.2, h.shake + h.heat * 0.5 + h.pulseCharge * 0.12) : h.shake * 0.4;
+      if (sk > 0.01) {
+        let o = qt * 31;
+        (i.quaternion.copy(W).multiply(
+          new ye().setFromEuler(
+            new Ui(
+              (Math.sin(o * 1.7) + Math.sin(o * 2.9)) * 0.004 * sk,
+              (Math.sin(o * 1.3) + Math.sin(o * 3.7)) * 0.004 * sk,
+              Math.sin(o * 2.3) * 0.003 * sk,
+            ),
+          ),
+        ),
+          i.position.set(0, 0, 0));
+      } else (i.position.set(0, 0, 0), i.quaternion.copy(W));
+      let fv = 70 + (p === "pilot" ? h.pulseCharge * h.pulseCharge * 16 + h.heat * 5 : 0);
+      Math.abs(i.fov - fv) > 0.05 && ((i.fov += (fv - i.fov) * Math.min(1, V * 3)), i.updateProjectionMatrix());
+      i.updateMatrixWorld();
     }
     let Ut = new Tt();
     function pt(V) {
@@ -26804,6 +27238,7 @@ void main(){
     }
     (addEventListener("resize", le), le(), v(ml.get("planet") || "Aurora"));
     X = createExpedition({ uni: a, ship: h, player: d, camera: i, hull: s.hull, toast: C, renderer: t });
+    (t.fx || (t.fx = new As())).add(h.plasma);
     X.init(E(a.byName("Aurora")));
     {
       let mp = Te("menuProg");
@@ -26839,7 +27274,7 @@ void main(){
         let ot = a.nearest(yt);
         f.update(yt, ot, a.local(ot, yt).alt < 120);
       }
-      (Y(yt, W), pt(qt), X && X.update(V, expState()), nt && t.render(e, i, Bt(), qt, 1.25));
+      (Y(yt, W), pt(qt), X && X.update(V, expState()), nt && t.render(e, i, Bt(), qt, 1.2 * (1 + h.dropT * h.dropT * 1.5)));
     }
     function ge(V) {
       let nt = Math.min(0.05, (V - Lt) / 1e3);
@@ -26926,6 +27361,13 @@ void main(){
       },
       set build(V) {
         y = V;
+      },
+      buildUI(o = {}) {
+        (o.slot !== void 0 && (S = o.slot), o.facing !== void 0 && (M = o.facing), o.roll !== void 0 && (RL = o.roll), o.color !== void 0 && (COL = o.color), o.sym !== void 0 && (SYM = o.sym));
+        return { slot: S, type: ei[HB[S]].id, facing: curFacing(), roll: RL, color: COL, sym: SYM };
+      },
+      click(V) {
+        V === 1 ? paint() : it(V);
       },
       get mode() {
         return p;

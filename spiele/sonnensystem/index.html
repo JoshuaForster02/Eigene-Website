@@ -25,7 +25,7 @@
   .prompt { position: absolute; left: 50%; top: 58%; transform: translateX(-50%); font-size: 14px; padding: 6px 14px; border-radius: 999px; background: var(--bg); backdrop-filter: blur(6px); display: none; }
   .prompt kbd, .help kbd { font: 600 11px ui-monospace, Menlo, monospace; border: 1px solid rgba(255,255,255,.35); border-radius: 4px; padding: 1px 5px; margin-right: 4px; }
   .hotbar { position: absolute; left: 50%; bottom: 100px; transform: translateX(-50%); display: none; gap: 6px; }
-  .hotbar div { width: 86px; padding: 8px 6px; border-radius: 8px; background: var(--bg); backdrop-filter: blur(6px); font-size: 11px; text-align: center; border: 1px solid transparent; }
+  .hotbar div { width: 70px; padding: 7px 4px; border-radius: 8px; background: var(--bg); backdrop-filter: blur(6px); font-size: 11px; text-align: center; border: 1px solid transparent; }
   .hotbar div.on { border-color: var(--acc); color: var(--acc); }
   .hotbar div span { display: block; font: 600 10px ui-monospace, Menlo, monospace; color: var(--dim); }
   .help { position: absolute; left: 22px; bottom: 22px; font-size: 12px; color: var(--dim); line-height: 1.9; }
@@ -92,8 +92,8 @@
     <p class="menuprog" id="menuProg"></p>
     <div class="grid2">
       <div><b>Zu Fuß</b><kbd>WASD</kbd> gehen · <kbd>Shift</kbd> rennen<br><kbd>Leertaste</kbd> springen / Jetpack<br><kbd>F</kbd> ins Cockpit · <kbd>B</kbd> Baumodus</div>
-      <div><b>Schiff</b><kbd>WASD</kbd> Schub · Maus lenkt · <kbd>Q</kbd><kbd>E</kbd> rollen<br><kbd>Leer</kbd>/<kbd>C</kbd> hoch/runter · <kbd>Shift</kbd> Boost<br><kbd>Z</kbd> Dämpfer · <kbd>J</kbd> Pulsantrieb (im All) · <kbd>V</kbd> Kamera</div>
-      <div><b>Bauen</b><kbd>1</kbd>–<kbd>8</kbd> Block · <kbd>R</kbd> drehen<br>Linksklick setzen · Rechtsklick abbauen</div>
+      <div><b>Schiff</b><kbd>WASD</kbd> Schub · Maus lenkt · <kbd>Q</kbd><kbd>E</kbd> rollen<br><kbd>Leer</kbd>/<kbd>C</kbd> hoch/runter · <kbd>Shift</kbd> Boost<br><kbd>Z</kbd> Dämpfer · <kbd>G</kbd> Horizont-Lock · <kbd>V</kbd> Kamera<br><kbd>J</kbd> Pulsantrieb: Planet anpeilen, Austritt automatisch</div>
+      <div><b>Bauen</b><kbd>1</kbd>–<kbd>0</kbd>/Mausrad Block · <kbd>R</kbd> Richtung · <kbd>X</kbd> kippen<br><kbd>K</kbd> Farbe · <kbd>P</kbd>/Mitteltaste lackieren · <kbd>Y</kbd> Symmetrie<br>Linksklick setzen · Rechtsklick abbauen</div>
       <div><b>Expedition</b><kbd>M</kbd> Systemkarte &amp; Schnellreise · <kbd>T</kbd> Ziel wechseln<br><kbd>L</kbd> Licht · <kbd>N</kbd> Ton · <kbd>Esc</kbd> Menü</div>
     </div>
     <div class="btns"><button class="b" id="bStart">Expedition starten</button><button class="b ghost" id="bMap">Systemkarte</button><button class="b ghost" id="bSound">Ton: an</button><a class="b ghost" href="/spiele/" style="text-decoration:none;pointer-events:auto">Alle Spiele</a><button class="b ghost" id="bReset" style="margin-left:auto">Neu beginnen</button></div>
