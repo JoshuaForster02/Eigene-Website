@@ -305,6 +305,19 @@ textarea.input{resize:vertical;line-height:1.55}
 .anatomy b{font-weight:700}
 @media (max-width:600px){.anatomy > div{grid-template-columns:1fr;gap:2px}}
 
+/* ---------- Lexikon ---------- */
+.lex-art{max-width:760px;display:grid;gap:16px}
+.lex-art h2{margin:6px 0 2px;font-size:19px}
+.lex-art p{color:var(--ink-2);font-size:15px;line-height:1.65;margin:0 0 4px}
+.lexfig{margin:4px 0;padding:18px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);display:grid;gap:8px;justify-items:center}
+.lexfig svg{width:100%;max-width:380px;height:auto}
+.lexfig figcaption{font-size:12.5px;color:var(--ink-3);text-align:center;max-width:60ch}
+.lex-cards{display:grid;gap:10px;max-width:760px}
+.lex-cards details{padding:14px 16px}
+.lex-cards summary{cursor:pointer;font-weight:600;font-size:14.5px;list-style:revert}
+.lex-cards summary::marker{color:var(--accent)}
+.lex-cards p{margin:8px 0 0;color:var(--ink-2);font-size:14px}
+
 /* ---------- Tutor ---------- */
 .chat{display:grid;grid-template-rows:1fr auto;gap:12px;height:calc(100vh - 150px);min-height:420px;max-width:860px}
 .msgs{overflow:auto;display:flex;flex-direction:column;gap:12px;padding:4px}
@@ -2489,13 +2502,14 @@ trash:'<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',
 image:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/>',
 plus:'<path d="M12 5v14M5 12h14"/>',
 arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',
-alert:'<path d="M12 4 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/>'
+alert:'<path d="M12 4 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/>',
+book:'<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 19.5V5.5"/><path d="M8 7.5h9M8 11h9"/>'
 };
 const ic=(n,s='')=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ${s}>${I[n]}</svg>`;
 const ECG=`<svg class="ecg" viewBox="0 0 400 80" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M0 50h60l8-6 8 6h20l6 8 10-52 10 62 7-18h30l10-8 12 8h58l8-6 8 6h20l6 8 10-52 10 62 7-18h30l10-8 12 8h40"/></svg>`;
 
 /* ================= State ================= */
-let S={view:'start',caseId:null,mode:'write',paperSrc:'mine',calcId:null,calcDetail:false,refTab:'notfall',uebTab:'faelle',fach:'alle',labQ:'',labCat:'Alle',abbrQ:'',tbQ:'',tbCat:'Alle',calcQ:'',tool:'notizen',medTab:'check',icdQ:''};
+let S={view:'start',caseId:null,mode:'write',paperSrc:'mine',calcId:null,calcDetail:false,refTab:'notfall',uebTab:'faelle',fach:'alle',labQ:'',labCat:'Alle',abbrQ:'',tbQ:'',tbCat:'Alle',calcQ:'',tool:'notizen',medTab:'check',icdQ:'',lexId:null,lexFach:'alle'};
 let drafts=store.get('drafts',{});
 let statusMap=store.get('status',{});
 let favs=store.get('favs',['cha2ds2','egfr','perfusor','bga','news2','cthead']);
@@ -2520,7 +2534,7 @@ const saveMed=debounce(()=>store.set('med',medState),300);
 
 /* ================= Shell ================= */
 const NAV_MAIN=[['start','Start','home'],['brief','Arztbrief','letter'],['medis','Medikation','pill'],['rechner','Rechner','calc'],['kitteltasche','Nachschlagen','bag']];
-const NAV_UEB=[['ueben','Fälle & Grundlagen','school'],['tutor','KI-Tutor','chat']];
+const NAV_UEB=[['ueben','Fälle & Grundlagen','school'],['lexikon','Lexikon','book'],['tutor','KI-Tutor','chat']];
 const MNAV=[['start','Start','home'],['brief','Brief','letter'],['medis','Medis','pill'],['rechner','Rechner','calc'],['mehr','Mehr','more']];
 function shell(){
  document.body.insertAdjacentHTML('afterbegin',`
@@ -2543,9 +2557,9 @@ function setThemeBtns(){const cur=document.documentElement.getAttribute('data-th
 function go(view,opt={}){Object.assign(S,{view},opt);try{history.replaceState(null,'','#'+view)}catch(e){}render();window.scrollTo(0,0)}
 function topbar(){return `<div class="topbar"><div class="search">${ic('search')}<input id="gsearch" class="input" type="search" placeholder="Suchen: Rechner, Medikamente, Laborwerte, ICD, Abkürzungen …" autocomplete="off" aria-label="Globale Suche"><div class="search-res" id="gres" hidden></div></div></div>`}
 function render(){
- const cur=S.view==='case'?'ueben':S.view;
- $$('[data-nav]').forEach(b=>b.setAttribute('aria-current',b.dataset.nav===cur||(b.dataset.nav==='mehr'&&['kitteltasche','ueben','tutor','case'].includes(S.view))?'page':'false'));
- const views={start:vStart,brief:vBrief,medis:vMedis,rechner:vRechner,kitteltasche:vKittel,ueben:vUeben,case:vCase,tutor:vTutor,mehr:vMehr};
+ const cur=S.view==='case'?'ueben':S.view==='lexart'?'lexikon':S.view;
+ $$('[data-nav]').forEach(b=>b.setAttribute('aria-current',b.dataset.nav===cur||(b.dataset.nav==='mehr'&&['kitteltasche','ueben','tutor','case','lexikon','lexart'].includes(S.view))?'page':'false'));
+ const views={start:vStart,brief:vBrief,medis:vMedis,rechner:vRechner,kitteltasche:vKittel,ueben:vUeben,case:vCase,lexikon:vLexikon,lexart:vLexArt,tutor:vTutor,mehr:vMehr};
  $('#main').innerHTML=topbar()+(views[S.view]||vStart)();
  if(S.view==='rechner'&&S.calcId)updateCalcResult();
  if(S.view==='tutor')scrollChat();
@@ -2567,6 +2581,7 @@ function searchIndex(){
  ABBR.forEach(a=>r.push({t:`${a[0]}: ${a[1]}`,k:'Abkürzung',s:(a[0]+' '+a[1]).toLowerCase(),go:()=>go('kitteltasche',{refTab:'abk',abbrQ:a[0]})}));
  TEXTB.forEach(x=>r.push({t:x.t,k:'Textbaustein',s:(x.t+' '+x.c+' '+x.x).toLowerCase(),go:()=>go('kitteltasche',{refTab:'text',tbQ:x.t,tbCat:'Alle'})}));
  EMERG.forEach(e=>r.push({t:e.t,k:'Notfall',s:(e.t+' '+e.items.map(i=>i[0]).join(' ')).toLowerCase(),go:()=>go('kitteltasche',{refTab:'notfall'})}));
+ LEXIKON.forEach(a=>r.push({t:a.titel,k:'Lexikon',s:(a.titel+' '+a.kurz+' '+LEX_FACH[a.fach]).toLowerCase(),go:()=>go('lexart',{lexId:a.id})}));
  return r;
 }
 let IDX=null,resList=[],hl=0;
@@ -2620,7 +2635,7 @@ function vStart(){
 }
 function kisLabel(){const m=store.get('kis','off');return m==='off'?'KIS-Modus aus (unter „Mehr“)':m==='wrap'?'Kopiert als KIS-Klartext mit Umbruch':'Kopiert als KIS-Klartext'}
 function vMehr(){
- const it=[['kitteltasche','Nachschlagen','bag','Notfall, Normwerte, Textbausteine, Normalbefunde, Übergabe, Abkürzungen'],['ueben','Fälle & Grundlagen','school',CASES.length+' Übungsfälle mit Musterbrief'],['tutor','KI-Tutor','chat','Fälle üben, Fragen stellen']];
+ const it=[['kitteltasche','Nachschlagen','bag','Notfall, Normwerte, Textbausteine, Normalbefunde, Übergabe, Abkürzungen'],['ueben','Fälle & Grundlagen','school',CASES.length+' Übungsfälle mit Musterbrief'],['lexikon','Lexikon','book',LEXIKON.length+' OP- und Krankheitsbild-Artikel zum Nachlesen'],['tutor','KI-Tutor','chat','Fälle üben, Fragen stellen']];
  return `<div class="page-head"><div><h1>Mehr</h1></div></div><div class="stack">${it.map(([k,t,i,d])=>`<button class="tile more-row" data-nav="${k}"><span class="ueb-ic">${ic(i)}</span><span><h3>${t}</h3><p>${d}</p></span></button>`).join('')}
  <div class="panel rcard"><h3>Kopieren ins KIS (SAP, Meona, Orbis …)</h3><p class="muted" style="font-size:13.5px;margin-bottom:10px">Jeder „Kopieren“-Knopf kann Text so ausgeben, dass er in KIS-Textfeldern sauber ankommt: tiefgestellte Zeichen (SpO₂ → SpO2), Gedankenstriche, ≥/≤, Pfeile und Sonderleerzeichen werden ersetzt. Optional mit festem Zeilenumbruch für Felder, die lange Zeilen abschneiden.</p>
  <div class="theme-toggle" role="group" aria-label="KIS-Modus">${[['off','Aus'],['plain','Klartext'],['wrap','Klartext + Umbruch']].map(([k,t])=>`<button data-kis="${k}" aria-pressed="${store.get('kis','off')===k}">${t}</button>`).join('')}</div>
@@ -3136,6 +3151,107 @@ function vKittel(){
  return `<div class="page-head"><div><h1>Nachschlagen</h1><p>Notfalldosen, Normwerte, Textbausteine, Normalbefunde, Übergabe.</p></div><div class="seg" role="group">${tabs.map(([k,t])=>`<button data-rtab="${k}" aria-pressed="${S.refTab===k}">${t}</button>`).join('')}</div></div>${b}`;
 }
 
+/* ================= LEXIKON ================= */
+const LEX_FACH={ortho:'Orthopädie & Unfallchirurgie'};
+const LEX_FIG={
+ hip:`<svg viewBox="-60 0 320 200" fill="none" aria-hidden="true"><circle cx="120" cy="100" r="46" stroke="var(--ink-2)" stroke-width="2"/><circle cx="120" cy="100" r="10" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>
+ <g stroke-width="2" stroke-linecap="round"><path d="M120 20v34" stroke="var(--accent)"/><path d="m114 30 6-10 6 10" stroke="var(--accent)" fill="none"/>
+ <path d="M200 100h-34" stroke="var(--ink-2)"/><path d="m190 94 10 6-10 6" stroke="var(--ink-2)" fill="none"/>
+ <path d="M120 180v-34" stroke="var(--ink-2)"/><path d="m114 170 6 10 6-10" stroke="var(--ink-2)" fill="none"/>
+ <path d="M40 100h34" stroke="var(--ink-2)"/><path d="m50 94-10 6 10 6" stroke="var(--ink-2)" fill="none"/></g>
+ <text x="120" y="14" text-anchor="middle" font-size="11" fill="var(--accent)" font-family="var(--f-ui)">anterior</text>
+ <text x="244" y="103" text-anchor="end" font-size="11" fill="var(--ink-2)" font-family="var(--f-ui)">lateral</text>
+ <text x="120" y="196" text-anchor="middle" font-size="11" fill="var(--ink-2)" font-family="var(--f-ui)">posterior</text>
+ <text x="-44" y="103" text-anchor="start" font-size="11" fill="var(--ink-2)" font-family="var(--f-ui)">anterolateral</text></svg>`,
+ knee:`<svg viewBox="0 0 160 220" fill="none" aria-hidden="true"><path d="M60 10 55 95" stroke="var(--ink-2)" stroke-width="10" stroke-linecap="round"/><path d="M62 95 45 210" stroke="var(--ink-2)" stroke-width="10" stroke-linecap="round"/>
+ <path d="M80 6v208" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 5"/>
+ <circle cx="80" cy="8" r="5" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/><circle cx="58" cy="97" r="5" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/><circle cx="80" cy="212" r="5" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>
+ <text x="90" y="10" font-size="11" fill="var(--accent)" font-family="var(--f-ui)">Hüftzentrum</text>
+ <text x="30" y="90" font-size="11" fill="var(--ink-2)" font-family="var(--f-ui)">Kniezentrum (varisch)</text>
+ <text x="90" y="216" font-size="11" fill="var(--accent)" font-family="var(--f-ui)">OSG-Zentrum</text></svg>`
+};
+const LEXIKON=[
+{id:'hueft-tep',fach:'ortho',titel:'Hüft-TEP (Hüfttotalendoprothese)',kurz:'Primärer Hüftgelenkersatz bei Koxarthrose: Indikation, Zugänge, OP-Schritte für die Assistenz.',read:'6 Min.',
+ sections:[
+  {h:'Indikation & Prinzip',p:[
+   'Die Hüft-Totalendoprothese ist die Standardtherapie der fortgeschrittenen, symptomatischen Koxarthrose, wenn konservative Maßnahmen wie Gewichtsreduktion, Physiotherapie und Analgesie ausgeschöpft sind. Weitere Indikationen sind die fortgeschrittene avaskuläre Hüftkopfnekrose, die mediale Schenkelhalsfraktur beim biologisch älteren Patienten sowie sekundäre Arthrosen nach Dysplasie oder rheumatoider Erkrankung. Maßgeblich für die OP-Indikation ist nicht das Röntgenbild allein, sondern der Leidensdruck.',
+   'Ersetzt werden Hüftkopf und Pfanne durch eine Schaftkomponente im proximalen Femur und eine Pfannenkomponente im Acetabulum, verbunden über einen modularen Kopf. Die Verankerung erfolgt zementiert, zementfrei (Pressfit, biologische Osseointegration an einer rauen bzw. porösen Oberfläche) oder hybrid. Zentrales Ziel jeder Implantation ist die Rekonstruktion des ursprünglichen Hüftdrehzentrums, der Beinlänge und des femoralen Offsets – Abweichungen begünstigen Luxation, Hinken und Impingement.']},
+  {h:'Präoperative Planung',p:[
+   'Die Planung erfolgt röntgenbasiert an einer Beckenübersicht und einer axialen Aufnahme der betroffenen Hüfte, ergänzt durch eine klinische Bestimmung von Bewegungsumfang und funktioneller Beinlänge. Anhand digitaler oder physischer Schablonen werden Pfannengröße, Inklination/Anteversion, Schaftgröße und Offset vorab festgelegt, um intraoperativ eine Orientierung zu haben und die passenden Implantate bereitzustellen.']},
+  {h:'Lagerung',p:[
+   'Üblich sind Rückenlage oder Seitenlage, abhängig von Zugang und Klinikstandard. Die Rückenlage erleichtert die Orientierung an der Beckenebene und damit die Pfannenausrichtung; die Seitenlage verbessert die Exposition des Femurschafts und wird bevorzugt bei posteriorem Zugang und Revisionseingriffen genutzt. Bei Seitenlage muss das Becken exakt neutral fixiert werden, da jede Kippung die intraoperative Beurteilung von Inklination und Anteversion verfälscht.']},
+  {h:'Zugänge',fig:'hip',figcap:'Schematische Übersicht der vier Standardzugänge zur Hüfte (Draufsicht).',p:[
+   'Vier Standardzugänge stehen zur Verfügung: der direkte anteriore Zugang im Smith-Petersen-Intervall zwischen M. tensor fasciae latae und M. sartorius, intermuskulär und internerval; der anterolaterale Zugang nach Watson-Jones; der laterale bzw. transglutäale Zugang nach Hardinge mit partieller Ablösung des M. glutaeus medius; und der posteriore Zugang mit Durchtrennung und anschließender Refixation der kurzen Außenrotatoren. Jeder Zugang hat ein eigenes Nutzen-Risiko-Profil: Der anteriore Zugang gilt als muskelschonend, erschwert aber die Femurexposition; der posteriore bietet die beste Übersicht bei einem – durch moderne Kapselrefixation deutlich reduzierten – höheren Luxationsrisiko.']},
+  {h:'OP-Schritte',steps:[
+   'Nach Eröffnung von Haut, Faszie und Gelenkkapsel wird der Hüftkopf luxiert und der Schenkelhals in geplanter Höhe osteotomiert. Als Assistenz hältst du mit einem stumpfen Haken am Schenkelhals gegen, während der Operateur die Luxationsbewegung führt.',
+   'Die Pfanne wird von Weichteil- und Osteophytenresten befreit, bis der native Pfannenboden sichtbar ist, und mit hemisphärischen Fräsen in ansteigender Größe bearbeitet, bis ein gleichmäßig blutendes spongiöses Knochenbett entsteht – die mediale Wand darf dabei nicht perforiert werden.',
+   'Die Pfannenkomponente wird mit einer Zielinklination von rund 40° und einer Anteversion von rund 20° eingebracht – zementfrei im Pressfit-Prinzip eingeschlagen oder zementiert eingedreht.',
+   'Am Femur wird nach Entfernung proximaler Spongiosa der Markraum stufenweise mit Raspeln aufbereitet; die erste, kleinste Raspel wird stets von Hand eingebracht, um eine Fehlrichtung oder Kortikalisperforation zu vermeiden.',
+   'Mit einer Probeprothese werden Beinlänge, Offset und Luxationsstabilität geprüft (Zielbereich: Außenrotation in Streckung ≥70°, Innenrotation in 90°-Flexion ≥45°), bevor der definitive Schaft und Kopf eingesetzt werden.',
+   'Nach Reposition erfolgt der schichtweise Wundverschluss mit Drainage.']},
+  {h:'Komplikationen',p:[
+   'Aufklärungspflichtig sind Luxation, Beinlängendifferenz, periartikuläre Ossifikationen, intraoperative Fissur oder Fraktur des Femurs, Infektion, aseptische Lockerung und Materialverschleiß. Im Gelenkspalt zurückbleibende Zementpartikel wirken als Fremdkörper abrasiv und beschleunigen den Polyethylenabrieb – konsequentes Ausspülen ist daher Pflicht. Standzeiten moderner Prothesensysteme liegen nach 15 Jahren bei über 90 % für den Schaft und rund 80–90 % für die Pfanne.']},
+  {h:'Nachbehandlung',p:[
+   'Postoperativ erfolgt die Vollmobilisation unter physiotherapeutischer Anleitung meist noch am OP-Tag oder am ersten postoperativen Tag. Zur Luxationsprophylaxe werden je nach Zugang bestimmte Bewegungskombinationen – vor allem kombinierte Flexion, Innenrotation und Adduktion nach posteriorem Zugang – für einige Wochen gemieden.']}
+ ],
+ cards:[
+  {q:'Warum ist die exakte Rekonstruktion des Hüftdrehzentrums so wichtig?',a:'Weicht das Drehzentrum der Prothese vom physiologischen Zentrum ab, verändert sich der Hebelarm der Abduktoren – Folge können Hinken, erhöhter Gelenkverschleiß und ein größeres Luxationsrisiko sein.'},
+  {q:'Welche vier Standardzugänge zur Hüfte gibt es?',a:'Anterior (Smith-Petersen), anterolateral (Watson-Jones), lateral/transglutäal (Hardinge) und posterior.'},
+  {q:'Welche Zielwerte gelten für Pfanneninklination und -anteversion?',a:'Etwa 40° Inklination und 20° Anteversion – die klassische „safe zone“ nach Lewinnek.'},
+  {q:'Warum wird die erste Markraumraspel immer von Hand eingebracht?',a:'Sie gibt die Richtung für alle folgenden, größeren Raspeln vor – maschinelle Kraft könnte sie in eine Fehlrichtung drängen oder den Femurschaft perforieren.'},
+  {q:'Was ist das „Drittkörperproblem“?',a:'Im Gelenkspalt verbliebene Fremdkörper, etwa Zementreste, wirken abrasiv und beschleunigen den Polyethylenabrieb der Gleitpaarung.'},
+  {q:'Welche Bewegungsprüfung zeigt intraoperativ die Luxationsstabilität?',a:'Außenrotation in Streckung ≥70° und Innenrotation in 90°-Flexion ≥45° ohne Luxation bei der Probereposition.'},
+  {q:'Wie hoch ist die durchschnittliche Standzeit moderner Hüft-TEP?',a:'Über 90 % der Schäfte und rund 80–90 % der Pfannen halten mindestens 15 Jahre.'}
+ ]},
+{id:'knie-tep',fach:'ortho',titel:'Knie-TEP (Knietotalendoprothese)',kurz:'Bikondylärer Kniegelenkersatz bei Gonarthrose: Achse, Rotation, Bandbalance und OP-Schritte.',read:'6 Min.',
+ sections:[
+  {h:'Prinzip',p:[
+   'Bei der Knie-Totalendoprothese werden die Gelenkflächen der distalen Femurkondylen und des proximalen Tibiaplateaus durch eine Metall-Polyethylen-Gleitpaarung ersetzt – bikompartimental. Wird zusätzlich die Patellarückfläche resurfaced, spricht man von einem trikompartimentalen System. Ziel ist eine neutrale mechanische Beinachse mit einem in Streckung wie in Beugung symmetrischen, ligamentär ausbalancierten Gelenkspalt. Das vordere Kreuzband wird routinemäßig reseziert; ob das hintere Kreuzband erhalten werden kann, entscheidet über kreuzbanderhaltende (CR-) oder posterior-stabilisierte (PS-)Prothese.']},
+  {h:'Präoperative Diagnostik',fig:'knee',figcap:'Mechanische Beinachse (gestrichelt) von Hüft- über Knie- bis Sprunggelenkzentrum, hier bei Varusfehlstellung.',p:[
+   'Neben Standardröntgen des Knies in zwei Ebenen und einer Patella-Tangentialaufnahme ist eine Beinganzaufnahme im Stehen zur Bestimmung der mechanischen Beinachse obligat. Anhand dieser Aufnahme werden Resektionshöhen und -winkel an Femur und Tibia bereits präoperativ geplant.']},
+  {h:'Im Saal & Zugang',p:[
+   'Vor dem Abdecken erfolgt in Narkose eine Prüfung von Bandstabilität und Bewegungsumfang, die dem Operateur das voraussichtliche Ausmaß des benötigten Weichteil-Release zeigt. Standardzugang ist der mediale parapatellare Zugang; ein lateraler oder Subvastus-Zugang bleibt Sonderfällen vorbehalten.']},
+  {h:'OP-Schritte',steps:[
+   'Nach Arthrotomie werden intraartikuläre Verwachsungen, Restmenisken und das vordere Kreuzband entfernt und der Hoffa-Fettkörper teilreseziert, um Übersicht zu gewinnen.',
+   'Bei Varus- oder Valgusfehlstellung erfolgt ein subperiostales mediales bzw. laterales Weichteil-Release, bis Streck- und Beugespalt symmetrisch und gleich weit sind.',
+   'Über einen intramedullären Führungsstab am Femur und einen extramedullären Stab an der Tibia werden Sägelehren ausgerichtet; am distalen Femur erfolgen üblicherweise fünf, an Tibia und Patella je ein Sägeschnitt.',
+   'Die Rotationsausrichtung der Femurkomponente orientiert sich an der transepikondylären Achse bzw. der anterior-posterioren Whiteside-Linie – eine Fehlrotation begünstigt schlechte Patellaführung und Anteriorschmerz. Die Tibiakomponente wird so rotiert, dass sie den kortikalen Rand ausnutzt, ohne die Patella nach lateral zu drängen.',
+   'Nach Probeimplantation werden Bewegungsumfang (Ziel 0–130°) und Patellalauf geprüft – physiologisch bleibt die Patella beim Beugen und Strecken zentriert in der Trochlea, ohne manuelle Führung („no thumbs rule“).',
+   'Nach Reinigung der Knochenoberflächen werden die definitiven Komponenten – zementiert oder zementfrei mit poröser bzw. hydroxylapatitbeschichteter Rückfläche – eingebracht; die Aushärtung erfolgt unter axialer Kompression in Streckstellung.']},
+  {h:'Komplikationen',p:[
+   'Zu den wichtigsten postoperativen Risiken zählen Wundheilungsstörungen, periprothetische Infektionen, aseptische Lockerung und Polyethylenabrieb. Intraoperativ ist vor allem bei retinakulumspaltenden Zusatzeingriffen die Verletzung kleiner Genikulargefäße zu beachten – sorgfältige Blutstillung unter Sicht statt in Blutsperre verhindert postoperative Nachblutungen und Hämatome.']},
+  {h:'Nachbehandlung',p:[
+   'Frühfunktionelle Mobilisation ab dem OP-Tag ohne Immobilisation, mit dem Ziel einer Beugefähigkeit von 90° innerhalb der ersten Woche. Laborkontrollen von Hb und CRP begleiten den Verlauf, Drainagen werden meist am zweiten postoperativen Tag bzw. bei Fördermengen unter 30 ml pro Tag entfernt.']}
+ ],
+ cards:[
+  {q:'Was unterscheidet eine bikompartimentale von einer trikompartimentalen Knieprothese?',a:'Bikompartimental ersetzt Femur- und Tibiagelenkfläche; trikompartimental zusätzlich die Patellarückfläche.'},
+  {q:'Wann wählt man eine posterior-stabilisierte (PS) statt einer kreuzbanderhaltenden (CR) Prothese?',a:'Wenn das hintere Kreuzband insuffizient ist oder bei erheblicher Achsfehlstellung bzw. Beugekontraktur ein symmetrischer Streck-/Beugespalt sonst nicht herstellbar ist.'},
+  {q:'Welche zwei Achsen dienen der Rotationsausrichtung der Femurkomponente?',a:'Die transepikondyläre Achse und die anterior-posteriore Whiteside-Achse.'},
+  {q:'Was bedeutet die „no thumbs rule“?',a:'Beim Probelauf soll die Patella beim Beugen und Strecken ohne manuelle Führung durch den Operateur zentriert in der Trochlea laufen – ein Zeichen für korrekte Rotation und Weichteilbalance.'},
+  {q:'Welches Band wird bei der Knie-TEP praktisch immer entfernt?',a:'Das vordere Kreuzband.'},
+  {q:'Warum sollte bei zusätzlicher Retinakulumspaltung nicht in Blutsperre operiert werden?',a:'Weil kleine arterielle Gefäße, etwa Genikulargefäße, sonst übersehen werden und erst nach Öffnen der Blutsperre nachbluten.'},
+  {q:'Ab welcher Fördermenge werden Redondrainagen typischerweise gezogen?',a:'Unter 30 ml pro Tag, spätestens am 2. postoperativen Tag.'}
+ ]}
+];
+function lexTile(a){return `<button class="tile" data-lex="${a.id}">
+ <div class="meta"><span class="tag acc">${esc(LEX_FACH[a.fach])}</span><span class="spacer"></span><span class="faint" style="font-size:12px">${esc(a.read)}</span></div>
+ <h3>${esc(a.titel)}</h3><p>${esc(a.kurz)}</p></button>`}
+function vLexikon(){
+ const fs=['alle',...Object.keys(LEX_FACH).filter(k=>LEXIKON.some(a=>a.fach===k))];
+ const list=LEXIKON.filter(a=>S.lexFach==='alle'||a.fach===S.lexFach);
+ return `<div class="page-head"><div><span class="eyebrow">Üben</span><h1>Lexikon</h1><p>OP-Leitfäden und Krankheitsbilder zum Nachlesen – kompakt, mit Wiederholungsfragen am Ende jedes Artikels.</p></div></div>
+ <div class="chips" style="margin-bottom:16px">${fs.map(f=>`<button class="chip" data-lexfach="${f}" aria-pressed="${S.lexFach===f}">${f==='alle'?'Alle Fächer':esc(LEX_FACH[f])}</button>`).join('')}</div>
+ <div class="grid-cards">${list.map(lexTile).join('')}</div>`;
+}
+function vLexArt(){
+ const a=LEXIKON.find(x=>x.id===S.lexId);if(!a)return vLexikon();
+ return `<button class="back" data-nav="lexikon">${ic('back')}Alle Artikel</button>
+ <div class="page-head"><div><span class="tag acc">${esc(LEX_FACH[a.fach])}</span><h1 style="margin-top:6px">${esc(a.titel)}</h1><p class="muted" style="margin-top:4px">${esc(a.kurz)} · ${esc(a.read)} Lesezeit</p></div></div>
+ <div class="lex-art">${a.sections.map(s=>`<div>${s.fig?`<figure class="lexfig">${LEX_FIG[s.fig]}<figcaption>${esc(s.figcap||'')}</figcaption></figure>`:''}<h2>${esc(s.h)}</h2>${s.p?s.p.map(p=>`<p>${esc(p)}</p>`).join(''):''}${s.steps?`<div class="bga-steps">${s.steps.map((x,i)=>`<div><i>${i+1}</i><span>${esc(x)}</span></div>`).join('')}</div>`:''}</div>`).join('')}</div>
+ <h2 style="max-width:760px;margin-top:8px">Wiederholungsfragen</h2>
+ <div class="lex-cards">${a.cards.map(c=>`<details class="panel"><summary>${esc(c.q)}</summary><p>${esc(c.a)}</p></details>`).join('')}</div>`;
+}
+
 /* ================= TUTOR ================= */
 const TUTOR_RULES=`Du bist ein erfahrener klinischer Tutor (Facharzt/Fachärztin) für Medizinstudierende im klinischen Abschnitt und PJ an einer deutschen Universitätsklinik. Antworte auf Deutsch, direkt und präzise, ohne Füllsätze. Orientiere dich an aktuellen deutschen und europäischen Leitlinien (AWMF, ESC, ERC) und nenne sie, wenn relevant. Bei Dosierungen kurz auf Prüfung gegen Fachinformation bzw. Klinik-SOP hinweisen. Wenn der Nutzer einen Fall üben möchte, spiele den Fall schrittweise wie in einer echten Aufnahme: Informationen nur auf Nachfrage, lass den Nutzer Diagnostik und Therapie vorschlagen und gib am Ende strukturiertes Feedback. Bei Fallvorstellungen oder Arztbriefen gib konkrete Formulierungsbeispiele. Keine Markdown-Überschriften. Es werden keine echten Patientendaten verwendet.`;
 const TUTOR_STARTERS=['Spiel mit mir einen Fall in der Notaufnahme: Brustschmerz','Wie stelle ich einen Patienten auf der Visite in 60 Sekunden vor?','Erklär mir die Stufentherapie der Hyperkaliämie','Frag mich 5 Prüfungsfragen zur Pneumonie','Wie dokumentiere ich Suizidalität richtig?','Spiel mit mir eine Aufnahme auf der Unfallchirurgie'];
@@ -3166,6 +3282,8 @@ document.addEventListener('click',e=>{
  if(ds.case){openCase(ds.case);return}
  if(ds.calc){go('rechner',{calcId:ds.calc,calcDetail:true});return}
  if(ds.ref){go('kitteltasche',{refTab:ds.ref});return}
+ if(ds.lex){go('lexart',{lexId:ds.lex});return}
+ if(ds.lexfach){S.lexFach=ds.lexfach;render();return}
  if(ds.fach){S.fach=ds.fach;render();return}
  if(ds.utab){S.uebTab=ds.utab;render();return}
  if(ds.mode){S.mode=ds.mode;render();window.scrollTo(0,0);return}
@@ -3256,7 +3374,7 @@ document.addEventListener('click',e=>{if(!e.target.closest('.search')){const b=$
 (function boot(){
  const th=store.get('theme','system');if(th==='light'||th==='dark')document.documentElement.setAttribute('data-theme',th);
  shell();const h=(location.hash||'').slice(1);
- if(['start','brief','medis','rechner','kitteltasche','ueben','tutor','mehr'].includes(h))S.view=h;
+ if(['start','brief','medis','rechner','kitteltasche','ueben','lexikon','tutor','mehr'].includes(h))S.view=h;
  if(h==='briefe')S.view='brief';
  render();
 })();
