@@ -1511,6 +1511,7 @@ function resetPlayer() {
 }
 function startGame(mode) {
   Audio.init();
+  if (G.chase) G.chase.hide(); G.chase = mode !== 'duel' && window.Bestenliste && !TEST ? Bestenliste.chase(mode === 'timer' ? 'arena-timer' : 'arena') : null;
   G.mode = mode; G.score = 0; G.wave = 0; G.toSpawn = []; G.spawnT = 0; G.breakT = 1.2; G.time = 0; G.timeLeft = 120;
   G.combo = 1; G.comboT = 0; G.streak = 0; G.bestCombo = 1; G.tags = 0; G.seenStinger = false; G.shots = 0; G.hits = 0; G.crits = 0; G.lastTickSec = -1;
   clearBots(); clearOrbs(); resetPicks(); resetPlayer();
@@ -1572,6 +1573,7 @@ function toMenu() {
 }
 function endGame(reason) {
   if (G.state !== 'playing') return;
+  if (G.chase) { G.chase.hide(); G.chase = null; }
   G.state = 'over';
   if (document.pointerLockElement) document.exitPointerLock();
   input.fire = false; input.ads = false; keys.clear();
@@ -2494,6 +2496,7 @@ function netTick(dt) {
 }
 function endDuel(won, reason) {
   if (G.state !== 'playing') return;
+  if (G.chase) { G.chase.hide(); G.chase = null; }
   G.state = 'over';
   if (document.pointerLockElement) document.exitPointerLock();
   input.fire = false; input.ads = false; keys.clear();
@@ -2641,6 +2644,7 @@ function updateCamera(dt) {
    ===================================================================== */
 let fpsAcc = 0, fpsN = 0, fpsVal = 0;
 function updateHud(dt) {
+  if (G.chase) G.chase.update(G.score);
   const w = WEAPONS[W.cur];
   setText(hud.wave, 'wave', String(G.mode === 'duel' ? NET.kills : Math.max(1, G.wave)));
   if (G.mode === 'timer' || G.mode === 'duel') {
