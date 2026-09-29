@@ -340,6 +340,7 @@ $('tPause').addEventListener('click', () => pause());
 // ---------- Ablauf ----------
 function start() {
   AU.init(); AU.song(0);
+  if (G.chase) G.chase.hide(); G.chase = window.Bestenliste ? Bestenliste.chase('retro') : null;
   Object.assign(G, { state: 'play', t: 0, score: 0, lives: 3, bombs: 2, stage: 1, loop: 0, chain: 0, chainT: 0, mult: 1, medal: 100, shake: 0, flashT: 0, nextLife: 50000, bossT: 0, dirT: 0, stats: { kills: 0, medals: 0 } });
   Object.assign(P, { x: W / 2, y: H - 40, inv: 2.5, lvl: 1, shield: 0, fireT: 0, alive: true, deadT: 0 });
   enemies = []; bullets = []; shots = []; items = []; parts = []; texts = [];
@@ -351,6 +352,7 @@ function start() {
 function pause() { if (G.state !== 'play' && G.state !== 'boss') return; G.prev = G.state; G.state = 'pause'; $('pause').classList.remove('hide'); $('links').classList.remove('hide'); }
 function resume() { if (G.state !== 'pause') return; G.state = G.prev; $('pause').classList.add('hide'); $('links').classList.add('hide'); }
 function gameOver() {
+  if (G.chase) { G.chase.hide(); G.chase = null; }
   G.state = 'over'; document.body.classList.remove('playing');
   const nb = G.score > G.best; if (nb) { G.best = G.score; store.set('best', G.best); }
   $('oTitle').innerHTML = 'GAME<br>OVER';
@@ -448,6 +450,7 @@ function bomb() {
   P.inv = Math.max(P.inv, 1.5);
 }
 function addScore(n, x, y, silent) {
+  if (G.chase) G.chase.update(G.score + n);
   G.score += Math.round(n * G.mult);
   if (G.score >= G.nextLife) { G.nextLife += G.nextLife < 100000 ? 100000 : 150000; G.lives = Math.min(6, G.lives + 1); AU.oneup(); float('1UP!', P.x, P.y - 16, '#7dff8a', 1.4); }
   if (!silent && x !== undefined) float('' + Math.round(n * G.mult), x, y, '#f4f1ff', 0.7);

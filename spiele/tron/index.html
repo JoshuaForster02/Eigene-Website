@@ -384,6 +384,7 @@ function newRound() {
 
 function startGame(mode) {
   audioInit();
+  if (G.chase) G.chase.hide(); G.chase = mode !== 'duo' && window.Bestenliste && !TEST ? Bestenliste.chase('tron') : null;
   G.mode = mode; G.level = 1; G.lives = 3; G.score = 0; G.kills = 0; G.wins = [0, 0]; G.round = 0; G.nextLife = 3;
   G.cam = mode === 'duo' ? 'top' : (G.camPref || 'chase');
   ['menu', 'over', 'pause'].forEach(id => $(id).classList.add('hide'));
@@ -538,6 +539,7 @@ function afterRound() {
 }
 
 function gameOver() {
+  if (G.chase) { G.chase.hide(); G.chase = null; }
   G.state = 'over'; musicOn = false; document.body.classList.remove('playing');
   $('hud').classList.add('hide'); $('bPause').classList.add('hide');
   $('over').classList.remove('hide');
@@ -599,6 +601,7 @@ function hint(t) { $('hint').textContent = t; $('hint').classList.add('on'); hin
 function flash(t) { if (G.state === 'play' || G.state === 'count') pop(t); }
 let lastHud = '';
 function hud() {
+  if (G.chase) G.chase.update(G.score);
   if (G.mode === 'duo') {
     $('duoScore').innerHTML = `<span class="a">${G.wins[0]}</span> : <span class="b">${G.wins[1]}</span>`; return;
   }

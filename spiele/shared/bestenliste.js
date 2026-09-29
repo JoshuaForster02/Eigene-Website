@@ -47,9 +47,48 @@
     return fetch(API + '/scores?game=' + encodeURIComponent(game) + '&limit=' + (limit || 10), { cache: 'no-store' })
       .then(function (r) { return r.json(); });
   }
-  function submit(game, name, score, meta) {
-    return fetch(API + '/scores', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ game: game, name: name, score: score, meta: meta || {} }) })
-      .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error || 'Fehler'); return j; }); });
+  function submit(game, name, score, meta, retry) {
+    var body = JSON.stringify({ game: game, name: name, score: score, meta: meta || {} });
+    return fetch(API + '/scores', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: body })
+      .then(function (r) { return r.json().then(function (j) { if (!r.ok) { var e = new Error(j.error || 'Fehler'); e.status = r.status; throw e; } return j; }); })
+      .catch(function (err) {
+        // Server kurz weg (Kaltstart, Netz) → einmal nach 1,5 s neu versuchen
+        if (retry || (err.status && err.status < 500)) throw err;
+        return new Promise(function (ok) { setTimeout(ok, 1500); }).then(function () { return submit(game, name, score, meta, true); });
+      });
+  }
+
+  /* Rivale im Spiel: zeigt, wen man als Nächstes überholt.
+     var c = Bestenliste.chase('retro'); c.update(score) pro Frame; c.hide() bei Game Over */
+  function chase(game) {
+    injectCss();
+    if (!document.getElementById('bl-chase-css')) {
+      var st = document.createElement('style'); st.id = 'bl-chase-css';
+      st.textContent = '.bl-chase{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 34px);transform:translateX(-50%);z-index:50;pointer-events:none;' +
+        'font:600 12px/1 ui-sans-serif,system-ui,sans-serif;letter-spacing:.04em;color:#fff;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.18);' +
+        'border-radius:20px;padding:6px 11px;white-space:nowrap;transition:opacity .3s,transform .3s;opacity:0}' +
+        '.bl-chase.on{opacity:.92}.bl-chase.pass{transform:translateX(-50%) scale(1.12);color:#ffd36a}';
+      document.head.appendChild(st);
+    }
+    var el = document.createElement('div'); el.className = 'bl-chase'; document.body.appendChild(el);
+    var list = [], me = getName().toLowerCase(), last = -1, t = 0, passT = 0;
+    load(game, 50).then(function (j) { list = (j.items || []).filter(function (it) { return String(it.name).toLowerCase() !== me; }); last = -1; }).catch(function () {});
+    return {
+      update: function (score) {
+        var now = Date.now(); if (now - t < 250) return; t = now;
+        if (!list.length) return;
+        var above = null, rank = 1;
+        for (var i = 0; i < list.length; i++) { if (list[i].score > score) { above = list[i]; rank++; } }
+        if (rank !== last) {
+          if (last > 0 && rank < last) { el.classList.add('pass'); passT = now; }
+          last = rank;
+          el.textContent = above ? 'Platz ' + rank + ' · nächster: ' + above.name + ' ' + fmt(above.score) : '★ Platz 1 der Welt';
+          el.classList.add('on');
+        }
+        if (passT && now - passT > 900) { el.classList.remove('pass'); passT = 0; }
+      },
+      hide: function () { el.remove(); }
+    };
   }
 
   function mount(el, opt) {
@@ -98,5 +137,5 @@
     return { refresh: refresh };
   }
 
-  window.Bestenliste = { mount: mount, load: load, submit: submit, api: API };
+  window.Bestenliste = { mount: mount, load: load, submit: submit, chase: chase, api: API };
 })();
