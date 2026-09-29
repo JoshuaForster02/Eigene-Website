@@ -36,6 +36,21 @@ h2.sec i{color:var(--ac)}
 .card.app{min-height:230px}
 .card.app h2{font-size:38px}
 .foot{margin-top:56px;color:var(--fg4);font-size:13px}
+.lb{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr));gap:14px}
+.lbc{padding:18px 18px 14px;border:1px solid var(--line);background:rgba(12,21,38,.6);text-decoration:none;display:block}
+a.lbc:hover{border-color:var(--ac)}
+.lbc h3{margin:0 0 10px;font-family:"DM Mono",monospace;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg3);font-weight:400;display:flex;justify-content:space-between}
+.lbc h3 span{color:var(--ac)}
+.lbc ol{list-style:none;margin:0;padding:0}
+.lbc li{display:grid;grid-template-columns:22px 1fr auto;gap:8px;padding:5px 0;border-top:1px solid var(--line);font-variant-numeric:tabular-nums;font-size:14.5px}
+.lbc li:first-child{border-top:0}
+.lbc li b{font-weight:500}.lbc li .r{color:var(--fg4)}.lbc li:first-child .r{color:#ffd36a}
+.lbc li .n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lbc li.e{display:block;color:var(--fg4);font-size:14px;padding:5px 0}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:0 0 22px}
+.btn{font:500 14px Karla,system-ui,sans-serif;color:#071018;background:var(--ac);border:0;padding:11px 18px;cursor:pointer}
+.btn.g{background:transparent;color:var(--fg);border:1px solid var(--line)}.btn.g:hover{border-color:var(--ac)}
+.bar small{color:var(--fg3);font-size:14px}
 @media (prefers-reduced-motion:reduce){a.card:hover{transform:none}}
 </style>
 </head>
@@ -110,6 +125,12 @@ h2.sec i{color:var(--ac)}
     </a>
   </div>
 
+
+  <h2 class="sec" id="rangliste">Welt<i>rangliste</i></h2>
+  <p class="lead">Die besten drei pro Spiel, live. Link an Freunde schicken und schauen, wer oben bleibt.</p>
+  <div class="bar"><button class="btn" id="share">Freunde herausfordern</button><button class="btn g" id="reload">Aktualisieren</button><small id="me"></small></div>
+  <div class="lb" id="lb"></div>
+
   <h2 class="sec">Apps &amp; <i>Werkzeuge</i></h2>
   <p class="lead">Was ich im Alltag benutze. Study OS und Hybrid OS brauchen mein Login.</p>
   <div class="grid">
@@ -149,7 +170,30 @@ h2.sec i{color:var(--ac)}
       <span class="tags">Web-App · Fälle · ↗</span>
     </a>
   </div>
-  <p class="foot">Lernspiele ersetzen keine Leitlinie. Spielstände bleiben lokal im Browser.</p>
+  <p class="foot">Lernspiele ersetzen keine Leitlinie. Bestenlisten sind öffentlich, gespeichert wird nur der Name, den du einträgst.</p>
 </div>
+<script src="shared/bestenliste.js"></script>
+<script>
+(function(){
+  var G=[['tron','Lichtrenner','tron/'],['arena','Neon Arena','arena/'],['arena-timer','Arena · Zeit','arena/'],['retro','Sternfeuer','retro/'],['instrumente','OP-Sieb','instrumente/'],['nachtdienst','Nachtdienst','nachtdienst/'],['soma','Soma','kosmos/'],['planche','Planche','planche/']];
+  var lb=document.getElementById('lb'),me='';try{me=(localStorage.getItem('spiele.name')||'').toLowerCase()}catch(e){}
+  if(me)document.getElementById('me').textContent='Du spielst als '+localStorage.getItem('spiele.name');
+  function esc(t){return String(t).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+  function row(it){return '<li'+(String(it.name).toLowerCase()===me?' style="color:var(--ac)"':'')+'><span class="r">'+it.rank+'.</span><span class="n">'+esc(it.name)+'</span><b>'+Number(it.score).toLocaleString('de-DE')+'</b></li>'}
+  function load(){
+    lb.innerHTML=G.map(function(g){return '<a class="lbc" href="'+g[2]+'" id="lb-'+g[0]+'"><h3>'+g[1]+'<span>Spielen →</span></h3><ol><li class="e">Lade …</li></ol></a>'}).join('');
+    G.forEach(function(g){Bestenliste.load(g[0],3).then(function(j){
+      document.querySelector('#lb-'+g[0]+' ol').innerHTML=(j.items&&j.items.length)?j.items.map(row).join(''):'<li class="e">Noch frei – hol dir Platz 1.</li>';
+    }).catch(function(){document.querySelector('#lb-'+g[0]+' ol').innerHTML='<li class="e">Gerade nicht erreichbar.</li>'})});
+  }
+  document.getElementById('reload').onclick=load;
+  document.getElementById('share').onclick=function(){
+    var d={title:'Spiele von Josh',text:'Schlag meinen Rekord:',url:location.origin+location.pathname+'#rangliste'};
+    if(navigator.share)navigator.share(d).catch(function(){});
+    else navigator.clipboard.writeText(d.url).then(function(){this.textContent='Link kopiert ✓'}.bind(this));
+  };
+  load();
+})();
+</script>
 </body>
 </html>
