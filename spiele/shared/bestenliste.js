@@ -43,9 +43,14 @@
     return p.join(' · ');
   }
 
-  function load(game, limit) {
+  function load(game, limit, retry) {
     return fetch(API + '/scores?game=' + encodeURIComponent(game) + '&limit=' + (limit || 10), { cache: 'no-store' })
-      .then(function (r) { return r.json(); });
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .catch(function (err) {
+        // Kaltstart oder Netzaussetzer: einmal nach 1,5 s neu versuchen
+        if (retry) throw err;
+        return new Promise(function (ok) { setTimeout(ok, 1500); }).then(function () { return load(game, limit, true); });
+      });
   }
   function submit(game, name, score, meta, retry) {
     var body = JSON.stringify({ game: game, name: name, score: score, meta: meta || {} });
