@@ -2,6 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
+<script>document.documentElement.classList.add('js')</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Joshua Forster – Medizinstudent im 7. Semester in Homburg. Orthopädie, Sportmedizin und Prävention.">
 <meta name="author" content="Joshua Forster">
@@ -23,14 +24,14 @@
 <style>
 :root{
   color-scheme:dark;
-  --bg:#070D1A; --bg2:#0C1526; --bg3:#15213A; --fg:#EAF0F8; --fg2:#C5D0E2; --fg3:#8B98AE; --fg4:#5F6C84;
+  --bg:#070D1A; --bg2:#0C1526; --bg3:#15213A; --fg:#EAF0F8; --fg2:#C5D0E2; --fg3:#8B98AE; --fg4:#75829A;
   --crim:#8FB1FF; --crim-deep:#1E3A8A; --line:rgba(234,240,248,.12); --glass:rgba(7,13,26,.55);
   --serif:"Cormorant Garamond",Georgia,serif; --sans:"Karla",system-ui,sans-serif; --mono:"DM Mono",ui-monospace,monospace;
   --ease:cubic-bezier(.2,.8,.2,1);
 }
 :root[data-theme="light"]{
   color-scheme:light;
-  --bg:#F5F7FB; --bg2:#E9EEF6; --bg3:#DCE3EF; --fg:#0A1428; --fg2:#22304A; --fg3:#5C6A82; --fg4:#9AA6BA;
+  --bg:#F5F7FB; --bg2:#E9EEF6; --bg3:#DCE3EF; --fg:#0A1428; --fg2:#22304A; --fg3:#56647C; --fg4:#6E7A90;
   --crim:#1C3D7A; --crim-deep:#1C3D7A; --line:rgba(10,20,40,.14); --glass:rgba(245,247,251,.7);
 }
 *{box-sizing:border-box}
@@ -67,7 +68,7 @@ nav.solid{background:var(--glass);backdrop-filter:blur(16px) saturate(140%);-web
 .stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
 
 /* HERO */
-#hero{height:200vh}
+#hero{height:150vh}
 #hero .stage{display:grid;align-items:center;padding:0 clamp(16px,5vw,80px)}
 .mono-bg{position:absolute;right:-4vw;top:50%;font-family:var(--serif);font-weight:300;font-style:italic;font-size:min(62vw,720px);line-height:.8;color:transparent;-webkit-text-stroke:1px var(--line);transform:translateY(calc(-50% + var(--p,0)*-30vh)) rotate(calc(var(--p,0)*-6deg));pointer-events:none;user-select:none}
 .hero-in{position:relative;max-width:1280px;width:100%;margin:0 auto}
@@ -82,6 +83,9 @@ nav.solid{background:var(--glass);backdrop-filter:blur(16px) saturate(140%);-web
 @keyframes rise{to{transform:none}}
 .hero-sub{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;flex-wrap:wrap;margin-top:44px;opacity:calc(1 - var(--p,0)*2.2)}
 .hero-sub p{font-family:var(--serif);font-style:italic;font-size:clamp(20px,2.2vw,30px);color:var(--fg3);margin:0;max-width:30ch;line-height:1.3;opacity:0;animation:fade 1.2s .9s forwards}
+.now-pill{display:inline-flex;align-items:center;gap:10px;margin:0 0 18px;font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg2);border:1px solid var(--line);padding:8px 14px;border-radius:99px;background:color-mix(in srgb,var(--bg2) 70%,transparent);opacity:0;animation:fade 1.2s 1.3s forwards}
+.now-pill i{width:7px;height:7px;border-radius:50%;background:#3cd08a;box-shadow:0 0 0 0 rgba(60,208,138,.6);animation:pulse 2.4s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 8px rgba(60,208,138,0)}100%{box-shadow:0 0 0 0 rgba(60,208,138,0)}}
 .hero-cta{display:flex;gap:12px;opacity:0;animation:fade 1.2s 1.1s forwards}
 @keyframes fade{to{opacity:1}}
 .btn{display:inline-flex;align-items:center;gap:10px;padding:15px 26px;font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;border:1px solid var(--fg);transition:background .3s,color .3s,border-color .3s}
@@ -92,7 +96,7 @@ nav.solid{background:var(--glass);backdrop-filter:blur(16px) saturate(140%);-web
 @keyframes drip{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
 
 /* STATEMENT */
-#about{height:220vh}
+#about{height:170vh}
 #about .stage{display:grid;place-items:center;padding:0 clamp(16px,5vw,80px)}
 .stmt{max-width:1180px;font-family:var(--serif);font-weight:300;font-size:clamp(34px,5vw,76px);line-height:1.1;letter-spacing:-.02em;margin:0}
 .stmt .w{opacity:.14;transition:opacity .35s}
@@ -101,7 +105,7 @@ nav.solid{background:var(--glass);backdrop-filter:blur(16px) saturate(140%);-web
 .label{position:absolute;top:110px;left:clamp(16px,5vw,80px);font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--crim)}
 
 /* STATIONEN */
-#stationen{height:360vh}
+#stationen{height:300vh}
 #stationen .stage{display:flex;flex-direction:column;justify-content:center}
 .st-top{padding:0 clamp(16px,5vw,80px);display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:6vh}
 .st-top h2{font-family:var(--serif);font-weight:300;font-size:clamp(46px,7vw,110px);line-height:.9;margin:0;letter-spacing:-.03em}
@@ -209,13 +213,13 @@ a.li:hover>*,a.li:hover p{color:var(--bg)}
 footer{padding:30px clamp(16px,5vw,80px);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-family:var(--mono);font-size:11px;color:var(--fg4);letter-spacing:.06em;background:var(--bg2)}
 footer a{text-decoration:none;margin-left:20px}footer a:hover{color:var(--crim)}
 
-.rv{opacity:0;transform:translateY(34px);transition:opacity 1.1s var(--ease),transform 1.1s var(--ease)}
-.rv.in{opacity:1;transform:none}
+.js .rv{opacity:0;transform:translateY(34px);transition:opacity 1.1s var(--ease),transform 1.1s var(--ease)}
+.js .rv.in{opacity:1;transform:none}
 @media (max-width:760px){#stationen{height:auto}#stationen .stage{position:relative;height:auto;padding:100px 0}.track{flex-direction:column;transform:none!important}.st{width:auto}.bar{display:none}}
 @media (prefers-reduced-motion:reduce){
   #hero,#about,#stationen{height:auto}.stage{position:relative;height:auto;min-height:100vh;padding-block:110px}
   .name .ch{animation:none;transform:none}.hero-sub p,.hero-cta{animation:none;opacity:1}
-  .stmt .w{opacity:1}.track{flex-wrap:wrap;transform:none!important}.rv{opacity:1;transform:none}
+  .stmt .w{opacity:1}.track{flex-wrap:wrap;transform:none!important}.js .rv{opacity:1;transform:none}
   .pimg,.pimg img,.cards3 div{--v:1!important}.scroll-cue::after{animation:none}
 }
 
@@ -243,7 +247,7 @@ footer a{text-decoration:none;margin-left:20px}footer a:hover{color:var(--crim)}
   @media (max-width:640px){.pno canvas{height:150px}.pno-hint{margin-left:0}}
 </style>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Person","name":"Joshua Forster","url":"https://joshuaforster.de/","email":"joshuaforster02@gmail.com","jobTitle":"Medizinstudent","description":"Medizinstudent im klinischen Abschnitt mit Fokus auf Orthopädie, Sportmedizin und medizinischer Datenanalyse.","knowsAbout":["Orthopädie","Sportmedizin","Medizinische Informatik","Softwareentwicklung"],"alumniOf":{"@type":"CollegeOrUniversity","name":"Universität des Saarlandes"},"sameAs":["https://www.instagram.com/iamjoshuaforster/","https://www.strava.com/athletes/55105958","https://github.com/JoshuaForster02"]}
+{"@context":"https://schema.org","@type":"Person","name":"Joshua Forster","url":"https://joshuaforster.de/","jobTitle":"Medizinstudent","description":"Medizinstudent im klinischen Abschnitt mit Fokus auf Orthopädie, Sportmedizin und medizinischer Datenanalyse.","knowsAbout":["Orthopädie","Sportmedizin","Medizinische Informatik","Softwareentwicklung"],"alumniOf":{"@type":"CollegeOrUniversity","name":"Universität des Saarlandes"},"sameAs":["https://www.instagram.com/iamjoshuaforster/","https://www.strava.com/athletes/55105958","https://github.com/JoshuaForster02"]}
 </script>
 </head>
 <body>
@@ -271,6 +275,7 @@ footer a{text-decoration:none;margin-left:20px}footer a:hover{color:var(--crim)}
       <h1 class="name" data-chars><span class="ln">Joshua</span><span class="ln"><em>Forster</em></span></h1>
       <div class="hero-sub">
         <p data-i="sub">Orthopädie, Sportmedizin und Prävention.</p>
+        <div class="now-pill" id="nowPill" hidden><i></i><span></span></div>
         <div class="hero-cta"><a class="btn solid" href="#projekte" data-i="c1">Projekte</a><a class="btn" href="#kontakt" data-i="c2">Kontakt</a></div>
       </div>
     </div>
@@ -317,6 +322,14 @@ footer a{text-decoration:none;margin-left:20px}footer a:hover{color:var(--crim)}
         </div></div></div>
         <div class="rv"><div class="pnum">Live · apkg.joshuaforster.de</div><h3>medi.<em>cards</em></h3><p data-i="pm">Folien als PDF oder PPTX hochladen, die KI erzeugt daraus quellenbasierte Anki-Karten mit Seitenangabe. Gebaut fürs Medizinstudium.</p><div class="ptags"><span>KI</span><span>Anki / APKG</span></div><span class="more">Öffnen</span></div>
       </a>
+      <a class="pr" href="https://klinik-trainer.vercel.app" target="_blank" rel="noopener">
+        <div class="pimg" data-view><div class="ph"><div class="cards3">
+          <div style="--r:-8deg;--x:-42px;--y:16px"><small>BEFUND</small>ST-Hebung II, III, aVF</div>
+          <div style="--r:6deg;--x:42px;--y:-12px"><small>NÄCHSTER SCHRITT</small>Herzkatheter oder Lyse?</div>
+          <div style="--r:-1deg;--x:0px;--y:0px"><small>FALL 12 · NOTAUFNAHME</small>67 J., Thoraxschmerz seit 2 Stunden</div>
+        </div></div></div>
+        <div class="rv"><div class="pnum">Live · klinik-trainer</div><h3>Klinik-<em>Trainer</em></h3><p data-i="pk">Fälle aus Notaufnahme und Innerer Medizin zum Durchspielen: Anamnese, Befunde anfordern, Diagnose stellen, Therapie festlegen.</p><div class="ptags"><span data-i="pkt">Fallbasiert</span><span data-i="pkt2">Notfall</span></div><span class="more">Öffnen</span></div>
+      </a>
     </div>
   </div>
 </section>
@@ -349,7 +362,7 @@ footer a{text-decoration:none;margin-left:20px}footer a:hover{color:var(--crim)}
   <div class="wrap">
     <div class="sec-label" data-i="l5">05 · Kontakt</div>
     <div class="cgrid">
-      <div class="rv"><h2 class="h2" style="margin-top:0" data-i="h5">Lass uns<br><em>sprechen.</em></h2><p style="font-size:17px;line-height:1.75;color:var(--fg3);margin-top:26px;max-width:40ch" data-i="cp">Für fachlichen Austausch oder Fragen zu meinen Projekten. Den Lebenslauf verschicke ich auf Anfrage per E-Mail.</p><a class="mail" href="mailto:joshuaforster02@gmail.com">joshuaforster02@gmail.com</a>
+      <div class="rv"><h2 class="h2" style="margin-top:0" data-i="h5">Lass uns<br><em>sprechen.</em></h2><p style="font-size:17px;line-height:1.75;color:var(--fg3);margin-top:26px;max-width:40ch" data-i="cp">Für fachlichen Austausch oder Fragen zu meinen Projekten. Den Lebenslauf verschicke ich auf Anfrage per E-Mail.</p><a class="mail" id="mail" data-u="joshuaforster02" data-d="gmail.com" href="#kontakt">joshuaforster02 [at] gmail.com</a>
         <button type="button" class="cvbtn" id="cvbtn"><span data-i="cvb">Lebenslauf anfragen</span> <span aria-hidden="true">→</span></button></div>
       <form class="form rv" action="https://formspree.io/f/xqeajnve" method="POST">
         <input type="hidden" name="_subject" value="Website-Anfrage von joshuaforster.de">
@@ -369,7 +382,7 @@ footer a{text-decoration:none;margin-left:20px}footer a:hover{color:var(--crim)}
 <script>
 (()=>{let L='de';try{L=localStorage.getItem('jf-lang')||''}catch(e){}
 if(!L)L=(navigator.languages||[navigator.language||'de']).some(l=>/^de/i.test(l))?'de':'en';
-window.JF_LANG=L;const EN={"skip": "Skip to content", "n1": "About", "n2": "Path", "n3": "Projects", "n5": "Contact", "kick": "Medical student · 7th semester · Homburg, Germany", "sub": "Orthopaedics, sports medicine and prevention.", "c1": "Projects", "c2": "Contact", "scr": "Scroll", "l1": "01 · About", "stmt": "I study medicine in the clinical phase at Saarland University. I am fascinated by the <span class=\"hl\">musculoskeletal system</span>: how people move, get injured and find their way back. Outside the hospital I fence and <span class=\"hl\">train</span>.", "sth": "The path<br><em>to Zurich.</em>", "stc": "02 · Path", "st0": "Medical school", "st1": "Start of medical school", "st2": "Saarland University, Homburg campus.", "st3": "Exam", "st4": "First state medical examination, then the move into the clinical years.", "st5": "Clerkship", "st6": "Orthopaedics", "st7": "Clinical clerkship at Saarland University Medical Center, Homburg.", "st8": "Final year (PJ)", "st9": "Final year in Basel", "st10": "Internal medicine and surgery at University Hospital Basel.", "st11": "Elective", "st12": "Orthopaedics in Zurich", "st13": "Elective rotation at Schulthess Klinik, Zurich.", "l3": "03 · Projects", "h3": "What I<br><em>have built.</em>", "pv": "A clinical companion for the ward and emergency department: discharge letter assistant, medication check, more than 160 clinical scores and calculators, plus practice cases with model letters. In German.", "pt1": "Discharge letters", "pt2": "Medication", "pm": "Upload lecture slides as PDF or PPTX and the AI turns them into source-referenced Anki cards with page numbers. Built for medical school.", "l4": "04 · Outside the hospital", "h4": "The <em>balance.</em>", "f1": "Fencing, <em>épée</em>", "f2": "Distance, timing and decisions under pressure.", "r1": "Running &amp; <em>strength</em>", "r2": "Endurance on the road, strength training since 2021.", "r3": "Fastest run · 5 km", "r4": "Longest run", "r5": "Running km <span data-yr></span>", "r6": "Strength training since", "x1": "Up next", "x2": "Half marathon · October 2026", "x3": "Ironman · late 2027", "so2": "Runs and training, updated daily", "l5": "05 · Contact", "h5": "Let's<br><em>talk.</em>", "cp": "For professional exchange or questions about my projects. My CV is available on request by email.", "sb": "Send message →", "fs": "By sending, you agree to the processing of your details. More in the <a href=\"datenschutz.html\">privacy policy</a> (German).", "ft1": "Back to top ↑", "so1": "@iamjoshuaforster · Sport, outdoors, photography", "cv": "I'd like to receive the CV by email.", "cvb": "Request CV", "sp1": "Nursing internship", "sp2": "days on the ward", "sp3": "Neurosurgery and internal medicine at Klinikum Saarbrücken, internal medicine at Saarland University Hospital.", "sw1": "Course", "sw2": "Phaco wet lab", "sw3": "Hands-on course in cataract surgery (HOYA).", "k1": "Pi<em>ano</em>", "k2": "The quiet counterweight to hospital and training.", "k4": "synthesized in your browser", "k5": "Tap the keys"};const PH={"b-name": "Name", "b-mail": "Email", "b-msg": "Message"};
+window.JF_LANG=L;const EN={"pk": "Cases from the emergency department and internal medicine: take a history, order tests, make the diagnosis, decide on treatment. In German.", "pkt": "Case-based", "pkt2": "Emergency", "skip": "Skip to content", "n1": "About", "n2": "Path", "n3": "Projects", "n5": "Contact", "kick": "Medical student · 7th semester · Homburg, Germany", "sub": "Orthopaedics, sports medicine and prevention.", "c1": "Projects", "c2": "Contact", "scr": "Scroll", "l1": "01 · About", "stmt": "I study medicine in the clinical phase at Saarland University. I am fascinated by the <span class=\"hl\">musculoskeletal system</span>: how people move, get injured and find their way back. Outside the hospital I fence and <span class=\"hl\">train</span>.", "sth": "The path<br><em>to Zurich.</em>", "stc": "02 · Path", "st0": "Medical school", "st1": "Start of medical school", "st2": "Saarland University, Homburg campus.", "st3": "Exam", "st4": "First state medical examination, then the move into the clinical years.", "st5": "Clerkship", "st6": "Orthopaedics", "st7": "Clinical clerkship at Saarland University Medical Center, Homburg.", "st8": "Final year (PJ)", "st9": "Final year in Basel", "st10": "Internal medicine and surgery at University Hospital Basel.", "st11": "Elective", "st12": "Orthopaedics in Zurich", "st13": "Elective rotation at Schulthess Klinik, Zurich.", "l3": "03 · Projects", "h3": "What I<br><em>have built.</em>", "pv": "A clinical companion for the ward and emergency department: discharge letter assistant, medication check, more than 160 clinical scores and calculators, plus practice cases with model letters. In German.", "pt1": "Discharge letters", "pt2": "Medication", "pm": "Upload lecture slides as PDF or PPTX and the AI turns them into source-referenced Anki cards with page numbers. Built for medical school.", "l4": "04 · Outside the hospital", "h4": "The <em>balance.</em>", "f1": "Fencing, <em>épée</em>", "f2": "Distance, timing and decisions under pressure.", "r1": "Running &amp; <em>strength</em>", "r2": "Endurance on the road, strength training since 2021.", "r3": "Fastest run · 5 km", "r4": "Longest run", "r5": "Running km <span data-yr></span>", "r6": "Strength training since", "x1": "Up next", "x2": "Half marathon · October 2026", "x3": "Ironman · late 2027", "so2": "Runs and training, updated daily", "l5": "05 · Contact", "h5": "Let's<br><em>talk.</em>", "cp": "For professional exchange or questions about my projects. My CV is available on request by email.", "sb": "Send message →", "fs": "By sending, you agree to the processing of your details. More in the <a href=\"datenschutz.html\">privacy policy</a> (German).", "ft1": "Back to top ↑", "so1": "@iamjoshuaforster · Sport, outdoors, photography", "cv": "I'd like to receive the CV by email.", "cvb": "Request CV", "sp1": "Nursing internship", "sp2": "days on the ward", "sp3": "Neurosurgery and internal medicine at Klinikum Saarbrücken, internal medicine at Saarland University Hospital.", "sw1": "Course", "sw2": "Phaco wet lab", "sw3": "Hands-on course in cataract surgery (HOYA).", "k1": "Pi<em>ano</em>", "k2": "The quiet counterweight to hospital and training.", "k4": "synthesized in your browser", "k5": "Tap the keys"};const PH={"b-name": "Name", "b-mail": "Email", "b-msg": "Message"};
 if(L==='en'){document.documentElement.lang='en';document.querySelectorAll('[data-i]').forEach(e=>{const v=EN[e.dataset.i];if(v!=null)e.innerHTML=v});for(const k in PH){const e=document.getElementById(k);if(e)e.placeholder=PH[k]};const d=document.querySelector('meta[name=description]');if(d)d.content='Joshua Forster, medical student in Homburg, Germany. Orthopaedics, sports medicine and prevention.';}
 const b=document.getElementById('lng');if(b){b.textContent=L==='en'?'DE':'EN';b.setAttribute('aria-label',L==='en'?'Auf Deutsch wechseln':'Switch to English');b.addEventListener('click',()=>{try{localStorage.setItem('jf-lang',L==='en'?'de':'en')}catch(e){}location.reload()})}
 })();
@@ -469,6 +482,12 @@ logo.addEventListener('click',()=>{const now=Date.now();n=now-t<1500?n+1:1;t=now
 </script>
 <script>
 (()=>{const b=document.getElementById('cvbtn');if(!b)return;b.addEventListener('click',()=>{const en=window.JF_LANG==='en';const cb=document.querySelector('#cvcb input');if(cb)cb.checked=true;const m=document.getElementById('b-msg');if(m&&!m.value.trim())m.value=en?'Hello Joshua,\n\nI would like to request your CV.\n\nKind regards':'Hallo Joshua,\n\nich würde gerne deinen Lebenslauf anfragen.\n\nViele Grüße';const f=document.querySelector('.form');if(f){f.classList.remove('flash');void f.offsetWidth;f.classList.add('flash');f.scrollIntoView({behavior:'smooth',block:'center'})}setTimeout(()=>{const n=document.getElementById('b-name');n&&n.focus({preventScroll:true})},500)})})();
+</script>
+<script>
+(()=>{const m=document.getElementById('mail');if(m){const a=m.dataset.u+'@'+m.dataset.d;m.textContent=a;m.href='mailto:'+a}
+const now=document.querySelector('.st.now'),pill=document.getElementById('nowPill');
+if(now&&pill){const en=window.JF_LANG==='en',tag=now.querySelector('.tag').textContent,h=now.querySelector('h3').textContent;
+pill.querySelector('span').textContent=(en?'Currently · ':'Gerade · ')+tag+' '+h;pill.hidden=false}})();
 </script>
 <script src="scripts/piano.js" defer></script>
 </body>
