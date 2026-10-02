@@ -60,63 +60,63 @@ a.lbc:hover{border-color:var(--ac)}
   <h1>Du hast es <i>gefunden.</i></h1>
   <p class="lead">Hier landet, was ich baue, wenn gerade niemand hinschaut. Alles läuft direkt im Browser, ohne Installation.</p>
   <div class="grid">
-    <a class="card" href="nachtdienst/">
+    <a class="card" href="nachtdienst/" data-pv="nachtdienst">
       <div class="art" style="background:radial-gradient(circle,#2b8a6e 0%,transparent 65%)"></div>
       <span class="no">01 · Lernspiel</span>
       <h2>Nacht<i>dienst</i></h2>
       <p>Du bist allein im Haus, der Piepser hört nicht auf. Triagieren, anordnen, entscheiden, bevor jemand kippt.</p>
       <span class="tags">Innere · Unfallchirurgie · Intensiv · 8–12 min</span>
     </a>
-    <a class="card" href="kosmos/">
+    <a class="card" href="kosmos/" data-pv="kosmos">
       <div class="art" style="background:radial-gradient(circle,#c2412d 0%,transparent 65%)"></div>
       <span class="no">02 · Erkundung</span>
       <h2>S<i>oma</i></h2>
       <p>Eine Galaxie aus Organsystemen. Als Immunzelle Erregerschwärme abwehren, Signale scannen, Kurzfragen lösen, bis zum Kern.</p>
       <span class="tags">3D · Musik · Lernspiel · Handy &amp; Desktop</span>
     </a>
-    <a class="card" href="sonnensystem/">
+    <a class="card" href="sonnensystem/" data-pv="sonnensystem">
       <div class="art" style="background:radial-gradient(circle,#3a7bd5 0%,transparent 65%)"></div>
       <span class="no">03 · Weltraum</span>
       <h2>Kos<i>mos</i></h2>
       <p>Eine Expedition durch ein prozedurales Sonnensystem: 13 Relikte auf vier Welten, zu Fuß, im Blockschiff und per Pulsantrieb.</p>
       <span class="tags">3D · Sound · Maus &amp; Tastatur · Desktop</span>
     </a>
-    <a class="card" href="planche/">
+    <a class="card" href="planche/" data-pv="planche">
       <div class="art" style="background:radial-gradient(circle,#8FB1FF 0%,transparent 65%)"></div>
       <span class="no">04 · Duell</span>
       <h2>Plan<i>che</i></h2>
       <p>Degenfechten auf 14 Metern. Distanz, Timing, Doppeltreffer. Gegen die KI oder zu zweit an einer Tastatur.</p>
       <span class="tags">1 oder 2 Spieler · Training</span>
     </a>
-    <a class="card" href="/encom/">
+    <a class="card" href="/encom/" data-pv="encom">
       <div class="art" style="background:radial-gradient(circle,#1f9fc4 0%,transparent 65%)"></div>
       <span class="no">05 · Betriebssystem</span>
       <h2>ENC<i>OM</i> OS</h2>
       <p>Ein OS im TRON-Stil, komplett im Browser — mit Fenster-Manager, Netzwerk- und Krypto-Tools. Bootet meinen echten, in C und Assembly geschriebenen Kernel per WebAssembly.</p>
       <span class="tags">Kernel · WebAssembly · Systems · PC & Handy</span>
     </a>
-    <a class="card" href="arena/">
+    <a class="card" href="arena/" data-pv="arena">
       <div class="art" style="background:radial-gradient(circle,#c04bd6 0%,transparent 65%)"></div>
       <span class="no">06 · Shooter</span>
       <h2>Neon <i>Arena</i></h2>
       <p>Schnelles Lasertag im Krunker-Stil: rutschen, bunny-hoppen, Drohnenwellen und alle fünf Wellen ein Mutterschiff.</p>
       <span class="tags">3D · Maus &amp; Tastatur · Touch (Beta)</span>
     </a>
-    <a class="card" href="retro/">
+    <a class="card" href="retro/" data-pv="retro">
       <div class="art" style="background:radial-gradient(circle,#ffd23f 0%,transparent 65%)"></div>
       <span class="no">07 · Retro</span>
       <h2>Stern<i>feuer</i></h2>
       <p>Ein Pixel-Shooter wie 1984: Dauerfeuer, Bomben, Mutterschiffe und Chiptune-Musik. Ein Finger reicht.</p>
       <span class="tags">2D · Handy &amp; Desktop · Weltbestenliste</span>
     </a>
-    <a class="card" href="instrumente/">
+    <a class="card" href="instrumente/" data-pv="instrumente">
       <div class="art" style="background:radial-gradient(circle,#4fd6c3 0%,transparent 65%)"></div>
       <span class="no">08 · Lernspiel</span>
       <h2>OP-<i>Sieb</i></h2>
       <p>Instrumentenkunde: 40 OP-Instrumente erkennen, Einsatz und OP zuordnen, Siebe packen. Für OTA, Pflege und PJ.</p>
       <span class="tags">Quiz · Handy &amp; Desktop · Weltbestenliste</span>
     </a>
-    <a class="card" href="tron/">
+    <a class="card" href="tron/" data-pv="tron">
       <div class="art" style="background:radial-gradient(circle,#3cf0ff 0%,transparent 65%)"></div>
       <span class="no">09 · Arcade</span>
       <h2>Licht<i>renner</i></h2>
@@ -173,6 +173,7 @@ a.lbc:hover{border-color:var(--ac)}
   <p class="foot">Lernspiele ersetzen keine Leitlinie. Bestenlisten sind öffentlich, gespeichert wird nur der Name, den du einträgst.</p>
 </div>
 <script src="shared/bestenliste.js"></script>
+<script src="shared/vorschau.js"></script>
 <script>
 (function(){
   var G=[['tron','Lichtrenner','tron/'],['arena','Neon Arena','arena/'],['arena-timer','Arena · Zeit','arena/'],['retro','Sternfeuer','retro/'],['instrumente','OP-Sieb','instrumente/'],['nachtdienst','Nachtdienst','nachtdienst/'],['soma','Soma','kosmos/'],['planche','Planche','planche/']];
