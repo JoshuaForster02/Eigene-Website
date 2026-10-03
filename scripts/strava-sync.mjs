@@ -29,13 +29,28 @@ const stats = await api(`/athletes/${athlete.id}/stats`);
 
 // Längster Lauf: alle Aktivitäten seitenweise durchgehen
 let longest = { distance: 0, date: null };
+const runs = [];
 for (let page = 1; page <= 30; page++) {
   const acts = await api(`/athlete/activities?per_page=200&page=${page}`);
   if (!acts.length) break;
   for (const a of acts) {
     const isRun = a.sport_type ? /Run$/.test(a.sport_type) : a.type === 'Run';
-    if (isRun && a.distance > longest.distance) longest = { distance: a.distance, date: (a.start_date_local || '').slice(0, 10) };
+    if (!isRun) continue;
+    runs.push(a);
+    if (a.distance > longest.distance) longest = { distance: a.distance, date: (a.start_date_local || '').slice(0, 10) };
   }
+}
+
+// Schnellste 5 km: Strava liefert "best_efforts" nur in der Einzelansicht.
+// Darum nur die 10 schnellsten Läufe ab 5 km im Detail abrufen (schont das API-Limit).
+let best5k = null;
+const cand = runs.filter(a => a.distance >= 5000 && a.average_speed > 0).sort((a, b) => b.average_speed - a.average_speed).slice(0, 10);
+for (const a of cand) {
+  try {
+    const d = await api(`/activities/${a.id}`);
+    const e = (d.best_efforts || []).find(x => x.name === '5k');
+    if (e && (!best5k || e.elapsed_time < best5k.s)) best5k = { s: e.elapsed_time, date: (a.start_date_local || '').slice(0, 10) };
+  } catch (err) { console.warn('Detail', a.id, err.message); }
 }
 
 const km = (m) => Math.round((m / 1000) * 10) / 10;
@@ -50,7 +65,9 @@ const out = {
   ytd_ride_km: Math.round(stats.ytd_ride_totals.distance / 1000),
   ytd_swim_km: km(stats.ytd_swim_totals.distance),
   longest_run_km: km(longest.distance),
-  longest_run_date: longest.date
+  longest_run_date: longest.date,
+  best_5k_s: best5k ? best5k.s : null,
+  best_5k_date: best5k ? best5k.date : null
 };
 mkdirSync('data', { recursive: true });
 writeFileSync('data/strava.json', JSON.stringify(out, null, 2) + '\n');
