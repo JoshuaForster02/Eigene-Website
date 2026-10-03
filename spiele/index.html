@@ -123,6 +123,13 @@ a.lbc:hover{border-color:var(--ac)}
       <p>Light Cycles wie im Film: Gegner in die eigene Lichtwand drängen, an Wänden entlang grinden, mit Turbo durchziehen. Solo über Levels oder zu zweit.</p>
       <span class="tags">3D · Handy &amp; Desktop · 2 Spieler · Weltbestenliste</span>
     </a>
+    <a class="card" href="stunt/" data-pv="stunt">
+      <div class="art" style="background:radial-gradient(circle,#ff2fa0 0%,transparent 65%)"></div>
+      <span class="no">10 · Arcade</span>
+      <h2>Neon <i>Stunt</i></h2>
+      <p>Synthwave-Motorrad über Hügel, Rampen und Abgründe. In der Luft lehnen für Saltos, Checkpoints bringen Extrazeit.</p>
+      <span class="tags">2D · Handy &amp; Desktop · Weltbestenliste</span>
+    </a>
   </div>
 
 
@@ -176,7 +183,7 @@ a.lbc:hover{border-color:var(--ac)}
 <script src="shared/vorschau.js"></script>
 <script>
 (function(){
-  var G=[['tron','Lichtrenner','tron/'],['arena','Neon Arena','arena/'],['arena-timer','Arena · Zeit','arena/'],['retro','Sternfeuer','retro/'],['instrumente','OP-Sieb','instrumente/'],['nachtdienst','Nachtdienst','nachtdienst/'],['soma','Soma','kosmos/'],['planche','Planche','planche/']];
+  var G=[['stunt','Neon Stunt','stunt/'],['tron','Lichtrenner','tron/'],['arena','Neon Arena','arena/'],['arena-timer','Arena · Zeit','arena/'],['retro','Sternfeuer','retro/'],['instrumente','OP-Sieb','instrumente/'],['nachtdienst','Nachtdienst','nachtdienst/'],['soma','Soma','kosmos/'],['planche','Planche','planche/']];
   var lb=document.getElementById('lb'),me='';try{me=(localStorage.getItem('spiele.name')||'').toLowerCase()}catch(e){}
   if(me)document.getElementById('me').textContent='Du spielst als '+localStorage.getItem('spiele.name');
   function esc(t){return String(t).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}

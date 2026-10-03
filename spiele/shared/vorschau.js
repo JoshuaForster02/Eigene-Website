@@ -82,6 +82,16 @@
         else if (it.k === 1) { g.moveTo(-16, -4); g.lineTo(14, 2); g.moveTo(-16, 4); g.lineTo(14, -2); g.arc(-19, -5, 3, 0, TAU); }
         else { g.moveTo(-16, 0); g.lineTo(16, 0); g.moveTo(10, -4); g.lineTo(16, 0); g.lineTo(10, 4); }
         g.stroke(); g.restore(); it.life = (it.life || 0) + dt; return it.life < 4; }); } },
+    stunt: { init: function () { return { o: 0 }; }, step: function (g, s, dt, t, w, h) {
+      var gr = g.createLinearGradient(0, 0, 0, h); gr.addColorStop(0, '#12002a'); gr.addColorStop(1, '#5a0f5e'); g.fillStyle = gr; g.fillRect(0, 0, w, h);
+      g.fillStyle = '#ff9a4a'; g.beginPath(); g.arc(w * .72, h * .55, h * .28, 0, TAU); g.fill(); g.fillStyle = '#3a0a5e'; for (var i = 0; i < 5; i++) g.fillRect(w * .72 - h * .3, h * .58 + i * 7, h * .6, 2 + i);
+      s.o += dt * 120; var f = function (x) { return h * .78 - Math.sin((x + s.o) * .018) * 18 - Math.sin((x + s.o) * .041) * 9; };
+      g.fillStyle = '#16002e'; g.beginPath(); g.moveTo(0, h); for (var x = 0; x <= w; x += 6) g.lineTo(x, f(x)); g.lineTo(w, h); g.fill();
+      g.strokeStyle = '#ff2fa0'; g.lineWidth = 2.5; g.shadowColor = '#ff2fa0'; g.shadowBlur = 10; g.beginPath(); for (x = 0; x <= w; x += 6) x ? g.lineTo(x, f(x)) : g.moveTo(x, f(x)); g.stroke(); g.shadowBlur = 0;
+      var ph = t * 1.6 % TAU, up = Math.sin(ph), jump = Math.max(0, up) * 26, bx = w * .35, by = f(bx) - 12 - jump;
+      var a = up > 0.05 ? -(ph / Math.PI) * TAU : Math.atan2(f(bx + 10) - f(bx - 10), 20);
+      g.save(); g.translate(bx, by); g.rotate(a); g.strokeStyle = '#3cf3ff'; g.lineWidth = 2; g.beginPath(); g.arc(-11, 6, 6, 0, TAU); g.moveTo(17, 6); g.arc(11, 6, 6, 0, TAU); g.stroke();
+      g.strokeStyle = '#ff2fa0'; g.beginPath(); g.moveTo(-11, 6); g.lineTo(-3, -1); g.lineTo(8, -2); g.lineTo(11, 6); g.stroke(); g.fillStyle = '#ff2fa0'; g.beginPath(); g.arc(-1, -14, 3.5, 0, TAU); g.fill(); g.restore(); } },
     tron: { init: function (w, h) { function b(x, y, d, c) { return { x: x, y: y, d: d, c: c, tr: [[x, y]], tt: 0 }; }
       return { b: [b(w * .2, h * .7, 0, '#3cf0ff'), b(w * .8, h * .3, 2, '#ff9b2f')] }; },
       step: function (g, s, dt, t, w, h) { g.clearRect(0, 0, w, h);

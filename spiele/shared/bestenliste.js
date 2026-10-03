@@ -40,6 +40,8 @@
     if (m.facts) p.push(m.facts + ' Fragmente');
     if (m.acc) p.push(m.acc + ' %');
     if (m.mode) p.push(String(m.mode));
+    if (m.dist) p.push(Number(m.dist).toLocaleString('de-DE') + ' m');
+    if (m.flips) p.push(m.flips + ' Saltos');
     return p.join(' · ');
   }
 
