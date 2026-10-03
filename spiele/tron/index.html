@@ -70,7 +70,7 @@ body.touch.playing #tBoost,body.touch.playing #tCam{display:block}
 <body>
 <div id="game" aria-label="Spielfeld"></div>
 
-<div class="links" id="links"><a href="../">← Spiele</a><button id="bPause" class="hide" aria-label="Pause">II</button></div>
+<div class="links" id="links"><a href="../">← Arcade</a><button id="bPause" class="hide" aria-label="Pause">II</button></div>
 
 <div id="hud" class="hide">
   <div id="hl"><div id="hScore">0</div><div id="hInfo">LEVEL 1</div><div id="hLives"></div></div>
@@ -972,5 +972,6 @@ requestAnimationFrame(loop);
 // Testschnittstelle
 window.__tron = { G, occ, N, R_, start: startGame, update, step, flood, bikes: () => G.bikes };
 </script>
+<script src="../shared/pad.js"></script>
 </body>
 </html>

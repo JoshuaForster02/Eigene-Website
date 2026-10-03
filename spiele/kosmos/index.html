@@ -224,7 +224,7 @@ body.touch .ib .k{display:none}
 
 <!-- Title -->
 <div id="title">
-  <div class="toplinks"><a href="/">← joshuaforster.de</a><a href="/spiele/">Alle Spiele</a></div>
+  <div class="toplinks"><a href="/">← joshuaforster.de</a><a href="/spiele/">Arcade</a></div>
   <h1>SOMA</h1>
   <div class="sub">Reise durch den inneren Kosmos</div>
   <p class="tag">Eine Galaxie, deren Sternsysteme Organsysteme sind. Du steuerst eine Immunzelle: Scanne leuchtende Signale, beantworte Kurzfragen, halte Erregerschwärme mit Antikörpern in Schach – und finde im Kern der Galaxis das Gleichgewicht, das alles zusammenhält.</p>
@@ -310,7 +310,7 @@ body.touch .ib .k{display:none}
     <button class="btn" id="pMap">Sternenkarte</button>
     <button class="btn" id="pBoard">Weltbestenliste</button>
     <button class="btn" id="pTitle">Zum Titelbildschirm</button>
-    <div class="links"><a href="/">← joshuaforster.de</a><a href="/spiele/">Alle Spiele</a></div>
+    <div class="links"><a href="/">← joshuaforster.de</a><a href="/spiele/">Arcade</a></div>
   </div>
 </div>
 
@@ -1310,7 +1310,7 @@ function startEnding(){ S.mode='ending'; S.done=true; save(); audio.ending(); hu
   ];
   const inner=$('endInner'); inner.innerHTML=lines.map((l,k)=>{ const st=`style="animation-delay:${1.2+k*2.4}s"`; return l[0]==='h1'?`<h1 class="l" ${st}>${l[1]}</h1>`:l[0]==='s'?`<p class="l stats" ${st}>${l[1]}</p>`:`<p class="l" ${st}>${l[1]}</p>`; }).join('')+
     `<div class="l btnrow" style="animation-delay:${1.2+lines.length*2.4}s;margin-top:22px"><button class="btn primary" id="eGo">Weiter erkunden</button><button class="btn" id="eTitle">Zum Titel</button></div>
-     <div class="l" style="animation-delay:${1.6+lines.length*2.4}s;margin-top:18px;font-size:13px"><a href="/" style="color:var(--muted)">← joshuaforster.de</a> &nbsp;·&nbsp; <a href="/spiele/" style="color:var(--muted)">Alle Spiele</a></div>`;
+     <div class="l" style="animation-delay:${1.6+lines.length*2.4}s;margin-top:18px;font-size:13px"><a href="/" style="color:var(--muted)">← joshuaforster.de</a> &nbsp;·&nbsp; <a href="/spiele/" style="color:var(--muted)">Arcade</a></div>`;
   $('ending').classList.remove('hidden');
   { const eb=document.createElement('div'); eb.className='l'; eb.style.cssText=`animation-delay:${2+lines.length*2.4}s;max-width:420px;margin:22px auto 0;text-align:left;--bl-acc:var(--acc2)`; inner.appendChild(eb);
     if(window.Bestenliste) Bestenliste.mount(eb,{game:'soma',score:S.score,meta:{facts:S.found.size},title:'Weltbestenliste'}); }

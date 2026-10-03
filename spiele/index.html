@@ -2,205 +2,229 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<meta name="theme-color" content="#070d1a">
-<title>Easter Egg · Spiele</title>
+<meta name="theme-color" content="#05030c">
+<title>Flynn's Arcade</title>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Karla:wght@400;500&family=DM+Mono:wght@400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Tilt+Neon&family=Share+Tech+Mono&display=swap">
 <style>
-:root{--bg:#070D1A;--bg2:#0C1526;--fg:#EAF0F8;--fg2:#C5D0E2;--fg3:#8B98AE;--fg4:#5F6C84;--ac:#8FB1FF;--line:rgba(234,240,248,.12);--ease:cubic-bezier(.2,.8,.2,1)}
+:root{--bg:#05030c;--ink:#efe9ff;--dim:#9a92bd;--pk:#ff3d9a;--cy:#3cf0ff;--yl:#ffd23f;--pix:"Press Start 2P",ui-monospace,monospace;--mono:"Share Tech Mono",ui-monospace,monospace;--neon:"Tilt Neon",system-ui,sans-serif}
 *{box-sizing:border-box}html,body{margin:0}
-body{background:radial-gradient(ellipse at 20% 0%,#132A5C 0%,#0C1526 38%,#070D1A 75%) fixed,var(--bg);color:var(--fg);font-family:Karla,system-ui,sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--mono);font-size:16px;min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 a{color:inherit}
-.wrap{max-width:1180px;margin:0 auto;padding:28px clamp(16px,4vw,40px) 80px}
-.top{display:flex;justify-content:space-between;align-items:center;font-family:"DM Mono",monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg3)}
-.top a{text-decoration:none}.top a:hover{color:var(--ac)}
-h1{font-family:"Cormorant Garamond",serif;font-weight:400;font-size:clamp(56px,11vw,132px);line-height:.95;margin:64px 0 10px;letter-spacing:-.01em}
-h1 i{color:var(--ac)}
-.lead{color:var(--fg2);max-width:52ch;font-size:17px;line-height:1.6;margin:0 0 48px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:18px}
-.card{position:relative;display:flex;flex-direction:column;min-height:300px;padding:26px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(143,177,255,.06),rgba(143,177,255,0) 60%),rgba(12,21,38,.6);text-decoration:none;overflow:hidden;transition:border-color .4s var(--ease),transform .4s var(--ease)}
-a.card:hover{border-color:var(--ac);transform:translateY(-3px)}
-.card .no{font-family:"DM Mono",monospace;font-size:11.5px;letter-spacing:.14em;color:var(--fg4);text-transform:uppercase}
-.card h2{font-family:"Cormorant Garamond",serif;font-weight:400;font-size:44px;margin:auto 0 8px;line-height:1}
-.card h2 i{color:var(--ac)}
-.card p{color:var(--fg3);margin:0;line-height:1.55;font-size:15px}
-.card .tags{margin-top:18px;font-family:"DM Mono",monospace;font-size:11px;letter-spacing:.12em;color:var(--fg4);text-transform:uppercase}
-.card.soon{opacity:.55}
-.card.soon .no::after{content:" · in Arbeit";color:var(--ac)}
-.art{position:absolute;right:-30px;top:-30px;width:190px;height:190px;border-radius:50%;filter:blur(2px);opacity:.55;pointer-events:none}
-h2.sec{font-family:"Cormorant Garamond",serif;font-weight:400;font-size:clamp(40px,7vw,76px);line-height:1;margin:88px 0 10px}
-h2.sec i{color:var(--ac)}
-.card.app{min-height:230px}
-.card.app h2{font-size:38px}
-.foot{margin-top:56px;color:var(--fg4);font-size:13px}
-.lb{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr));gap:14px}
-.lbc{padding:18px 18px 14px;border:1px solid var(--line);background:rgba(12,21,38,.6);text-decoration:none;display:block}
-a.lbc:hover{border-color:var(--ac)}
-.lbc h3{margin:0 0 10px;font-family:"DM Mono",monospace;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg3);font-weight:400;display:flex;justify-content:space-between}
-.lbc h3 span{color:var(--ac)}
-.lbc ol{list-style:none;margin:0;padding:0}
-.lbc li{display:grid;grid-template-columns:22px 1fr auto;gap:8px;padding:5px 0;border-top:1px solid var(--line);font-variant-numeric:tabular-nums;font-size:14.5px}
-.lbc li:first-child{border-top:0}
-.lbc li b{font-weight:500}.lbc li .r{color:var(--fg4)}.lbc li:first-child .r{color:#ffd36a}
-.lbc li .n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.lbc li.e{display:block;color:var(--fg4);font-size:14px;padding:5px 0}
-.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:0 0 22px}
-.btn{font:500 14px Karla,system-ui,sans-serif;color:#071018;background:var(--ac);border:0;padding:11px 18px;cursor:pointer}
-.btn.g{background:transparent;color:var(--fg);border:1px solid var(--line)}.btn.g:hover{border-color:var(--ac)}
-.bar small{color:var(--fg3);font-size:14px}
-@media (prefers-reduced-motion:reduce){a.card:hover{transform:none}}
+/* Raum: Deckenlicht, Wandverkleidung, Bodenraster */
+.room{position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(ellipse 70% 40% at 50% -6%,rgba(255,61,154,.28),transparent 70%),radial-gradient(ellipse 50% 30% at 85% 30%,rgba(60,240,255,.10),transparent 70%),linear-gradient(#0b0518,#05030c 55%)}
+.room:after{content:"";position:absolute;left:-50%;right:-50%;bottom:0;height:46%;opacity:.55;
+  background:linear-gradient(90deg,rgba(255,61,154,.5) 1px,transparent 1px) 0 0/60px 60px,linear-gradient(rgba(60,240,255,.4) 1px,transparent 1px) 0 0/60px 60px;
+  transform:perspective(320px) rotateX(64deg);transform-origin:50% 100%;-webkit-mask-image:linear-gradient(transparent,#000 75%);mask-image:linear-gradient(transparent,#000 75%)}
+.wrap{max-width:1240px;margin:0 auto;padding:0 clamp(14px,4vw,40px) 90px}
+.top{display:flex;justify-content:space-between;align-items:center;padding:20px 0;font:10px var(--pix);letter-spacing:.06em;color:var(--dim)}
+.top a{text-decoration:none}.top a:hover{color:var(--cy)}
+.top button{font:inherit;color:inherit;background:none;border:1px solid rgba(255,255,255,.15);border-radius:6px;padding:7px 9px;cursor:pointer}
+/* Neon-Schild */
+.hero{text-align:center;padding:clamp(30px,7vw,70px) 0 clamp(26px,5vw,50px)}
+.sign{font-family:var(--neon);font-size:clamp(70px,17vw,190px);line-height:.9;color:#ffe3f3;letter-spacing:.02em;
+  text-shadow:0 0 4px #fff,0 0 10px var(--pk),0 0 22px var(--pk),0 0 46px var(--pk),0 0 90px rgba(255,61,154,.6)}
+.sign .ap{color:#e6fdff;text-shadow:0 0 4px #fff,0 0 10px var(--cy),0 0 26px var(--cy),0 0 60px var(--cy)}
+.sign .f2{animation:flick 9s infinite}
+@keyframes flick{0%,86%,100%{opacity:1}87%{opacity:.25}88%{opacity:1}90%{opacity:.4}91%{opacity:1}}
+.arc{font:clamp(12px,2.4vw,20px) var(--pix);letter-spacing:.6em;margin:22px 0 0 .6em;color:var(--cy);text-shadow:0 0 12px var(--cy)}
+.coin{font:11px var(--pix);color:var(--yl);margin-top:30px;letter-spacing:.2em;animation:bl 1.2s steps(2) infinite}
+@keyframes bl{50%{opacity:0}}
+.lead{max-width:56ch;margin:16px auto 0;color:var(--dim);font-size:15px;line-height:1.6}
+.sec{display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:70px 0 22px}
+.sec h2{margin:0;font:clamp(14px,2.4vw,20px) var(--pix);color:#fff;letter-spacing:.06em;text-shadow:0 0 12px var(--pk)}
+.sec small{font-size:14px;color:var(--dim)}
+.sec .tc{display:none}@media (hover:none){.sec .hv{display:none}.sec .tc{display:inline}}
+/* Automaten */
+.floor{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(46%,232px),1fr));gap:clamp(14px,2.4vw,30px) clamp(10px,2vw,26px);align-items:end}
+.cab{position:relative;display:block;text-decoration:none;container-type:inline-size;aspect-ratio:.58;
+  filter:drop-shadow(0 0 1px var(--c)) drop-shadow(0 0 12px color-mix(in srgb,var(--c) 45%,transparent));transition:transform .35s cubic-bezier(.2,.8,.2,1),filter .35s}
+.cab:hover,.cab:focus-visible,.cab.demo{transform:translateY(-6px);filter:drop-shadow(0 0 1.5px var(--c)) drop-shadow(0 0 24px color-mix(in srgb,var(--c) 70%,transparent))}
+.cab:focus-visible{outline:none}
+.cab .in{position:absolute;inset:0;
+  clip-path:polygon(2% 0,98% 0,98% 14%,93% 16%,93% 60%,100% 64%,100% 74%,94% 77%,94% 100%,6% 100%,6% 77%,0 74%,0 64%,7% 60%,7% 16%,2% 14%);
+  background:linear-gradient(90deg,color-mix(in srgb,var(--c) 26%,#08050f) 0 7%,#0b0814 7% 93%,color-mix(in srgb,var(--c) 26%,#08050f) 93%),#0b0814}
+.cab .in:before{content:"";position:absolute;left:7%;right:7%;top:16%;bottom:23%;background:repeating-linear-gradient(90deg,transparent 0 6px,rgba(255,255,255,.015) 6px 7px)}
+.mq{position:absolute;top:1.6%;left:5%;right:5%;height:11%;display:flex;align-items:center;justify-content:center;border-radius:3px;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--c) 50%,#120a1e),#120a1e);box-shadow:inset 0 0 18px color-mix(in srgb,var(--c) 60%,transparent)}
+.mq span{font:5.4cqi var(--pix);letter-spacing:.06em;color:#fff;white-space:nowrap;text-shadow:0 0 4px var(--c),0 0 12px var(--c)}
+.scr{position:absolute;top:19%;left:13%;right:13%;height:37%;border-radius:7%/5%;background:#000;overflow:hidden;
+  box-shadow:0 0 0 2.4cqi #050308,0 0 0 calc(2.4cqi + 1px) color-mix(in srgb,var(--c) 35%,transparent),inset 0 0 14px rgba(0,0,0,.9)}
+.scr:after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.25) 0 1px,transparent 1px 3px),radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.65) 100%)}
+.scr .press{position:absolute;left:0;right:0;bottom:8%;text-align:center;font:3.6cqi var(--pix);color:#fff;z-index:2;text-shadow:0 0 6px var(--c);opacity:.0;transition:opacity .3s}
+.cab:hover .press,.cab.demo .press,.cab:focus-visible .press{opacity:1;animation:bl 1s steps(2) infinite}
+.desk{position:absolute;top:63.5%;left:4%;right:4%;height:9%;display:flex;align-items:center;justify-content:center;gap:6cqi;
+  background:linear-gradient(180deg,#1a1326,#0d0916);border-top:1px solid color-mix(in srgb,var(--c) 45%,transparent)}
+.desk .stk{position:relative;width:5cqi;height:5cqi;border-radius:50%;background:#2a1d3a}
+.desk .stk:after{content:"";position:absolute;left:50%;bottom:40%;width:1.4cqi;height:8cqi;margin-left:-.7cqi;border-radius:1cqi;background:#c9c3d8;transform-origin:50% 100%;transition:transform .2s}
+.desk .stk:before{content:"";position:absolute;left:50%;top:-8cqi;width:5.6cqi;height:5.6cqi;margin-left:-2.8cqi;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff,var(--c2,#ff3d9a) 45%,#000 120%);z-index:1;transition:transform .2s}
+.cab:hover .desk .stk:after{transform:rotate(-14deg)}.cab:hover .desk .stk:before{transform:translateX(-1.8cqi)}
+.desk .bt{width:5.4cqi;height:5.4cqi;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff,var(--c) 50%,#000 130%);box-shadow:0 0 8px var(--c)}
+.desk .bt.b2{background:radial-gradient(circle at 35% 35%,#fff,var(--c2,#ff3d9a) 50%,#000 130%);box-shadow:0 0 8px var(--c2,#ff3d9a)}
+.info{position:absolute;top:78.5%;bottom:calc(2.6% + 9cqi);left:9%;right:9%;display:flex;flex-direction:column;align-items:center;text-align:center}
+.info b{display:block;font:3.8cqi var(--pix);color:#fff;letter-spacing:.04em}
+.info small{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;font-size:4.9cqi;color:var(--dim);margin-top:1.8cqi;line-height:1.2}
+.info .hs{display:block;max-width:100%;font:3.2cqi var(--pix);color:var(--yl);margin-top:auto;padding-top:1cqi;min-height:1em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.coins{position:absolute;bottom:2.6%;left:50%;transform:translateX(-50%);display:flex;gap:4cqi}
+.coins i{width:4.4cqi;height:6.6cqi;border-radius:1cqi;background:#1a0f08;box-shadow:inset 0 0 0 1px #ff8a1f,0 0 8px rgba(255,138,31,.7)}
+.coins i:after{content:"";display:block;width:.8cqi;height:3.8cqi;margin:1.4cqi auto 0;background:#ff8a1f;box-shadow:0 0 6px #ff8a1f}
+/* Highscore-Tafel */
+.board{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,270px),1fr));gap:14px;padding:clamp(14px,3vw,26px);border-radius:14px;background:#030207;
+  box-shadow:0 0 0 1px rgba(255,61,154,.35),0 0 40px -10px var(--pk),inset 0 0 60px rgba(60,240,255,.05)}
+.hsb{padding:12px 12px 8px;border:1px solid rgba(255,255,255,.08);border-radius:8px;text-decoration:none}
+.hsb:hover{border-color:var(--c)}
+.hsb h3{margin:0 0 10px;font:10px var(--pix);color:var(--c);letter-spacing:.06em;display:flex;justify-content:space-between;text-shadow:0 0 8px var(--c)}
+.hsb h3 span{color:var(--dim);text-shadow:none}
+.hsb ol{list-style:none;margin:0;padding:0;font:9px/2.2 var(--pix)}
+.hsb li{display:grid;grid-template-columns:3.4em 1fr auto;gap:6px}
+.hsb li:nth-child(1){color:var(--yl)}.hsb li:nth-child(2){color:#e6e6f0}.hsb li:nth-child(3){color:#ff9a3c}
+.hsb li .n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hsb li.e{display:block;color:var(--dim)}
+.hsb li.me{text-shadow:0 0 8px currentColor}
+.bar{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.btn{font:10px var(--pix);letter-spacing:.06em;color:#12020c;background:var(--pk);border:0;padding:12px 14px;cursor:pointer;box-shadow:0 4px 0 #8a1050,0 0 20px rgba(255,61,154,.5)}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #8a1050}
+.btn.g{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 2px rgba(255,61,154,.5)}
+.bar small{color:var(--dim);font-size:14px}
+/* Hinterzimmer */
+.back{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,360px),1fr));gap:14px}
+.term{display:grid;grid-template-columns:120px 1fr;gap:16px;align-items:center;padding:12px;border-radius:10px;text-decoration:none;
+  border:1px solid color-mix(in srgb,var(--c) 30%,transparent);background:rgba(8,5,16,.75);transition:border-color .3s,transform .3s}
+.term:hover{border-color:var(--c);transform:translateY(-2px)}
+.term .scr2{position:relative;height:84px;border-radius:6px;overflow:hidden;background:#000;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 35%,transparent)}
+.term .scr2 .pv{opacity:.7}.term.pv-on .scr2 .pv{opacity:1}
+.term b{display:block;font:11px var(--pix);color:#fff;margin-bottom:8px;text-shadow:0 0 8px var(--c)}
+.term p{margin:0;color:var(--dim);font-size:14.5px;line-height:1.45}
+.term .t{display:block;margin-top:8px;font-size:12px;color:var(--c);letter-spacing:.06em}
+/* Systemzugang */
+.sys{font-size:15px;border-radius:10px;background:rgba(3,2,8,.85);border:1px solid rgba(60,240,255,.2);padding:16px 18px}
+.sys a{display:grid;grid-template-columns:1.2em 11em 1fr auto;gap:10px;padding:8px 4px;text-decoration:none;color:var(--dim);border-bottom:1px dashed rgba(255,255,255,.06)}
+.sys a:last-child{border-bottom:0}
+.sys a:hover{color:#fff}.sys a:hover .k{color:var(--cy)}
+.sys .k{color:#fff}.sys .l{color:var(--yl);font-size:12px}
+.foot{margin-top:70px;text-align:center;font:9px var(--pix);color:var(--dim);letter-spacing:.2em}
+.foot a{color:var(--cy);text-decoration:none}
+/* Start-Übergang: Bildschirm wird groß */
+.zoom{position:fixed;z-index:100;background:#000;border-radius:10px;transition:all .45s cubic-bezier(.6,0,.2,1);box-shadow:0 0 0 2px var(--c),0 0 60px var(--c)}
+.zoom.go{left:0!important;top:0!important;width:100vw!important;height:100vh!important;border-radius:0;box-shadow:0 0 0 0 transparent}
+@media (max-width:560px){.term{grid-template-columns:96px 1fr}.term .scr2{height:72px}.sys a{grid-template-columns:1.2em 1fr auto}.sys a .d{display:none}}
+@media (prefers-reduced-motion:reduce){.sign .f2,.coin,.cab:hover .press{animation:none}.cab{transition:none}}
 </style>
 </head>
 <body>
+<div class="room" aria-hidden="true"></div>
 <div class="wrap">
-  <div class="top"><a href="/">← joshuaforster.de</a><span>◆ Easter Egg</span></div>
-  <h1>Du hast es <i>gefunden.</i></h1>
-  <p class="lead">Hier landet, was ich baue, wenn gerade niemand hinschaut. Alles läuft direkt im Browser, ohne Installation.</p>
-  <div class="grid">
-    <a class="card" href="nachtdienst/" data-pv="nachtdienst">
-      <div class="art" style="background:radial-gradient(circle,#2b8a6e 0%,transparent 65%)"></div>
-      <span class="no">01 · Lernspiel</span>
-      <h2>Nacht<i>dienst</i></h2>
-      <p>Du bist allein im Haus, der Piepser hört nicht auf. Triagieren, anordnen, entscheiden, bevor jemand kippt.</p>
-      <span class="tags">Innere · Unfallchirurgie · Intensiv · 8–12 min</span>
-    </a>
-    <a class="card" href="kosmos/" data-pv="kosmos">
-      <div class="art" style="background:radial-gradient(circle,#c2412d 0%,transparent 65%)"></div>
-      <span class="no">02 · Erkundung</span>
-      <h2>S<i>oma</i></h2>
-      <p>Eine Galaxie aus Organsystemen. Als Immunzelle Erregerschwärme abwehren, Signale scannen, Kurzfragen lösen, bis zum Kern.</p>
-      <span class="tags">3D · Musik · Lernspiel · Handy &amp; Desktop</span>
-    </a>
-    <a class="card" href="sonnensystem/" data-pv="sonnensystem">
-      <div class="art" style="background:radial-gradient(circle,#3a7bd5 0%,transparent 65%)"></div>
-      <span class="no">03 · Weltraum</span>
-      <h2>Kos<i>mos</i></h2>
-      <p>Eine Expedition durch ein prozedurales Sonnensystem: 13 Relikte auf vier Welten, zu Fuß, im Blockschiff und per Pulsantrieb.</p>
-      <span class="tags">3D · Sound · Maus &amp; Tastatur · Desktop</span>
-    </a>
-    <a class="card" href="planche/" data-pv="planche">
-      <div class="art" style="background:radial-gradient(circle,#8FB1FF 0%,transparent 65%)"></div>
-      <span class="no">04 · Duell</span>
-      <h2>Plan<i>che</i></h2>
-      <p>Degenfechten auf 14 Metern. Distanz, Timing, Doppeltreffer. Gegen die KI oder zu zweit an einer Tastatur.</p>
-      <span class="tags">1 oder 2 Spieler · Training</span>
-    </a>
-    <a class="card" href="/encom/" data-pv="encom">
-      <div class="art" style="background:radial-gradient(circle,#1f9fc4 0%,transparent 65%)"></div>
-      <span class="no">05 · Betriebssystem</span>
-      <h2>ENC<i>OM</i> OS</h2>
-      <p>Ein OS im TRON-Stil, komplett im Browser — mit Fenster-Manager, Netzwerk- und Krypto-Tools. Bootet meinen echten, in C und Assembly geschriebenen Kernel per WebAssembly.</p>
-      <span class="tags">Kernel · WebAssembly · Systems · PC & Handy</span>
-    </a>
-    <a class="card" href="arena/" data-pv="arena">
-      <div class="art" style="background:radial-gradient(circle,#c04bd6 0%,transparent 65%)"></div>
-      <span class="no">06 · Shooter</span>
-      <h2>Neon <i>Arena</i></h2>
-      <p>Schnelles Lasertag im Krunker-Stil: rutschen, bunny-hoppen, Drohnenwellen und alle fünf Wellen ein Mutterschiff.</p>
-      <span class="tags">3D · Maus &amp; Tastatur · Touch (Beta)</span>
-    </a>
-    <a class="card" href="retro/" data-pv="retro">
-      <div class="art" style="background:radial-gradient(circle,#ffd23f 0%,transparent 65%)"></div>
-      <span class="no">07 · Retro</span>
-      <h2>Stern<i>feuer</i></h2>
-      <p>Ein Pixel-Shooter wie 1984: Dauerfeuer, Bomben, Mutterschiffe und Chiptune-Musik. Ein Finger reicht.</p>
-      <span class="tags">2D · Handy &amp; Desktop · Weltbestenliste</span>
-    </a>
-    <a class="card" href="instrumente/" data-pv="instrumente">
-      <div class="art" style="background:radial-gradient(circle,#4fd6c3 0%,transparent 65%)"></div>
-      <span class="no">08 · Lernspiel</span>
-      <h2>OP-<i>Sieb</i></h2>
-      <p>Instrumentenkunde: 40 OP-Instrumente erkennen, Einsatz und OP zuordnen, Siebe packen. Für OTA, Pflege und PJ.</p>
-      <span class="tags">Quiz · Handy &amp; Desktop · Weltbestenliste</span>
-    </a>
-    <a class="card" href="tron/" data-pv="tron">
-      <div class="art" style="background:radial-gradient(circle,#3cf0ff 0%,transparent 65%)"></div>
-      <span class="no">09 · Arcade</span>
-      <h2>Licht<i>renner</i></h2>
-      <p>Light Cycles wie im Film: Gegner in die eigene Lichtwand drängen, an Wänden entlang grinden, mit Turbo durchziehen. Solo über Levels oder zu zweit.</p>
-      <span class="tags">3D · Handy &amp; Desktop · 2 Spieler · Weltbestenliste</span>
-    </a>
-    <a class="card" href="stunt/" data-pv="stunt">
-      <div class="art" style="background:radial-gradient(circle,#ff2fa0 0%,transparent 65%)"></div>
-      <span class="no">10 · Arcade</span>
-      <h2>Neon <i>Stunt</i></h2>
-      <p>Synthwave-Motorrad über Hügel, Rampen und Abgründe. In der Luft lehnen für Saltos, Checkpoints bringen Extrazeit.</p>
-      <span class="tags">2D · Handy &amp; Desktop · Weltbestenliste</span>
-    </a>
+  <div class="top"><a href="/">← joshuaforster.de</a><span>◆ EASTER EGG</span></div>
+
+  <header class="hero">
+    <div class="sign" aria-label="Flynn's">FLY<span class="f2">N</span>N<span class="ap">'</span>S</div>
+    <div class="arc">ARCADE</div>
+    <div class="coin">INSERT COIN</div>
+    <p class="lead">Die Spielhalle aus dem Film, nur im Browser. Jeder Automat hat eine Weltbestenliste, läuft am Handy und am PC, Gamepad geht auch.</p>
+  </header>
+
+  <div class="sec"><h2>AUTOMATEN</h2><small class="hv">Drüberfahren für die Demo, klicken zum Spielen</small><small class="tc">Antippen zum Spielen</small></div>
+  <div class="floor" id="floor">
+    <a class="cab" href="tron/" data-pv="tron" data-game="tron" style="--c:#3cf0ff;--c2:#ff8a1f"><div class="in"><div class="mq"><span>LICHTRENNER</span></div><div class="scr pv-host"><div class="press">PRESS START</div></div><div class="desk"><i class="stk"></i><i class="bt"></i><i class="bt b2"></i></div><div class="info"><b>LIGHT CYCLES</b><small>Recognizer ab Level 3 · 2 Spieler</small><span class="hs" data-hs="tron"></span></div><div class="coins"><i></i><i></i></div></div></a>
+    <a class="cab" href="disc/" data-pv="disc" data-game="disc" style="--c:#3cf0ff;--c2:#ff9a3c"><div class="in"><div class="mq"><span>DISC DUELL</span></div><div class="scr pv-host"><div class="press">PRESS START</div></div><div class="desk"><i class="stk"></i><i class="bt"></i><i class="bt b2"></i></div><div class="info"><b>DISCS OF TRON</b><small>Werfen, abprallen, zurückschlagen</small><span class="hs" data-hs="disc"></span></div><div class="coins"><i></i><i></i></div></div></a>
+    <a class="cab" href="retro/" data-pv="retro" data-game="retro" style="--c:#ff4f9a;--c2:#ffd23f"><div class="in"><div class="mq"><span>STERNFEUER</span></div><div class="scr pv-host"><div class="press">PRESS START</div></div><div class="desk"><i class="stk"></i><i class="bt"></i><i class="bt b2"></i></div><div class="info"><b>SHOOTER 1984</b><small>Dauerfeuer, Bomben, Mutterschiffe</small><span class="hs" data-hs="retro"></span></div><div class="coins"><i></i><i></i></div></div></a>
+    <a class="cab" href="vektor/" data-pv="vektor" data-game="vektor" style="--c:#5dff8a;--c2:#3cf0ff"><div class="in"><div class="mq"><span>VEKTOR</span></div><div class="scr pv-host"><div class="press">PRESS START</div></div><div class="desk"><i class="stk"></i><i class="bt"></i><i class="bt b2"></i></div><div class="info"><b>VEKTORGRAFIK</b><small>Datenblöcke zerlegen, Recognizer jagen</small><span class="hs" data-hs="vektor"></span></div><div class="coins"><i></i><i></i></div></div></a>
+    <a class="cab" href="breaker/" data-pv="breaker" data-game="breaker" style="--c:#3cf0ff;--c2:#ff3b6b"><div class="in"><div class="mq"><span>GRID BREAKER</span></div><div class="scr pv-host"><div class="press">PRESS START</div></div><div class="desk"><i class="stk"></i><i class="bt"></i><i class="bt b2"></i></div><div class="info"><b>BREAKOUT</b><small>8 Level: Herz, EKG, Disc …</small><span class="hs" data-hs="breaker"></span></div><div class="coins"><i></i><i></i></div></div></a>
+    <a class="cab" href="firewall/" data-pv="firewall" data-game="firewall" style="--c:#ff3d7f;--c2:#3cf0ff"><div class="in"><div class="mq"><span>FIREWALL</span></div><div class="scr pv-host"><div class="press">PRESS START</div></div><div class="desk"><i class="stk"></i><i class="bt"></i><i class="bt b2"></i></div><div class="info"><b>MISSILE COMMAND</b><small>Server schützen, Ketten sprengen</small><span class="hs" data-hs="firewall"></span></div><div class="coins"><i></i><i></i></div></div></a>
+    <a class="cab" href="stunt/" data-pv="stunt" data-game="stunt" style="--c:#ff2fa0;--c2:#3cf3ff"><div class="in"><div class="mq"><span>NEON STUNT</span></div><div class="scr pv-host"><div class="press">PRESS START</div></div><div class="desk"><i class="stk"></i><i class="bt"></i><i class="bt b2"></i></div><div class="info"><b>SYNTHWAVE BIKE</b><small>Saltos über Abgründe</small><span class="hs" data-hs="stunt"></span></div><div class="coins"><i></i><i></i></div></div></a>
+    <a class="cab" href="arena/" data-pv="arena" data-game="arena" style="--c:#c46bff;--c2:#3cf0ff"><div class="in"><div class="mq"><span>NEON ARENA</span></div><div class="scr pv-host"><div class="press">PRESS START</div></div><div class="desk"><i class="stk"></i><i class="bt"></i><i class="bt b2"></i></div><div class="info"><b>LASERTAG 3D</b><small>Drohnenwellen, Online-Duell</small><span class="hs" data-hs="arena"></span></div><div class="coins"><i></i><i></i></div></div></a>
   </div>
 
+  <div class="sec" id="rangliste"><h2>HIGH SCORES</h2><small>Die besten drei pro Automat, live</small></div>
+  <div class="bar" style="margin-bottom:16px"><button class="btn" id="share">Freunde herausfordern</button><button class="btn g" id="reload">Aktualisieren</button><small id="me"></small></div>
+  <div class="board" id="board"></div>
 
-  <h2 class="sec" id="rangliste">Welt<i>rangliste</i></h2>
-  <p class="lead">Die besten drei pro Spiel, live. Link an Freunde schicken und schauen, wer oben bleibt.</p>
-  <div class="bar"><button class="btn" id="share">Freunde herausfordern</button><button class="btn g" id="reload">Aktualisieren</button><small id="me"></small></div>
-  <div class="lb" id="lb"></div>
-
-  <h2 class="sec">Apps &amp; <i>Werkzeuge</i></h2>
-  <p class="lead">Was ich im Alltag benutze. Study OS und Hybrid OS brauchen mein Login.</p>
-  <div class="grid">
-    <a class="card app" href="/study/">
-      <div class="art" style="background:radial-gradient(circle,#6d4dff 0%,transparent 65%)"></div>
-      <span class="no">A1 · Privat</span>
-      <h2>Study <i>OS</i></h2>
-      <p>Mein Lern-Betriebssystem: Anki, iCloud-Kalender, Fokus-Timer, Notion und Training in Fenstern wie am Mac.</p>
-      <span class="tags">Login · als App installierbar</span>
-    </a>
-    <a class="card app" href="/study/?ziel=hybrid">
-      <div class="art" style="background:radial-gradient(circle,#2563eb 0%,transparent 65%)"></div>
-      <span class="no">A2 · Privat</span>
-      <h2>Hybrid <i>OS</i></h2>
-      <p>Trainings-OS für Kraft und Ausdauer: Wochenplan, adaptiver Coach, Bestleistungen, Apple-Watch-Werte und Strava.</p>
-      <span class="tags">Login · Training · Kalender-Abo</span>
-    </a>
-    <a class="card app" href="/visite/">
-      <div class="art" style="background:radial-gradient(circle,#2b8a6e 0%,transparent 65%)"></div>
-      <span class="no">A3 · Klinik</span>
-      <h2>Vi<i>site</i></h2>
-      <p>Klinikbegleiter: Arztbrief-Assistent, Medikations-Check, über 160 Scores und Rechner für Station und Notaufnahme.</p>
-      <span class="tags">Station · Notaufnahme · Handy</span>
-    </a>
-    <a class="card app" href="https://apkg.joshuaforster.de" target="_blank" rel="noopener">
-      <div class="art" style="background:radial-gradient(circle,#8FB1FF 0%,transparent 65%)"></div>
-      <span class="no">A4 · Lernen</span>
-      <h2>medi.<i>cards</i></h2>
-      <p>Aus Vorlesungsfolien fertige Anki-Decks machen.</p>
-      <span class="tags">Web-App · Anki · ↗</span>
-    </a>
-    <a class="card app" href="https://klinik-trainer.vercel.app" target="_blank" rel="noopener">
-      <div class="art" style="background:radial-gradient(circle,#e11d48 0%,transparent 65%)"></div>
-      <span class="no">A5 · Lernen</span>
-      <h2>Klinik-<i>Trainer</i></h2>
-      <p>Fälle aus Notfall und Innere Medizin zum Durchspielen.</p>
-      <span class="tags">Web-App · Fälle · ↗</span>
-    </a>
+  <div class="sec"><h2>HINTERZIMMER</h2><small>Lernautomaten und Experimente</small></div>
+  <div class="back">
+    <a class="term" href="nachtdienst/" data-pv="nachtdienst" style="--c:#3cf0a0"><div class="scr2 pv-host"></div><div><b>NACHTDIENST</b><p>Allein im Haus, der Piepser hört nicht auf. Triagieren, anordnen, entscheiden.</p><span class="t">LERNSPIEL · INNERE · CHIRURGIE</span></div></a>
+    <a class="term" href="instrumente/" data-pv="instrumente" style="--c:#8fb1ff"><div class="scr2 pv-host"></div><div><b>OP-SIEB</b><p>40 OP-Instrumente erkennen, zuordnen und Siebe packen.</p><span class="t">QUIZ · WELTBESTENLISTE</span></div></a>
+    <a class="term" href="kosmos/" data-pv="kosmos" style="--c:#ff8a7a"><div class="scr2 pv-host"></div><div><b>SOMA</b><p>Eine Galaxie aus Organsystemen, du steuerst eine Immunzelle.</p><span class="t">3D · LERNSPIEL</span></div></a>
+    <a class="term" href="planche/" data-pv="planche" style="--c:#8fb1ff"><div class="scr2 pv-host"></div><div><b>PLANCHE</b><p>Degenfechten auf 14 Metern, gegen die KI oder zu zweit.</p><span class="t">DUELL · 1–2 SPIELER</span></div></a>
+    <a class="term" href="sonnensystem/" data-pv="sonnensystem" style="--c:#ffd23f"><div class="scr2 pv-host"></div><div><b>KOSMOS</b><p>Expedition durch ein prozedurales Sonnensystem, 13 Relikte auf vier Welten.</p><span class="t">3D · MAUS &amp; TASTATUR</span></div></a>
+    <a class="term" href="/encom/" data-pv="encom" style="--c:#3cf0ff"><div class="scr2 pv-host"></div><div><b>ENCOM OS</b><p>Ein Betriebssystem im Tron-Stil mit echtem x86-Kernel per WebAssembly.</p><span class="t">SYSTEM · TERMINAL · ARCADE-APP</span></div></a>
   </div>
-  <p class="foot">Lernspiele ersetzen keine Leitlinie. Bestenlisten sind öffentlich, gespeichert wird nur der Name, den du einträgst.</p>
+
+  <div class="sec"><h2>SYSTEMZUGANG</h2><small>Eigene Werkzeuge, teils mit Login</small></div>
+  <div class="sys">
+    <a href="/study/"><span>›</span><span class="k">study_os</span><span class="d">Lern-Betriebssystem mit Anki und Kalender</span><span class="l">LOGIN</span></a>
+    <a href="/study/?ziel=hybrid"><span>›</span><span class="k">hybrid_os</span><span class="d">Training, Erholung, Coach</span><span class="l">LOGIN</span></a>
+    <a href="/visite/"><span>›</span><span class="k">visite</span><span class="d">Klinikbegleiter für Station und Notaufnahme</span><span class="l">OFFEN</span></a>
+    <a href="https://apkg.joshuaforster.de" target="_blank" rel="noopener"><span>›</span><span class="k">medi.cards</span><span class="d">Anki-Decks aus Vorlesungsfolien</span><span class="l">↗</span></a>
+    <a href="https://klinik-trainer.vercel.app" target="_blank" rel="noopener"><span>›</span><span class="k">klinik_trainer</span><span class="d">Fälle zum Durchspielen</span><span class="l">↗</span></a>
+  </div>
+
+  <div class="foot">END OF LINE · <a href="/">ZURÜCK INS RASTER</a></div>
 </div>
 <script src="shared/bestenliste.js"></script>
 <script src="shared/vorschau.js"></script>
 <script>
-(function(){
-  var G=[['stunt','Neon Stunt','stunt/'],['tron','Lichtrenner','tron/'],['arena','Neon Arena','arena/'],['arena-timer','Arena · Zeit','arena/'],['retro','Sternfeuer','retro/'],['instrumente','OP-Sieb','instrumente/'],['nachtdienst','Nachtdienst','nachtdienst/'],['soma','Soma','kosmos/'],['planche','Planche','planche/']];
-  var lb=document.getElementById('lb'),me='';try{me=(localStorage.getItem('spiele.name')||'').toLowerCase()}catch(e){}
-  if(me)document.getElementById('me').textContent='Du spielst als '+localStorage.getItem('spiele.name');
-  function esc(t){return String(t).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
-  function row(it){return '<li'+(String(it.name).toLowerCase()===me?' style="color:var(--ac)"':'')+'><span class="r">'+it.rank+'.</span><span class="n">'+esc(it.name)+'</span><b>'+Number(it.score).toLocaleString('de-DE')+'</b></li>'}
-  function load(){
-    lb.innerHTML=G.map(function(g){return '<a class="lbc" href="'+g[2]+'" id="lb-'+g[0]+'"><h3>'+g[1]+'<span>Spielen →</span></h3><ol><li class="e">Lade …</li></ol></a>'}).join('');
-    G.forEach(function(g){Bestenliste.load(g[0],3).then(function(j){
-      document.querySelector('#lb-'+g[0]+' ol').innerHTML=(j.items&&j.items.length)?j.items.map(row).join(''):'<li class="e">Noch frei – hol dir Platz 1.</li>';
-    }).catch(function(){document.querySelector('#lb-'+g[0]+' ol').innerHTML='<li class="e">Gerade nicht erreichbar.</li>'})});
+(function () {
+  var GAMES = [['tron', 'LICHTRENNER', 'tron/', '#3cf0ff'], ['disc', 'DISC DUELL', 'disc/', '#3cf0ff'], ['retro', 'STERNFEUER', 'retro/', '#ff4f9a'], ['vektor', 'VEKTOR', 'vektor/', '#5dff8a'],
+    ['breaker', 'GRID BREAKER', 'breaker/', '#3cf0ff'], ['firewall', 'FIREWALL', 'firewall/', '#ff3d7f'], ['stunt', 'NEON STUNT', 'stunt/', '#ff2fa0'], ['arena', 'NEON ARENA', 'arena/', '#c46bff'],
+    ['instrumente', 'OP-SIEB', 'instrumente/', '#8fb1ff'], ['nachtdienst', 'NACHTDIENST', 'nachtdienst/', '#3cf0a0']];
+  var esc = function (t) { return String(t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var me = ''; try { me = (localStorage.getItem('spiele.name') || ''); } catch (e) {}
+  if (me) document.getElementById('me').textContent = 'Du spielst als ' + me;
+  var fmt = function (n) { return Number(n).toLocaleString('de-DE'); };
+
+  // Highscore-Tafel und Rekord am Automaten
+  var board = document.getElementById('board');
+  function load() {
+    board.innerHTML = GAMES.map(function (g) { return '<a class="hsb" href="' + g[2] + '" style="--c:' + g[3] + '" id="hs-' + g[0] + '"><h3>' + g[1] + '<span>›</span></h3><ol><li class="e">LADE …</li></ol></a>'; }).join('');
+    GAMES.forEach(function (g) {
+      if (!window.Bestenliste) return;
+      Bestenliste.load(g[0], 3).then(function (j) {
+        var it = j.items || [], pl = ['1ST', '2ND', '3RD'];
+        document.querySelector('#hs-' + g[0] + ' ol').innerHTML = it.length ? it.map(function (r, i) { return '<li' + (me && String(r.name).toLowerCase() === me.toLowerCase() ? ' class="me"' : '') + '><span>' + pl[i] + '</span><span class="n">' + esc(String(r.name).toUpperCase()) + '</span><span>' + fmt(r.score) + '</span></li>'; }).join('') : '<li class="e">NOCH FREI</li>';
+        var hs = document.querySelector('[data-hs="' + g[0] + '"]'); if (hs) hs.textContent = it.length ? 'HI ' + fmt(it[0].score) + ' ' + String(it[0].name).toUpperCase() : 'HI —';
+      }).catch(function () { document.querySelector('#hs-' + g[0] + ' ol').innerHTML = '<li class="e">GERADE OFFLINE</li>'; });
+    });
   }
-  document.getElementById('reload').onclick=load;
-  document.getElementById('share').onclick=function(){
-    var d={title:'Spiele von Josh',text:'Schlag meinen Rekord:',url:location.origin+location.pathname+'#rangliste'};
-    if(navigator.share)navigator.share(d).catch(function(){});
-    else navigator.clipboard.writeText(d.url).then(function(){this.textContent='Link kopiert ✓'}.bind(this));
+  document.getElementById('reload').onclick = load;
+  document.getElementById('share').onclick = function () {
+    var d = { title: "Flynn's Arcade", text: 'Schlag meinen Highscore:', url: location.origin + location.pathname + '#rangliste' }, b = this;
+    if (navigator.share) navigator.share(d).catch(function () {}); else if (navigator.clipboard) navigator.clipboard.writeText(d.url).then(function () { b.textContent = 'Link kopiert ✓'; });
   };
   load();
+
+  // Münze einwerfen: kurzer Ton, Bildschirm zoomt auf
+  var RM = matchMedia('(prefers-reduced-motion: reduce)').matches, AC = null;
+  function coin() { try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); var t = AC.currentTime; [988, 1319].forEach(function (f, i) { var o = AC.createOscillator(), g = AC.createGain(); o.type = 'square'; o.frequency.value = f; g.gain.setValueAtTime(0.06, t + i * 0.07); g.gain.exponentialRampToValueAtTime(0.0001, t + i * 0.07 + 0.12); o.connect(g); g.connect(AC.destination); o.start(t + i * 0.07); o.stop(t + i * 0.07 + 0.14); }); } catch (e) {} }
+  document.querySelectorAll('.cab').forEach(function (cab) {
+    cab.addEventListener('click', function (e) {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
+      e.preventDefault(); coin();
+      if (RM) { location.href = cab.href; return; }
+      var r = cab.querySelector('.scr').getBoundingClientRect(), z = document.createElement('div');
+      z.className = 'zoom'; z.style.cssText = 'left:' + r.left + 'px;top:' + r.top + 'px;width:' + r.width + 'px;height:' + r.height + 'px;--c:' + getComputedStyle(cab).getPropertyValue('--c');
+      document.body.appendChild(z); requestAnimationFrame(function () { requestAnimationFrame(function () { z.classList.add('go'); }); });
+      setTimeout(function () { location.href = cab.href; }, 470);
+    });
+  });
+  addEventListener('pageshow', function () { document.querySelectorAll('.zoom').forEach(function (z) { z.remove(); }); });
+
+  // Attract-Modus am PC: wenn niemand zeigt, spielt reihum ein Automat seine Demo
+  if (matchMedia('(hover: hover)').matches && !RM) {
+    var cabs = [].slice.call(document.querySelectorAll('.cab')), cur = -1, user = false;
+    cabs.forEach(function (c) { c.addEventListener('mouseenter', function (e) { if (e.isTrusted) user = true; }); c.addEventListener('mouseleave', function (e) { if (e.isTrusted) user = false; }); });
+    setInterval(function () {
+      if (cur >= 0) { cabs[cur].classList.remove('demo'); if (!user) cabs[cur].dispatchEvent(new Event('mouseleave')); }
+      if (user || document.hidden) { cur = -1; return; }
+      cur = (cur + 1) % cabs.length; var r = cabs[cur].getBoundingClientRect();
+      if (r.bottom < 0 || r.top > innerHeight) return;
+      cabs[cur].classList.add('demo'); cabs[cur].dispatchEvent(new Event('mouseenter'));
+    }, 3600);
+  }
 })();
 </script>
 </body>
