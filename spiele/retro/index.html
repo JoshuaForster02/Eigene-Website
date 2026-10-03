@@ -44,7 +44,7 @@ body.touch.playing #tBomb,body.playing #tPause{display:block}
 </style>
 </head>
 <body>
-<div class="links" id="links"><a href="/">← joshuaforster.de</a><a href="/spiele/">Alle Spiele</a></div>
+<div class="links" id="links"><a href="/">← joshuaforster.de</a><a href="/spiele/">Arcade</a></div>
 <div id="stage"><div id="wrap">
   <canvas id="c" width="180" height="320" aria-label="Spielfeld"></canvas>
   <div id="crt"></div>
@@ -670,5 +670,6 @@ requestAnimationFrame(frame);
 if (new URLSearchParams(location.search).has('test')) window.__retro = { G, P, get enemies() { return enemies; }, get bullets() { return bullets; }, start, bomb, keys, spawn, formation, godmode() { P.inv = 1e9; } };
 })();
 </script>
+<script src="../shared/pad.js"></script>
 </body>
 </html>

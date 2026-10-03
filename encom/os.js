@@ -233,12 +233,16 @@ register({
       hist.push(cmd); hi = hist.length;
       const [c, ...a] = cmd.split(/\s+/), arg = a.join(' ');
       switch (c) {
-        case 'help': print('commands: <span class="c-green">help clear apps open echo date whoami dns hash b64 rot13 pw calc neofetch</span>\n          <span class="c-green">arcade tron sternfeuer arena stunt grid flynn</span>'); break;
+        case 'help': print('commands: <span class="c-green">help clear apps open echo date whoami dns hash b64 rot13 pw calc neofetch</span>\n          <span class="c-green">arcade tron disc sternfeuer vektor breaker firewall stunt arena grid flynn</span>'); break;
         case 'arcade': case 'games': launch('arcade'); print('opening <span class="c-cyan">arcade</span>'); break;
         case 'tron': case 'lichtrenner': openGame('tron'); print('<span class="c-cyan">Light cycles bereit.</span> Viel Glück, Programm.'); break;
         case 'sternfeuer': case 'retro': openGame('retro'); print('opening <span class="c-cyan">sternfeuer</span>'); break;
         case 'stunt': openGame('stunt'); print('opening <span class="c-cyan">neon stunt</span>'); break;
         case 'arena': openGame('arena'); print('opening <span class="c-cyan">neon arena</span>'); break;
+        case 'disc': openGame('disc'); print('<span class="c-cyan">Disc bereit.</span> Wirf sie.'); break;
+        case 'vektor': case 'asteroids': openGame('vektor'); print('opening <span class="c-cyan">vektor</span>'); break;
+        case 'breaker': case 'breakout': openGame('breaker'); print('opening <span class="c-cyan">grid breaker</span>'); break;
+        case 'firewall': openGame('firewall'); print('<span class="c-red">Viren im Anflug.</span> Server schützen.'); break;
         case 'flynn': print(['<span class="c-cyan">"The Grid. A digital frontier."</span>', '<span class="c-cyan">"Bio-digital jazz, man."</span>', '<span class="c-cyan">"You\'re messing with my zen thing, man."</span>', '<span class="c-cyan">"End of line."</span>'][Math.random() * 4 | 0]); break;
         case 'sudo': print('<span class="c-red">Zugriff verweigert.</span> <span class="c-dim">Master Control hat dich gesehen.</span>'); break;
         case 'grid': { const cols = 46, rows = 10; let f = 0; const d = el('pre', 'c-cyan'); d.style.margin = '0'; out.appendChild(d);
@@ -598,9 +602,13 @@ register({
 /* ── ARCADE: die Grid-Spiele der Website ───────────────────────────────── */
 const GAMES = {
   tron: { t: 'Lichtrenner', s: 'Light Cycles · Recognizer ab Level 3', c: '#3cf0ff', u: '/spiele/tron/' },
+  disc: { t: 'Disc Duell', s: 'Discs werfen, abprallen, blocken', c: '#3cf0ff', u: '/spiele/disc/' },
   retro: { t: 'Sternfeuer', s: 'Pixel-Shooter wie 1984', c: '#ff4f9a', u: '/spiele/retro/' },
-  arena: { t: 'Neon Arena', s: 'Lasertag gegen Drohnenwellen', c: '#c46bff', u: '/spiele/arena/' },
+  vektor: { t: 'Vektor', s: 'Datenblöcke zerlegen, Recognizer jagen', c: '#5dff8a', u: '/spiele/vektor/' },
+  breaker: { t: 'Grid Breaker', s: 'Breakout mit acht Leveln', c: '#3cf0ff', u: '/spiele/breaker/' },
+  firewall: { t: 'Firewall', s: 'Server gegen Viren verteidigen', c: '#ff3d7f', u: '/spiele/firewall/' },
   stunt: { t: 'Neon Stunt', s: 'Synthwave-Motorrad mit Saltos', c: '#ff2fa0', u: '/spiele/stunt/' },
+  arena: { t: 'Neon Arena', s: 'Lasertag gegen Drohnenwellen', c: '#c46bff', u: '/spiele/arena/' },
 };
 function openGame(id) {
   const g = GAMES[id]; if (!g) return;
@@ -610,10 +618,10 @@ function openGame(id) {
   setTimeout(() => { const f = $('iframe', w.node); if (f) f.focus(); }, 300);
 }
 register({
-  id: 'arcade', title: 'Arcade', icon: 'pad', w: 520, h: 420, single: true,
+  id: 'arcade', title: 'Arcade', icon: 'pad', w: 540, h: 600, single: true,
   build() {
     const wrap = el('div', 'pad'); wrap.style.cssText = 'display:flex;flex-direction:column;gap:12px';
-    wrap.appendChild(el('div', 'app-h', "Flynn's Arcade"));
+    wrap.appendChild(el('div', 'app-h', "Flynn's Arcade")); wrap.style.overflow = 'auto';
     for (const [id, g] of Object.entries(GAMES)) {
       const b = el('button', 'card', `<div style="display:flex;align-items:center;gap:14px;text-align:left"><span style="width:44px;height:44px;border-radius:12px;display:grid;place-items:center;border:1px solid ${g.c};color:${g.c};box-shadow:0 0 18px ${g.c}55">${svg('pad')}</span><span><b style="display:block;font-size:15px;color:var(--ink)">${g.t}</b><span class="dim" style="font-size:12.5px">${g.s}</span></span><span style="margin-left:auto;color:${g.c};font-family:var(--mono);font-size:12px">START →</span></div>`);
       b.style.cssText = 'cursor:pointer;width:100%;font:inherit;color:inherit;background:var(--panel,rgba(3,12,20,.6))';

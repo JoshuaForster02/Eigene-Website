@@ -59,7 +59,7 @@ body.touch.playing .tb{display:grid;place-items:center}
 </head>
 <body>
 <canvas id="c" aria-label="Spielfeld"></canvas>
-<div class="links" id="links"><a href="../">← Spiele</a><button id="bPause" class="hide" aria-label="Pause">II</button></div>
+<div class="links" id="links"><a href="../">← Arcade</a><button id="bPause" class="hide" aria-label="Pause">II</button></div>
 <div id="hud" class="hide">
   <div id="hl"><div id="hScore">0</div><div id="hDist">0 m</div></div>
   <div id="hr"><div id="hTime">40</div><div id="hNext"></div></div>
@@ -438,5 +438,6 @@ menuBest(); requestAnimationFrame(loop);
 window.__stunt = { G, B, inp, start, hAt, update };
 })();
 </script>
+<script src="../shared/pad.js" data-map='{"0":"ArrowUp","7":"ArrowUp","1":"ArrowDown","6":"ArrowDown","9":"Enter","8":"KeyP"}'></script>
 </body>
 </html>
