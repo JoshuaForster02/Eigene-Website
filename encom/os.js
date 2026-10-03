@@ -233,10 +233,11 @@ register({
       hist.push(cmd); hi = hist.length;
       const [c, ...a] = cmd.split(/\s+/), arg = a.join(' ');
       switch (c) {
-        case 'help': print('commands: <span class="c-green">help clear apps open echo date whoami dns hash b64 rot13 pw calc neofetch</span>\n          <span class="c-green">arcade tron sternfeuer arena grid flynn</span>'); break;
+        case 'help': print('commands: <span class="c-green">help clear apps open echo date whoami dns hash b64 rot13 pw calc neofetch</span>\n          <span class="c-green">arcade tron sternfeuer arena stunt grid flynn</span>'); break;
         case 'arcade': case 'games': launch('arcade'); print('opening <span class="c-cyan">arcade</span>'); break;
         case 'tron': case 'lichtrenner': openGame('tron'); print('<span class="c-cyan">Light cycles bereit.</span> Viel Glück, Programm.'); break;
         case 'sternfeuer': case 'retro': openGame('retro'); print('opening <span class="c-cyan">sternfeuer</span>'); break;
+        case 'stunt': openGame('stunt'); print('opening <span class="c-cyan">neon stunt</span>'); break;
         case 'arena': openGame('arena'); print('opening <span class="c-cyan">neon arena</span>'); break;
         case 'flynn': print(['<span class="c-cyan">"The Grid. A digital frontier."</span>', '<span class="c-cyan">"Bio-digital jazz, man."</span>', '<span class="c-cyan">"You\'re messing with my zen thing, man."</span>', '<span class="c-cyan">"End of line."</span>'][Math.random() * 4 | 0]); break;
         case 'sudo': print('<span class="c-red">Zugriff verweigert.</span> <span class="c-dim">Master Control hat dich gesehen.</span>'); break;
@@ -599,6 +600,7 @@ const GAMES = {
   tron: { t: 'Lichtrenner', s: 'Light Cycles · Recognizer ab Level 3', c: '#3cf0ff', u: '/spiele/tron/' },
   retro: { t: 'Sternfeuer', s: 'Pixel-Shooter wie 1984', c: '#ff4f9a', u: '/spiele/retro/' },
   arena: { t: 'Neon Arena', s: 'Lasertag gegen Drohnenwellen', c: '#c46bff', u: '/spiele/arena/' },
+  stunt: { t: 'Neon Stunt', s: 'Synthwave-Motorrad mit Saltos', c: '#ff2fa0', u: '/spiele/stunt/' },
 };
 function openGame(id) {
   const g = GAMES[id]; if (!g) return;
