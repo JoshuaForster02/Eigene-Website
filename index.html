@@ -11,8 +11,11 @@
 <meta property="og:description" content="Joshua Forster – Medizinstudent im 7. Semester in Homburg. Orthopädie, Sportmedizin und Prävention.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://joshuaforster.de/">
-<meta property="og:image" content="https://joshuaforster.de/og-image.png">
+<meta property="og:image" content="https://joshuaforster.de/og-image.png?v=2">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" hreflang="de" href="https://joshuaforster.de/">
+<link rel="alternate" hreflang="en" href="https://joshuaforster.de/?lang=en">
+<link rel="alternate" hreflang="x-default" href="https://joshuaforster.de/">
 <link rel="canonical" href="https://joshuaforster.de/">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="shortcut icon" href="/favicon.ico">
@@ -341,7 +344,7 @@ footer a{text-decoration:none;margin-left:20px}footer a:hover{color:var(--crim)}
       <a class="li" href="fechten.html"><span class="n">01</span><div><h3 data-i="f1">Fechten, <em>Degen</em></h3><p data-i="f2">Distanz, Timing und Entscheidungen unter Druck.</p></div><span class="arr">↗</span></a>
       <div class="li"><span class="n">02</span><div><h3 data-i="r1">Laufen &amp; <em>Kraft</em></h3><p data-i="r2">Ausdauer auf der Straße, Krafttraining seit 2021.</p>
         <div class="run" id="run">
-          <div><b>22:07</b><span data-i="r3">Schnellster Lauf · 5 km</span></div>
+          <div class="live" data-k="best5k"><b>22:07</b><span data-i="r3">Schnellster Lauf · 5 km</span></div>
           <div class="live" data-k="longest"><b>–</b><span data-i="r4">Längster Lauf</span></div>
           <div class="live" data-k="ytd"><b>–</b><span data-i="r5">Laufkilometer <span data-yr></span></span></div>
           <div><b>2021</b><span data-i="r6">Krafttraining seit</span></div>
@@ -380,11 +383,11 @@ footer a{text-decoration:none;margin-left:20px}footer a:hover{color:var(--crim)}
 <footer><span>© 2026 Joshua Forster</span><span><a href="#hero" data-i="ft1">Nach oben ↑</a><a href="datenschutz.html">Datenschutz</a></span></footer>
 
 <script>
-(()=>{let L='de';try{L=localStorage.getItem('jf-lang')||''}catch(e){}
+(()=>{let L='de';const QL=new URLSearchParams(location.search).get('lang');try{L=localStorage.getItem('jf-lang')||''}catch(e){}if(QL==='en'||QL==='de')L=QL;
 if(!L)L=(navigator.languages||[navigator.language||'de']).some(l=>/^de/i.test(l))?'de':'en';
 window.JF_LANG=L;const EN={"pk": "Cases from the emergency department and internal medicine: take a history, order tests, make the diagnosis, decide on treatment. In German.", "pkt": "Case-based", "pkt2": "Emergency", "skip": "Skip to content", "n1": "About", "n2": "Path", "n3": "Projects", "n5": "Contact", "kick": "Medical student · 7th semester · Homburg, Germany", "sub": "Orthopaedics, sports medicine and prevention.", "c1": "Projects", "c2": "Contact", "scr": "Scroll", "l1": "01 · About", "stmt": "I study medicine in the clinical phase at Saarland University. I am fascinated by the <span class=\"hl\">musculoskeletal system</span>: how people move, get injured and find their way back. Outside the hospital I fence and <span class=\"hl\">train</span>.", "sth": "The path<br><em>to Zurich.</em>", "stc": "02 · Path", "st0": "Medical school", "st1": "Start of medical school", "st2": "Saarland University, Homburg campus.", "st3": "Exam", "st4": "First state medical examination, then the move into the clinical years.", "st5": "Clerkship", "st6": "Orthopaedics", "st7": "Clinical clerkship at Saarland University Medical Center, Homburg.", "st8": "Final year (PJ)", "st9": "Final year in Basel", "st10": "Internal medicine and surgery at University Hospital Basel.", "st11": "Elective", "st12": "Orthopaedics in Zurich", "st13": "Elective rotation at Schulthess Klinik, Zurich.", "l3": "03 · Projects", "h3": "What I<br><em>have built.</em>", "pv": "A clinical companion for the ward and emergency department: discharge letter assistant, medication check, more than 160 clinical scores and calculators, plus practice cases with model letters. In German.", "pt1": "Discharge letters", "pt2": "Medication", "pm": "Upload lecture slides as PDF or PPTX and the AI turns them into source-referenced Anki cards with page numbers. Built for medical school.", "l4": "04 · Outside the hospital", "h4": "The <em>balance.</em>", "f1": "Fencing, <em>épée</em>", "f2": "Distance, timing and decisions under pressure.", "r1": "Running &amp; <em>strength</em>", "r2": "Endurance on the road, strength training since 2021.", "r3": "Fastest run · 5 km", "r4": "Longest run", "r5": "Running km <span data-yr></span>", "r6": "Strength training since", "x1": "Up next", "x2": "Half marathon · October 2026", "x3": "Ironman · late 2027", "so2": "Runs and training, updated daily", "l5": "05 · Contact", "h5": "Let's<br><em>talk.</em>", "cp": "For professional exchange or questions about my projects. My CV is available on request by email.", "sb": "Send message →", "fs": "By sending, you agree to the processing of your details. More in the <a href=\"datenschutz.html\">privacy policy</a> (German).", "ft1": "Back to top ↑", "so1": "@iamjoshuaforster · Sport, outdoors, photography", "cv": "I'd like to receive the CV by email.", "cvb": "Request CV", "sp1": "Nursing internship", "sp2": "days on the ward", "sp3": "Neurosurgery and internal medicine at Klinikum Saarbrücken, internal medicine at Saarland University Hospital.", "sw1": "Course", "sw2": "Phaco wet lab", "sw3": "Hands-on course in cataract surgery (HOYA).", "k1": "Pi<em>ano</em>", "k2": "The quiet counterweight to hospital and training.", "k4": "synthesized in your browser", "k5": "Tap the keys"};const PH={"b-name": "Name", "b-mail": "Email", "b-msg": "Message"};
-if(L==='en'){document.documentElement.lang='en';document.querySelectorAll('[data-i]').forEach(e=>{const v=EN[e.dataset.i];if(v!=null)e.innerHTML=v});for(const k in PH){const e=document.getElementById(k);if(e)e.placeholder=PH[k]};const d=document.querySelector('meta[name=description]');if(d)d.content='Joshua Forster, medical student in Homburg, Germany. Orthopaedics, sports medicine and prevention.';}
-const b=document.getElementById('lng');if(b){b.textContent=L==='en'?'DE':'EN';b.setAttribute('aria-label',L==='en'?'Auf Deutsch wechseln':'Switch to English');b.addEventListener('click',()=>{try{localStorage.setItem('jf-lang',L==='en'?'de':'en')}catch(e){}location.reload()})}
+if(L==='en'){document.documentElement.lang='en';if(QL==='en'){const c=document.querySelector('link[rel=canonical]');if(c)c.href='https://joshuaforster.de/?lang=en'}document.querySelectorAll('[data-i]').forEach(e=>{const v=EN[e.dataset.i];if(v!=null)e.innerHTML=v});for(const k in PH){const e=document.getElementById(k);if(e)e.placeholder=PH[k]};const d=document.querySelector('meta[name=description]');if(d)d.content='Joshua Forster, medical student in Homburg, Germany. Orthopaedics, sports medicine and prevention.';}
+const b=document.getElementById('lng');if(b){b.textContent=L==='en'?'DE':'EN';b.setAttribute('aria-label',L==='en'?'Auf Deutsch wechseln':'Switch to English');b.addEventListener('click',()=>{const n=L==='en'?'de':'en';try{localStorage.setItem('jf-lang',n)}catch(e){}location.href=(n==='en'?'/?lang=en':'/?lang=de')+location.hash})}
 })();
 </script>
 <script>
@@ -469,6 +472,7 @@ fetch('data/strava.json',{cache:'no-cache'}).then(r=>r.ok?r.json():null).then(d=
  if(!d)return;
  const set=(k,v,u)=>{const b=document.querySelector(`[data-k="${k}"] b`);if(b&&v!=null)b.innerHTML=`${v}<small>${u}</small>`};
  if(d.longest_run_km)set('longest',fmt(d.longest_run_km,1),'km');
+ if(d.best_5k_s){const b=document.querySelector('[data-k="best5k"] b');if(b)b.textContent=Math.floor(d.best_5k_s/60)+':'+String(d.best_5k_s%60).padStart(2,'0')}
  if(d.ytd_run_km!=null){set('ytd',fmt(d.ytd_run_km),'km');if(d.year)document.querySelectorAll('[data-yr]').forEach(e=>e.textContent=d.year)}
  if(d.athlete_url)document.getElementById('stravaLink').href=d.athlete_url;
  if(d.updated){const t=new Date(d.updated);document.getElementById('stamp').textContent=(window.JF_LANG==='en'?'Strava, as of ':(d.demo?'Beispielwerte · ':'')+'Strava-Stand: ')+t.toLocaleDateString(window.JF_LANG==='en'?'en-GB':'de-DE',{day:'2-digit',month:'2-digit',year:'numeric'})}
