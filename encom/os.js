@@ -23,6 +23,7 @@ const I = {
   hash: '<path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/>',
   bolt: '<path d="M13 2L4 14h7l-2 8 9-12h-7z"/>',
   x: '<path d="M6 6l12 12M18 6L6 18"/>',
+  pad: '<rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 11v3M5.5 12.5h3M15 12h.01M18 13.5h.01"/>',
   subnet: '<path d="M12 3v6M6 21v-5a3 3 0 013-3h6a3 3 0 013 3v5"/><circle cx="12" cy="3" r="0"/><rect x="9" y="1" width="6" height="4" rx="1"/><rect x="3" y="17" width="6" height="4" rx="1"/><rect x="15" y="17" width="6" height="4" rx="1"/>',
 };
 const svg = k => `<svg viewBox="0 0 24 24">${I[k] || ''}</svg>`;
@@ -44,8 +45,9 @@ function makeWindow(app) {
   const mobile = innerWidth < 720;
   const w = mobile ? innerWidth - 16 : (app.w || 460);
   const h = mobile ? Math.min(innerHeight - 120, app.h || 480) : (app.h || 480);
-  const ox = mobile ? 8 : Math.min(desk.clientWidth - w - 20, 60 + wins.length * 26);
-  const oy = mobile ? 8 : 40 + wins.length * 22;
+  const n = wins.filter(x => !x.node.classList.contains('min')).length;
+  const ox = mobile ? 8 : Math.max(130, Math.min(desk.clientWidth - w - 20, (n ? 150 : (desk.clientWidth - w) / 2) + n * 28));
+  const oy = mobile ? 8 : Math.max(16, Math.min(desk.clientHeight - h - 96, (n ? 30 : (desk.clientHeight - h - 80) / 2) + n * 24));
   Object.assign(node.style, { left: ox + 'px', top: oy + 'px', width: w + 'px', height: h + 'px' });
 
   node.innerHTML =
@@ -136,7 +138,7 @@ function buildChrome() {
     dock.appendChild(b);
   });
   const icons = $('#deskicons');
-  DESK_ORDER.forEach(id => {
+  (innerWidth < 720 ? DOCK_ORDER : DESK_ORDER).forEach(id => {
     const a = APPS[id]; if (!a) return;
     const d = el('div', 'di', `<div class="ic">${svg(a.icon)}</div><span>${esc(a.title)}</span>`);
     d.onclick = () => launch(id);
@@ -222,7 +224,8 @@ register({
     const out = $('.out', wrap), inp = $('input', wrap);
     const print = (s, cls) => { const d = el('div', cls || ''); d.innerHTML = s; out.appendChild(d); out.scrollTop = out.scrollHeight; };
     win._termPrint = print;
-    print('<span class="c-cyan">ENCOM OS</span> — web edition. Type <span class="c-green">help</span>.', '');
+    print('<span class="c-cyan">ENCOM OS 12</span> · Grid-Laufzeit · <span class="c-dim">' + new Date().toLocaleDateString('de-DE') + '</span>', '');
+    print('<span class="c-dim">Tippe</span> <span class="c-green">help</span><span class="c-dim">, oder</span> <span class="c-green">arcade</span> <span class="c-dim">für die Grid-Spiele.</span>', '');
     const hist = []; let hi = 0;
     const run = async cmd => {
       cmd = cmd.trim(); if (!cmd) return;
@@ -230,7 +233,15 @@ register({
       hist.push(cmd); hi = hist.length;
       const [c, ...a] = cmd.split(/\s+/), arg = a.join(' ');
       switch (c) {
-        case 'help': print('commands: <span class="c-green">help clear apps open echo date whoami dns hash b64 rot13 pw calc neofetch</span>'); break;
+        case 'help': print('commands: <span class="c-green">help clear apps open echo date whoami dns hash b64 rot13 pw calc neofetch</span>\n          <span class="c-green">arcade tron sternfeuer arena grid flynn</span>'); break;
+        case 'arcade': case 'games': launch('arcade'); print('opening <span class="c-cyan">arcade</span>'); break;
+        case 'tron': case 'lichtrenner': openGame('tron'); print('<span class="c-cyan">Light cycles bereit.</span> Viel Glück, Programm.'); break;
+        case 'sternfeuer': case 'retro': openGame('retro'); print('opening <span class="c-cyan">sternfeuer</span>'); break;
+        case 'arena': openGame('arena'); print('opening <span class="c-cyan">neon arena</span>'); break;
+        case 'flynn': print(['<span class="c-cyan">"The Grid. A digital frontier."</span>', '<span class="c-cyan">"Bio-digital jazz, man."</span>', '<span class="c-cyan">"You\'re messing with my zen thing, man."</span>', '<span class="c-cyan">"End of line."</span>'][Math.random() * 4 | 0]); break;
+        case 'sudo': print('<span class="c-red">Zugriff verweigert.</span> <span class="c-dim">Master Control hat dich gesehen.</span>'); break;
+        case 'grid': { const cols = 46, rows = 10; let f = 0; const d = el('pre', 'c-cyan'); d.style.margin = '0'; out.appendChild(d);
+          const id = setInterval(() => { let t = ''; for (let y = 0; y < rows; y++) { for (let x = 0; x < cols; x++) { const v = Math.sin(x * .35 + f * .3) + Math.cos(y * .6 - f * .2); t += v > 1.1 ? '█' : v > .4 ? '▓' : v > -.2 ? '░' : ' '; } t += '\n'; } d.textContent = t; out.scrollTop = out.scrollHeight; if (++f > 60) clearInterval(id); }, 50); break; }
         case 'clear': out.innerHTML = ''; break;
         case 'apps': print(Object.values(APPS).map(x => x.id).join('  ')); break;
         case 'open': if (APPS[a[0]]) { launch(a[0]); print('opening <span class="c-cyan">' + esc(a[0]) + '</span>'); } else print('<span class="c-red">no such app</span>: ' + esc(a[0] || '')); break;
@@ -583,6 +594,34 @@ register({
 });
 
 /* ── ABOUT ───────────────────────────────────────────────────────────────── */
+/* ── ARCADE: die Grid-Spiele der Website ───────────────────────────────── */
+const GAMES = {
+  tron: { t: 'Lichtrenner', s: 'Light Cycles · Recognizer ab Level 3', c: '#3cf0ff', u: '/spiele/tron/' },
+  retro: { t: 'Sternfeuer', s: 'Pixel-Shooter wie 1984', c: '#ff4f9a', u: '/spiele/retro/' },
+  arena: { t: 'Neon Arena', s: 'Lasertag gegen Drohnenwellen', c: '#c46bff', u: '/spiele/arena/' },
+};
+function openGame(id) {
+  const g = GAMES[id]; if (!g) return;
+  if (innerWidth < 720) { location.href = g.u; return; }
+  const w = makeWindow({ id: 'game-' + id, title: g.t, icon: 'pad', w: Math.min(980, desk.clientWidth - 160), h: Math.min(640, desk.clientHeight - 110), single: true,
+    build() { const f = el('iframe'); f.src = g.u; f.allow = 'autoplay; fullscreen; gamepad'; f.style.cssText = 'border:0;width:100%;height:100%;display:block;background:#000'; return f; } });
+  setTimeout(() => { const f = $('iframe', w.node); if (f) f.focus(); }, 300);
+}
+register({
+  id: 'arcade', title: 'Arcade', icon: 'pad', w: 520, h: 420, single: true,
+  build() {
+    const wrap = el('div', 'pad'); wrap.style.cssText = 'display:flex;flex-direction:column;gap:12px';
+    wrap.appendChild(el('div', 'app-h', "Flynn's Arcade"));
+    for (const [id, g] of Object.entries(GAMES)) {
+      const b = el('button', 'card', `<div style="display:flex;align-items:center;gap:14px;text-align:left"><span style="width:44px;height:44px;border-radius:12px;display:grid;place-items:center;border:1px solid ${g.c};color:${g.c};box-shadow:0 0 18px ${g.c}55">${svg('pad')}</span><span><b style="display:block;font-size:15px;color:var(--ink)">${g.t}</b><span class="dim" style="font-size:12.5px">${g.s}</span></span><span style="margin-left:auto;color:${g.c};font-family:var(--mono);font-size:12px">START →</span></div>`);
+      b.style.cssText = 'cursor:pointer;width:100%;font:inherit;color:inherit;background:var(--panel,rgba(3,12,20,.6))';
+      b.onclick = () => openGame(id); wrap.appendChild(b);
+    }
+    wrap.appendChild(el('div', 'note', 'Alle Spiele haben eine Weltbestenliste. Im Terminal geht auch <span class="c-green">tron</span>.'));
+    return wrap;
+  },
+});
+
 register({
   id: 'about', title: 'ENCOM OS', icon: 'info', w: 480, h: 400, single: true,
   build() {
@@ -607,14 +646,14 @@ addEventListener('keydown', e => {
 });
 
 /* ── Layout order ────────────────────────────────────────────────────────── */
-const DOCK_ORDER = ['terminal', 'recon', 'breach', 'encoder', 'cipher', 'keygen', 'subnet', 'system', 'metal', 'about'];
-const DESK_ORDER = ['metal', 'terminal', 'recon', 'breach', 'cipher'];
+const DOCK_ORDER = ['terminal', 'arcade', 'recon', 'breach', 'encoder', 'cipher', 'keygen', 'subnet', 'system', 'metal', 'about'];
+const DESK_ORDER = ['terminal', 'arcade', 'metal', 'recon', 'breach', 'cipher'];
 
 /* ── Boot ────────────────────────────────────────────────────────────────── */
 function main() {
   startBg(); startClock(); buildChrome();
   boot(() => { $('#boot').classList.add('done'); $('#os').classList.add('up');
-    setTimeout(() => { $('#boot').remove(); if (innerWidth > 720) launch('metal'); launch('terminal'); }, 500); });
+    setTimeout(() => { $('#boot').remove(); if (innerWidth > 720) launch('terminal'); }, 500); });
 }
 if (document.readyState !== 'loading') main(); else addEventListener('DOMContentLoaded', main);
 })();

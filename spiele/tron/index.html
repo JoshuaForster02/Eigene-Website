@@ -96,7 +96,7 @@ body.touch.playing #tBoost,body.touch.playing #tCam{display:block}
   <div class="panel hide" id="menuBoard"></div>
   <div class="keys" id="keysDesk">
     <b>← →</b> / <b>A D</b> abbiegen · <b>Leertaste</b> Turbo · <b>C</b> Kamera · <b>P</b> Pause · <b>M</b> Ton<br>
-    Dränge Gegner in deine Lichtwand. Fahr dicht an Wänden entlang für Grind-Punkte und Turbo.<br>
+    Dränge Gegner in deine Lichtwand. Fahr dicht an Wänden entlang für Grind-Punkte und Turbo. Ab Level 3 setzt ein <b>Recognizer</b> rote Sperrwände: blinkt der Boden rot, ausweichen.<br>
     <b>2 Spieler:</b> Cyan <b>WASD</b> + <b>Shift links</b> · Orange <b>Pfeile</b> + <b>Enter</b>
   </div>
   <div class="keys hide" id="keysTouch">
@@ -202,6 +202,54 @@ const glowMat = (col, k) => new THREE.MeshBasicMaterial({ color: new THREE.Color
   for (const [sx, sz, px, pz] of [[L, 0.3, 0, -HALF - 0.15], [L, 0.3, 0, HALF + 0.15], [0.3, L, -HALF - 0.15, 0], [0.3, L, HALF + 0.15, 0]]) {
     const w = new THREE.Mesh(wallGeo, m); w.scale.set(sx, 3, sz); w.position.set(px, 0, pz); scene.add(w);
   }
+}
+
+
+/* ---------- Kulisse: Himmel, Bergkämme, Türme (wie im Film) ---------- */
+{
+  const sky = new THREE.Mesh(new THREE.SphereGeometry(700, 48, 24), new THREE.ShaderMaterial({
+    side: THREE.BackSide, depthWrite: false,
+    uniforms: { uT: { value: 0 } },
+    vertexShader: 'varying vec3 vD;void main(){vD=normalize(position);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
+    fragmentShader: `uniform float uT;varying vec3 vD;
+      float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+      float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}
+      float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*n(p);p*=2.03;a*=.5;}return v;}
+      void main(){float y=vD.y;vec2 q=vD.xz/(y+.25)*1.6;
+        float cl=fbm(q+vec2(uT*.01,0.))*smoothstep(.0,.35,y)*smoothstep(1.,.3,y);
+        vec3 c=mix(vec3(.004,.012,.03),vec3(.0,.0,.004),smoothstep(0.,.6,y));
+        c+=vec3(.05,.2,.28)*exp(-abs(y)*9.)*.8;
+        c+=vec3(.02,.07,.11)*smoothstep(.45,.9,cl)*1.3;
+        if(y<0.)c=vec3(.002,.006,.012);
+        gl_FragColor=vec4(c,1.);}`
+  }));
+  sky.renderOrder = -1; scene.add(sky); window.__sky = sky.material;
+  scene.background = null;
+  // Bergkämme als Drahtgitter, zwei Ringe
+  const ridge = (R, H, seed, col, k) => {
+    const pts = [], M = 220, f = a => { let v = 0; for (let o = 1; o <= 4; o++) v += Math.sin(a * (3 * o + seed) + seed * o * 1.7) / o; return v; };
+    const hs = []; for (let i = 0; i <= M; i++) { const a = i / M * Math.PI * 2; hs.push(Math.max(0, (f(a) * 0.5 + 0.55) * H)); }
+    for (const lv of [1, 0.66, 0.33]) for (let i = 0; i < M; i++) {
+      const a0 = i / M * Math.PI * 2, a1 = (i + 1) / M * Math.PI * 2;
+      pts.push(Math.cos(a0) * R, hs[i] * lv, Math.sin(a0) * R, Math.cos(a1) * R, hs[i + 1] * lv, Math.sin(a1) * R);
+    }
+    for (let i = 0; i < M; i += 3) { const a = i / M * Math.PI * 2; pts.push(Math.cos(a) * R, 0, Math.sin(a) * R, Math.cos(a) * R, hs[i], Math.sin(a) * R); }
+    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+    scene.add(new THREE.LineSegments(g, new THREE.LineBasicMaterial({ color: new THREE.Color(col).multiplyScalar(k), transparent: true, opacity: 0.85 })));
+  };
+  ridge(520, 70, 1.3, 0x1fb8d8, 0.55); ridge(640, 120, 2.9, 0x1b6fa8, 0.4);
+  // ferne Lichttürme
+  const tg = new THREE.BoxGeometry(1, 1, 1); tg.translate(0, 0.5, 0);
+  const te = new THREE.EdgesGeometry(tg), dark = new THREE.MeshBasicMaterial({ color: 0x010306 });
+  for (let i = 0; i < 22; i++) {
+    const a = i / 22 * Math.PI * 2 + Math.sin(i * 7.3) * 0.12, r = 300 + (i * 37 % 90), h = 30 + (i * 53 % 120), w = 6 + (i * 11 % 10);
+    const col = i % 5 === 0 ? 0xff8a1f : 0x3cf0ff;
+    const m = new THREE.Mesh(tg, dark); m.scale.set(w, h, w); m.position.set(Math.cos(a) * r, 0, Math.sin(a) * r); scene.add(m);
+    const e = new THREE.LineSegments(te, new THREE.LineBasicMaterial({ color: new THREE.Color(col).multiplyScalar(0.9) })); e.scale.copy(m.scale); e.position.copy(m.position); scene.add(e);
+  }
+  // Eckpfeiler der Arena
+  const pm = glowMat(0x6fd8ff, 1.4);
+  for (const [px, pz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) { const m = new THREE.Mesh(wallGeo, pm); m.scale.set(1.2, 9, 1.2); m.position.set(px * (HALF + 0.6), 0, pz * (HALF + 0.6)); scene.add(m); }
 }
 
 function radialTex() {
@@ -374,9 +422,10 @@ function newRound() {
     }
   }
   G.round++; G.state = 'count'; G.t = 3; G.combo = 0; G.lastCount = 4;
+  recoReset();
   input.boost[0] = input.boost[1] = false;
   const txt = G.mode === 'duo' ? `RUNDE ${G.round}` : `LEVEL ${G.level}`;
-  const sub = G.mode === 'duo' ? 'Erster mit 5 Siegen' : `${G.bikes.length - 1} Gegner` + (G.level >= 4 ? ' · Hindernisse' : '');
+  const sub = G.mode === 'duo' ? 'Erster mit 5 Siegen' : `${G.bikes.length - 1} Gegner` + (G.level >= 4 ? ' · Hindernisse' : '') + (G.level >= 3 ? ' · Recognizer' : '');
   show(txt, sub, 1.6);
   if (G.round <= 1 || G.mode === 'duo') hint(TOUCH ? (G.cam === 'top' ? 'Wischen zum Lenken · TURBO halten' : 'Links / rechts tippen zum Abbiegen') : (G.mode === 'duo' ? 'Cyan: WASD + Shift · Orange: Pfeile + Enter' : '← → abbiegen · Leertaste Turbo · C Kamera'));
   hud();
@@ -593,6 +642,91 @@ function updateFx(dt) {
   }
 }
 
+
+/* ---------- Recognizer: patrouilliert und setzt rote Sperrwände ---------- */
+const RECO = 98, RCOL = 0xff2a3a;
+const RECOMAT = new THREE.MeshBasicMaterial({ color: new THREE.Color(RCOL).multiplyScalar(1.7), map: GRAD, transparent: true, opacity: 0.9, side: THREE.DoubleSide });
+const recoObj = (() => {
+  const g = new THREE.Group(), dark = new THREE.MeshBasicMaterial({ color: 0x07020a }), red = glowMat(RCOL, 2.2);
+  const box = (sx, sy, sz, x, y, z, m = dark) => { const b = new THREE.Mesh(new THREE.BoxGeometry(sx, sy, sz), m); b.position.set(x, y, z); g.add(b);
+    if (m === dark) { const e = new THREE.LineSegments(new THREE.EdgesGeometry(b.geometry), new THREE.LineBasicMaterial({ color: new THREE.Color(RCOL).multiplyScalar(1.6) })); e.position.copy(b.position); g.add(e); } return b; };
+  box(16, 2.2, 3.4, 0, 0, 0); box(2.4, 9, 3, -6.8, -5.4, 0); box(2.4, 9, 3, 6.8, -5.4, 0);
+  box(3.6, 1.4, 3.6, -6.8, -10.4, 0); box(3.6, 1.4, 3.6, 6.8, -10.4, 0);
+  box(10, 0.25, 0.25, 0, -0.2, 1.75, red); box(0.25, 6, 0.25, -6.8, -5, 1.55, red); box(0.25, 6, 0.25, 6.8, -5, 1.55, red);
+  const cone = new THREE.Mesh(new THREE.ConeGeometry(7, 18, 32, 1, true), new THREE.MeshBasicMaterial({ color: RCOL, transparent: true, opacity: 0.07, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide }));
+  cone.position.y = -9; g.add(cone); g.userData.cone = cone;
+  g.position.set(0, 26, -HALF * 1.6); scene.add(g); return g;
+})();
+const R_ = { x: 0, z: -HALF * 1.6, tx: 0, tz: 0, t: 6, warn: null, bars: [], active: false };
+const warnMat = new THREE.MeshBasicMaterial({ color: RCOL, transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide });
+function recoReset() {
+  for (const b of R_.bars) scene.remove(b.mesh);
+  if (R_.warn) R_.warn.meshes.forEach(m => scene.remove(m));
+  R_.bars = []; R_.warn = null;
+  R_.active = G.mode === 'solo' && G.level >= 3;
+  R_.t = 4.5; recoTarget();
+}
+function recoTarget() { R_.tx = (Math.random() * 2 - 1) * HALF * 0.75; R_.tz = (Math.random() * 2 - 1) * HALF * 0.75; }
+const cellOf = v => Math.max(0, Math.min(N - 1, Math.floor(v / C + N / 2)));
+function runsOf(cells) { // zusammenhängende Abschnitte für die Darstellung
+  const out = []; let cur = null;
+  for (const c of cells) { if (cur && Math.abs(c.k - cur.at(-1).k) === 1) cur.push(c); else { cur = [c]; out.push(cur); } }
+  return out;
+}
+function stripMesh(run, horiz, mat, h, w) {
+  const a = run[0], z = run.at(-1), m = new THREE.Mesh(wallGeo, mat);
+  if (horiz) { m.scale.set((z.x - a.x + 1) * C - 0.3, h, w); m.position.set((wx(a.x) + wx(z.x)) / 2, 0, wx(a.y)); }
+  else { m.scale.set(w, h, (z.y - a.y + 1) * C - 0.3); m.position.set(wx(a.x), 0, (wx(a.y) + wx(z.y)) / 2); }
+  scene.add(m); return m;
+}
+function recoScan() {
+  const me = G.bikes[0], horiz = Math.random() < 0.5, L = Math.min(N - 8, 14 + G.level * 2);
+  const cx = cellOf(R_.x), cy = cellOf(R_.z), cells = [];
+  for (let k = -L / 2; k < L / 2; k++) {
+    const x = horiz ? cx + k : cx, y = horiz ? cy : cy + k;
+    if (!free(x, y)) continue;
+    // fair bleiben: nie direkt vor oder neben dem Spieler
+    if (me && me.alive) { let near = Math.abs(x - me.x) + Math.abs(y - me.y) < 5; for (let s = 1; s <= 7 && !near; s++) if (x === me.x + DX[me.dir] * s && y === me.y + DY[me.dir] * s) near = true; if (near) continue; }
+    cells.push({ x, y, k: horiz ? x : y });
+  }
+  if (cells.length < 4) return;
+  const runs = runsOf(cells);
+  R_.warn = { cells, horiz, t: 1.4, meshes: runs.map(r => stripMesh(r, horiz, warnMat, 0.06, C * 0.9)) };
+  tone(110, 0.5, 'sawtooth', 0.08, 70); tone(220, 0.25, 'square', 0.04, 140, 0.5);
+}
+function recoUpdate(dt, time) {
+  // Bewegung (auch ohne Angriff, als Kulisse)
+  const sp = R_.active ? 9 : 5, dx = R_.tx - R_.x, dz = R_.tz - R_.z, d = Math.hypot(dx, dz);
+  if (d < 2) recoTarget(); else { R_.x += dx / d * sp * dt; R_.z += dz / d * sp * dt; }
+  recoObj.position.set(R_.x, (R_.active ? 27 : 36) + Math.sin(time * 1.3) * 0.8, R_.z);
+  recoObj.rotation.y = Math.atan2(dx, dz) + Math.PI / 2;
+  recoObj.userData.cone.material.opacity = R_.warn ? 0.18 + Math.sin(time * 30) * 0.06 : (R_.active ? 0.07 : 0.03);
+  if (!R_.active || G.state !== 'play') return;
+  if (R_.warn) {
+    R_.warn.t -= dt;
+    const on = Math.sin(time * 26) > 0; R_.warn.meshes.forEach(m => m.visible = on);
+    if (R_.warn.t <= 0) {
+      const w = R_.warn, ok = w.cells.filter(c => free(c.x, c.y));
+      w.meshes.forEach(m => scene.remove(m)); R_.warn = null;
+      if (ok.length) {
+        for (const c of ok) occ[idx(c.x, c.y)] = RECO;
+        const meshes = runsOf(ok).map(r => stripMesh(r, w.horiz, RECOMAT, WH * 1.25, WT * 1.6));
+        R_.bars.push({ cells: ok, meshes, t: 7 }); noise(0.35, 0.22, 900);
+      }
+    }
+  } else if ((R_.t -= dt) <= 0) { R_.t = Math.max(3.2, 8 - G.level * 0.45); recoScan(); }
+  for (let i = R_.bars.length - 1; i >= 0; i--) {
+    const b = R_.bars[i]; b.t -= dt;
+    if (b.t < 0.6) b.meshes.forEach(m => m.scale.y = Math.max(0.001, WH * 1.25 * b.t / 0.6));
+    if (b.t <= 0) {
+      b.meshes.forEach(m => scene.remove(m));
+      for (const c of b.cells) if (occ[idx(c.x, c.y)] === RECO) occ[idx(c.x, c.y)] = 0;
+      R_.bars.splice(i, 1);
+      const me = G.bikes[0]; if (me && me.alive) { G.score += 150; pop('SPERRE ÜBERSTANDEN +150'); }
+    }
+  }
+}
+
 /* ---------- HUD ---------- */
 let msgT = 0, popT = 0, hintT = 0;
 function show(t, sub, d) { $('msg').innerHTML = t + (sub ? '<small>' + sub + '</small>' : ''); $('msg').classList.add('on'); msgT = d; }
@@ -620,8 +754,10 @@ function drawMini() {
     const o = occ[i], j = i * 4;
     if (!o) { d[j] = 4; d[j + 1] = 12; d[j + 2] = 20; d[j + 3] = 150; }
     else if (o === OBST) { d[j] = 70; d[j + 1] = 95; d[j + 2] = 170; d[j + 3] = 255; }
+    else if (o === RECO) { d[j] = 255; d[j + 1] = 42; d[j + 2] = 58; d[j + 3] = 255; }
     else { const c = MCOL[o - 1]; d[j] = c[0]; d[j + 1] = c[1]; d[j + 2] = c[2]; d[j + 3] = 255; }
   }
+  if (R_.warn && Math.sin(performance.now() / 40) > 0) for (const c of R_.warn.cells) { const j = idx(c.x, c.y) * 4; d[j] = 160; d[j + 1] = 20; d[j + 2] = 30; d[j + 3] = 255; }
   for (const b of G.bikes) if (b.alive) { const j = idx(b.x, b.y) * 4; d[j] = d[j + 1] = d[j + 2] = 255; }
   mini.putImageData(miniImg, 0, 0);
 }
@@ -800,6 +936,8 @@ function update(dt) {
     if (s) setSeg(s, wx(s.x0), wx(s.y0), p.x, p.z, WH);
   }
   updateFx(dt);
+  recoUpdate(dt, performance.now() / 1000);
+  if (window.__sky) window.__sky.uniforms.uT.value += dt;
   if (msgT > 0 && (msgT -= dt) <= 0) $('msg').classList.remove('on');
   if (popT > 0 && (popT -= dt) <= 0) $('pop').classList.remove('on');
   if (hintT > 0 && (hintT -= dt) <= 0) $('hint').classList.remove('on');
@@ -832,7 +970,7 @@ function loop(now) {
 requestAnimationFrame(loop);
 
 // Testschnittstelle
-window.__tron = { G, occ, N, start: startGame, update, step, flood, bikes: () => G.bikes };
+window.__tron = { G, occ, N, R_, start: startGame, update, step, flood, bikes: () => G.bikes };
 </script>
 </body>
 </html>
