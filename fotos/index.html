@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#0d1117">
+<title>Fotos</title>
+<style>
+:root{--bg:#f4f3ef;--card:#fff;--ink:#14171c;--mute:#6a6f79;--line:#e2e0da;--track:#ebe9e3;--acc:#1e3a8a;--acc-ink:#fff;--ok:#15803d;--bad:#c53030;--soft:#f8f7f4;--shade:rgba(0,0,0,.04)}
+@media (prefers-color-scheme:dark){:root{--bg:#0d1117;--card:#151a21;--ink:#eceef1;--mute:#8b919c;--line:#242a33;--track:#222831;--acc:#8aa4ff;--acc-ink:#0d1117;--ok:#3cc173;--bad:#ff6b6b;--soft:#11161c;--shade:rgba(255,255,255,.03)}}
+*{box-sizing:border-box}
+html,body{background:var(--bg)}
+body{margin:0;color:var(--ink);font:16px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Text","Inter",system-ui,sans-serif;-webkit-font-smoothing:antialiased;
+  padding:calc(env(safe-area-inset-top) + 22px) 16px calc(env(safe-area-inset-bottom) + 36px)}
+.wrap{max-width:1080px;margin:0 auto}
+.narrow{max-width:640px;margin:0 auto}
+.brand{font-size:13px;font-weight:650;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin-bottom:10px}
+.brand a{color:inherit;text-decoration:none}
+h1{font-size:28px;letter-spacing:-.025em;margin:0 0 4px;font-weight:720}
+.lead{color:var(--mute);margin:0 0 18px;font-size:15px}
+.tabs{display:inline-flex;background:var(--track);border-radius:12px;padding:3px;margin-bottom:16px}
+.tabs button{all:unset;cursor:pointer;padding:8px 16px;border-radius:9px;font-size:14.5px;font-weight:600;color:var(--mute)}
+.tabs button[aria-selected=true]{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:14px}
+label.f{display:block;font-size:13px;font-weight:600;color:var(--mute);margin-bottom:6px}
+input[type=text],input[type=password]{width:100%;font:inherit;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+input:focus{outline:2px solid var(--acc);outline-offset:1px}
+.drop{border:2px dashed var(--line);border-radius:16px;background:var(--soft);padding:28px 16px;text-align:center;transition:.15s}
+.drop.over{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 8%,var(--soft))}
+.drop b{display:block;font-size:17px;margin-bottom:4px}
+.drop span{color:var(--mute);font-size:14px}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.center{justify-content:center}
+.btn{font:inherit;font-weight:620;font-size:15px;border:0;border-radius:12px;padding:11px 18px;cursor:pointer;background:var(--acc);color:var(--acc-ink);text-decoration:none;display:inline-flex;align-items:center;gap:6px;margin:0}
+.btn.sec{background:transparent;color:var(--acc);border:1px solid var(--line)}
+.btn.small{font-size:13.5px;padding:7px 12px;border-radius:10px}
+.btn:disabled{opacity:.45;cursor:default}
+.bar{height:10px;border-radius:99px;background:var(--track);overflow:hidden;margin:12px 0 8px}
+.bar>i{display:block;height:100%;width:0;background:var(--acc);border-radius:99px;transition:width .4s}
+.bar.ok>i{background:var(--ok)}
+.big{font-size:22px;font-weight:700;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.sub{color:var(--mute);font-size:14px;font-variant-numeric:tabular-nums}
+ul.q{list-style:none;margin:10px 0 0;padding:0;max-height:320px;overflow:auto}
+ul.q li{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:14px}
+ul.q li:first-child{border-top:0}
+ul.q .n{overflow-wrap:anywhere;min-width:0}
+ul.q .s{color:var(--mute);white-space:nowrap;font-variant-numeric:tabular-nums}
+ul.q li.ok .s{color:var(--ok)} ul.q li.err .s{color:var(--bad)}
+.msg{border-radius:12px;padding:12px 14px;font-weight:600;margin-bottom:14px}
+.msg.bad{background:color-mix(in srgb,var(--bad) 14%,transparent);color:var(--bad)}
+.msg.ok{background:color-mix(in srgb,var(--ok) 14%,transparent);color:var(--ok)}
+.hide{display:none!important}
+.ghead{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:6px 0 10px}
+.who{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:22px 0 10px}
+.who h2{font-size:17px;margin:0}
+.grid{display:grid;gap:6px;grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}
+@media (min-width:700px){.grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}}
+.tile{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--track);cursor:pointer;border:0;padding:0}
+.tile img{position:relative;z-index:1;width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .3s}
+.tile img.on{opacity:1}
+.tile .ph{position:absolute;inset:0;display:grid;place-items:center;color:var(--mute);font-size:12px;font-weight:700;letter-spacing:.05em}
+.tile .badge{position:absolute;z-index:2;left:6px;bottom:6px;font-size:11px;font-weight:700;padding:2px 6px;border-radius:6px;background:rgba(0,0,0,.55);color:#fff}
+.lb{position:fixed;inset:0;background:rgba(5,7,10,.94);z-index:9;display:flex;flex-direction:column}
+.lb .top{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top) + 10px) 14px 10px;color:#e8eaee}
+.lb .top .t{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lb .stage{flex:1;display:grid;place-items:center;min-height:0;position:relative}
+.lb .stage img,.lb .stage video{max-width:100%;max-height:100%;object-fit:contain}
+.lb .nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.12);color:#fff;border:0;border-radius:99px;width:44px;height:44px;font-size:22px;cursor:pointer}
+.lb .prev{left:12px} .lb .next{right:12px}
+.lb .x{background:transparent;border:0;color:#fff;font-size:26px;cursor:pointer;line-height:1}
+.lb .btn{background:#fff;color:#111}
+.lb .other{color:#c9cdd4;text-align:center}
+footer{color:var(--mute);font-size:12.5px;text-align:center;margin-top:20px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="narrow" id="top">
+    <div class="brand" id="brand">Fotos</div>
+    <h1 id="title">Fotos</h1>
+    <p class="lead" id="lead"></p>
+    <div id="msg"></div>
+    <div class="tabs hide" id="tabs" role="tablist">
+      <button role="tab" aria-selected="true" data-tab="up">Hochladen</button>
+      <button role="tab" aria-selected="false" data-tab="al">Album ansehen</button>
+    </div>
+  </div>
+
+  <!-- Code eingeben (wenn ohne Link aufgerufen) -->
+  <div class="narrow hide" id="nocode">
+    <section class="card">
+      <label class="f" for="code">Link oder Code</label>
+      <input type="text" id="code" placeholder="Link einfügen" autocomplete="off">
+      <div class="btns"><button class="btn" id="codeGo">Öffnen</button></div>
+    </section>
+  </div>
+
+  <!-- Hochladen -->
+  <div class="narrow hide" id="up">
+    <section class="card">
+      <label class="f" for="who">Dein Name</label>
+      <input type="text" id="who" placeholder="z. B. Kevin" maxlength="60" autocomplete="given-name">
+    </section>
+    <section class="card">
+      <div class="drop" id="drop">
+        <b>Ordner oder Dateien hierher ziehen</b>
+        <span>oder auswählen – Originalqualität, Ordnerstruktur bleibt erhalten</span>
+        <div class="btns center">
+          <label class="btn">Dateien wählen<input type="file" id="fFiles" multiple hidden></label>
+          <label class="btn sec" id="dirBtn">Ordner wählen<input type="file" id="fDir" webkitdirectory multiple hidden></label>
+        </div>
+      </div>
+    </section>
+    <section class="card hide" id="prog">
+      <div class="big" id="pTitle">Bereit</div>
+      <div class="bar" id="pBar"><i></i></div>
+      <div class="sub" id="pSub"></div>
+      <div class="btns"><button class="btn" id="go">Hochladen starten</button><button class="btn sec" id="more">Weitere hinzufügen</button></div>
+      <ul class="q" id="list"></ul>
+    </section>
+    <footer>Seite während des Uploads offen lassen. Abgebrochen? Dieselben Dateien nochmal wählen – Fertiges wird übersprungen.</footer>
+  </div>
+
+  <!-- Album -->
+  <div class="hide" id="al">
+    <div class="narrow" id="login">
+      <section class="card">
+        <label class="f" for="pw">Passwort für das Album</label>
+        <input type="password" id="pw" autocomplete="current-password">
+        <div class="btns"><button class="btn" id="pwGo">Öffnen</button></div>
+      </section>
+    </div>
+    <div class="hide" id="gallery">
+      <div class="ghead"><div class="sub" id="gInfo"></div><div class="btns" style="margin:0"><a class="btn small" id="zipAll">Alle als ZIP</a><button class="btn small sec" id="logout">Abmelden</button></div></div>
+      <div id="gBody"></div>
+    </div>
+  </div>
+</div>
+
+<div class="lb hide" id="lb" role="dialog" aria-modal="true">
+  <div class="top"><span class="t" id="lbT"></span><span style="display:flex;gap:8px;align-items:center"><a class="btn small" id="lbDl">Herunterladen</a><button class="x" id="lbX" aria-label="Schließen">×</button></span></div>
+  <div class="stage" id="lbS"></div>
+  <button class="nav prev" id="lbP" aria-label="Zurück">‹</button><button class="nav next" id="lbN" aria-label="Weiter">›</button>
+</div>
+
+<script>
+// ── Grundlagen ──────────────────────────────────────────────
+const PI = 'https://pi.tail248ab.ts.net:10000';
+const onPi = /\.ts\.net$/.test(location.hostname) || /^(localhost|127\.)/.test(location.hostname);
+const API_ORIGIN = onPi ? location.origin : PI;
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const f1 = new Intl.NumberFormat('de-DE',{minimumFractionDigits:1,maximumFractionDigits:1});
+const f0 = new Intl.NumberFormat('de-DE',{maximumFractionDigits:0});
+const size = b => b >= 1e9 ? f1.format(b/1e9)+' GB' : b >= 1e6 ? f0.format(b/1e6)+' MB' : f0.format(Math.max(1,b/1e3))+' KB';
+const dur = s => { s = Math.round(s); if (!isFinite(s)) return ''; const h = Math.floor(s/3600), m = Math.round((s%3600)/60); return h ? `${h} Std ${m} Min` : m ? `${m} Min` : 'unter 1 Min'; };
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const store = (k, v) => { try { v === undefined ? null : v === null ? sessionStorage.removeItem(k) : sessionStorage.setItem(k, v); return sessionStorage.getItem(k); } catch(e) { return null; } };
+const keep = (k, v) => { try { if (v !== undefined) localStorage.setItem(k, v); return localStorage.getItem(k); } catch(e) { return null; } };
+function msg(text, cls='bad'){ $('#msg').innerHTML = text ? `<div class="msg ${cls}">${esc(text)}</div>` : ''; }
+
+function readToken(){
+  const h = location.hash.replace(/^#/, '');
+  if (/^[A-Za-z0-9_-]{20,64}$/.test(h)) return h;
+  const p = location.pathname.split('/').filter(Boolean);
+  if (p[0] === 'u' && /^[A-Za-z0-9_-]{20,64}$/.test(p[1] || '')) return p[1];
+  return '';
+}
+let token = readToken();
+const API = () => API_ORIGIN + '/u/' + token;
+let info = null, session = null;
+
+async function api(path, opt={}){
+  const r = await fetch(API() + path, opt);
+  const j = await r.json().catch(()=>({}));
+  if (!r.ok) { const e = new Error(j.error || 'Fehler'); e.status = r.status; throw e; }
+  return j;
+}
+const post = (path, body) => api(path, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
+
+// ── Start ───────────────────────────────────────────────────
+async function init(){
+  if (!onPi) $('#brand').innerHTML = '<a href="/">joshuaforster.de</a>';
+  if (/iPhone|iPad|Android/i.test(navigator.userAgent)) $('#dirBtn').classList.add('hide');
+  $('#who').value = keep('ft-who') || '';
+  if (!token) { $('#title').textContent = 'Fotos'; $('#lead').textContent = 'Öffne den Link, den du bekommen hast – oder füge ihn hier ein.'; $('#nocode').classList.remove('hide'); return; }
+  try {
+    info = await api('/info');
+  } catch(e) {
+    $('#title').textContent = 'Link abgelaufen';
+    $('#lead').textContent = 'Dieser Link ist abgelaufen oder ungültig. Frag Josh nach einem neuen.';
+    return;
+  }
+  $('#title').textContent = info.name;
+  const exp = info.expires ? ' Link gültig bis ' + new Date(info.expires*1000).toLocaleDateString('de-DE',{day:'numeric',month:'long'}) + '.' : '';
+  $('#lead').textContent = `Lade deine Fotos und Videos direkt zu Josh hoch – noch ${size(info.left)} Platz.${exp}`;
+  if (info.album) $('#tabs').classList.remove('hide');
+  session = store('ft-s-' + token);
+  show(location.search.includes('album') && info.album ? 'al' : 'up');
+}
+function show(tab){
+  document.querySelectorAll('#tabs button').forEach(b => b.setAttribute('aria-selected', b.dataset.tab === tab));
+  $('#up').classList.toggle('hide', tab !== 'up'); $('#al').classList.toggle('hide', tab !== 'al');
+  $('#top').classList.toggle('narrow', true);
+  if (tab === 'al') session ? loadAlbum() : ($('#login').classList.remove('hide'), $('#gallery').classList.add('hide'), setTimeout(()=>$('#pw').focus(), 50));
+}
+$('#tabs').addEventListener('click', e => { const b = e.target.closest('button'); if (b) { msg(''); show(b.dataset.tab); } });
+$('#codeGo').addEventListener('click', () => {
+  const v = $('#code').value.trim(); const m = v.match(/([A-Za-z0-9_-]{20,64})\s*$/);
+  if (m) { location.hash = m[1]; location.reload(); } else msg('Das sieht nicht wie ein gültiger Link aus.');
+});
+
+// ── Hochladen ───────────────────────────────────────────────
+const CHUNK = 8 * 1024 * 1024, PARALLEL = 2;
+let queue = [], running = false, wake = null, t0 = 0, sent0 = 0, sentBytes = 0, fatal = null;
+const skipName = n => /^\.|^(Thumbs\.db|desktop\.ini)$/i.test(n);
+
+function add(files){
+  for (const {file, path} of files) {
+    if (skipName(file.name)) continue;
+    if (queue.some(q => q.path === path && q.file.size === file.size)) continue;
+    queue.push({file, path, done:0, state:'wartet'});
+  }
+  if (queue.length) { $('#prog').classList.remove('hide'); render(); }
+}
+function render(){
+  const total = queue.reduce((a,q)=>a+q.file.size,0), done = queue.reduce((a,q)=>a+q.done,0);
+  const ok = queue.filter(q=>q.state==='fertig').length, err = queue.filter(q=>q.state==='Fehler').length;
+  const p = total ? done/total*100 : 0;
+  $('#pBar i').style.width = p + '%';
+  $('#pBar').classList.toggle('ok', ok === queue.length && queue.length > 0);
+  if (running) {
+    const el = (performance.now()-t0)/1000, rate = el > 2 ? (sentBytes-sent0)/el : 0;
+    $('#pTitle').textContent = `Lädt hoch … ${f0.format(p)} %`;
+    $('#pSub').textContent = `${size(done)} von ${size(total)} · ${ok} von ${queue.length} Dateien` + (rate ? ` · ${f1.format(rate/1e6)} MB/s · noch ca. ${dur((total-done)/rate)}` : '');
+  } else if (queue.length && ok === queue.length) {
+    $('#pTitle').textContent = '✓ Alles angekommen'; $('#pSub').textContent = `${queue.length} Dateien · ${size(total)} – danke!`;
+  } else {
+    $('#pTitle').textContent = `${queue.length} Dateien ausgewählt`; $('#pSub').textContent = size(total) + (err ? ` · ${err} fehlgeschlagen` : '');
+  }
+  $('#go').disabled = running || ok === queue.length;
+  $('#go').textContent = err ? 'Erneut versuchen' : 'Hochladen starten';
+  $('#more').disabled = running;
+  $('#list').innerHTML = queue.slice(0,400).map(q => {
+    const s = q.state === 'lädt' ? f0.format(q.done/Math.max(1,q.file.size)*100)+' %' : q.state === 'fertig' ? '✓' : q.state;
+    return `<li class="${q.state==='fertig'?'ok':q.state==='Fehler'?'err':''}"><span class="n">${esc(q.path)}</span><span class="s">${size(q.file.size)} · ${s}</span></li>`;
+  }).join('') + (queue.length > 400 ? `<li><span class="n sub">… und ${queue.length-400} weitere</span></li>` : '');
+}
+async function uploadOne(q, who){
+  q.state = 'lädt'; let tries = 0;
+  while (true) {
+    try {
+      const st = await post('/offset', {path:q.path, size:q.file.size, who});
+      if (st.path) q.serverPath = st.path;
+      let off = st.offset; sentBytes += off - q.done; q.done = off;
+      if (st.done) { q.state = 'fertig'; return; }
+      while (true) {
+        const end = Math.min(off + CHUNK, q.file.size);
+        const url = `${API()}/chunk?path=${encodeURIComponent(q.serverPath||q.path)}&who=${encodeURIComponent(who)}&offset=${off}&size=${q.file.size}`;
+        const r = await fetch(url, {method:'PUT', body:q.file.slice(off, end)});
+        const j = await r.json().catch(()=>({}));
+        if (r.status === 409) { sentBytes += j.offset - q.done; off = q.done = j.offset; continue; }
+        if (!r.ok) { const e = new Error(j.error || 'Fehler'); e.status = r.status; throw e; }
+        sentBytes += j.offset - q.done; off = q.done = j.offset; tries = 0; render();
+        if (j.done) { q.state = 'fertig'; return; }
+      }
+    } catch (e) {
+      if ([404,413,507].includes(e.status)) { fatal = e.message; q.state = 'Fehler'; return; }
+      if (++tries > 8) { q.state = 'Fehler'; return; }
+      q.state = 'wartet auf Netz'; render(); await sleep(Math.min(30000, 1500 * 2 ** tries)); q.state = 'lädt';
+    }
+  }
+}
+async function start(){
+  const who = $('#who').value.trim();
+  if (!who) { $('#who').focus(); msg('Bitte gib kurz deinen Namen ein.'); return; }
+  keep('ft-who', who); msg(''); fatal = null;
+  running = true; t0 = performance.now(); sent0 = sentBytes; render();
+  try { wake = await navigator.wakeLock?.request('screen'); } catch(e) {}
+  const todo = queue.filter(q => q.state !== 'fertig'); todo.forEach(q => { if (q.state === 'Fehler') q.state = 'wartet'; });
+  const ticker = setInterval(render, 1000);
+  await Promise.all(Array.from({length:PARALLEL}, async () => {
+    while (!fatal) { const q = todo.find(x => x.state === 'wartet'); if (!q) break; await uploadOne(q, who); render(); }
+  }));
+  clearInterval(ticker); running = false; try { wake?.release(); } catch(e) {}
+  const ok = queue.filter(q=>q.state==='fertig');
+  if (fatal) msg(fatal + ' – frag Josh.');
+  else if (ok.length === queue.length) { msg('Fertig! Alles ist sicher bei Josh angekommen.', 'ok'); post('/fertig', {who, files: ok.length, bytes: ok.reduce((a,q)=>a+q.file.size,0)}).catch(()=>{}); }
+  else msg('Einige Dateien sind fehlgeschlagen. „Erneut versuchen“ tippen – es geht dort weiter, wo es aufgehört hat.');
+  render();
+}
+async function readEntry(entry, prefix=''){
+  if (entry.isFile) return [await new Promise(res => entry.file(f => res({file:f, path:prefix + f.name}), () => res(null)))].filter(Boolean);
+  if (!entry.isDirectory) return [];
+  const reader = entry.createReader(); let all = [], batch;
+  do { batch = await new Promise(res => reader.readEntries(res, () => res([]))); all = all.concat(batch); } while (batch.length);
+  const out = []; for (const e of all) out.push(...await readEntry(e, prefix + entry.name + '/')); return out;
+}
+const drop = $('#drop');
+['dragenter','dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
+['dragleave','drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
+drop.addEventListener('drop', async e => {
+  if (running) return;
+  const items = [...(e.dataTransfer.items || [])].map(i => i.webkitGetAsEntry?.()).filter(Boolean);
+  if (items.length) { const files = []; for (const it of items) files.push(...await readEntry(it)); add(files); }
+  else add([...e.dataTransfer.files].map(f => ({file:f, path:f.name})));
+});
+$('#fFiles').addEventListener('change', e => { add([...e.target.files].map(f => ({file:f, path:f.name}))); e.target.value=''; });
+$('#fDir').addEventListener('change', e => { add([...e.target.files].map(f => ({file:f, path:f.webkitRelativePath || f.name}))); e.target.value=''; });
+$('#go').addEventListener('click', start);
+$('#more').addEventListener('click', () => $('#fFiles').click());
+window.addEventListener('beforeunload', e => { if (running) { e.preventDefault(); e.returnValue = ''; } });
+
+// ── Album ───────────────────────────────────────────────────
+let items = [];
+const fileUrl = (act, it, extra='') => `${API()}/${act}?s=${encodeURIComponent(session)}&p=${encodeURIComponent(it.p)}${extra}`;
+$('#pwGo').addEventListener('click', login);
+$('#pw').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+async function login(){
+  try {
+    const j = await post('/login', {password: $('#pw').value});
+    session = j.session; store('ft-s-' + token, session); $('#pw').value = ''; msg(''); loadAlbum();
+  } catch(e) { msg(e.message); }
+}
+$('#logout').addEventListener('click', () => { session = null; store('ft-s-' + token, null); show('al'); });
+async function loadAlbum(){
+  try {
+    const j = await api(`/list?s=${encodeURIComponent(session)}`);
+    items = j.items;
+    $('#login').classList.add('hide'); $('#gallery').classList.remove('hide');
+    $('#top').classList.remove('narrow');
+    $('#gInfo').textContent = `${f0.format(items.length)} Dateien · ${size(j.bytes)}`;
+    $('#zipAll').href = `${API()}/zip?s=${encodeURIComponent(session)}`;
+    $('#zipAll').classList.toggle('hide', !items.length);
+    const groups = {}; items.forEach((it, i) => (groups[it.who] ||= []).push(i));
+    $('#gBody').innerHTML = items.length ? Object.entries(groups).map(([who, idx]) => `
+      <div class="who"><h2>${esc(who)} <span class="sub">· ${idx.length} Dateien</span></h2>
+        <a class="btn small sec" href="${API()}/zip?s=${encodeURIComponent(session)}&who=${encodeURIComponent(who)}">ZIP</a></div>
+      <div class="grid">${idx.map(i => tile(items[i], i)).join('')}</div>`).join('') : '<p class="sub">Noch nichts hochgeladen.</p>';
+    observe();
+  } catch(e) {
+    if (e.status === 401) { session = null; store('ft-s-' + token, null); show('al'); msg('Sitzung abgelaufen – bitte Passwort nochmal eingeben.'); }
+    else msg(e.message);
+  }
+}
+function tile(it, i){
+  const ext = (it.n.split('.').pop() || '').toUpperCase();
+  const badge = it.k === 'video' ? '▶ Video' : it.k === 'raw' ? ext : '';
+  return `<button class="tile" data-i="${i}" aria-label="${esc(it.n)}"><span class="ph">${esc(ext)}</span>
+    ${it.k === 'bild' || it.k === 'raw' ? `<img data-src="${fileUrl('thumb', it)}" alt="">` : ''}${badge ? `<span class="badge">${esc(badge)}</span>` : ''}</button>`;
+}
+function observe(){
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return; const img = e.target; io.unobserve(img);
+    img.onload = () => img.classList.add('on'); img.onerror = () => img.remove(); img.src = img.dataset.src;
+  }), {rootMargin:'400px'});
+  document.querySelectorAll('.tile img[data-src]').forEach(i => io.observe(i));
+}
+$('#gBody').addEventListener('click', e => { const t = e.target.closest('.tile'); if (t) openLb(+t.dataset.i); });
+
+// Lightbox
+let cur = -1;
+function openLb(i){
+  cur = (i + items.length) % items.length; const it = items[cur];
+  $('#lbT').textContent = `${it.who} · ${it.n} · ${size(it.s)}`;
+  $('#lbDl').href = fileUrl('file', it, '&dl=1');
+  const s = $('#lbS');
+  if (it.k === 'video') s.innerHTML = `<video src="${fileUrl('file', it)}" controls playsinline preload="metadata"></video>`;
+  else if (it.k === 'bild' || it.k === 'raw') s.innerHTML = `<img src="${fileUrl('preview', it)}" alt="">`;
+  else s.innerHTML = `<div class="other"><div style="font-size:40px">📄</div>${esc(it.n)}<br>${size(it.s)}</div>`;
+  const img = s.querySelector('img'); if (img) img.onerror = () => { s.innerHTML = `<div class="other">Keine Vorschau möglich – einfach herunterladen.<br>${esc(it.n)}</div>`; };
+  $('#lb').classList.remove('hide'); document.body.style.overflow = 'hidden';
+}
+function closeLb(){ $('#lb').classList.add('hide'); $('#lbS').innerHTML = ''; document.body.style.overflow = ''; }
+$('#lbX').addEventListener('click', closeLb);
+$('#lbP').addEventListener('click', () => openLb(cur - 1));
+$('#lbN').addEventListener('click', () => openLb(cur + 1));
+document.addEventListener('keydown', e => { if ($('#lb').classList.contains('hide')) return;
+  if (e.key === 'Escape') closeLb(); if (e.key === 'ArrowLeft') openLb(cur - 1); if (e.key === 'ArrowRight') openLb(cur + 1); });
+let tx = null; $('#lbS').addEventListener('touchstart', e => tx = e.touches[0].clientX, {passive:true});
+$('#lbS').addEventListener('touchend', e => { if (tx === null) return; const d = e.changedTouches[0].clientX - tx; if (Math.abs(d) > 50) openLb(cur + (d < 0 ? 1 : -1)); tx = null; });
+
+window.addEventListener('hashchange', () => location.reload());
+init();
+</script>
+</body>
+</html>

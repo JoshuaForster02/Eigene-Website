@@ -16,6 +16,7 @@ Persönliche Website von Joshua Forster. Statisch, ohne Build, über GitHub Page
 | `spiele/` | Easter Egg (7× aufs Logo klicken): Flynn's Arcade, Spielhalle mit Weltbestenliste. `shared/automat.js` ist der gemeinsame Automaten-Rahmen, `shared/pad.js` übersetzt Gamepads in Tastendrücke |
 | `encom/` | ENCOM OS |
 | `study/` | Weiterleitung zu Study OS / Hybrid OS (Login) |
+| `fotos/` | Versteckt (nicht verlinkt, noindex): Foto-Upload und passwortgeschütztes Album. Nur Oberfläche – Dateien liegen auf dem Raspberry Pi (Foto-Tresor, über Tailscale Funnel). Aufruf `joshuaforster.de/fotos/#<Link-Code>` |
 
 ## Hinweise
 
