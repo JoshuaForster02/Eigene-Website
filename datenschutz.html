@@ -3,71 +3,56 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>try{var t=localStorage.getItem('jf-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <title>Datenschutz · Joshua Forster</title>
-<meta name="description" content="Datenschutzhinweise und Kontakt für joshuaforster.de.">
+<meta name="description" content="Datenschutzhinweise für joshuaforster.de.">
 <meta name="robots" content="noindex">
+<meta name="theme-color" content="#FAF9F6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121419" media="(prefers-color-scheme: dark)">
 <link rel="canonical" href="https://joshuaforster.de/datenschutz.html">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<meta name="theme-color" content="#070D1A">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;1,400&family=Karla:wght@400;500&family=DM+Mono:wght@400&display=swap">
-<style>
-:root{color-scheme:dark;--bg:#070D1A;--bg2:#0C1526;--fg:#EAF0F8;--fg2:#C5D0E2;--fg3:#8B98AE;--fg4:#75829A;--crim:#8FB1FF;--line:rgba(234,240,248,.12)}
-:root[data-theme="light"]{color-scheme:light;--bg:#F5F7FB;--bg2:#E9EEF6;--fg:#0A1428;--fg2:#22304A;--fg3:#56647C;--fg4:#6E7A90;--crim:#1C3D7A;--line:rgba(10,20,40,.14)}
-*{box-sizing:border-box}
-body{margin:0;background:radial-gradient(ellipse at 15% 0%,color-mix(in srgb,var(--crim) 14%,transparent),transparent 55%) fixed,var(--bg);color:var(--fg);font-family:Karla,system-ui,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.7}
-a{color:var(--crim)}
-nav{display:flex;justify-content:space-between;align-items:center;max-width:860px;margin:0 auto;padding:26px clamp(16px,5vw,40px)}
-nav .logo{font-family:"Cormorant Garamond",serif;font-size:22px;text-decoration:none;color:var(--fg)}
-nav .logo i{color:var(--crim)}
-nav .back{font-family:"DM Mono",monospace;font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--fg3);text-decoration:none}
-nav .back:hover{color:var(--crim)}
-main{max-width:860px;margin:0 auto;padding:40px clamp(16px,5vw,40px) 80px}
-.label{font-family:"DM Mono",monospace;font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--crim)}
-h1{font-family:"Cormorant Garamond",serif;font-weight:400;font-size:clamp(48px,9vw,88px);line-height:1;margin:14px 0 26px}
-h1 i{color:var(--crim)}
-.lead{font-size:18px;color:var(--fg2);max-width:60ch}
-section{border-top:1px solid var(--line);padding:30px 0 6px;margin-top:30px;display:grid;grid-template-columns:200px minmax(0,1fr);gap:20px}
-h2{font-family:"Cormorant Garamond",serif;font-weight:400;font-size:26px;line-height:1.2;margin:0}
-section p{margin:0 0 14px;color:var(--fg2)}
-small{color:var(--fg4)}
-footer{max-width:860px;margin:0 auto;padding:30px clamp(16px,5vw,40px) 50px;border-top:1px solid var(--line);display:flex;justify-content:space-between;font-size:13px;color:var(--fg4)}
-footer a{color:var(--fg3)}
-@media (max-width:640px){section{grid-template-columns:1fr;gap:8px}}
-</style>
-<script>try{if(localStorage.getItem('jf-theme')==='light')document.documentElement.setAttribute('data-theme','light')}catch(e){}</script>
+<link rel="stylesheet" href="/site.css">
 </head>
 <body>
-<nav><a class="logo" href="/">Joshua <i>Forster</i></a><a class="back" href="/">← Startseite</a></nav>
-<main>
-  <div class="label">Rechtliches</div>
-  <h1>Daten<i>schutz</i></h1>
-  <p class="lead">Dies ist eine private Website ohne Werbung, ohne Tracking und ohne Cookies. Hier steht, welche Daten trotzdem anfallen und wohin sie gehen.</p>
+<a class="skip" href="#main">Zum Inhalt springen</a>
+<header class="hd" id="hd"><div class="hd-in">
+  <a class="brand" href="/">Joshua Forster</a>
+  <nav class="nav" aria-label="Hauptnavigation"><a class="nl" href="/">Startseite</a>
+    <span class="ctl"><button type="button" id="tgl" aria-label="Hell oder dunkel"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.4 1.4M17.6 17.6 19 19M5 19l1.4-1.4M17.6 6.4 19 5"/></svg></button></span></nav>
+</div></header>
 
-  <section><h2>Verantwortlich</h2><div>
-    <p>Joshua Forster<br>E-Mail: <a id="m1" data-u="joshuaforster02" data-d="gmail.com" href="/#kontakt">joshuaforster02 [at] gmail.com</a></p></div></section>
+<main id="main">
+  <div class="page">
+    <p class="crumb"><a href="/">Startseite</a> / Rechtliches</p>
+    <h1>Datenschutz</h1>
+    <p class="lead">Dies ist eine private Website ohne Werbung, ohne Tracking und ohne Cookies. Hier steht, welche Daten trotzdem anfallen und wohin sie gehen.</p>
+  </div>
 
-  <section><h2>Hosting</h2><div>
-    <p>Die Website liegt bei GitHub Pages (GitHub Inc., USA). Beim Aufruf verarbeitet GitHub technisch notwendige Daten wie IP-Adresse, Zeitpunkt und aufgerufene Seite, um die Seite auszuliefern und vor Missbrauch zu schützen. Ich selbst habe darauf keinen Zugriff.</p></div></section>
+  <section class="sec"><h2>Verantwortlich</h2><div class="body">
+    <p>Joshua Forster<br>E-Mail: <a data-u="joshuaforster02" data-d="gmail.com" href="/#kontakt">joshuaforster02 [at] gmail.com</a></p></div></section>
 
-  <section><h2>Schriften</h2><div>
-    <p>Die Schriften werden von Google Fonts geladen. Dabei wird deine IP-Adresse an Google übertragen. Rechtsgrundlage ist mein berechtigtes Interesse an einer einheitlichen Darstellung (Art. 6 Abs. 1 lit. f DSGVO).</p></div></section>
+  <section class="sec"><h2>Hosting</h2><div class="body">
+    <p>Die Website liegt bei GitHub Pages (GitHub Inc., USA). Beim Aufruf verarbeitet GitHub technisch notwendige Daten wie IP-Adresse, Zeitpunkt und aufgerufene Seite, um die Seite auszuliefern und vor Missbrauch zu schützen. Ich selbst habe darauf keinen Zugriff. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO.</p></div></section>
 
-  <section><h2>Kontaktformular</h2><div>
-    <p>Nachrichten über das Formular laufen über Formspree (Formspree Inc., USA). Gespeichert werden Name, E-Mail-Adresse und Nachricht, ausschließlich um dir zu antworten. Wenn du den Lebenslauf anforderst, schicke ich ihn an die angegebene Adresse.</p></div></section>
+  <section class="sec"><h2>Schriften</h2><div class="body">
+    <p>Die Schriften der Website liegen auf demselben Server und werden nicht von Dritten nachgeladen. Einige nicht verlinkte Unterseiten (Spiele, ENCOM OS, Visite, Notizen) laden Schriften von Google Fonts; dabei wird Ihre IP-Adresse an Google übertragen (Art. 6 Abs. 1 lit. f DSGVO).</p></div></section>
 
-  <section><h2>Spiele</h2><div>
-    <p>In den Spielen kannst du freiwillig einen Namen für die Weltbestenliste eintragen. Gespeichert werden nur dieser Name, die Punktzahl und der Zeitpunkt. Zum Schutz vor Spam wird deine IP-Adresse für höchstens zehn Minuten gezählt und danach verworfen. Der Server läuft bei Vercel, die Daten liegen bei Upstash.</p>
-    <p>Spielstände, Design-Einstellung und Sprache speichert dein Browser lokal (localStorage). Diese Daten verlassen dein Gerät nicht.</p></div></section>
+  <section class="sec"><h2>Kontaktformular</h2><div class="body">
+    <p>Nachrichten über das Formular laufen über Formspree (Formspree Inc., USA). Gespeichert werden Name, E-Mail-Adresse und Nachricht, ausschließlich um Ihnen zu antworten. Wenn Sie den Lebenslauf anfordern, schicke ich ihn an die angegebene Adresse. Rechtsgrundlage ist Ihre Einwilligung (Art. 6 Abs. 1 lit. a DSGVO).</p></div></section>
 
-  <section><h2>Externe Links</h2><div>
-    <p>Links zu Instagram, Strava und anderen Seiten führen zu Angeboten Dritter. Dort gelten deren Datenschutzbestimmungen. Die Laufwerte auf der Startseite werden einmal täglich als Summen abgerufen. Dein Besuch wird dabei nicht an Strava übermittelt.</p></div></section>
+  <section class="sec"><h2>Spiele</h2><div class="body">
+    <p>In den Spielen kann freiwillig ein Name für die Bestenliste eingetragen werden. Gespeichert werden nur dieser Name, die Punktzahl und der Zeitpunkt. Zum Schutz vor Spam wird die IP-Adresse für höchstens zehn Minuten gezählt und danach verworfen. Der Server läuft bei Vercel, die Daten liegen bei Upstash.</p>
+    <p>Spielstände, Design-Einstellung und Sprache speichert Ihr Browser lokal (localStorage). Diese Daten verlassen Ihr Gerät nicht.</p></div></section>
 
-  <section><h2>Deine Rechte</h2><div>
-    <p>Du kannst Auskunft, Berichtigung und Löschung deiner Daten verlangen und dich bei einer Datenschutz-Aufsichtsbehörde beschweren. Eine kurze E-Mail genügt, auch wenn ein Eintrag aus der Bestenliste entfernt werden soll.</p>
-    <p><small>Stand: Oktober 2026</small></p></div></section>
+  <section class="sec"><h2>Externe Links</h2><div class="body">
+    <p>Links zu Strava, Instagram und anderen Seiten führen zu Angeboten Dritter, dort gelten deren Datenschutzbestimmungen. Die Laufwerte auf der Startseite werden einmal täglich als Summen abgerufen; Ihr Besuch wird dabei nicht an Strava übermittelt.</p></div></section>
+
+  <section class="sec"><h2>Ihre Rechte</h2><div class="body">
+    <p>Sie können Auskunft, Berichtigung und Löschung Ihrer Daten verlangen und sich bei einer Datenschutz-Aufsichtsbehörde beschweren. Eine kurze E-Mail genügt, auch wenn ein Eintrag aus einer Bestenliste entfernt werden soll.</p>
+    <p class="fine">Stand: Oktober 2026</p></div></section>
 </main>
-<footer><span>© 2026 Joshua Forster</span><a href="/">Startseite</a></footer>
-<script>(()=>{const m=document.getElementById('m1');if(m){const a=m.dataset.u+'@'+m.dataset.d;m.textContent=a;m.href='mailto:'+a}})();</script>
+
+<footer class="ft"><div class="ft-in"><span>© 2026 Joshua Forster</span><nav aria-label="Fußzeile"><a href="/">Startseite</a><a href="fechten.html">Fechten</a></nav></div></footer>
+<script src="/site.js" defer></script>
 </body>
 </html>
