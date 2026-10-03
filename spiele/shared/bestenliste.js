@@ -3,7 +3,23 @@
              Bestenliste.mount(element, { game: 'arena' })            // nur anzeigen
    Backend:  hybrid-os (Vercel + Upstash), Endpunkte /api/games/scores */
 (function () {
-  var API = window.BESTENLISTE_API || 'https://hybrid-os-blush.vercel.app/api/games';
+  // Eigene Adresse zuerst (in Netzen, die vercel.app sperren); fällt sie aus oder ist sie noch nicht eingerichtet, die Vercel-Adresse
+  var APIS = window.BESTENLISTE_API ? [window.BESTENLISTE_API] : ['https://api.joshuaforster.de/api/games', 'https://hybrid-os-blush.vercel.app/api/games'];
+  var API = APIS[APIS.length - 1], picked = null;
+  try { var c = sessionStorage.getItem('bl.api'); if (c && APIS.indexOf(c) >= 0) { API = c; picked = Promise.resolve(c); } } catch (e) {}
+  function pick() {
+    if (picked) return picked;
+    picked = new Promise(function (done) {
+      var i = 0;
+      (function next() {
+        if (i >= APIS.length - 1) return done(APIS[APIS.length - 1]);
+        var u = APIS[i++], ctl = window.AbortController ? new AbortController() : null, t = setTimeout(function () { if (ctl) ctl.abort(); }, 2500);
+        fetch(u + '/scores?game=tron&limit=1', { cache: 'no-store', signal: ctl ? ctl.signal : undefined })
+          .then(function (r) { clearTimeout(t); if (r.ok) done(u); else next(); }, function () { clearTimeout(t); next(); });
+      })();
+    }).then(function (u) { API = u; try { sessionStorage.setItem('bl.api', u); } catch (e) {} return u; });
+    return picked;
+  }
   var NAME_KEY = 'spiele.name';
 
   var css = '' +
@@ -46,7 +62,7 @@
   }
 
   function load(game, limit, retry) {
-    return fetch(API + '/scores?game=' + encodeURIComponent(game) + '&limit=' + (limit || 10), { cache: 'no-store' })
+    return pick().then(function (api) { return fetch(api + '/scores?game=' + encodeURIComponent(game) + '&limit=' + (limit || 10), { cache: 'no-store' }); })
       .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
       .catch(function (err) {
         // Kaltstart oder Netzaussetzer: einmal nach 1,5 s neu versuchen
@@ -56,7 +72,7 @@
   }
   function submit(game, name, score, meta, retry) {
     var body = JSON.stringify({ game: game, name: name, score: score, meta: meta || {} });
-    return fetch(API + '/scores', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: body })
+    return pick().then(function (api) { return fetch(api + '/scores', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: body }); })
       .then(function (r) { return r.json().then(function (j) { if (!r.ok) { var e = new Error(j.error || 'Fehler'); e.status = r.status; throw e; } return j; }); })
       .catch(function (err) {
         // Server kurz weg (Kaltstart, Netz) → einmal nach 1,5 s neu versuchen
@@ -144,5 +160,5 @@
     return { refresh: refresh };
   }
 
-  window.Bestenliste = { mount: mount, load: load, submit: submit, chase: chase, api: API };
+  window.Bestenliste = { mount: mount, load: load, submit: submit, chase: chase, pick: pick, get api() { return API; } };
 })();
