@@ -3,5 +3,8 @@ Allow: /
 Disallow: /visite/
 Disallow: /spiele/
 Disallow: /notizen/
+Disallow: /encom/
+Disallow: /study/
+Disallow: /kitteltasche/
 
 Sitemap: https://joshuaforster.de/sitemap.xml
