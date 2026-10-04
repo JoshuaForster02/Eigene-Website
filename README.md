@@ -12,7 +12,7 @@ Persönliche Website von Joshua Forster. Statisch, ohne Build, über GitHub Page
 | `data/strava.json` | Laufwerte, täglich per GitHub Action (`.github/workflows/strava.yml`, `scripts/strava-sync.mjs`) |
 | `scripts/piano.js` | Klavier im Abschnitt „Ausgleich“ |
 | `visite/`, `kitteltasche/`, `notizen/` | eigenständige Web-Apps |
-| `site.css`, `site.js`, `fonts/` | Gemeinsames Layout, Theme-Schalter und lokal gehostete Schriften für Startseite, Fechten und Datenschutz |
+| `fonts/` | Lokal gehostete Schriften für Startseite, Fechten und Datenschutz (`fonts.css`) |
 | `spiele/` | Easter Egg (7× aufs Logo klicken): Flynn's Arcade, Spielhalle mit Weltbestenliste. `shared/automat.js` ist der gemeinsame Automaten-Rahmen, `shared/pad.js` übersetzt Gamepads in Tastendrücke |
 | `encom/` | ENCOM OS |
 | `study/` | Weiterleitung zu Study OS / Hybrid OS (Login) |
