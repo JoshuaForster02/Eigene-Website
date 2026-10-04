@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-03T04:34:40.869Z",
+  "updated": "2026-10-04T05:57:43.582Z",
   "year": 2026,
   "athlete_url": "https://www.strava.com/athletes/55105958",
   "ytd_run_km": 276,
@@ -9,5 +9,7 @@
   "ytd_ride_km": 365,
   "ytd_swim_km": 1.2,
   "longest_run_km": 30,
-  "longest_run_date": "2026-06-29"
+  "longest_run_date": "2026-06-29",
+  "best_5k_s": null,
+  "best_5k_date": null
 }
