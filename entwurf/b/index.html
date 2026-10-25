@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<script>document.documentElement.classList.add('js');try{if(localStorage.getItem('jf-theme')==='light')document.documentElement.setAttribute('data-theme','light')}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<meta name="description" content="Joshua Forster, Medizinstudent an der Universität des Saarlandes in Homburg. Interessen: Orthopädie und Unfallchirurgie, Sportmedizin und Prävention.">
+<meta name="author" content="Joshua Forster">
+<meta name="theme-color" content="#050506">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<title>Joshua Forster · Entwurf B</title>
+<style>
+/* Schriften lokal (SIL OFL 1.1) */
+@font-face{font-family:"Inter";font-style:normal;font-weight:100 900;font-display:swap;src:url(/fonts/inter-var.woff2) format("woff2")}
+@font-face{font-family:"DM Mono";font-style:normal;font-weight:400;font-display:swap;src:url(/fonts/dm-mono-normal-400.woff2) format("woff2")}
+@font-face{font-family:"DM Mono";font-style:normal;font-weight:500;font-display:swap;src:url(/fonts/dm-mono-normal-500.woff2) format("woff2")}
+
+:root{
+  color-scheme:dark;
+  --bg:#050506; --bg2:#111113; --bg3:#1A1A1D; --fg:#F5F5F7; --fg2:#AEAEB2; --fg3:#8E8E93;
+  --acc:#7D9BE0; --btn:#3A5AA6; --line:rgba(255,255,255,.12); --line2:rgba(255,255,255,.24); --field:#6A6A70; --glass:rgba(5,5,6,.72);
+  --bone:rgba(245,245,247,.42); --bone2:rgba(245,245,247,.18);
+  --sans:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"DM Mono",ui-monospace,Menlo,monospace;
+  --ease:cubic-bezier(.2,.8,.2,1); --gut:clamp(20px,5vw,80px); --edge:max(var(--gut),calc((100vw - 1200px)/2));
+}
+:root[data-theme="light"]{
+  color-scheme:light;
+  --bg:#F5F5F7; --bg2:#FFFFFF; --bg3:#E8E8ED; --fg:#1D1D1F; --fg2:#424245; --fg3:#6E6E73;
+  --acc:#1F3C78; --btn:#1F3C78; --line:rgba(0,0,0,.1); --line2:rgba(0,0,0,.22); --field:#86868B; --glass:rgba(245,245,247,.78);
+  --bone:rgba(29,29,31,.42); --bone2:rgba(29,29,31,.16);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:17px/1.55 var(--sans);letter-spacing:-.011em;-webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background .5s,color .5s}
+a{color:inherit}
+::selection{background:var(--acc);color:var(--bg)}
+:focus-visible{outline:2px solid var(--acc);outline-offset:3px;border-radius:4px}
+.skip{position:absolute;left:12px;top:-48px;background:var(--acc);color:var(--bg);padding:8px 12px;z-index:200;border-radius:8px}
+.skip:focus{top:12px}
+
+/* Hintergrund-Film */
+#bg{position:fixed;inset:0;width:100%;height:100%;z-index:-2;display:block;background:var(--bg)}
+.veil{position:fixed;inset:0;z-index:-1;pointer-events:none;background:var(--bg);opacity:calc(.08 + var(--hp,0)*.7);transition:background .5s}
+
+/* Nav */
+.prog{position:fixed;top:0;left:0;height:1px;background:var(--acc);width:calc(var(--sp,0)*100%);z-index:120}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:52px;padding:0 var(--edge);display:flex;align-items:center;justify-content:space-between;gap:20px;border-bottom:1px solid transparent;transition:background .4s,border-color .4s}
+nav.solid{background:var(--glass);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border-bottom-color:var(--line)}
+.logo{font-weight:650;font-size:19px;letter-spacing:-.03em;text-decoration:none;user-select:none;-webkit-user-select:none;display:inline-flex;align-items:baseline;gap:1px}
+.logo i{width:5px;height:5px;border-radius:50%;background:var(--acc);display:inline-block;margin-left:2px}
+.nav-r{display:flex;align-items:center;gap:28px}
+.links{display:flex;gap:28px;list-style:none;margin:0;padding:0}
+.links a{font-size:13px;letter-spacing:-.005em;color:var(--fg2);text-decoration:none;transition:color .25s}
+.links a:hover{color:var(--fg)}
+.ctl{display:flex;gap:6px}
+.lng,.tgl{height:30px;min-width:38px;border:0;border-radius:999px;background:transparent;color:var(--fg2);font:500 12px var(--sans);cursor:pointer;display:grid;place-items:center;transition:background .25s,color .25s}
+.lng:hover,.tgl:hover{background:var(--bg3);color:var(--fg)}
+.tgl{width:30px;min-width:30px}
+.tgl svg{width:16px;height:16px}
+.tgl .sun{display:none}:root[data-theme="light"] .tgl .sun{display:block}:root[data-theme="light"] .tgl .moon{display:none}
+@media (max-width:860px){.links{display:none}}
+
+.eyebrow{font-size:clamp(15px,1.3vw,19px);font-weight:600;color:var(--acc);letter-spacing:-.01em;margin:0}
+.h2{font-weight:650;font-size:clamp(42px,6vw,92px);line-height:1.02;letter-spacing:-.045em;margin:10px 0 0}
+.h2 em{font-style:normal;color:var(--fg3)}
+
+.pin{position:relative}
+.stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+.wrap{max-width:1200px;margin:0 auto;width:100%}
+
+/* HERO */
+#hero{height:150vh}
+#hero .stage{display:grid;align-items:center;padding:52px var(--edge) 0}
+.hero-in{position:relative;z-index:1;max-width:760px}
+.kicker{font-size:clamp(15px,1.3vw,18px);font-weight:600;color:var(--acc);margin:0;opacity:0;animation:fade 1s .2s forwards}
+.name{font-weight:650;font-size:clamp(62px,10.6vw,172px);line-height:.94;letter-spacing:-.05em;margin:18px 0 0}
+.name .ln{display:block;overflow:hidden;padding-bottom:.06em}
+.name .ch{display:inline-block;transform:translateY(105%);animation:rise 1.1s var(--ease) forwards}
+.name em{font-style:normal;color:var(--fg3)}
+.name .ln:nth-child(1){transform:translateX(calc(var(--p,0)*-3vw))}
+.name .ln:nth-child(2){transform:translateX(calc(var(--p,0)*3vw))}
+@keyframes rise{to{transform:none}}
+@keyframes fade{to{opacity:1}}
+.hero-sub{margin-top:26px;opacity:calc(1 - var(--p,0)*2.4)}
+.hero-sub p{font-size:clamp(19px,1.8vw,26px);font-weight:500;line-height:1.3;letter-spacing:-.02em;color:var(--fg2);margin:0;max-width:26ch;opacity:0;animation:fade 1.1s .9s forwards}
+.hero-cta{display:flex;flex-wrap:wrap;align-items:center;gap:22px;margin-top:30px;opacity:0;animation:fade 1.1s 1.1s forwards}
+.btn{display:inline-flex;align-items:center;gap:6px;font-size:16px;font-weight:500;text-decoration:none;color:var(--acc);transition:opacity .25s,background .25s}
+.btn.solid{background:var(--btn);color:#fff;padding:12px 22px;border-radius:999px}
+.btn.solid:hover{background:color-mix(in srgb,var(--btn) 82%,#fff)}
+.btn:not(.solid):hover{text-decoration:underline;text-underline-offset:4px}
+.now-pill{display:inline-flex;align-items:center;gap:10px;margin-top:34px;font-size:14px;color:var(--fg2);border:1px solid var(--line2);padding:8px 14px 8px 12px;border-radius:999px;opacity:0;animation:fade 1.1s 1.3s forwards}
+.now-pill i{width:7px;height:7px;border-radius:50%;background:var(--acc)}
+.now-pill b{font-weight:600;color:var(--fg)}
+.scroll-cue{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);font-size:12px;color:var(--fg3);opacity:calc(1 - var(--p,0)*5)}
+.scroll-cue::after{content:"";display:block;width:1px;height:34px;margin:8px auto 0;background:var(--fg3);transform-origin:top;animation:drip 2.2s infinite}
+@keyframes drip{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* Hüfte, Linienzeichnung */
+.hip{position:absolute;right:var(--edge);top:50%;height:min(80vh,740px);aspect-ratio:520/760;transform:translateY(calc(-46% + var(--p,0)*-5vh)) scale(calc(1 + var(--p,0)*.05));opacity:calc(1 - var(--p,0)*.7);pointer-events:none}
+.hip svg{width:100%;height:100%;overflow:visible}
+.hip path,.hip circle{fill:none;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round}
+.hip .bn{stroke:var(--bone);stroke-width:1.1;stroke-dasharray:1;stroke-dashoffset:1;animation:draw 2.6s var(--ease) forwards}
+.hip .bn2{stroke:var(--bone2);stroke-width:1}
+.hip .dl{stroke-dasharray:3 5;opacity:0;animation:fade 1.2s 2.2s forwards}
+.hip .d1{animation-delay:.3s}.hip .d2{animation-delay:.6s}.hip .d3{animation-delay:.9s}.hip .d4{animation-delay:1.2s}
+@keyframes draw{to{stroke-dashoffset:0}}
+.hip .ms{--m:clamp(0,calc((var(--p,0) - .04)*3.2),1)}
+.hip .ms path,.hip .ms circle{stroke:var(--acc);stroke-width:1.1;stroke-dasharray:1;stroke-dashoffset:calc(1 - var(--m))}
+.hip .ms text{font:500 11px var(--mono);letter-spacing:.08em;fill:var(--acc);opacity:clamp(0,calc((var(--m) - .6)*3),1)}
+.hip .ms .ctr{stroke-dasharray:none;opacity:var(--m)}
+@media (max-width:860px){
+  .hip{right:-14vw;top:auto;bottom:-4vh;height:62vh;transform:translateY(calc(var(--p,0)*-4vh));opacity:calc(.55 - var(--p,0)*.4)}
+  .hero-in{align-self:start;padding-top:12vh}
+}
+
+/* ÜBER MICH */
+#about{height:170vh}
+#about .stage{display:grid;place-items:center;padding:52px var(--gut) 0}
+.ab{max-width:1100px;text-align:center}
+.stmt{font-weight:600;font-size:clamp(28px,4.4vw,64px);line-height:1.12;letter-spacing:-.035em;margin:18px 0 0}
+.stmt .w{opacity:.18;transition:opacity .35s}
+.stmt .w.on{opacity:1}
+.stmt .w.hl{color:var(--acc)}
+
+/* WERDEGANG */
+#stationen{height:300vh}
+#stationen .stage{display:flex;flex-direction:column;justify-content:center;padding-top:52px}
+.st-head{padding:0 var(--edge);display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:7vh}
+.st-count{font-family:var(--mono);font-size:13px;color:var(--fg3);letter-spacing:.04em;white-space:nowrap}
+.track{display:flex;width:max-content;padding:0 var(--edge);will-change:transform;transform:translateX(calc(var(--p,0) * var(--shift,0px) * -1))}
+.st{flex:none;width:clamp(280px,29vw,400px);padding-right:clamp(32px,4vw,64px);position:relative}
+.st .tag{display:block;font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--fg3)}
+.st .yr{font-weight:200;font-size:clamp(76px,8.4vw,132px);line-height:1;letter-spacing:-.06em;margin-top:6px;font-variant-numeric:tabular-nums}
+.st.now .yr{color:var(--acc);font-weight:250}
+.st.plan .yr{color:var(--fg3)}
+.st .node{display:block;position:relative;height:1px;margin:22px 0 22px;background:var(--line2)}
+.st .node::before{content:"";position:absolute;left:0;top:0;height:1px;width:calc(var(--f,0)*100%);background:var(--acc)}
+.st.plan .node{background:repeating-linear-gradient(90deg,var(--line2) 0 4px,transparent 4px 9px)}
+.st h3{font-weight:600;font-size:clamp(21px,1.8vw,26px);line-height:1.2;letter-spacing:-.025em;margin:0 0 8px}
+.st p{margin:0;color:var(--fg2);font-size:16px;line-height:1.5;max-width:32ch}
+.segs{display:flex;gap:6px;margin:7vh var(--edge) 0;max-width:320px}
+.segs i{flex:1;height:3px;border-radius:3px;background:var(--line2);overflow:hidden;position:relative}
+.segs i::after{content:"";position:absolute;inset:0;background:var(--acc);transform:scaleX(var(--f,0));transform-origin:left}
+
+/* Abschnitte */
+.sec{padding:clamp(110px,13vw,190px) var(--gut)}
+.rows{margin-top:clamp(48px,6vw,88px)}
+.li{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr) 28px;gap:12px 40px;align-items:end;padding:34px 0 36px;border-top:1px solid var(--line);text-decoration:none;position:relative}
+.li:last-child{border-bottom:1px solid var(--line)}
+.li .n{grid-column:1/-1;font-family:var(--mono);font-size:12px;color:var(--fg3);letter-spacing:.06em}
+.li h3{font-weight:650;font-size:clamp(34px,4.4vw,68px);line-height:1.02;letter-spacing:-.045em;margin:0}
+.li h3 em{font-style:normal;color:inherit}
+.li .d{margin:0;color:var(--fg2);font-size:clamp(17px,1.4vw,19px);line-height:1.5;max-width:36ch;padding-bottom:.35em}
+.li .arr{font-size:22px;color:var(--fg3);justify-self:end;padding-bottom:.3em;transition:transform .4s var(--ease),color .3s}
+a.li h3{transition:color .3s}
+a.li:hover h3{color:var(--acc)}a.li:hover .arr{transform:translateX(4px);color:var(--acc)}
+.li .full{grid-column:1/-1}
+.small .li h3{font-size:clamp(30px,3.4vw,52px)}
+@media (max-width:760px){.li{grid-template-columns:minmax(0,1fr) 24px;align-items:baseline}.li .d{grid-column:1/-1;padding:0}.li .arr{grid-column:2;grid-row:2}.li .n{grid-column:1/-1}}
+
+/* Laufwerte */
+.run{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px 32px;margin-top:22px;padding:30px 0 4px;border-top:1px solid var(--line)}
+.run div{display:grid;gap:6px;align-content:start}
+.run b{font-weight:200;font-size:clamp(46px,5vw,76px);line-height:1;letter-spacing:-.05em;font-variant-numeric:tabular-nums;white-space:nowrap}
+.run b small{font-size:.3em;font-weight:500;letter-spacing:0;color:var(--fg3);margin-left:6px}
+.run span{font-size:14px;color:var(--fg3);line-height:1.4}
+.run .live>span::after{content:" · Strava";color:var(--acc)}
+.next{display:flex;flex-wrap:wrap;gap:8px 22px;align-items:center;margin-top:26px;font-size:15px;color:var(--fg2)}
+.next b{font-weight:600;color:var(--acc)}
+.next span{display:inline-flex;gap:8px;align-items:center}
+.next span::before{content:"";width:6px;height:6px;border-radius:50%;border:1px solid var(--fg3)}
+.stamp{font-family:var(--mono);font-size:12px;color:var(--fg3);margin-top:12px;min-height:1.4em}
+@media (max-width:760px){.run{grid-template-columns:1fr 1fr}}
+
+.social{display:grid;grid-template-columns:1fr 1fr;gap:0 40px;margin-top:clamp(48px,6vw,80px)}
+.soc{display:grid;grid-template-columns:28px minmax(0,1fr) 24px;gap:16px;align-items:center;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);text-decoration:none}
+.soc svg{width:20px;height:20px}
+.soc b{display:block;font-weight:600;font-size:19px;letter-spacing:-.02em}
+.soc small{font-size:14px;color:var(--fg3)}
+.soc .arr{color:var(--fg3);transition:transform .4s var(--ease),color .3s}
+.soc:hover .arr{transform:translate(3px,-3px);color:var(--acc)}
+@media (max-width:760px){.social{grid-template-columns:1fr}.soc+.soc{border-top:0}}
+
+/* KONTAKT */
+.contact{background:var(--bg2);transition:background .5s}
+.cgrid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:48px 24px}
+.cgrid>.l{grid-column:1/span 5}.cgrid>.form{grid-column:7/-1}
+.cp{font-size:clamp(17px,1.4vw,19px);line-height:1.55;color:var(--fg2);margin:24px 0 0;max-width:36ch}
+.mail{display:inline-block;font-size:clamp(18px,1.6vw,22px);font-weight:500;color:var(--acc);text-decoration:none;margin-top:26px;word-break:break-all}
+.mail:hover{text-decoration:underline;text-underline-offset:4px}
+.cvbtn{display:inline-flex;align-items:center;gap:8px;margin-top:26px;padding:11px 20px;background:none;border:1px solid var(--line2);border-radius:999px;color:var(--fg);font:500 15px var(--sans);cursor:pointer;transition:border-color .3s,background .3s}
+.cvbtn:hover{border-color:var(--acc);background:var(--bg3)}
+.form{display:grid;gap:14px;align-content:start}
+.form .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fl{display:grid;gap:6px}
+.fl>span{font-size:13px;font-weight:500;color:var(--fg2)}
+.form input,.form textarea{width:100%;padding:13px 15px;background:var(--bg);border:1px solid var(--field);border-radius:12px;font:inherit;font-size:16px;color:var(--fg);transition:border-color .2s,box-shadow .2s}
+.form input:focus,.form textarea:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 3px color-mix(in srgb,var(--acc) 30%,transparent)}
+.form textarea{min-height:140px;resize:vertical}
+.form .cb{display:flex;gap:12px;align-items:flex-start;font-size:15px;color:var(--fg2);cursor:pointer;margin-top:2px}
+.form .cb input{width:18px;height:18px;margin:2px 0 0;accent-color:var(--btn);flex:none}
+.form button{padding:15px;border:0;border-radius:999px;background:var(--btn);color:#fff;font:500 16px var(--sans);cursor:pointer;margin-top:4px;transition:background .25s}
+.form button:hover{background:color-mix(in srgb,var(--btn) 82%,#fff)}
+.form small{font-size:13px;line-height:1.5;color:var(--fg3)}
+.form small a{color:var(--acc)}
+.form.flash{animation:fflash 1.4s var(--ease)}@keyframes fflash{0%{box-shadow:0 0 0 10px var(--bg2),0 0 0 11px var(--acc);border-radius:14px}100%{box-shadow:0 0 0 10px var(--bg2),0 0 0 11px transparent;border-radius:14px}}
+@media (max-width:860px){.cgrid>.l,.cgrid>.form{grid-column:1/-1}.form .row{grid-template-columns:1fr}}
+footer{padding:20px var(--edge) 26px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--fg3);background:var(--bg2);border-top:1px solid var(--line);transition:background .5s}
+footer a{text-decoration:none;margin-left:20px}footer span:last-child a:first-child{margin-left:0}footer a:hover{color:var(--fg)}
+
+.js .rv{opacity:0;transform:translateY(30px);transition:opacity 1.1s var(--ease),transform 1.1s var(--ease)}
+.js .rv.in{opacity:1;transform:none}
+
+.egg{position:fixed;top:64px;left:50%;transform:translate(-50%,-10px) scale(.97);opacity:0;pointer-events:none;z-index:60;display:inline-flex;align-items:center;gap:10px;padding:10px 18px;border:1px solid var(--acc);border-radius:999px;background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);color:var(--fg);font-size:14px;font-weight:500;text-decoration:none;transition:opacity .5s var(--ease),transform .5s var(--ease)}
+.egg.on{opacity:1;pointer-events:auto;transform:translate(-50%,0) scale(1)}
+.egg:hover{background:var(--btn);border-color:var(--btn);color:#fff}
+.egg i{font-style:normal;color:var(--acc)}.egg:hover i{color:#fff}
+
+/* Werdegang vertikal: Mobil und reduzierte Bewegung */
+@media (max-width:760px){
+  #stationen{height:auto}#stationen .stage{position:relative;height:auto;padding:100px 0 40px;overflow:visible}
+  .st-head{flex-direction:column;align-items:flex-start}
+  .track{flex-direction:column;width:auto;transform:none!important;padding:0 var(--gut)}
+  .st{width:auto;padding:0 0 40px}
+  .st .yr{font-size:72px}
+  .segs{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  #hero,#about,#stationen{height:auto}.stage{position:relative;height:auto;min-height:100vh;padding-bottom:64px}
+  .name .ch{animation:none;transform:none}.kicker,.hero-sub p,.hero-cta,.now-pill{animation:none;opacity:1}
+  .hip .bn{animation:none;stroke-dashoffset:0}.hip .dl{animation:none;opacity:1}.hip .ms{--m:1}.hip{transform:translateY(-46%)}
+  .scroll-cue::after{animation:none}
+  .stmt .w{opacity:1}
+  #stationen .stage{overflow:visible}
+  .st-head{flex-direction:column;align-items:flex-start}
+  .track{flex-direction:column;width:auto;transform:none!important;padding:0 var(--edge)}.st{width:auto;padding:0 0 40px}.segs{display:none}
+  .js .rv{opacity:1;transform:none;transition:none}
+}
+@media (prefers-reduced-motion:reduce) and (max-width:860px){.hip{transform:none}}
+</style>
+</head>
+<body>
+<canvas id="bg" aria-hidden="true"></canvas>
+<div class="veil" aria-hidden="true"></div>
+<div class="prog" aria-hidden="true"></div>
+<a class="skip" href="#main" data-i="skip">Zum Inhalt springen</a>
+<nav id="nav" aria-label="Hauptnavigation">
+  <a class="logo" href="#hero" aria-label="Joshua Forster, nach oben">JF<i></i></a>
+  <a class="egg" id="egg" href="/spiele/" aria-hidden="true" tabindex="-1"><i>◆</i>Easter Egg</a>
+  <div class="nav-r">
+    <ul class="links"><li><a href="#about" data-i="n1">Über mich</a></li><li><a href="#stationen" data-i="n2">Werdegang</a></li><li><a href="#schwerpunkte" data-i="n3">Schwerpunkte</a></li><li><a href="#ausgleich" data-i="n4">Ausgleich</a></li><li><a href="#kontakt" data-i="n5">Kontakt</a></li></ul>
+    <div class="ctl">
+      <button class="lng" id="lng" type="button">EN</button>
+      <button class="tgl" id="tgl" type="button" aria-label="Hell/Dunkel umschalten"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.4 1.4M17.6 17.6 19 19M5 19l1.4-1.4M17.6 6.4 19 5"/></svg></button>
+    </div>
+  </div>
+</nav>
+
+<main id="main">
+<section id="hero" class="pin" data-pin>
+  <div class="stage">
+    <div class="hip" aria-hidden="true">
+      <svg viewBox="0 0 520 760">
+        <!-- Becken -->
+        <path class="bn d1" pathLength="1" d="M285 249.4C300 230 318 190 322 150C326 120 338 110 344 90C350 72 352 58 346 44C320 20 230 8 160 26C120 36 96 60 92 90C96 140 118 190 140 232C158 268 168 300 170 330C140 350 90 350 40 356L36 420C70 430 110 452 150 470C190 486 214 470 214 440C212 410 200 380 196 356"/>
+        <path class="bn d2" pathLength="1" d="M181.1 297.8A70 70 0 0 1 285 249.4"/>
+        <path class="bn d3" pathLength="1" d="M150 372C120 372 80 380 74 400C72 420 110 444 150 446C186 446 196 420 190 396C186 380 172 372 150 372Z"/>
+        <path class="bn d3" pathLength="1" d="M178 300C172 330 176 350 186 352C194 350 196 330 192 300"/>
+        <!-- Femur -->
+        <circle class="bn d2" pathLength="1" cx="250" cy="310" r="62"/>
+        <path class="bn d3" pathLength="1" d="M302 276C325 290 345 292 360 282C368 262 378 250 392 252C412 258 420 290 418 330C414 380 404 440 398 520L384 760"/>
+        <path class="bn d4" pathLength="1" d="M282 363C300 395 318 420 330 440C318 446 312 462 326 474C336 540 334 640 328 760"/>
+        <path class="bn2 dl" d="M392 252C380 320 360 400 335 445M352 545L346 760M382 545L372 760"/>
+        <!-- Messung: LCE und CCD -->
+        <g class="ms">
+          <path class="ctr" d="M243 310H257M250 303V317"/>
+          <path pathLength="1" d="M250 310V200"/>
+          <path pathLength="1" d="M250 310L299 225"/>
+          <path pathLength="1" d="M250 262A48 48 0 0 1 274 268.4"/>
+          <text x="282" y="196">LCE</text>
+          <path pathLength="1" d="M352 760L375 330"/>
+          <path pathLength="1" d="M238 301L371 400"/>
+          <path pathLength="1" d="M372.8 366A34 34 0 0 0 343.7 379.7"/>
+          <text x="384" y="372">CCD</text>
+        </g>
+      </svg>
+    </div>
+    <div class="hero-in">
+      <p class="kicker" data-i="kick">Medizinstudent · Klinischer Abschnitt · Homburg</p>
+      <h1 class="name" data-chars><span class="ln">Joshua</span><span class="ln"><em>Forster</em></span></h1>
+      <div class="hero-sub">
+        <p data-i="sub">Orthopädie und Unfallchirurgie, Sportmedizin und Prävention.</p>
+        <div class="hero-cta"><a class="btn solid" href="#stationen" data-i="c1">Werdegang</a><a class="btn" href="#kontakt"><span data-i="c2">Kontakt</span> <span aria-hidden="true">›</span></a></div>
+        <div class="now-pill"><i></i><span data-i="hf2">Zuletzt</span> <b id="nowv">–</b></div>
+      </div>
+    </div>
+    <div class="scroll-cue" data-i="scr">Scrollen</div>
+  </div>
+</section>
+
+<section id="about" class="pin" data-pin aria-labelledby="ab-l">
+  <div class="stage">
+    <div class="ab">
+      <p class="eyebrow" id="ab-l" data-i="l1">Über mich</p>
+      <p class="stmt" data-words data-i="stmt">Ich studiere Medizin im klinischen Abschnitt an der Universität des Saarlandes. Mich fasziniert der <span class="hl">Bewegungsapparat</span>: wie Menschen sich bewegen, sich verletzen und wieder zurückkommen. Außerhalb der Klinik fechte ich und <span class="hl">trainiere</span>.</p>
+    </div>
+  </div>
+</section>
+
+<section id="stationen" class="pin" data-pin aria-labelledby="st-h">
+  <div class="stage">
+    <div class="st-head">
+      <div><p class="eyebrow" data-i="l2">Werdegang</p><h2 class="h2" id="st-h" data-i="sth">Der <em>Werdegang.</em></h2></div>
+      <span class="st-count" aria-hidden="true"><span id="stn">01</span> / 07</span>
+    </div>
+    <div class="track" id="track">
+      <article class="st"><span class="tag" data-i="st0">Studium</span><div class="yr">2022</div><i class="node" aria-hidden="true"></i><h3 data-i="st1">Start Medizinstudium</h3><p data-i="st2">Universität des Saarlandes, Campus Homburg.</p></article>
+      <article class="st"><span class="tag" data-i="sp1">Pflegepraktikum · Vorklinik</span><div class="yr">90</div><i class="node" aria-hidden="true"></i><h3 data-i="sp2">Tage auf Station</h3><p data-i="sp3">Neurochirurgie und Innere Medizin am Klinikum Saarbrücken, Innere Medizin am UKS Homburg.</p></article>
+      <article class="st"><span class="tag" data-i="st3">Prüfung</span><div class="yr">2025</div><i class="node" aria-hidden="true"></i><h3>Physikum</h3><p data-i="st4">Erster Abschnitt der Ärztlichen Prüfung, danach Wechsel in den klinischen Abschnitt.</p></article>
+      <article class="st"><span class="tag" data-i="sw1">Kurs</span><div class="yr">2026</div><i class="node" aria-hidden="true"></i><h3 data-i="sw2">Phako-Wetlab</h3><p data-i="sw3">Praktischer Kurs in Kataraktchirurgie (HOYA).</p></article>
+      <article class="st now"><span class="tag" data-i="st5">Famulatur</span><div class="yr">2026</div><i class="node" aria-hidden="true"></i><h3 data-i="st6">Orthopädie</h3><p data-i="st7">Famulatur am Universitätsklinikum des Saarlandes in Homburg.</p></article>
+      <article class="st plan"><span class="tag" data-i="st8">Praktisches Jahr · geplant</span><div class="yr">28/29</div><i class="node" aria-hidden="true"></i><h3 data-i="st9">PJ in Basel</h3><p data-i="st10">Innere Medizin und Chirurgie am Universitätsspital Basel.</p></article>
+      <article class="st plan"><span class="tag" data-i="st11">Wahltertial · geplant</span><div class="yr">III</div><i class="node" aria-hidden="true"></i><h3 data-i="st12">Orthopädie in Zürich</h3><p data-i="st13">Wahltertial an der Schulthess Klinik Zürich.</p></article>
+    </div>
+    <div class="segs" id="segs" aria-hidden="true"></div>
+  </div>
+</section>
+
+<section id="schwerpunkte" class="sec">
+  <div class="wrap">
+    <div class="rv"><p class="eyebrow" data-i="l3">Schwerpunkte</p><h2 class="h2" data-i="h3">Was mich <em>fachlich bewegt.</em></h2></div>
+    <div class="rows">
+      <div class="li rv"><span class="n">01</span><h3 data-i="i1">Orthopädie &amp; <em>Unfallchirurgie</em></h3><p class="d" data-i="i1w">Gelenk- und Sportverletzungen, operative Versorgung und der Weg zurück in die Belastung.</p></div>
+      <div class="li rv"><span class="n">02</span><h3 data-i="i2">Sport<em>medizin</em></h3><p class="d" data-i="i2w">Belastungssteuerung, Leistungsdiagnostik und die Rückkehr in den Sport.</p></div>
+      <div class="li rv"><span class="n">03</span><h3 data-i="i3">Präven<em>tion</em></h3><p class="d" data-i="i3w">Bewegung und Training als Therapie und Vorbeugung.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="ausgleich" class="sec" style="padding-top:0">
+  <div class="wrap">
+    <div class="rv"><p class="eyebrow" data-i="l4">Außerhalb der Klinik</p><h2 class="h2" data-i="h4">Der <em>Ausgleich.</em></h2></div>
+    <div class="rows small">
+      <a class="li" href="/fechten.html"><span class="n">01</span><h3 data-i="f1">Fechten, <em>Degen</em></h3><p class="d" data-i="f2">Distanz, Timing und Entscheidungen unter Druck.</p><span class="arr" aria-hidden="true">›</span></a>
+      <div class="li"><span class="n">02</span><h3 data-i="r1">Laufen &amp; <em>Kraft</em></h3><p class="d" data-i="r2">Ausdauer auf der Straße, Krafttraining seit 2021.</p>
+        <div class="full">
+          <div class="run" id="run">
+            <div class="live" data-k="best5k"><b>22:07</b><span data-i="r3">Schnellster Lauf · 5 km</span></div>
+            <div class="live" data-k="longest"><b>–</b><span data-i="r4">Längster Lauf</span></div>
+            <div class="live" data-k="ytd"><b>–</b><span data-i="r5">Laufkilometer <span data-yr></span></span></div>
+            <div><b>2021</b><span data-i="r6">Krafttraining seit</span></div>
+          </div>
+          <div class="next"><b data-i="x1">Als Nächstes</b><span data-i="x2">Halbmarathon · Oktober 2026</span><span>2027 Triathlon</span><span data-i="x3">Ende 2027 Ironman</span></div>
+          <div class="stamp" id="stamp"></div>
+        </div>
+      </div>
+      <div class="li"><span class="n">03</span><h3 data-i="k1">Kla<em>vier</em></h3><p class="d" data-i="k2">Der ruhige Gegenpol zu Klinik und Training.</p></div>
+    </div>
+    <div class="social">
+      <a class="soc rv" href="https://www.instagram.com/iamjoshuaforster/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg><span><b>Instagram</b><small data-i="so1">@iamjoshuaforster · Sport, Outdoor, Fotografie</small></span><span class="arr" aria-hidden="true">↗</span></a>
+      <a class="soc rv" id="stravaLink" href="https://www.strava.com/athletes/55105958" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15.4 17.9 13.3 13.7h-3.1l5.2 10.3 5.2-10.3h-3.1zM10.2 0 3.3 13.7h4.1l2.8-5.5 2.8 5.5h4.1z"/></svg><span><b>Strava</b><small data-i="so2">Läufe und Training, täglich aktualisiert</small></span><span class="arr" aria-hidden="true">↗</span></a>
+    </div>
+  </div>
+</section>
+
+<section id="kontakt" class="sec contact">
+  <div class="wrap">
+    <div class="cgrid">
+      <div class="l rv"><p class="eyebrow" data-i="l5">Kontakt</p><h2 class="h2" data-i="h5">Lass uns <em>sprechen.</em></h2><p class="cp" data-i="cp">Für fachlichen Austausch oder Anfragen. Den Lebenslauf verschicke ich auf Anfrage per E-Mail.</p><a class="mail" id="mail" data-u="joshuaforster02" data-d="gmail.com" href="#kontakt">joshuaforster02 [at] gmail.com</a><br>
+        <button type="button" class="cvbtn" id="cvbtn"><span data-i="cvb">Lebenslauf anfragen</span> <span aria-hidden="true">›</span></button></div>
+      <form class="form rv" action="https://formspree.io/f/xqeajnve" method="POST">
+        <input type="hidden" name="_subject" value="Website-Anfrage von joshuaforster.de">
+        <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <div class="row"><label class="fl"><span data-i="fl1">Name</span><input id="b-name" name="name" autocomplete="name" required></label><label class="fl"><span data-i="fl2">E-Mail</span><input id="b-mail" type="email" name="email" autocomplete="email" required></label></div>
+        <label class="fl"><span data-i="fl3">Nachricht</span><textarea id="b-msg" name="message" required></textarea></label>
+        <label class="cb" id="cvcb"><input type="checkbox" name="request_cv" value="yes"> <span data-i="cv">Ich möchte den Lebenslauf per E-Mail erhalten.</span></label>
+        <button type="submit" data-i="sb">Nachricht senden</button>
+        <small data-i="fs">Mit dem Absenden willigst du in die Verarbeitung deiner Angaben ein. Mehr unter <a href="/datenschutz.html">Datenschutz</a>.</small>
+      </form>
+    </div>
+  </div>
+</section>
+</main>
+<footer><span>© 2026 Joshua Forster</span><span><a href="#hero" data-i="ft1">Nach oben ↑</a><a href="/datenschutz.html">Datenschutz</a></span></footer>
+
+<script>
+(()=>{let L='de';const QL=new URLSearchParams(location.search).get('lang');try{L=localStorage.getItem('jf-lang')||''}catch(e){}if(QL==='en'||QL==='de')L=QL;
+if(!L)L=(navigator.languages||[navigator.language||'de']).some(l=>/^de/i.test(l))?'de':'en';
+window.JF_LANG=L;const EN={"skip":"Skip to content","n1":"About","n2":"Path","n3":"Focus","n4":"Balance","n5":"Contact","kick":"Medical student · Clinical phase · Homburg, Germany","sub":"Orthopaedic and trauma surgery, sports medicine and prevention.","c1":"Path","c2":"Contact","scr":"Scroll","hf2":"Latest","l1":"About","stmt":"I study medicine in the clinical phase at Saarland University. I am fascinated by the <span class=\"hl\">musculoskeletal system</span>: how people move, get injured and find their way back. Outside the hospital I fence and <span class=\"hl\">train</span>.","l2":"Path","sth":"The <em>path.</em>","st0":"Medical school","st1":"Start of medical school","st2":"Saarland University, Homburg campus.","sp1":"Nursing internship · preclinical","sp2":"days on the ward","sp3":"Neurosurgery and internal medicine at Klinikum Saarbrücken, internal medicine at Saarland University Hospital.","st3":"Exam","st4":"First state medical examination, then the move into the clinical years.","sw1":"Course","sw2":"Phaco wet lab","sw3":"Hands-on course in cataract surgery (HOYA).","st5":"Clerkship","st6":"Orthopaedics","st7":"Clinical clerkship at Saarland University Medical Center, Homburg.","st8":"Final year · planned","st9":"Final year in Basel","st10":"Internal medicine and surgery at University Hospital Basel.","st11":"Elective · planned","st12":"Orthopaedics in Zurich","st13":"Elective rotation at Schulthess Klinik, Zurich.","l3":"Focus","h3":"What drives me <em>professionally.</em>","i1":"Orthopaedic &amp; <em>trauma surgery</em>","i1w":"Joint and sports injuries, surgical care and the way back to full load.","i2":"Sports <em>medicine</em>","i2w":"Load management, performance testing and return to sport.","i3":"Preven<em>tion</em>","i3w":"Exercise and training as therapy and prevention.","l4":"Outside the hospital","h4":"The <em>balance.</em>","f1":"Fencing, <em>épée</em>","f2":"Distance, timing and decisions under pressure.","r1":"Running &amp; <em>strength</em>","r2":"Endurance on the road, strength training since 2021.","r3":"Fastest run · 5 km","r4":"Longest run","r5":"Running km <span data-yr></span>","r6":"Strength training since","x1":"Up next","x2":"Half marathon · October 2026","x3":"Ironman · late 2027","k1":"Pi<em>ano</em>","k2":"The quiet counterweight to hospital and training.","so1":"@iamjoshuaforster · Sport, outdoors, photography","so2":"Runs and training, updated daily","l5":"Contact","h5":"Let's <em>talk.</em>","cp":"For professional exchange or enquiries. My CV is available on request by email.","fl1":"Name","fl2":"Email","fl3":"Message","cv":"I'd like to receive the CV by email.","cvb":"Request CV","sb":"Send message","fs":"By sending, you agree to the processing of your details. More in the <a href=\"/datenschutz.html\">privacy policy</a> (German).","ft1":"Back to top ↑"};
+if(L==='en'){document.documentElement.lang='en';document.querySelectorAll('[data-i]').forEach(e=>{const v=EN[e.dataset.i];if(v!=null)e.innerHTML=v});const d=document.querySelector('meta[name=description]');if(d)d.content='Joshua Forster, medical student in Homburg, Germany. Orthopaedics, sports medicine and prevention.';const t=document.getElementById('tgl');if(t)t.setAttribute('aria-label','Toggle light/dark')}
+const b=document.getElementById('lng');if(b){b.textContent=L==='en'?'DE':'EN';b.setAttribute('aria-label',L==='en'?'Auf Deutsch wechseln':'Switch to English');b.addEventListener('click',()=>{const n=L==='en'?'de':'en';try{localStorage.setItem('jf-lang',n)}catch(e){}location.href=location.pathname+'?lang='+n+location.hash})}
+/* Zuletzt-Hinweis aus der Station mit der Klasse now */
+const nw=document.querySelector('.st.now'),nv=document.getElementById('nowv');if(nw&&nv)nv.textContent=nw.querySelector('.tag').textContent+' '+nw.querySelector('h3').textContent+' · '+nw.querySelector('.yr').textContent;
+})();
+</script>
+<script>
+(()=>{
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const root=document.documentElement,meta=document.querySelector('meta[name=theme-color]');
+const isLight=()=>root.getAttribute('data-theme')==='light';
+const setMeta=()=>{if(meta)meta.content=isLight()?'#F5F5F7':'#050506'};setMeta();
+document.getElementById('tgl').addEventListener('click',()=>{const l=isLight();if(l)root.removeAttribute('data-theme');else root.setAttribute('data-theme','light');try{localStorage.setItem('jf-theme',l?'dark':'light')}catch(e){}setMeta();setPalette()});
+
+/* Text-Splits */
+document.querySelectorAll('[data-chars] .ln').forEach((ln,li)=>{const host=ln.querySelector('em')||ln;const t=host.textContent;host.textContent='';[...t].forEach((c,i)=>{const s=document.createElement('span');s.className='ch';s.textContent=c;s.style.animationDelay=(0.08+li*0.18+i*0.045)+'s';host.append(s)})});
+document.querySelectorAll('[data-words]').forEach(el=>{const walk=(node,hl)=>{[...node.childNodes].forEach(n=>{if(n.nodeType===3){const f=document.createDocumentFragment();n.textContent.split(/(\s+)/).forEach(t=>{if(!t)return;if(/^\s+$/.test(t)){f.append(t);return}const s=document.createElement('span');s.className='w'+(hl?' hl':'');s.textContent=t;f.append(s)});n.replaceWith(f)}else if(n.nodeType===1){const h=hl||n.classList.contains('hl');walk(n,h);if(n.classList.contains('hl'))n.replaceWith(...n.childNodes)}})};walk(el,false)});
+
+/* Scroll-Choreografie */
+const pins=[...document.querySelectorAll('[data-pin]')],words=[...document.querySelectorAll('#about .w')];
+const track=document.getElementById('track'),st=document.getElementById('stationen'),nav=document.getElementById('nav');
+const sts=[...track.querySelectorAll('.st')],stn=document.getElementById('stn'),segs=document.getElementById('segs');
+const seg=sts.map(()=>{const i=document.createElement('i');segs.append(i);return i});
+let scrollP=0,horiz=false;
+function measure(){horiz=getComputedStyle(track).flexDirection==='row';st.style.setProperty('--shift',Math.max(0,track.scrollWidth-innerWidth)+'px')}
+function frame(){const vh=innerHeight,vw=innerWidth;
+ pins.forEach(s=>{const r=s.getBoundingClientRect(),t=s.offsetHeight-vh,p=t>0?Math.min(1,Math.max(0,-r.top/t)):0;s.style.setProperty('--p',p.toFixed(4));s._p=p});
+ const ap=document.getElementById('about')._p||0,n=Math.floor(Math.min(1,ap*1.25)*words.length);words.forEach((w,i)=>w.classList.toggle('on',RM||i<n));
+ let cur=0;sts.forEach((s,i)=>{const r=s.getBoundingClientRect();let f;
+  if(horiz){f=Math.min(1,Math.max(0,(vw*.62-r.left)/Math.max(1,r.width)))}else{f=Math.min(1,Math.max(0,(vh*.62-r.top)/Math.max(1,r.height)))}
+  s.style.setProperty('--f',f.toFixed(3));seg[i].style.setProperty('--f',f.toFixed(3));if(f>0)cur=i});
+ if(stn)stn.textContent=String(cur+1).padStart(2,'0');
+ scrollP=scrollY/Math.max(1,document.body.scrollHeight-vh);
+ root.style.setProperty('--sp',scrollP.toFixed(4));
+ root.style.setProperty('--hp',Math.min(1,scrollY/(vh*1.1)).toFixed(3));
+ nav.classList.toggle('solid',scrollY>40);
+}
+let tk=false;const on=()=>{if(!tk){tk=true;requestAnimationFrame(()=>{frame();tk=false})}};
+measure();addEventListener('scroll',on,{passive:true});
+addEventListener('resize',()=>{measure();on();sizeGL()});frame();
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.15});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+/* Hintergrund-Film (WebGL): ruhig, anthrazit mit Navy */
+const cv=document.getElementById('bg');const gl=cv.getContext('webgl',{antialias:false,alpha:false,powerPreference:'low-power'});
+let prog,U={},pal={c0:[0,0,0],c1:[0,0,0],c2:[0,0,0]};
+const hex=h=>{h=h.replace('#','');return[0,2,4].map(i=>parseInt(h.slice(i,i+2),16)/255)};
+function setPalette(){pal=isLight()?{c0:hex('#F5F5F7'),c1:hex('#E3E6EE'),c2:hex('#9DB0DA')}:{c0:hex('#050506'),c1:hex('#14161C'),c2:hex('#2C4A8C')};if(RM)draw(0)}
+function sizeGL(){if(!gl)return;const s=Math.min(devicePixelRatio||1,1.5)*.5;cv.width=Math.round(innerWidth*s);cv.height=Math.round(innerHeight*s);gl.viewport(0,0,cv.width,cv.height);if(RM)draw(0)}
+if(gl){
+ const vs='attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}';
+ const fs=`precision mediump float;uniform vec2 r;uniform float t;uniform vec2 m;uniform float s;uniform vec3 c0,c1,c2;
+ float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+ float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}
+ float fbm(vec2 p){float v=0.,a=.5;mat2 R=mat2(.8,.6,-.6,.8);for(int i=0;i<5;i++){v+=a*n(p);p=R*p*2.02;a*=.5;}return v;}
+ void main(){vec2 uv=gl_FragCoord.xy/r;vec2 p=(uv-.5)*vec2(r.x/r.y,1.)*1.5;
+  p+=(m-.5)*.12;float T=t*.032+s*1.;
+  vec2 q=vec2(fbm(p+vec2(0.,T)),fbm(p+vec2(5.2,1.3)-T*.8));
+  vec2 w=vec2(fbm(p+3.*q+vec2(1.7,9.2)+T*1.2),fbm(p+3.*q+vec2(8.3,2.8)-T));
+  float f=fbm(p+2.4*w);
+  float d=distance(uv,m);float glow=exp(-d*d*8.)*.25;
+  vec3 col=mix(c0,c1,smoothstep(.3,.95,f)+glow*.3);
+  col=mix(col,c2,pow(smoothstep(.5,1.05,f*length(w)*1.3),2.4)*.42+glow*.08);
+  float v=smoothstep(1.2,.2,length((uv-vec2(.7,.55))*vec2(1.1,1.)));col=mix(c0,col,v);
+  col+=(h(gl_FragCoord.xy+t)-.5)*.012;
+  gl_FragColor=vec4(col,1.);}`;
+ const sh=(t,src)=>{const o=gl.createShader(t);gl.shaderSource(o,src);gl.compileShader(o);return o};
+ prog=gl.createProgram();gl.attachShader(prog,sh(gl.VERTEX_SHADER,vs));gl.attachShader(prog,sh(gl.FRAGMENT_SHADER,fs));gl.linkProgram(prog);
+ if(gl.getProgramParameter(prog,gl.LINK_STATUS)){
+  gl.useProgram(prog);const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
+  const a=gl.getAttribLocation(prog,'a');gl.enableVertexAttribArray(a);gl.vertexAttribPointer(a,2,gl.FLOAT,false,0,0);
+  ['r','t','m','s','c0','c1','c2'].forEach(k=>U[k]=gl.getUniformLocation(prog,k));
+ }else prog=null;
+}
+let mx=.5,my=.5,tmx=.5,tmy=.5,sm=0,visible=true;
+addEventListener('pointermove',e=>{tmx=e.clientX/innerWidth;tmy=1-e.clientY/innerHeight},{passive:true});
+document.addEventListener('visibilitychange',()=>{visible=!document.hidden;if(visible&&!RM)requestAnimationFrame(loop)});
+function draw(ms){if(!prog)return;mx+=(tmx-mx)*.04;my+=(tmy-my)*.04;sm+=(scrollP-sm)*.06;
+ gl.uniform2f(U.r,cv.width,cv.height);gl.uniform1f(U.t,ms/1000);gl.uniform2f(U.m,mx,my);gl.uniform1f(U.s,sm);
+ gl.uniform3fv(U.c0,pal.c0);gl.uniform3fv(U.c1,pal.c1);gl.uniform3fv(U.c2,pal.c2);gl.drawArrays(gl.TRIANGLES,0,3)}
+let last=0;function loop(ms){if(!visible)return;if(ms-last>28){draw(ms);last=ms}requestAnimationFrame(loop)}
+setPalette();sizeGL();if(prog){if(RM)draw(0);else requestAnimationFrame(loop)}
+
+/* Strava-Livewerte (data/strava.json wird täglich per GitHub Action aktualisiert) */
+const yr=new Date().getFullYear();document.querySelectorAll('[data-yr]').forEach(e=>e.textContent=yr);
+const fmt=(x,d=0)=>Number(x).toLocaleString(window.JF_LANG==='en'?'en-GB':'de-DE',{maximumFractionDigits:d,minimumFractionDigits:d});
+fetch('/data/strava.json',{cache:'no-cache'}).then(r=>r.ok?r.json():null).then(d=>{
+ if(!d)return;
+ const set=(k,v,u)=>{const b=document.querySelector(`[data-k="${k}"] b`);if(b&&v!=null)b.innerHTML=`${v}<small>${u}</small>`};
+ if(d.longest_run_km)set('longest',fmt(d.longest_run_km,1),'km');
+ if(d.best_5k_s){const b=document.querySelector('[data-k="best5k"] b');if(b)b.textContent=Math.floor(d.best_5k_s/60)+':'+String(d.best_5k_s%60).padStart(2,'0')}
+ if(d.ytd_run_km!=null){set('ytd',fmt(d.ytd_run_km),'km');if(d.year)document.querySelectorAll('[data-yr]').forEach(e=>e.textContent=d.year)}
+ if(d.athlete_url)document.getElementById('stravaLink').href=d.athlete_url;
+ if(d.updated){const t=new Date(d.updated);document.getElementById('stamp').textContent=(window.JF_LANG==='en'?'Strava, as of ':(d.demo?'Beispielwerte · ':'')+'Strava-Stand: ')+t.toLocaleDateString(window.JF_LANG==='en'?'en-GB':'de-DE',{day:'2-digit',month:'2-digit',year:'numeric'})}
+}).catch(()=>{});
+})();
+</script>
+<script>
+(()=>{const logo=document.querySelector('#nav .logo'),egg=document.getElementById('egg');if(!logo||!egg)return;let n=0,t=0;
+logo.addEventListener('click',()=>{const now=Date.now();n=now-t<1500?n+1:1;t=now;if(n>=7){n=0;egg.classList.add('on');egg.removeAttribute('aria-hidden');egg.removeAttribute('tabindex');egg.focus({preventScroll:true});clearTimeout(egg._h);egg._h=setTimeout(()=>{egg.classList.remove('on');egg.setAttribute('aria-hidden','true');egg.setAttribute('tabindex','-1')},12000)}});})();
+</script>
+<script>
+(()=>{const b=document.getElementById('cvbtn');if(!b)return;b.addEventListener('click',()=>{const en=window.JF_LANG==='en';const cb=document.querySelector('#cvcb input');if(cb)cb.checked=true;const m=document.getElementById('b-msg');if(m&&!m.value.trim())m.value=en?'Hello Joshua,\n\nI would like to request your CV.\n\nKind regards':'Hallo Joshua,\n\nich würde gerne deinen Lebenslauf anfragen.\n\nViele Grüße';const f=document.querySelector('.form');if(f){f.classList.remove('flash');void f.offsetWidth;f.classList.add('flash');f.scrollIntoView({behavior:'smooth',block:'center'})}setTimeout(()=>{const n=document.getElementById('b-name');n&&n.focus({preventScroll:true})},500)})})();
+</script>
+<script>
+(()=>{const m=document.getElementById('mail');if(m){const a=m.dataset.u+'@'+m.dataset.d;m.textContent=a;m.href='mailto:'+a}})();
+</script>
+</body>
+</html>

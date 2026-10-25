@@ -7,5 +7,6 @@ Disallow: /encom/
 Disallow: /study/
 Disallow: /kitteltasche/
 Disallow: /fotos/
+Disallow: /entwurf/
 
 Sitemap: https://joshuaforster.de/sitemap.xml
