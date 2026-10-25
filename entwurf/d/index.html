@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<script>document.documentElement.classList.add('js')</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<meta name="description" content="Joshua Forster, Medizinstudent an der Universität des Saarlandes in Homburg. Orthopädie und Unfallchirurgie, Sportmedizin, Prävention.">
+<meta name="author" content="Joshua Forster">
+<meta name="theme-color" content="#0A0B0C">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<title>Joshua Forster · Entwurf D</title>
+<style>
+/* Schriften lokal (SIL OFL 1.1) */
+@font-face{font-family:"Barlow";font-style:normal;font-weight:400;font-display:swap;src:url(/fonts/barlow-400.woff2) format("woff2")}
+@font-face{font-family:"Barlow";font-style:normal;font-weight:500;font-display:swap;src:url(/fonts/barlow-500.woff2) format("woff2")}
+@font-face{font-family:"Barlow";font-style:normal;font-weight:600;font-display:swap;src:url(/fonts/barlow-600.woff2) format("woff2")}
+@font-face{font-family:"JetBrains Mono";font-style:normal;font-weight:100 800;font-display:swap;src:url(/fonts/jetbrains-mono-var.woff2) format("woff2")}
+
+:root{
+  color-scheme:dark;
+  --bg:#0A0B0C; --panel:#111315; --field:#15181A; --line:#24282B; --line2:#383D41;
+  --fg:#E9E9E6; --fg2:#B7B9BA; --fg3:#8E9295; --acc:#E6B84C; --acc-dim:rgba(230,184,76,.55);
+  --sans:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --ease:cubic-bezier(.2,.75,.2,1);
+  --gut:clamp(16px,4vw,48px); --bar:48px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--bar) + 16px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:17px/1.6 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+::selection{background:var(--acc);color:var(--bg)}
+:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:12px;top:-48px;background:var(--acc);color:var(--bg);padding:8px 12px;z-index:200;font:500 13px var(--mono)}
+.skip:focus{top:12px}
+.mono{font-family:var(--mono)}
+
+/* Werkzeugleiste */
+.bar{position:fixed;top:0;left:0;right:0;z-index:100;height:var(--bar);background:rgba(10,11,12,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar-in{max-width:1320px;margin:0 auto;height:100%;padding:0 var(--gut);display:flex;align-items:center;justify-content:space-between;gap:20px}
+.logo{display:flex;align-items:baseline;gap:12px;text-decoration:none;user-select:none;-webkit-user-select:none;white-space:nowrap}
+.logo b{font:600 17px var(--sans);letter-spacing:.01em}
+.logo span{font:400 11px var(--mono);color:var(--fg3);letter-spacing:.04em}
+.bar nav{display:flex;align-items:center;gap:22px}
+.bar ul{display:flex;gap:2px;list-style:none;margin:0;padding:0}
+.bar ul a{display:block;font:400 12px/1 var(--mono);letter-spacing:.04em;color:var(--fg2);text-decoration:none;padding:9px 12px;border:1px solid transparent;transition:color .2s,border-color .2s}
+.bar ul a:hover{color:var(--fg);border-color:var(--line2)}
+.bar ul a.on{color:var(--acc);border-color:var(--line)}
+.lng{font:500 12px/1 var(--mono);background:transparent;color:var(--fg);border:1px solid var(--line2);height:30px;min-width:42px;cursor:pointer;transition:border-color .2s,color .2s}
+.lng:hover{border-color:var(--acc);color:var(--acc)}
+@media (max-width:900px){.bar ul{display:none}.logo span{display:none}}
+.egg{position:fixed;top:60px;left:50%;transform:translate(-50%,-8px);opacity:0;pointer-events:none;z-index:120;padding:10px 16px;background:var(--panel);border:1px solid var(--acc);color:var(--acc);font:500 12px var(--mono);letter-spacing:.06em;text-decoration:none;transition:opacity .4s,transform .4s}
+.egg.on{opacity:1;pointer-events:auto;transform:translate(-50%,0)}
+.egg:hover{background:var(--acc);color:var(--bg)}
+
+/* Kopfbereich mit Schichtbild */
+.hero{position:relative;height:260vh}
+.stage{position:sticky;top:var(--bar);height:calc(100vh - var(--bar));height:calc(100svh - var(--bar));display:flex;align-items:center}
+.hero-in{max-width:1320px;width:100%;margin:0 auto;padding:0 var(--gut);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.08fr);gap:clamp(28px,4vw,64px);align-items:center}
+.eyebrow{font:400 12px/1.4 var(--mono);letter-spacing:.06em;color:var(--acc);margin:0 0 18px}
+h1{font:500 clamp(44px,6vw,86px)/.98 var(--sans);letter-spacing:-.015em;margin:0}
+.lead{font-size:clamp(17px,1.35vw,19px);line-height:1.6;color:var(--fg2);max-width:46ch;margin:22px 0 0}
+.facts{margin:28px 0 0;border-top:1px solid var(--line);max-width:520px}
+.facts div{display:grid;grid-template-columns:150px minmax(0,1fr);gap:12px;padding:9px 0;border-bottom:1px solid var(--line)}
+.facts dt{font:400 12px/1.6 var(--mono);color:var(--fg3);letter-spacing:.02em}
+.facts dd{margin:0;font-size:15.5px;line-height:1.5}
+.facts dd a{color:var(--acc);text-decoration:none;border-bottom:1px solid var(--acc-dim)}
+.cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:11px 18px;font:500 13px var(--mono);letter-spacing:.02em;text-decoration:none;border:1px solid var(--line2);color:var(--fg);transition:border-color .2s,color .2s,background .2s}
+.btn:hover{border-color:var(--acc);color:var(--acc)}
+.btn.p{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.btn.p:hover{background:var(--acc);border-color:var(--acc);color:var(--bg)}
+
+.viewer{position:relative;width:min(100%,calc(100svh - var(--bar) - 120px));aspect-ratio:1;margin-left:auto;background:#000;border:1px solid var(--line);overflow:hidden}
+.viewer canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.viewer svg.ov{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.ov line,.ov path{vector-effect:non-scaling-stroke}
+.ov .cal{stroke:var(--acc);stroke-width:1.25}
+.ov .ret{stroke:var(--acc);stroke-width:1;opacity:.8}
+.ovt{position:absolute;font:400 11px/1.45 var(--mono);color:var(--fg2);letter-spacing:.02em;pointer-events:none;text-shadow:0 0 4px #000,0 0 2px #000}
+.ovt b{font-weight:500;color:var(--fg)}
+.ovt.tl{left:12px;top:10px}.ovt.tr{right:12px;top:10px;text-align:right}.ovt.bl{left:12px;bottom:10px}.ovt.br{right:12px;bottom:10px;text-align:right}
+.scale{display:block;height:6px;border:1px solid var(--fg2);border-top:0;margin:0 0 4px auto}
+.mlab{position:absolute;transform:translate(0,-50%);font:500 11px var(--mono);color:var(--acc);white-space:nowrap;text-shadow:0 0 4px #000,0 0 2px #000}
+.loc{position:absolute;right:12px;top:58px;width:34px;height:96px;opacity:.9}
+.loc .o{fill:none;stroke:var(--fg3);stroke-width:1}
+.loc .l{stroke:var(--acc);stroke-width:1.5}
+.hint{font:400 11.5px var(--mono);color:var(--fg3);margin:12px 0 0;text-align:right}
+
+/* Abschnitte */
+.sec{max-width:1320px;margin:0 auto;padding:clamp(72px,9vw,128px) var(--gut) 0}
+.sh{display:flex;align-items:baseline;gap:18px;flex-wrap:wrap}
+.sh .ix{font:500 13px var(--mono);color:var(--acc)}
+.sh h2{font:500 clamp(30px,3.4vw,44px)/1.1 var(--sans);margin:0;letter-spacing:-.01em}
+.sh .meta{margin-left:auto;font:400 12px var(--mono);color:var(--fg3)}
+.ruler{height:10px;margin:18px 0 0;background:
+  linear-gradient(var(--line2),var(--line2)) left bottom/100% 1px no-repeat,
+  repeating-linear-gradient(to right,var(--line2) 0 1px,transparent 1px 8px) left bottom/100% 4px no-repeat,
+  repeating-linear-gradient(to right,var(--fg3) 0 1px,transparent 1px 80px) left bottom/100% 9px no-repeat}
+
+/* Werdegang: Zeitskala */
+.tl{position:relative;height:96px;margin:34px 0 8px}
+.tl .ax{position:absolute;left:0;right:0;top:52px;height:1px;background:var(--line2)}
+.tl .mi{position:absolute;left:0;right:0;top:52px;height:4px;background:repeating-linear-gradient(to right,var(--line2) 0 1px,transparent 1px calc(100%/36)) left top/100% 4px no-repeat}
+.tl .yr{position:absolute;top:52px;width:1px;height:10px;background:var(--fg3)}
+.tl .yr span{position:absolute;top:14px;left:0;transform:translateX(-50%);font:400 11px var(--mono);color:var(--fg3)}
+.tl .yr.f span{transform:none}.tl .yr.l span{transform:translateX(-100%)}
+.tl .band{position:absolute;z-index:1;background:var(--bg);top:22px;height:22px;border:1px solid var(--line2);border-bottom:0;font:400 11px/21px var(--mono);color:var(--fg2);padding:0 8px;white-space:nowrap;overflow:hidden;text-overflow:clip}
+.tl .band.pl{border-style:dashed;color:var(--fg3);background:repeating-linear-gradient(135deg,transparent 0 5px,rgba(255,255,255,.05) 5px 6px),var(--bg)}
+.tl .pt{position:absolute;z-index:2;top:48px;width:9px;height:9px;margin-left:-4px;border-radius:50%;background:var(--bg);border:1.5px solid var(--fg)}
+.tl .now{position:absolute;top:0;height:62px;width:1px;background:var(--acc);left:var(--now,64%)}
+.tl .now span{position:absolute;top:-2px;left:6px;font:500 11px var(--mono);color:var(--acc);white-space:nowrap}
+.cvl{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.cvl li{display:grid;grid-template-columns:110px minmax(0,.9fr) minmax(0,1.3fr);gap:8px 24px;padding:16px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.cvl .t{font:400 13px var(--mono);color:var(--fg2)}
+.cvl h3{font:500 18px/1.35 var(--sans);margin:0}
+.cvl p{margin:0;color:var(--fg2);font-size:16px;line-height:1.5}
+.tag{display:inline-block;margin-left:8px;padding:1px 6px;font:400 11px/1.5 var(--mono);color:var(--acc);border:1px dashed var(--acc-dim);vertical-align:2px}
+
+/* Schwerpunkte */
+.sp{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:34px 0 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.sp article{padding:24px 24px 28px;border-left:1px solid var(--line)}
+.sp article:first-child{border-left:0;padding-left:0}
+.cal-i{display:block;width:56px;height:10px;margin:0 0 18px}
+.cal-i line{stroke:var(--acc);stroke-width:1}
+.sp h3{font:500 21px/1.3 var(--sans);margin:0 0 10px}
+.sp p{margin:0;color:var(--fg2);font-size:16px;line-height:1.55}
+
+/* Sport */
+.spg{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(28px,5vw,72px);margin:34px 0 0;align-items:start}
+.spg > div > p{margin:0 0 14px;color:var(--fg2);max-width:46ch}
+.spg > div > p:first-child{color:var(--fg)}
+.pln{margin:22px 0 0;border-top:1px solid var(--line)}
+.pln div{display:grid;grid-template-columns:110px minmax(0,1fr);gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:15.5px}
+.pln dt{font:400 12px/1.7 var(--mono);color:var(--fg3)}
+.pln dd{margin:0}
+.ro{width:100%;border-collapse:collapse}
+.ro caption{text-align:left;font:400 12px var(--mono);color:var(--fg3);padding:0 0 10px}
+.ro th,.ro td{padding:12px 12px 12px 0;border-bottom:1px solid var(--line);text-align:left;vertical-align:baseline;font-size:15.5px}
+.ro thead th{font:400 11.5px var(--mono);color:var(--fg3);border-bottom:1px solid var(--line2);padding-top:0}
+.ro tbody th{font-weight:400}
+.ro .v{font:500 16px var(--mono);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;color:var(--fg)}
+.ro .d{font:400 13px var(--mono);color:var(--fg2);white-space:nowrap}
+.ro .q{font:400 11.5px var(--mono);color:var(--fg3);padding-right:0;text-align:right}
+.ro thead .v,.ro thead .q{font:400 11.5px var(--mono)}
+.ro tr[hidden]{display:none}
+.stamp{font:400 12px/1.5 var(--mono);color:var(--fg3);margin:12px 0 0}
+.stamp a{color:var(--fg2)}
+
+/* Kontakt */
+.kg{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(28px,5vw,72px);margin:34px 0 0;align-items:start}
+.kg p{margin:0 0 18px;color:var(--fg2);max-width:42ch}
+.mail{display:inline-block;font:500 16px var(--mono);color:var(--acc);text-decoration:none;border-bottom:1px solid var(--acc-dim);word-break:break-all}
+.cvbtn{display:inline-flex;margin-top:22px;padding:11px 16px;background:none;border:1px solid var(--line2);color:var(--fg);font:500 13px var(--mono);cursor:pointer;transition:border-color .2s,color .2s}
+.cvbtn:hover{border-color:var(--acc);color:var(--acc)}
+.form{display:grid;gap:14px}
+.form .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fl{display:grid;gap:6px}
+.fl span{font:400 12px var(--mono);color:var(--fg3)}
+.form input,.form textarea{width:100%;padding:12px 13px;background:var(--field);border:1px solid var(--line2);border-radius:0;font:400 16px var(--sans);color:var(--fg)}
+.form input:focus,.form textarea:focus{outline:none;border-color:var(--acc)}
+.form textarea{min-height:130px;resize:vertical}
+.cb{display:flex;gap:10px;align-items:flex-start;font-size:15px;color:var(--fg2)}
+.cb input{width:auto;margin:4px 0 0;accent-color:var(--acc)}
+.form button{justify-self:start;padding:12px 20px;border:1px solid var(--fg);background:var(--fg);color:var(--bg);font:500 13px var(--mono);cursor:pointer;transition:background .2s,border-color .2s}
+.form button:hover{background:var(--acc);border-color:var(--acc)}
+.form small{font-size:13.5px;line-height:1.5;color:var(--fg3)}
+.form small a{color:var(--fg2)}
+.form.flash{animation:fl 1.2s var(--ease)}
+@keyframes fl{0%{box-shadow:0 0 0 1px var(--acc)}100%{box-shadow:0 0 0 14px transparent}}
+
+footer{margin-top:clamp(80px,10vw,140px);border-top:1px solid var(--line)}
+.ft{max-width:1320px;margin:0 auto;padding:20px var(--gut) 32px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px 24px;font:400 12px/1.6 var(--mono);color:var(--fg3)}
+.ft nav{display:flex;flex-wrap:wrap;gap:6px 22px}
+.ft a{color:var(--fg2);text-decoration:none}
+.ft a:hover{color:var(--acc)}
+
+/* Mobil */
+@media (max-width:900px){
+  .hero{height:auto}
+  .stage{position:relative;top:0;height:auto;padding:calc(var(--bar) + 40px) 0 0}
+  .hero-in{grid-template-columns:minmax(0,1fr)}
+  .viewer{width:100%;margin:8px 0 0}
+  .hint{text-align:left}
+  .sp{grid-template-columns:minmax(0,1fr)}
+  .sp article{border-left:0;border-top:1px solid var(--line);padding:22px 0 24px}
+  .sp article:first-child{border-top:0}
+  .spg,.kg{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:620px){
+  .tl .yr.l span{display:none}
+  .facts div{grid-template-columns:118px minmax(0,1fr)}
+  .cvl li{grid-template-columns:minmax(0,1fr);gap:2px}
+  .form .row{grid-template-columns:1fr}
+  .tl .band{font-size:10px;padding:0 4px}
+  .tl .yr:nth-of-type(even) span{display:none}
+  .ro .q{display:none}
+  .ovt{font-size:10px}
+  .loc{top:50px;width:26px;height:74px}
+  .sh .meta{margin-left:0;flex-basis:100%}
+}
+
+/* Bewegung */
+.js .mo .ruler{clip-path:inset(0 100% 0 0);transition:clip-path 1.2s var(--ease)}
+.js .mo .in .ruler,.js .mo .ruler.in{clip-path:inset(0 0 0 0)}
+.js .mo .rv{opacity:0;transform:translateY(10px);transition:opacity .8s var(--ease),transform .8s var(--ease);transition-delay:calc(var(--d,0)*80ms + .15s)}
+.js .mo .in .rv,.js .mo .rv.in{opacity:1;transform:none}
+.js .mo .tl .now{left:0;transition:left 1.8s cubic-bezier(.5,0,.15,1) .4s}
+.js .mo .in .tl .now{left:var(--now,64%)}
+.js .mo .tl .band,.js .mo .tl .pt{opacity:0;transition:opacity .6s var(--ease)}
+.js .mo .in .tl .band,.js .mo .in .tl .pt{opacity:1}
+.js .mo .cal-i line{stroke-dasharray:60;stroke-dashoffset:60;transition:stroke-dashoffset 1s var(--ease) .3s}
+.js .mo .in .cal-i line{stroke-dashoffset:0}
+.js .mo .ov .cal,.js .mo .ov .ret{opacity:0;transition:opacity .9s var(--ease) .6s}
+.js .mo .ov.in .cal,.js .mo .ov.in .ret{opacity:1}
+.js .mo .ov.in .ret{opacity:.8}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .hero{height:auto}
+  .stage{position:relative;top:0;height:auto;padding:calc(var(--bar) + 48px) 0 0}
+  .js .mo *{transition:none!important}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main" data-i="skip">Zum Inhalt springen</a>
+<header class="bar">
+  <div class="bar-in">
+    <a class="logo" id="logo" href="#main" aria-label="Joshua Forster, zum Seitenanfang"><b>Joshua Forster</b><span data-i="tag">Medizinstudent · Homburg</span></a>
+    <a class="egg" id="egg" href="/spiele/" aria-hidden="true" tabindex="-1">Easter Egg</a>
+    <nav aria-label="Hauptnavigation">
+      <ul>
+        <li><a href="#werdegang" data-i="n1">Werdegang</a></li>
+        <li><a href="#schwerpunkte" data-i="n2">Schwerpunkte</a></li>
+        <li><a href="#sport" data-i="n3">Sport</a></li>
+        <li><a href="#kontakt" data-i="n4">Kontakt</a></li>
+      </ul>
+      <button class="lng" id="lng" type="button">EN</button>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero" id="hero" aria-labelledby="h1">
+    <div class="stage">
+      <div class="hero-in">
+        <div>
+          <p class="eyebrow" data-i="eb">Medizinstudent · Klinischer Abschnitt</p>
+          <h1 id="h1">Joshua Forster</h1>
+          <p class="lead" data-i="lead">Ich studiere Medizin an der Universität des Saarlandes in Homburg und bin seit dem Physikum 2025 im klinischen Abschnitt. Fachlich interessieren mich vor allem die Orthopädie und Unfallchirurgie, außerdem Sportmedizin und Prävention.</p>
+          <dl class="facts">
+            <div><dt data-i="k1">Universität</dt><dd data-i="k1v">Universität des Saarlandes, Homburg</dd></div>
+            <div><dt data-i="k2">Studium seit</dt><dd data-i="k2v">Oktober 2022</dd></div>
+            <div><dt data-i="k3">Physikum</dt><dd>2025</dd></div>
+            <div><dt data-i="k4">Lebenslauf</dt><dd><a href="#kontakt" data-i="k4v">Auf Anfrage</a></dd></div>
+          </dl>
+          <div class="cta"><a class="btn p" href="#werdegang" data-i="c1">Werdegang</a><a class="btn" href="#kontakt" data-i="c2">Kontakt</a></div>
+        </div>
+        <div>
+          <figure class="viewer" id="viewer" style="margin-top:0;margin-bottom:0" role="img" aria-label="Schematische MRT-Schnittbilder vom Oberschenkel bis zum Kniegelenk">
+            <canvas id="mri" aria-hidden="true"></canvas>
+            <svg class="ov" id="ov" viewBox="-1 -1 2 2" preserveAspectRatio="none" aria-hidden="true">
+              <g id="ret"><line class="ret" x1="0" y1="0" x2="0" y2="0"/><line class="ret" x1="0" y1="0" x2="0" y2="0"/><line class="ret" x1="0" y1="0" x2="0" y2="0"/><line class="ret" x1="0" y1="0" x2="0" y2="0"/></g>
+              <g id="cal"><line class="cal" x1="0" y1="0" x2="0" y2="0"/><line class="cal" x1="0" y1="0" x2="0" y2="0"/><line class="cal" x1="0" y1="0" x2="0" y2="0"/></g>
+            </svg>
+            <span class="mlab" id="mlab" aria-hidden="true"></span>
+            <div class="ovt tl" aria-hidden="true"><b>T1 axial</b><br><span data-i="o1">Oberschenkel bis Knie</span></div>
+            <div class="ovt tr" aria-hidden="true"><span data-i="o2">Schicht</span> <b id="sl">01</b>/<span id="sn">48</span></div>
+            <svg class="loc" viewBox="0 0 34 96" aria-hidden="true">
+              <path class="o" d="M6 2 C4 30 6 60 5 80 C5 88 9 94 17 94 C25 94 29 88 29 80 C28 60 30 30 28 2"/>
+              <path class="o" d="M14 2 L14 66 C10 70 9 78 12 82 L22 82 C25 78 24 70 20 66 L20 2"/>
+              <line class="l" id="locl" x1="1" x2="33" y1="10" y2="10"/>
+            </svg>
+            <div class="ovt bl" aria-hidden="true" data-i="o3">Schematisch, keine Patientendaten</div>
+            <div class="ovt br" aria-hidden="true"><i class="scale" id="scale"></i>5 cm</div>
+          </figure>
+          <p class="hint" id="hint" aria-hidden="true" data-i="hint">Beim Scrollen laufen die Schichten durch.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="werdegang" aria-labelledby="h-wd">
+    <header class="sh"><span class="ix">01</span><h2 id="h-wd" data-i="n1">Werdegang</h2><span class="meta" data-i="wdm">2021 bis 2029</span></header>
+    <div class="ruler" aria-hidden="true"></div>
+    <div class="tl" id="tl" aria-hidden="true">
+      <div class="band" style="left:19.9%;width:30.1%" data-i="b1">Vorklinik</div>
+      <div class="band" style="left:50%;width:37%" data-i="b2">Klinischer Abschnitt</div>
+      <div class="band pl" style="left:87%;width:11.1%">PJ</div>
+      <div class="ax"></div><div class="mi"></div>
+      <i class="yr f" style="left:0%"><span>2021</span></i><i class="yr" style="left:11.11%"><span>2022</span></i><i class="yr" style="left:22.22%"><span>2023</span></i><i class="yr" style="left:33.33%"><span>2024</span></i><i class="yr" style="left:44.44%"><span>2025</span></i><i class="yr" style="left:55.56%"><span>2026</span></i><i class="yr" style="left:66.67%"><span>2027</span></i><i class="yr" style="left:77.78%"><span>2028</span></i><i class="yr" style="left:88.89%"><span>2029</span></i><i class="yr l" style="left:100%"><span>2030</span></i>
+      <i class="pt" style="left:5.6%"></i><i class="pt" style="left:19.9%"></i><i class="pt" style="left:50%"></i><i class="pt" style="left:61.1%"></i>
+      <div class="now" id="now"><span data-i="today">Heute</span></div>
+    </div>
+    <ol class="cvl">
+      <li class="rv" style="--d:0"><span class="t">2021</span><h3 data-i="w7">Abitur</h3><p>Otto-Hahn-Gymnasium</p></li>
+      <li class="rv" style="--d:1"><span class="t">10/2022</span><h3 data-i="w6">Beginn Medizinstudium</h3><p data-i="w6d">Universität des Saarlandes, Standort Homburg</p></li>
+      <li class="rv" style="--d:2"><span class="t" data-i="w5t">Vorklinik</span><h3 data-i="w5">Pflegepraktikum, 90 Tage</h3><p data-i="w5d">Neurochirurgie und Innere Medizin am Klinikum Saarbrücken, Innere Medizin am UKS Homburg</p></li>
+      <li class="rv" style="--d:3"><span class="t">2025</span><h3 data-i="w4">Physikum</h3><p data-i="w4d">Erster Abschnitt der Ärztlichen Prüfung. Seitdem klinischer Abschnitt.</p></li>
+      <li class="rv" style="--d:4"><span class="t">2026</span><h3 data-i="w3">Phako-Wetlab</h3><p data-i="w3d">Praktischer Kurs in Kataraktchirurgie, HOYA</p></li>
+      <li class="rv" style="--d:5"><span class="t">2026</span><h3 data-i="w2">Famulatur Orthopädie</h3><p data-i="w2d">Universitätsklinikum des Saarlandes, Homburg</p></li>
+      <li class="rv" style="--d:6"><span class="t">2028/29</span><h3><span data-i="w1">Praktisches Jahr</span><span class="tag" data-i="gp">geplant</span></h3><p data-i="w1d">Innere Medizin und Chirurgie am Universitätsspital Basel. Wahltertial Orthopädie an der Schulthess Klinik Zürich.</p></li>
+    </ol>
+  </section>
+
+  <section class="sec" id="schwerpunkte" aria-labelledby="h-sp">
+    <header class="sh"><span class="ix">02</span><h2 id="h-sp" data-i="n2">Schwerpunkte</h2></header>
+    <div class="ruler" aria-hidden="true"></div>
+    <div class="sp">
+      <article class="rv" style="--d:0"><svg class="cal-i" viewBox="0 0 56 10" aria-hidden="true"><line x1="0" y1="5" x2="56" y2="5"/><line x1=".5" y1="0" x2=".5" y2="10"/><line x1="55.5" y1="0" x2="55.5" y2="10"/></svg><h3 data-i="s1">Orthopädie und Unfallchirurgie</h3><p data-i="s1d">Gelenk- und Sportverletzungen und ihre operative Versorgung. Dazu die Nachbehandlung bis zur vollen Belastung.</p></article>
+      <article class="rv" style="--d:1"><svg class="cal-i" viewBox="0 0 56 10" aria-hidden="true"><line x1="0" y1="5" x2="56" y2="5"/><line x1=".5" y1="0" x2=".5" y2="10"/><line x1="55.5" y1="0" x2="55.5" y2="10"/></svg><h3 data-i="s2">Sportmedizin</h3><p data-i="s2d">Belastungssteuerung und Leistungsdiagnostik, besonders bei der Rückkehr in den Sport nach einer Verletzung.</p></article>
+      <article class="rv" style="--d:2"><svg class="cal-i" viewBox="0 0 56 10" aria-hidden="true"><line x1="0" y1="5" x2="56" y2="5"/><line x1=".5" y1="0" x2=".5" y2="10"/><line x1="55.5" y1="0" x2="55.5" y2="10"/></svg><h3 data-i="s3">Prävention</h3><p data-i="s3d">Bewegung und Training als Therapie und zur Vorbeugung.</p></article>
+    </div>
+  </section>
+
+  <section class="sec" id="sport" aria-labelledby="h-st">
+    <header class="sh"><span class="ix">03</span><h2 id="h-st" data-i="n3">Sport</h2><span class="meta" data-i="stm">Laufwerte aus Strava</span></header>
+    <div class="ruler" aria-hidden="true"></div>
+    <div class="spg">
+      <div class="rv" style="--d:0">
+        <p data-i="sp1">Am 11. Oktober 2026 bin ich einen Halbmarathon in 1:46:12 gelaufen.</p>
+        <p data-i="sp2">Neben dem Laufen fechte ich Degen und mache seit 2021 Krafttraining.</p>
+        <dl class="pln">
+          <div><dt>2027</dt><dd data-i="pl1">Triathlon, geplant</dd></div>
+          <div><dt data-i="pl2t">Ende 2027</dt><dd data-i="pl2">Ironman, geplant</dd></div>
+        </dl>
+      </div>
+      <div class="rv" style="--d:1">
+        <table class="ro" id="ro">
+          <caption data-i="tc">Laufen</caption>
+          <thead><tr><th scope="col" data-i="u1">Messgröße</th><th scope="col" class="v" data-i="u2">Wert</th><th scope="col" data-i="u3">Datum / Umfang</th><th scope="col" class="q" data-i="u4">Quelle</th></tr></thead>
+          <tbody>
+            <tr><th scope="row" data-i="r1">Halbmarathon</th><td class="v">1:46:12</td><td class="d">11.10.2026</td><td class="q" data-i="q1">Wettkampf</td></tr>
+            <tr data-k="best5k" hidden><th scope="row" data-i="r0">Schnellste 5 km</th><td class="v">–</td><td class="d">–</td><td class="q">Strava</td></tr>
+            <tr data-k="longest"><th scope="row" data-i="r2">Längster Lauf</th><td class="v">30 km</td><td class="d">29.06.2026</td><td class="q">Strava</td></tr>
+            <tr data-k="ytd"><th scope="row"><span data-i="r3">Laufstrecke</span> <span data-yr>2026</span></th><td class="v">339 km</td><td class="d"><span data-n>45</span> <span data-i="runs">Läufe</span></td><td class="q">Strava</td></tr>
+            <tr data-k="all"><th scope="row" data-i="r4">Laufstrecke gesamt</th><td class="v">638 km</td><td class="d"><span data-n>117</span> <span data-i="runs">Läufe</span></td><td class="q">Strava</td></tr>
+          </tbody>
+        </table>
+        <p class="stamp"><a id="stravaLink" href="https://www.strava.com/athletes/55105958" target="_blank" rel="noopener">Strava</a><span id="stamp"></span></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="kontakt" aria-labelledby="h-ko">
+    <header class="sh"><span class="ix">04</span><h2 id="h-ko" data-i="n4">Kontakt</h2><span class="meta" data-i="kom">Lebenslauf auf Anfrage</span></header>
+    <div class="ruler" aria-hidden="true"></div>
+    <div class="kg">
+      <div class="rv" style="--d:0">
+        <p data-i="kp">Für fachliche Anfragen erreichen Sie mich per E-Mail oder über das Formular. Den Lebenslauf schicke ich auf Anfrage.</p>
+        <a class="mail" id="mail" data-u="joshuaforster02" data-d="gmail.com" href="#kontakt">joshuaforster02 [at] gmail.com</a><br>
+        <button type="button" class="cvbtn" id="cvbtn"><span data-i="cvb">Lebenslauf anfragen</span></button>
+      </div>
+      <form class="form rv" style="--d:1" action="https://formspree.io/f/xqeajnve" method="POST">
+        <input type="hidden" name="_subject" value="Website-Anfrage von joshuaforster.de">
+        <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <div class="row">
+          <label class="fl"><span data-i="f1">Name</span><input id="b-name" name="name" autocomplete="name" required></label>
+          <label class="fl"><span data-i="f2">E-Mail</span><input id="b-mail" type="email" name="email" autocomplete="email" required></label>
+        </div>
+        <label class="fl"><span data-i="f3">Nachricht</span><textarea id="b-msg" name="message" required></textarea></label>
+        <label class="cb" id="cvcb"><input type="checkbox" name="request_cv" value="yes"> <span data-i="cv">Ich möchte den Lebenslauf per E-Mail erhalten.</span></label>
+        <button type="submit" data-i="sb">Nachricht senden</button>
+        <small data-i="fs">Mit dem Absenden willigen Sie in die Verarbeitung Ihrer Angaben ein. Mehr dazu unter <a href="/datenschutz.html">Datenschutz</a>.</small>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="ft">
+    <span>© 2026 Joshua Forster</span>
+    <nav aria-label="Rechtliches">
+      <a href="/datenschutz.html" data-i="ds">Datenschutz</a>
+      <a href="/datenschutz.html#verantwortlich" data-i="im">Impressum</a>
+      <a href="#main" data-i="top">Nach oben</a>
+    </nav>
+  </div>
+</footer>
+
+<script type="text/plain" id="mri-src">
+/* Schematisches axiales T1-Schnittbild, Oberschenkel (s=0) bis Kniegelenk (s=1). Prozedural erzeugt, keine Patientendaten. */
+function MRI(RES){
+  const G=64,grid=new Float32Array(G*G);let sd=1234567;for(let i=0;i<G*G;i++){sd=(sd*16807)%2147483647;grid[i]=sd/2147483647}
+  const vn=(x,y)=>{const xi=Math.floor(x),yi=Math.floor(y),fx=x-xi,fy=y-yi,ux=fx*fx*(3-2*fx),uy=fy*fy*(3-2*fy);const i0=((xi%G)+G)%G,j0=((yi%G)+G)%G,i1=(i0+1)%G,j1=(j0+1)%G;const a=grid[j0*G+i0],b=grid[j0*G+i1],c=grid[j1*G+i0],d=grid[j1*G+i1];return a+(b-a)*ux+(c-a)*uy+(a-b-c+d)*ux*uy};
+  const fbm=(x,y)=>vn(x,y)*.5+vn(x*2.03+17,y*2.03+3)*.3+vn(x*4.1+5,y*4.1+11)*.2;
+  const ss=(a,b,x)=>{const t=Math.min(1,Math.max(0,(x-a)/(b-a)));return t*t*(3-2*t)};
+  const mix=(a,b,t)=>a+(b-a)*t;
+  const AA=2.4/RES*2,cov=d=>Math.min(1,Math.max(0,.5-d/AA));
+  const sdE=(x,y,cx,cy,rx,ry)=>{const px=(x-cx)/rx,py=(y-cy)/ry;return (Math.hypot(px,py)-1)*Math.min(rx,ry)};
+  const sdC=(x,y,cx,cy,r)=>Math.hypot(x-cx,y-cy)-r;
+  const smin=(a,b,k)=>{const h=Math.max(k-Math.abs(a-b),0)/k;return Math.min(a,b)-h*h*k*.25};
+  // Rauschfelder einmal vorberechnen
+  const N=RES*RES,B=new Float32Array(RES*RES),F1=new Float32Array(N),F2=new Float32Array(N),F3=new Float32Array(N),F4=new Float32Array(N),X=new Float32Array(N),Y=new Float32Array(N);
+  for(let j=0;j<RES;j++)for(let i=0;i<RES;i++){const k=j*RES+i,x=(i+.5)/RES*2-1,y=(j+.5)/RES*2-1;X[k]=x;Y[k]=y;
+    F1[k]=fbm(x*9,y*9);F2[k]=fbm(x*26,y*11)*.6+fbm(x*7,y*7)*.4;F3[k]=fbm(x*34+9,y*34);F4[k]=fbm(x*5+3,y*5+8)}
+  const SEP=[-2.7,-2.2,-1.6,-1.05,-.55,.05,.45,1.1,1.6,2.05,2.6],SEPI=[.03,-.04,.05,-.02,.04,-.05,.01,.045,-.03,.02,-.045];
+  function geom(s){const g={};g.s=s;g.cx=0;g.cy=.02;g.rx=mix(.74,.63,ss(.3,1,s));g.ry=mix(.63,.6,s);
+    g.fx=.03;g.fy=mix(-.04,0,ss(.5,1,s));const t=ss(.42,.8,s);g.frx=mix(.128,.29,t);g.fry=mix(.128,.19,t);g.ctx=mix(.05,.014,ss(.35,.75,s));
+    g.cond=ss(.78,.95,s);g.pat=ss(.6,.8,s);g.py=g.fy-mix(.38,.31,ss(.6,1,s));g.ten=ss(.3,.5,s)*(1-ss(.62,.72,s));g.pop=ss(.5,.95,s);g.gas=ss(.82,1,s);
+    const vt=ss(.25,.8,s);g.vx=mix(g.fx+.2,g.fx+.03,vt);g.vy=mix(g.fy+.04,g.fy+.33,vt);g.fat=mix(.07,.12,ss(.4,1,s));return g}
+  function femurSD(x,y,g){let d=sdE(x,y,g.fx,g.fy,g.frx,g.fry);if(g.cond>0){const k=g.cond,r=mix(g.fry,.15,k);
+      const a=sdC(x,y,g.fx-.15*k,g.fy+.07*k,r),b=sdC(x,y,g.fx+.15*k,g.fy+.07*k,r),e=sdE(x,y,g.fx,g.fy-.03*k,g.frx,r);
+      d=smin(smin(a,b,.08),e,.08);d=Math.max(d,-sdC(x,y,g.fx,g.fy+.2,.075*k))}return d}
+  function render(s,seed,out){
+    const g=geom(s),img=out||new Uint8ClampedArray(N*4);let h=(seed*7919+13)%233280;const rnd=()=>{h=(h*9301+49297)%233280;return h/233280};
+    for(let k=0;k<N;k++){const x=X[k],y=Y[k];
+      const dx=x-g.cx,dy=y-g.cy,th=Math.atan2(dy,dx),r=Math.hypot(dx,dy);
+      const per=1+.035*Math.sin(2*th+.6)+.022*Math.sin(3*th+2.1)+.012*Math.sin(5*th+1+s*2);
+      const ct=Math.cos(th),st=Math.sin(th);const R=per/Math.sqrt(ct*ct/(g.rx*g.rx)+st*st/(g.ry*g.ry));const dS=r-R;
+      let I=.03;
+      if(dS<AA){
+      I=mix(I,.46,cov(dS));
+      const fatT=g.fat*(1+.45*Math.sin(th*2+1.2)+.25*Math.sin(th*3+.4)+.3*(F4[k]-.5))+.01;
+      I=mix(I,.7+.16*F1[k]+.06*ss(-.02,-.1,dS),cov(dS+.011));
+      const dM=dS+fatT;
+      if(dM<AA){
+        I=mix(I,.2,cov(dM));
+        const fr=Math.hypot(x-g.fx,y-g.fy),fth=Math.atan2(y-g.fy,x-g.fx);
+        let best=9,sec=0;for(let q=0;q<SEP.length;q++){const a=SEP[q]+.3*Math.sin(fr*5+q*1.7)+.08*s;const dd=Math.atan2(Math.sin(fth-a),Math.cos(fth-a));const ad=Math.abs(dd)*fr;if(ad<best){best=ad;sec=dd>0?q:(q+SEP.length-1)%SEP.length}}
+        I=mix(I,.29+SEPI[sec]+.16*(F2[k]-.5)+.05*(F4[k]-.5),cov(dM+.011));
+        if(fr>g.frx*.95){const w=.0025+.004*F4[k];const vis=ss(.36,.6,F1[k]*.6+F4[k]*.4+fr*.15);I=mix(I,.6,cov(best-w)*cov(dM+.008)*vis)}
+        if(g.pop>0){const dp=sdE(x,y,g.fx+.02,g.fy+.37,.17+.2*g.pop,.12+.2*g.pop);I=mix(I,.78+.1*F1[k],ss(.05,-.05,dp)*g.pop*cov(dM+.01))}
+        if(g.gas>0){const a=sdE(x,y,g.fx-.2,g.fy+.41,.12*g.gas+.001,.09*g.gas+.001),b=sdE(x,y,g.fx+.2,g.fy+.41,.11*g.gas+.001,.085*g.gas+.001),m=Math.min(a,b);I=mix(I,.2,cov(m));I=mix(I,.29+.1*(F2[k]-.5),cov(m+.01))}
+        const da=sdC(x,y,g.vx,g.vy,.024),dv=sdC(x,y,g.vx+.034,g.vy+.03,.028);
+        I=mix(I,.7,cov(Math.min(da,dv)-.016));I=mix(I,.15,cov(dv));I=mix(I,.04,cov(da));
+        const dn=sdC(x,y,g.fx-.05+.04*s,g.fy+.33+.02*s,.028);I=mix(I,.7,cov(dn-.014)*(1-g.pop*.6));I=mix(I,.42,cov(dn));
+        if(g.ten>.04)I=mix(I,.07,cov(sdE(x,y,g.fx,g.fy-.32,.15*g.ten,.03*g.ten)));
+        if(g.pat>0){const dp=sdE(x,y,g.fx,g.py,.17*g.pat+.001,.065*g.pat+.001);I=mix(I,.06,cov(dp));I=mix(I,.7+.1*F3[k],cov(dp+.012));
+          I=mix(I,.46,cov(sdE(x,y,g.fx,g.py+.062*g.pat,.13*g.pat+.001,.011*g.pat+.0005))*g.pat)}
+        const df=femurSD(x,y,g);
+        if(df<.03){if(g.cond>.4)I=mix(I,.48,cov(df-.012)*(g.cond-.4)/.6*ss(0,.03,y-g.fy));
+          I=mix(I,.05,cov(df));I=mix(I,.72+.14*F3[k]-.07*ss(.6,.75,F3[k]),cov(df+g.ctx))}
+      }
+      I*=.84+.3*Math.min(1,r/R)**2;
+      }
+      I+=(rnd()-.5)*.03;
+      B[k]=I}
+    for(let j=0;j<RES;j++)for(let i=0;i<RES;i++){const k=j*RES+i;let a=B[k]*4,w=4;if(i>0){a+=B[k-1]*2;w+=2}if(i<RES-1){a+=B[k+1]*2;w+=2}if(j>0){a+=B[k-RES]*2;w+=2}if(j<RES-1){a+=B[k+RES]*2;w+=2}const I=a/w+(rnd()-.5)*.035;const v=(I<0?0:I>1?1:I)*255,o=k*4;img[o]=img[o+1]=img[o+2]=v;img[o+3]=255}
+    return img}
+  function width(s){const g=geom(s);let l=null,r=null;for(let i=0;i<=400;i++){const x=-1+i/200;if(femurSD(x,g.fy,g)<0){if(l===null)l=x;r=x}}return {g,l,r}}
+  return {render,geom,width,RES};
+}
+</script>
+<script>
+/* Sprache */
+(()=>{let L='';const QL=new URLSearchParams(location.search).get('lang');try{L=localStorage.getItem('jf-lang')||''}catch(e){}if(QL==='en'||QL==='de')L=QL;
+if(!L)L=(navigator.languages||[navigator.language||'de']).some(l=>/^de/i.test(l))?'de':'en';
+window.JF_LANG=L;
+const EN={"skip":"Skip to content","tag":"Medical student · Homburg","n1":"Education","n2":"Interests","n3":"Sport","n4":"Contact",
+"eb":"Medical student · Clinical phase",
+"lead":"I study medicine at Saarland University in Homburg, Germany, and have been in the clinical phase since passing the first state exam in 2025. My main clinical interest is orthopaedic and trauma surgery, along with sports medicine and prevention.",
+"k1":"University","k1v":"Saarland University, Homburg","k2":"Studying since","k2v":"October 2022","k3":"First state exam","k4":"CV","k4v":"On request","c1":"Education","c2":"Contact",
+"o1":"Thigh to knee","o2":"Slice","o3":"Schematic, not patient data","hint":"Scroll to step through the slices.",
+"wdm":"2021 to 2029","b1":"Preclinical","b2":"Clinical phase","today":"Today",
+"w7":"Abitur (school-leaving exam)","w6":"Started medical school","w6d":"Saarland University, Homburg campus",
+"w5t":"Preclinical","w5":"Nursing internship, 90 days","w5d":"Neurosurgery and internal medicine at Klinikum Saarbrücken, internal medicine at Saarland University Medical Center",
+"w4":"First state exam (Physikum)","w4d":"First part of the German medical licensing exam. Clinical phase since then.",
+"w3":"Phaco wet lab","w3d":"Hands-on course in cataract surgery, HOYA",
+"w2":"Clerkship, orthopaedics","w2d":"Saarland University Medical Center, Homburg",
+"w1":"Final year (PJ)","gp":"planned","w1d":"Internal medicine and surgery at University Hospital Basel. Elective in orthopaedics at Schulthess Klinik, Zurich.",
+"s1":"Orthopaedic and trauma surgery","s1d":"Joint and sports injuries and their surgical treatment, followed by rehabilitation up to full weight-bearing.",
+"s2":"Sports medicine","s2d":"Load management and performance testing, especially when returning to sport after an injury.",
+"s3":"Prevention","s3d":"Exercise and training as treatment and prevention.",
+"stm":"Running figures from Strava","sp1":"On 11 October 2026 I ran a half marathon in 1:46:12.","sp2":"Besides running I fence épée and have done strength training since 2021.",
+"pl1":"Triathlon, planned","pl2t":"Late 2027","pl2":"Ironman, planned",
+"tc":"Running","u1":"Measure","u2":"Value","u3":"Date / volume","u4":"Source","q1":"Race","r0":"Fastest 5 km","r1":"Half marathon","r2":"Longest run","r3":"Distance","r4":"Total distance","runs":"runs",
+"kom":"CV on request","kp":"For professional enquiries, please get in touch by email or use the form. My CV is available on request.","cvb":"Request CV",
+"f1":"Name","f2":"Email","f3":"Message","cv":"I would like to receive the CV by email.","sb":"Send message",
+"fs":"By sending the form you agree to the processing of your details. See the <a href=\"/datenschutz.html\">privacy policy</a> (in German).",
+"ds":"Privacy","im":"Legal notice","top":"Back to top"};
+if(L==='en'){document.documentElement.lang='en';document.querySelectorAll('[data-i]').forEach(e=>{const v=EN[e.dataset.i];if(v!=null)e.innerHTML=v});
+ const d=document.querySelector('meta[name=description]');if(d)d.content='Joshua Forster, medical student in Homburg, Germany. Orthopaedics, sports medicine and prevention.';
+ const v=document.getElementById('viewer');if(v)v.setAttribute('aria-label','Schematic MRI slices from the thigh to the knee joint');
+ const lg=document.getElementById('logo');if(lg)lg.setAttribute('aria-label','Joshua Forster, back to top');}
+const b=document.getElementById('lng');b.textContent=L==='en'?'DE':'EN';b.setAttribute('aria-label',L==='en'?'Auf Deutsch wechseln':'Switch to English');
+b.addEventListener('click',()=>{const n=L==='en'?'de':'en';try{localStorage.setItem('jf-lang',n)}catch(e){}location.href=location.pathname+'?lang='+n+location.hash});
+})();
+</script>
+<script>
+(()=>{
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const EN=window.JF_LANG==='en';
+const root=document.body;if(!RM)root.classList.add('mo');
+
+/* Einblenden */
+if(!RM){const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.1,rootMargin:'0px 0px -6% 0px'});
+document.querySelectorAll('.sec').forEach(s=>io.observe(s));}
+
+/* Zeitskala: "Heute" */
+const Y0=2021,Y1=2030,nd=new Date(),ny=nd.getFullYear()+(nd.getMonth()+nd.getDate()/31)/12;
+document.getElementById('tl').style.setProperty('--now',Math.max(0,Math.min(100,(ny-Y0)/(Y1-Y0)*100)).toFixed(2)+'%');
+
+/* Schichtbild */
+const NS=48,RES=200;
+const src=document.getElementById('mri-src').textContent;
+const MRI=new Function(src+';return MRI')();
+const M=MRI(RES);
+const cv=document.getElementById('mri'),ctx=cv.getContext('2d');
+const off=document.createElement('canvas');off.width=off.height=RES;const octx=off.getContext('2d');
+const cache=new Array(NS).fill(null);
+const sOf=i=>i/(NS-1);
+let worker=null,pending=new Set();
+try{
+  const wsrc=src+';const M=MRI('+RES+');onmessage=e=>{const i=e.data;const img=M.render(i/('+(NS-1)+'),i+1);postMessage({i,buf:img.buffer},[img.buffer])}';
+  worker=new Worker(URL.createObjectURL(new Blob([wsrc],{type:'text/javascript'})));
+  worker.onmessage=e=>{const {i,buf}=e.data;cache[i]=new ImageData(new Uint8ClampedArray(buf),RES,RES);pending.delete(i);if(!drawn||Math.abs(i-want)<Math.abs(shown-want))draw()};
+  worker.onerror=()=>{worker=null};
+}catch(e){worker=null}
+const request=i=>{if(cache[i]||pending.has(i))return;pending.add(i);if(worker)worker.postMessage(i);else setTimeout(()=>{cache[i]=new ImageData(M.render(sOf(i),i+1),RES,RES);pending.delete(i);draw()},0)};
+let want=0,shown=-1,drawn=false;
+function size(){const r=cv.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);cv.width=Math.max(1,Math.round(r.width*d));cv.height=Math.max(1,Math.round(r.height*d));scaleEl.style.width=(r.width*5/CM/2).toFixed(1)+'px';shown=-1;draw()}
+const sl=document.getElementById('sl'),sn=document.getElementById('sn');sn.textContent=NS;
+const cal=[...document.querySelectorAll('#cal line')],ret=[...document.querySelectorAll('#ret line')],mlab=document.getElementById('mlab'),locl=document.getElementById('locl');
+const setL=(l,x1,y1,x2,y2)=>{l.setAttribute('x1',x1.toFixed(4));l.setAttribute('y1',y1.toFixed(4));l.setAttribute('x2',x2.toFixed(4));l.setAttribute('y2',y2.toFixed(4))};
+const CM=11; /* 1 Modelleinheit = 11 cm */
+const scaleEl=document.getElementById('scale');
+function overlay(i){
+  const {g,l,r}=M.width(sOf(i));if(l==null)return;
+  const y=g.fy,ry=Math.max(g.fry,.13)+(g.cond>.5?.05:0);
+  setL(cal[0],l,y,r,y);setL(cal[1],l,y-.025,l,y+.025);setL(cal[2],r,y-.025,r,y+.025);
+  const cx=(l+r)/2,a=ry+.05,b=ry+.14;
+  setL(ret[0],cx,y-a-.02,cx,y-b);setL(ret[1],cx,y+a,cx,y+b);setL(ret[2],r+.06,y,r+.13,y);setL(ret[3],l-.13,y,l-.06,y);
+  const w=(r-l)*CM;mlab.textContent=w.toLocaleString(EN?'en-GB':'de-DE',{minimumFractionDigits:1,maximumFractionDigits:1})+' cm';
+  mlab.style.left=((r+.16+1)/2*100).toFixed(2)+'%';mlab.style.top=((y+1)/2*100).toFixed(2)+'%';
+  sl.textContent=String(i+1).padStart(2,'0');
+  const ly=8+sOf(i)*76;locl.setAttribute('y1',ly);locl.setAttribute('y2',ly);
+}
+function nearest(i){if(cache[i])return i;for(let d=1;d<NS;d++){if(i-d>=0&&cache[i-d])return i-d;if(i+d<NS&&cache[i+d])return i+d}return -1}
+function draw(){
+  const k=nearest(want);if(k<0)return;
+  if(k!==shown||!drawn){octx.putImageData(cache[k],0,0);ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';ctx.fillStyle='#000';ctx.fillRect(0,0,cv.width,cv.height);ctx.drawImage(off,0,0,cv.width,cv.height);shown=k;drawn=true;overlay(k);}
+}
+const hero=document.getElementById('hero'),viewer=document.getElementById('viewer');
+const desk=()=>matchMedia('(min-width:901px)').matches;
+function progress(){
+  if(RM)return .9;
+  const vh=innerHeight;
+  if(desk()){const r=hero.getBoundingClientRect(),t=hero.offsetHeight-vh;return t>0?Math.min(1,Math.max(0,-r.top/t)):0}
+  const r=viewer.getBoundingClientRect();return Math.min(1,Math.max(0,(vh-r.top)/(vh+r.height*.2)-.15)/.85);
+}
+function update(){want=Math.round(progress()*(NS-1));request(want);draw()}
+let tk=false;addEventListener('scroll',()=>{if(!tk){tk=true;requestAnimationFrame(()=>{tk=false;update()})}},{passive:true});
+addEventListener('resize',()=>{size();update()});
+want=Math.round(progress()*(NS-1));request(want);
+/* restliche Schichten vorberechnen, zuerst in Scrollrichtung */
+if(!RM){for(let d=1;d<NS;d++){if(want+d<NS)request(want+d);if(want-d>=0)request(want-d)}}else{document.getElementById('hint').hidden=true}
+size();
+const ov=document.getElementById('ov');requestAnimationFrame(()=>requestAnimationFrame(()=>ov.classList.add('in')));
+
+/* Navigation: aktiver Abschnitt */
+const links=[...document.querySelectorAll('.bar ul a')];
+const so=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)links.forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+e.target.id))}),{rootMargin:'-45% 0px -50% 0px'});
+document.querySelectorAll('.sec').forEach(s=>so.observe(s));
+
+/* Strava (data/strava.json, täglich per GitHub Action). Feste Werte im HTML sind nur Rückfall. */
+const loc=EN?'en-GB':'de-DE';
+const num=(x,d=0)=>Number(x).toLocaleString(loc,{maximumFractionDigits:d});
+const dstr=s=>{const t=new Date(s);return isNaN(t)?'':t.toLocaleDateString(loc,{day:'2-digit',month:'2-digit',year:'numeric'})};
+if(EN){document.querySelectorAll('.ro .d').forEach(td=>{const m=td.textContent.trim().match(/^(\d\d)\.(\d\d)\.(\d{4})$/);if(m)td.textContent=m[1]+'/'+m[2]+'/'+m[3]})}
+const stamp=document.getElementById('stamp');stamp.textContent=EN?', figures as of October 2026':', Stand Oktober 2026';
+fetch('/data/strava.json',{cache:'no-cache'}).then(r=>r.ok?r.json():null).then(d=>{
+  if(!d)return;
+  const row=k=>document.querySelector(`#ro [data-k="${k}"]`);
+  const setV=(k,v)=>{const r=row(k);if(r&&v!=null)r.querySelector('.v').textContent=v};
+  if(d.longest_run_km!=null){setV('longest',num(d.longest_run_km,1)+' km');if(d.longest_run_date)row('longest').querySelector('.d').textContent=dstr(d.longest_run_date)}
+  if(d.ytd_run_km!=null){setV('ytd',num(d.ytd_run_km)+' km');if(d.ytd_runs!=null)row('ytd').querySelector('[data-n]').textContent=num(d.ytd_runs)}
+  if(d.year)document.querySelectorAll('[data-yr]').forEach(e=>e.textContent=d.year);
+  if(d.all_run_km!=null){setV('all',num(d.all_run_km)+' km');if(d.all_runs!=null)row('all').querySelector('[data-n]').textContent=num(d.all_runs)}
+  if(d.best_5k_s){const r=row('best5k');r.hidden=false;r.querySelector('.v').textContent=Math.floor(d.best_5k_s/60)+':'+String(Math.round(d.best_5k_s%60)).padStart(2,'0');r.querySelector('.d').textContent=d.best_5k_date?dstr(d.best_5k_date):''}
+  if(d.athlete_url)document.getElementById('stravaLink').href=d.athlete_url;
+  if(d.updated)stamp.textContent=(EN?', as of ':', Stand ')+dstr(d.updated);
+}).catch(()=>{});
+
+/* Lebenslauf anfragen */
+document.getElementById('cvbtn').addEventListener('click',()=>{
+  const cb=document.querySelector('#cvcb input');if(cb)cb.checked=true;
+  const m=document.getElementById('b-msg');if(m&&!m.value.trim())m.value=EN?'Hello,\n\nI would like to request your CV.\n\nKind regards':'Guten Tag,\n\nich möchte Ihren Lebenslauf anfragen.\n\nMit freundlichen Grüßen';
+  const f=document.querySelector('.form');f.classList.remove('flash');void f.offsetWidth;f.classList.add('flash');
+  f.scrollIntoView({behavior:RM?'auto':'smooth',block:'center'});
+  setTimeout(()=>{const n=document.getElementById('b-name');n&&n.focus({preventScroll:true})},RM?0:500);
+});
+/* E-Mail zusammensetzen */
+const m=document.getElementById('mail');if(m){const a=m.dataset.u+'@'+m.dataset.d;m.textContent=a;m.href='mailto:'+a}
+/* Easter Egg: sieben Klicks auf den Namen */
+const logo=document.getElementById('logo'),egg=document.getElementById('egg');let n=0,t=0;
+logo.addEventListener('click',ev=>{const now=Date.now();n=now-t<1500?n+1:1;t=now;if(n>1)ev.preventDefault();if(n>=7){n=0;egg.classList.add('on');egg.removeAttribute('aria-hidden');egg.removeAttribute('tabindex');egg.focus({preventScroll:true});clearTimeout(egg._h);egg._h=setTimeout(()=>{egg.classList.remove('on');egg.setAttribute('aria-hidden','true');egg.setAttribute('tabindex','-1')},12000)}});
+})();
+</script>
+</body>
+</html>

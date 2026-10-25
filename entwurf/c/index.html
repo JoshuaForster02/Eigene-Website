@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<script>document.documentElement.classList.add('js')</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<meta name="description" content="Joshua Forster, Medizinstudent an der Universität des Saarlandes in Homburg. Orthopädie und Unfallchirurgie, Sportmedizin, Prävention.">
+<meta name="author" content="Joshua Forster">
+<meta name="theme-color" content="#FAF8F4">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<title>Joshua Forster · Entwurf C</title>
+<style>
+/* Schriften lokal (SIL OFL 1.1) */
+@font-face{font-family:"Newsreader";font-style:normal;font-weight:200 800;font-display:swap;src:url(/fonts/newsreader-opsz-var.woff2) format("woff2")}
+@font-face{font-family:"Newsreader";font-style:italic;font-weight:200 800;font-display:swap;src:url(/fonts/newsreader-opsz-italic-var.woff2) format("woff2")}
+@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:400;font-display:swap;src:url(/fonts/ibm-plex-sans-400.woff2) format("woff2")}
+@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:500;font-display:swap;src:url(/fonts/ibm-plex-sans-500.woff2) format("woff2")}
+@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:600;font-display:swap;src:url(/fonts/ibm-plex-sans-600.woff2) format("woff2")}
+@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:400;font-display:swap;src:url(/fonts/ibm-plex-mono-400.woff2) format("woff2")}
+
+:root{
+  color-scheme:light;
+  --paper:#FAF8F4; --paper2:#F2EFE8; --ink:#18181A; --ink2:#46443F; --ink3:#66635C;
+  --red:#9E1B1B; --rule:#18181A; --hair:#D6D0C4;
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --ease:cubic-bezier(.25,.7,.2,1);
+  --gut:clamp(16px,4vw,56px);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.6 var(--serif);font-optical-sizing:auto;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
+a{color:inherit}
+::selection{background:var(--red);color:var(--paper)}
+:focus-visible{outline:2px solid var(--red);outline-offset:3px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:12px;top:-48px;background:var(--ink);color:var(--paper);padding:8px 12px;z-index:200;font:500 13px var(--sans)}
+.skip:focus{top:12px}
+
+/* Briefkopf */
+.lh{position:sticky;top:0;z-index:50;background:var(--paper);transition:box-shadow .3s}
+.lh-in{max-width:1180px;margin:0 auto;padding:0 var(--gut);height:60px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.lh::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--rule);transform-origin:left;transform:scaleX(var(--lr,1))}
+.logo{font:600 14px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;text-decoration:none;user-select:none;-webkit-user-select:none;cursor:default;white-space:nowrap}
+.logo span{color:var(--red)}
+.lh nav{display:flex;align-items:center;gap:26px}
+.lh ul{display:flex;gap:24px;list-style:none;margin:0;padding:0}
+.lh ul a{font:400 13px/1 var(--sans);color:var(--ink2);text-decoration:none;padding:6px 0;border-bottom:1px solid transparent;transition:border-color .25s,color .25s}
+.lh ul a:hover{color:var(--ink);border-color:var(--ink)}
+.lh ul a b{font:400 12px var(--mono);color:var(--red);margin-right:6px}
+.lng{font:500 12px/1 var(--sans);letter-spacing:.08em;background:none;border:1px solid var(--ink);color:var(--ink);height:30px;min-width:40px;padding:0 10px;cursor:pointer;transition:background .2s,color .2s}
+.lng:hover{background:var(--ink);color:var(--paper)}
+@media (max-width:860px){.lh ul{display:none}}
+.egg{position:fixed;top:72px;left:50%;transform:translate(-50%,-8px);opacity:0;pointer-events:none;z-index:60;padding:10px 16px;background:var(--paper);border:1px solid var(--red);color:var(--red);font:500 12px var(--sans);letter-spacing:.1em;text-transform:uppercase;text-decoration:none;transition:opacity .4s,transform .4s}
+.egg.on{opacity:1;pointer-events:auto;transform:translate(-50%,0)}
+.egg:hover{background:var(--red);color:var(--paper)}
+
+/* Dokument */
+.doc{max-width:1180px;margin:0 auto;padding:0 var(--gut)}
+.titel{padding:clamp(48px,8vw,104px) 0 clamp(36px,5vw,64px);display:grid;grid-template-columns:220px minmax(0,1fr);gap:0 48px}
+.titel .mrg{font:500 11px/1.5 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);padding-top:14px}
+.titel .mrg span{display:block;color:var(--red)}
+h1{font-family:var(--serif);font-weight:400;font-size:clamp(46px,7.4vw,98px);line-height:1;letter-spacing:-.022em;margin:0;font-variation-settings:"opsz" 72}
+.role{font:400 italic clamp(20px,2.2vw,26px)/1.35 var(--serif);color:var(--ink2);margin:14px 0 0}
+.kopf{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:clamp(32px,4vw,48px) 0 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--hair)}
+.kopf div{padding:14px 18px 16px 0;border-bottom:1px solid var(--hair)}
+.kopf div:nth-last-child(-n+3){border-bottom:0}
+.kopf dt{font:500 11px/1.4 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin:0 0 4px}
+.kopf dd{margin:0;font:400 15.5px/1.45 var(--sans);color:var(--ink)}
+.kopf dd a{color:var(--red);text-decoration:none;border-bottom:1px solid currentColor}
+.lead{font-size:clamp(18px,1.6vw,20px);line-height:1.62;max-width:62ch;margin:clamp(28px,3vw,40px) 0 0;color:var(--ink);hyphens:auto;-webkit-hyphens:auto}
+
+/* Abschnitte */
+.sec{display:grid;grid-template-columns:220px minmax(0,1fr);gap:0 48px;padding:clamp(40px,5vw,64px) 0 clamp(52px,6vw,84px);position:relative}
+.sec::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:var(--rule);transform-origin:left}
+.mrg{position:relative}
+.mrg .stick{position:sticky;top:92px}
+.no{display:block;font:400 clamp(40px,4vw,56px)/1 var(--serif);color:var(--red);font-variation-settings:"opsz" 60}
+.mrg h2{font:600 13px/1.3 var(--sans);letter-spacing:.14em;text-transform:uppercase;margin:12px 0 0}
+.note{font:400 13px/1.55 var(--sans);color:var(--ink3);margin:22px 0 0;max-width:24ch}
+.note i{font-style:normal;color:var(--red)}
+.body{min-width:0}
+.body > p{max-width:64ch;margin:0 0 1em;hyphens:auto;-webkit-hyphens:auto}
+
+/* Werdegang-Tabelle */
+table{width:100%;border-collapse:collapse;font-family:var(--sans)}
+caption{text-align:left}
+.cv th{font:500 11px/1.4 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);text-align:left;padding:0 16px 10px 0;border-bottom:1px solid var(--rule)}
+.cv td{padding:15px 16px 16px 0;vertical-align:top;border-bottom:1px solid var(--hair);font-size:15.5px;line-height:1.5}
+.cv td:first-child{font:400 14px/1.6 var(--mono);color:var(--ink2);white-space:nowrap;width:110px}
+.cv td:nth-child(2){font-weight:500;width:34%}
+.cv td:last-child{color:var(--ink2);padding-right:0}
+.cv tr.plan td{font-style:normal}
+.cv tr.plan td:nth-child(2) em{font:italic 400 13px var(--serif);color:var(--red);margin-left:6px;font-size:15px}
+.cv tr.plan td:last-child,.cv tr.plan td:nth-child(2) span{font-family:var(--serif);font-style:italic;font-size:16.5px}
+
+/* Schwerpunkte */
+.sp{list-style:none;margin:0;padding:0;counter-reset:sp}
+.sp li{display:grid;grid-template-columns:56px minmax(0,1fr);gap:0 8px;padding:0 0 22px;margin:0 0 22px;border-bottom:1px solid var(--hair)}
+.sp li:last-child{border-bottom:0;margin-bottom:0}
+.sp .n{font:400 14px/1.9 var(--mono);color:var(--red)}
+.sp h3{font:600 17px/1.4 var(--sans);margin:0 0 6px}
+.sp p{margin:0;max-width:60ch;color:var(--ink2);hyphens:auto;-webkit-hyphens:auto}
+
+/* Sport */
+.werte{margin:28px 0 0;max-width:720px}
+.werte caption{font:600 12px/1.4 var(--sans);letter-spacing:.12em;text-transform:uppercase;padding:0 0 10px;color:var(--ink)}
+.werte th,.werte td{text-align:left;padding:11px 14px 11px 0;border-bottom:1px solid var(--hair);font-size:15px;line-height:1.4;vertical-align:baseline}
+.werte thead th{font:500 11px/1.4 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);border-bottom:1px solid var(--rule);padding-top:0}
+.werte tbody th{font-weight:400;width:46%}
+.body > p.fn,.body > p.plan-line{max-width:720px}
+.werte .v{font:400 15px var(--mono);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.werte .d{font:400 14px var(--mono);color:var(--ink2);white-space:nowrap}
+.werte thead .v{font:500 11px/1.4 var(--sans)}
+.werte sup{font:400 10px var(--sans);color:var(--red);margin-left:2px}
+.werte tr[hidden]{display:none}
+.fn{font:400 13px/1.55 var(--sans);color:var(--ink3);margin:12px 0 0;max-width:720px}
+.fn a{color:var(--ink2)}
+.fn sup{color:var(--red)}
+.plan-line{display:flex;flex-wrap:wrap;gap:6px 28px;margin:28px 0 0;padding:14px 0 0;border-top:1px solid var(--hair);font:400 15px/1.5 var(--sans);max-width:720px}
+.plan-line b{font:500 11px/2 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--red)}
+.plan-line span{color:var(--ink2)}
+
+/* Kontakt */
+.kgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:clamp(32px,5vw,72px);align-items:start}
+.kgrid p{margin:0 0 18px;max-width:40ch}
+.mail{display:inline-block;font:400 16px var(--mono);color:var(--red);text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:1px;word-break:break-all}
+.cvbtn{display:inline-flex;align-items:center;gap:10px;margin-top:22px;padding:11px 16px;background:none;border:1px solid var(--ink);color:var(--ink);font:500 13px var(--sans);cursor:pointer;transition:background .2s,color .2s}
+.cvbtn:hover{background:var(--ink);color:var(--paper)}
+.form{display:grid;gap:14px}
+.form .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fl{display:grid;gap:5px}
+.fl span{font:500 11px/1.4 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--ink3)}
+.form input,.form textarea{width:100%;padding:11px 0 10px;background:transparent;border:0;border-bottom:1px solid var(--ink3);border-radius:0;font:400 16px var(--sans);color:var(--ink)}
+.form input:focus,.form textarea:focus{outline:none;border-bottom-color:var(--red);box-shadow:0 1px 0 var(--red)}
+.form textarea{min-height:120px;resize:vertical;line-height:1.5}
+.cb{display:flex;gap:10px;align-items:flex-start;font:400 14.5px/1.45 var(--sans);color:var(--ink2);margin-top:4px}
+.cb input{width:auto;margin:3px 0 0;accent-color:var(--red)}
+.form button{justify-self:start;padding:13px 22px;border:0;background:var(--ink);color:var(--paper);font:500 14px var(--sans);cursor:pointer;transition:background .2s}
+.form button:hover{background:var(--red)}
+.form small{font:400 13px/1.5 var(--sans);color:var(--ink3)}
+.form small a{color:var(--ink2)}
+.form.flash{animation:fl 1.2s var(--ease)}
+@keyframes fl{0%{box-shadow:0 0 0 1px var(--red)}100%{box-shadow:0 0 0 12px transparent}}
+
+/* Fuß */
+footer{border-top:1px solid var(--rule);margin-top:0}
+.ft{max-width:1180px;margin:0 auto;padding:22px var(--gut) 36px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px 24px;font:400 13px/1.5 var(--sans);color:var(--ink3)}
+.ft nav{display:flex;flex-wrap:wrap;gap:6px 22px}
+.ft a{text-decoration:none;color:var(--ink2)}
+.ft a:hover{color:var(--red)}
+
+html:lang(en) .lead,html:lang(en) .body p,html:lang(en) .sp p{hyphens:manual;-webkit-hyphens:manual}
+
+/* Mobil */
+@media (max-width:860px){
+  .titel,.sec{grid-template-columns:minmax(0,1fr)}
+  .titel .mrg{padding:0 0 18px}
+  .mrg .stick{position:static;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+  .mrg h2{margin:0}
+  .no{font-size:34px}
+  .note{margin:6px 0 22px;max-width:none;flex-basis:100%}
+  .kopf{grid-template-columns:1fr 1fr}
+  .kopf div:nth-last-child(-n+3){border-bottom:1px solid var(--hair)}
+  .kopf div:nth-last-child(-n+2){border-bottom:0}
+  .kgrid{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:620px){
+  .cv thead{display:none}
+  .cv,.cv tbody,.cv tr,.cv td{display:block;width:auto!important}
+  .cv tr{padding:14px 0;border-bottom:1px solid var(--hair)}
+  .cv td{border:0;padding:0 0 2px}
+  .cv td:first-child{font-size:13px}
+  .form .row{grid-template-columns:1fr}
+  .kopf{grid-template-columns:minmax(0,1fr)}
+  .kopf div:nth-last-child(-n+2){border-bottom:1px solid var(--hair)}
+  .kopf div:last-child{border-bottom:0}
+  .werte .d{white-space:normal}
+}
+
+/* Bewegung: Linien ziehen, Text wird aufgeschrieben */
+.js .anim .sec::before{transform:scaleX(0);transition:transform 1.1s var(--ease)}
+.js .anim .sec.in::before{transform:scaleX(1)}
+.js .anim .sec .no,.js .anim .sec .mrg h2,.js .anim .sec .note{opacity:0;transition:opacity .8s var(--ease) .35s}
+.js .anim .sec.in .no,.js .anim .sec.in .mrg h2,.js .anim .sec.in .note{opacity:1}
+.js .anim .w{opacity:0;transform:translateY(6px);transition:opacity .7s var(--ease),transform .7s var(--ease);transition-delay:calc(var(--d,0) * 70ms + .25s)}
+.js .anim .in .w,.js .anim .w.in{opacity:1;transform:none}
+.js .anim .cv tbody tr,.js .anim .werte tbody tr{opacity:0;transition:opacity .6s var(--ease);transition-delay:calc(var(--d,0) * 90ms + .3s);background:linear-gradient(var(--hair),var(--hair)) left bottom/0 1px no-repeat}
+.js .anim .in .cv tbody tr,.js .anim .in .werte tbody tr{opacity:1}
+.js .anim .ink{clip-path:inset(0 100% 0 0);transition:clip-path 1.2s cubic-bezier(.6,0,.2,1)}
+.js .anim .ink.in{clip-path:inset(0 0 0 0)}
+.js .anim .kopf div{opacity:0;transition:opacity .6s var(--ease);transition-delay:calc(var(--d,0) * 80ms + .7s)}
+.js .anim .kopf.in div{opacity:1}
+.js .anim .role,.js .anim .lead{opacity:0;transition:opacity .9s var(--ease) .5s}
+.js .anim .role.in,.js .anim .lead.in{opacity:1}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .js .anim .sec::before,.js .anim .ink{transform:none!important;clip-path:none!important;transition:none!important}
+  .js .anim *{transition:none!important;opacity:1!important;transform:none!important}
+  .lh::after{transform:none}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main" data-i="skip">Zum Inhalt springen</a>
+<header class="lh" id="lh">
+  <div class="lh-in">
+    <a class="logo" id="logo" href="#main" aria-label="Joshua Forster, zum Seitenanfang">Joshua Forster<span>.</span></a>
+    <a class="egg" id="egg" href="/spiele/" aria-hidden="true" tabindex="-1">Easter Egg</a>
+    <nav aria-label="Hauptnavigation">
+      <ul>
+        <li><a href="#werdegang"><b>1</b><span data-i="n1">Werdegang</span></a></li>
+        <li><a href="#schwerpunkte"><b>2</b><span data-i="n2">Schwerpunkte</span></a></li>
+        <li><a href="#sport"><b>3</b><span data-i="n3">Sport</span></a></li>
+        <li><a href="#kontakt"><b>4</b><span data-i="n4">Kontakt</span></a></li>
+      </ul>
+      <button class="lng" id="lng" type="button">EN</button>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="doc">
+  <div class="titel">
+    <div class="mrg" aria-hidden="true"><span data-i="m0">Lebenslauf</span><span data-i="m0b" style="color:var(--ink3)">Kurzfassung</span></div>
+    <div>
+      <h1 class="ink" id="h1">Joshua Forster</h1>
+      <p class="role" data-i="role">Medizinstudent im klinischen Abschnitt</p>
+      <dl class="kopf">
+        <div style="--d:0"><dt data-i="k1">Universität</dt><dd data-i="k1v">Universität des Saarlandes</dd></div>
+        <div style="--d:1"><dt data-i="k2">Standort</dt><dd data-i="k2v">Homburg, Universitätsklinikum (UKS)</dd></div>
+        <div style="--d:2"><dt data-i="k3">Studienbeginn</dt><dd data-i="k3v">Oktober 2022</dd></div>
+        <div style="--d:3"><dt data-i="k4">Abschnitt</dt><dd data-i="k4v">Klinisch, Physikum 2025</dd></div>
+        <div style="--d:4"><dt data-i="k5">Schwerpunkte</dt><dd data-i="k5v">Orthopädie und Unfallchirurgie, Sportmedizin, Prävention</dd></div>
+        <div style="--d:5"><dt data-i="k6">Lebenslauf</dt><dd><a href="#kontakt" data-i="k6v">Auf Anfrage</a></dd></div>
+      </dl>
+      <p class="lead" data-i="lead">Ich studiere Medizin an der Universität des Saarlandes in Homburg und bin seit dem Physikum 2025 im klinischen Abschnitt. Fachlich interessieren mich vor allem die Orthopädie und Unfallchirurgie, außerdem Sportmedizin und Prävention.</p>
+    </div>
+  </div>
+
+  <section class="sec" id="werdegang" aria-labelledby="h-wd">
+    <div class="mrg"><div class="stick"><span class="no" aria-hidden="true">1</span><h2 id="h-wd" data-i="n1">Werdegang</h2><p class="note" data-i="wdn">Geplante Stationen sind <i>kursiv</i> gesetzt.</p></div></div>
+    <div class="body">
+      <table class="cv">
+        <caption class="sr" data-i="wdc">Werdegang, neueste Station zuerst</caption>
+        <thead><tr><th scope="col" data-i="t1">Zeit</th><th scope="col" data-i="t2">Station</th><th scope="col" data-i="t3">Einrichtung</th></tr></thead>
+        <tbody>
+          <tr class="plan" style="--d:0"><td>2028/29</td><td><span data-i="w1">Praktisches Jahr</span><em data-i="gp">geplant</em></td><td data-i="w1d">Innere Medizin und Chirurgie am Universitätsspital Basel. Wahltertial Orthopädie an der Schulthess Klinik Zürich.</td></tr>
+          <tr style="--d:1"><td>2026</td><td data-i="w2">Famulatur Orthopädie</td><td data-i="w2d">Universitätsklinikum des Saarlandes, Homburg</td></tr>
+          <tr style="--d:2"><td>2026</td><td data-i="w3">Phako-Wetlab</td><td data-i="w3d">Praktischer Kurs in Kataraktchirurgie, HOYA</td></tr>
+          <tr style="--d:3"><td>2025</td><td data-i="w4">Physikum</td><td data-i="w4d">Erster Abschnitt der Ärztlichen Prüfung. Seitdem klinischer Abschnitt.</td></tr>
+          <tr style="--d:4"><td data-i="w5t">Vorklinik</td><td data-i="w5">Pflegepraktikum, 90 Tage</td><td data-i="w5d">Neurochirurgie und Innere Medizin am Klinikum Saarbrücken, Innere Medizin am UKS Homburg</td></tr>
+          <tr style="--d:5"><td>10/2022</td><td data-i="w6">Beginn Medizinstudium</td><td data-i="w6d">Universität des Saarlandes, Standort Homburg</td></tr>
+          <tr style="--d:6"><td>2021</td><td data-i="w7">Abitur</td><td>Otto-Hahn-Gymnasium</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="sec" id="schwerpunkte" aria-labelledby="h-sp">
+    <div class="mrg"><div class="stick"><span class="no" aria-hidden="true">2</span><h2 id="h-sp" data-i="n2">Schwerpunkte</h2><p class="note" data-i="spn">Fachliche Interessen im Studium und für die Weiterbildung.</p></div></div>
+    <div class="body">
+      <ol class="sp">
+        <li class="w" style="--d:0"><span class="n">2.1</span><div><h3 data-i="s1">Orthopädie und Unfallchirurgie</h3><p data-i="s1d">Gelenk- und Sportverletzungen und ihre operative Versorgung. Dazu die Nachbehandlung bis zur vollen Belastung.</p></div></li>
+        <li class="w" style="--d:1"><span class="n">2.2</span><div><h3 data-i="s2">Sportmedizin</h3><p data-i="s2d">Belastungssteuerung und Leistungsdiagnostik, besonders bei der Rückkehr in den Sport nach einer Verletzung.</p></div></li>
+        <li class="w" style="--d:2"><span class="n">2.3</span><div><h3 data-i="s3">Prävention</h3><p data-i="s3d">Bewegung und Training als Therapie und zur Vorbeugung.</p></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="sec" id="sport" aria-labelledby="h-st">
+    <div class="mrg"><div class="stick"><span class="no" aria-hidden="true">3</span><h2 id="h-st" data-i="n3">Sport</h2><p class="note" data-i="stn">Laufwerte werden täglich aus Strava übernommen.</p></div></div>
+    <div class="body">
+      <p class="w" style="--d:0" data-i="sp1">Am 11. Oktober 2026 bin ich einen Halbmarathon in 1:46:12 gelaufen. Daneben fechte ich Degen und mache seit 2021 Krafttraining.</p>
+      <table class="werte">
+        <caption data-i="tc">Laufen</caption>
+        <thead><tr><th scope="col" data-i="u1">Wert</th><th scope="col" class="v" data-i="u2">Ergebnis</th><th scope="col" data-i="u3">Datum / Umfang</th></tr></thead>
+        <tbody>
+          <tr style="--d:0"><th scope="row" data-i="r1">Halbmarathon</th><td class="v">1:46:12</td><td class="d">11.10.2026</td></tr>
+          <tr style="--d:1" data-k="best5k" hidden><th scope="row" data-i="r0">Schnellste 5 km<sup>1</sup></th><td class="v">–</td><td class="d">–</td></tr>
+          <tr style="--d:2" data-k="longest"><th scope="row"><span data-i="r2">Längster Lauf</span><sup>1</sup></th><td class="v">30 km</td><td class="d">29.06.2026</td></tr>
+          <tr style="--d:3" data-k="ytd"><th scope="row"><span data-i="r3">Laufstrecke</span> <span data-yr>2026</span><sup>1</sup></th><td class="v">339 km</td><td class="d"><span data-n>45</span> <span data-i="runs">Läufe</span></td></tr>
+          <tr style="--d:4" data-k="all"><th scope="row"><span data-i="r4">Laufstrecke gesamt</span><sup>1</sup></th><td class="v">638 km</td><td class="d"><span data-n>117</span> <span data-i="runs">Läufe</span></td></tr>
+        </tbody>
+      </table>
+      <p class="fn"><sup>1</sup> <a id="stravaLink" href="https://www.strava.com/athletes/55105958" target="_blank" rel="noopener">Strava</a><span id="stamp"></span>.</p>
+      <p class="plan-line"><b data-i="pl">Geplant</b><span data-i="pl1">2027 Triathlon</span><span data-i="pl2">Ende 2027 Ironman</span></p>
+    </div>
+  </section>
+
+  <section class="sec" id="kontakt" aria-labelledby="h-ko">
+    <div class="mrg"><div class="stick"><span class="no" aria-hidden="true">4</span><h2 id="h-ko" data-i="n4">Kontakt</h2><p class="note" data-i="kon">Den Lebenslauf schicke ich auf Anfrage per E-Mail.</p></div></div>
+    <div class="body kgrid">
+      <div class="w" style="--d:0">
+        <p data-i="kp">Für fachliche Anfragen erreichen Sie mich per E-Mail oder über das Formular.</p>
+        <a class="mail" id="mail" data-u="joshuaforster02" data-d="gmail.com" href="#kontakt">joshuaforster02 [at] gmail.com</a><br>
+        <button type="button" class="cvbtn" id="cvbtn"><span data-i="cvb">Lebenslauf anfragen</span></button>
+      </div>
+      <form class="form w" style="--d:1" action="https://formspree.io/f/xqeajnve" method="POST">
+        <input type="hidden" name="_subject" value="Website-Anfrage von joshuaforster.de">
+        <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <div class="row">
+          <label class="fl"><span data-i="f1">Name</span><input id="b-name" name="name" autocomplete="name" required></label>
+          <label class="fl"><span data-i="f2">E-Mail</span><input id="b-mail" type="email" name="email" autocomplete="email" required></label>
+        </div>
+        <label class="fl"><span data-i="f3">Nachricht</span><textarea id="b-msg" name="message" required></textarea></label>
+        <label class="cb" id="cvcb"><input type="checkbox" name="request_cv" value="yes"> <span data-i="cv">Ich möchte den Lebenslauf per E-Mail erhalten.</span></label>
+        <button type="submit" data-i="sb">Nachricht senden</button>
+        <small data-i="fs">Mit dem Absenden willigen Sie in die Verarbeitung Ihrer Angaben ein. Mehr dazu unter <a href="/datenschutz.html">Datenschutz</a>.</small>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="ft">
+    <span>© 2026 Joshua Forster</span>
+    <nav aria-label="Rechtliches">
+      <a href="/datenschutz.html" data-i="ds">Datenschutz</a>
+      <a href="/datenschutz.html#verantwortlich" data-i="im">Impressum</a>
+      <a href="#main" data-i="top">Nach oben</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+/* Sprache */
+(()=>{let L='';const QL=new URLSearchParams(location.search).get('lang');try{L=localStorage.getItem('jf-lang')||''}catch(e){}if(QL==='en'||QL==='de')L=QL;
+if(!L)L=(navigator.languages||[navigator.language||'de']).some(l=>/^de/i.test(l))?'de':'en';
+window.JF_LANG=L;
+const EN={"skip":"Skip to content","n1":"Education","n2":"Interests","n3":"Sport","n4":"Contact",
+"m0":"Curriculum vitae","m0b":"Summary","role":"Medical student, clinical phase",
+"k1":"University","k1v":"Saarland University","k2":"Location","k2v":"Homburg, Saarland University Medical Center","k3":"Started","k3v":"October 2022","k4":"Phase","k4v":"Clinical, first state exam 2025","k5":"Clinical interests","k5v":"Orthopaedic and trauma surgery, sports medicine, prevention","k6":"CV","k6v":"On request",
+"lead":"I study medicine at Saarland University in Homburg, Germany, and have been in the clinical phase since passing the first state exam in 2025. My main clinical interest is orthopaedic and trauma surgery, along with sports medicine and prevention.",
+"wdn":"Planned positions are set in <i>italics</i>.","wdc":"Education and training, most recent first","t1":"Date","t2":"Position","t3":"Institution","gp":"planned",
+"w1":"Final year (PJ)","w1d":"Internal medicine and surgery at University Hospital Basel. Elective in orthopaedics at Schulthess Klinik, Zurich.",
+"w2":"Clerkship, orthopaedics","w2d":"Saarland University Medical Center, Homburg","w3":"Phaco wet lab","w3d":"Hands-on course in cataract surgery, HOYA",
+"w4":"First state exam (Physikum)","w4d":"First part of the German medical licensing exam. Clinical phase since then.",
+"w5t":"Preclinical","w5":"Nursing internship, 90 days","w5d":"Neurosurgery and internal medicine at Klinikum Saarbrücken, internal medicine at Saarland University Medical Center",
+"w7":"Abitur (school-leaving exam)","w6":"Started medical school","w6d":"Saarland University, Homburg campus",
+"spn":"Clinical interests during medical school and for specialist training.",
+"s1":"Orthopaedic and trauma surgery","s1d":"Joint and sports injuries and their surgical treatment, followed by rehabilitation up to full weight-bearing.",
+"s2":"Sports medicine","s2d":"Load management and performance testing, especially when returning to sport after an injury.",
+"s3":"Prevention","s3d":"Exercise and training as treatment and prevention.",
+"stn":"Running figures are taken from Strava once a day.",
+"sp1":"On 11 October 2026 I ran a half marathon in 1:46:12. I also fence épée and have done strength training since 2021.",
+"tc":"Running","u1":"Measure","u2":"Result","u3":"Date / volume","r0":"Fastest 5 km<sup>1</sup>","r1":"Half marathon","r2":"Longest run","r3":"Distance","r4":"Total distance","runs":"runs",
+"pl":"Planned","pl1":"2027 triathlon","pl2":"Late 2027 Ironman",
+"kon":"My CV is available on request by email.","kp":"For professional enquiries, please get in touch by email or use the form.","cvb":"Request CV",
+"f1":"Name","f2":"Email","f3":"Message","cv":"I would like to receive the CV by email.","sb":"Send message",
+"fs":"By sending the form you agree to the processing of your details. See the <a href=\"/datenschutz.html\">privacy policy</a> (in German).",
+"ds":"Privacy","im":"Legal notice","top":"Back to top"};
+if(L==='en'){document.documentElement.lang='en';document.querySelectorAll('[data-i]').forEach(e=>{const v=EN[e.dataset.i];if(v!=null)e.innerHTML=v});
+ const d=document.querySelector('meta[name=description]');if(d)d.content='Joshua Forster, medical student in Homburg, Germany. Orthopaedics, sports medicine and prevention.';
+ const lg=document.getElementById('logo');if(lg)lg.setAttribute('aria-label','Joshua Forster, back to top');}
+const b=document.getElementById('lng');b.textContent=L==='en'?'DE':'EN';b.setAttribute('lang',L==='en'?'de':'en');b.setAttribute('aria-label',L==='en'?'Auf Deutsch wechseln':'Switch to English');
+b.addEventListener('click',()=>{const n=L==='en'?'de':'en';try{localStorage.setItem('jf-lang',n)}catch(e){}location.href=location.pathname+'?lang='+n+location.hash});
+})();
+</script>
+<script>
+(()=>{
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const EN=window.JF_LANG==='en';
+/* Ruhige Aufbau-Animation */
+if(!RM){
+  document.body.classList.add('anim');
+  const lh=document.getElementById('lh');
+  lh.style.setProperty('--lr','0');
+  const t0=performance.now();
+  const drawRule=t=>{const p=Math.min(1,(t-t0)/1100),e=1-Math.pow(1-p,3);lh.style.setProperty('--lr',e.toFixed(3));if(p<1)requestAnimationFrame(drawRule)};
+  requestAnimationFrame(drawRule);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{['h1'].forEach(id=>document.getElementById(id).classList.add('in'));document.querySelectorAll('.titel .role,.titel .lead,.titel .kopf').forEach(e=>e.classList.add('in'))}));
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12,rootMargin:'0px 0px -8% 0px'});
+  document.querySelectorAll('.sec').forEach(s=>io.observe(s));
+}
+/* Kopfzeile: Schatten erst beim Scrollen */
+const lh=document.getElementById('lh');addEventListener('scroll',()=>{lh.style.boxShadow=scrollY>8?'0 1px 0 rgba(0,0,0,.04),0 8px 24px -16px rgba(0,0,0,.25)':'none'},{passive:true});
+
+/* Strava (data/strava.json, täglich per GitHub Action). Feste Werte im HTML sind nur Rückfall. */
+const loc=EN?'en-GB':'de-DE';
+const num=(x,d=0)=>Number(x).toLocaleString(loc,{maximumFractionDigits:d,minimumFractionDigits:0});
+const dstr=s=>{const t=new Date(s);return isNaN(t)?'':t.toLocaleDateString(loc,{day:'2-digit',month:'2-digit',year:'numeric'})};
+if(EN){document.querySelectorAll('.werte .d').forEach(td=>{const m=td.textContent.trim().match(/^(\d\d)\.(\d\d)\.(\d{4})$/);if(m)td.textContent=m[1]+'/'+m[2]+'/'+m[3]})}
+const stamp=document.getElementById('stamp');stamp.textContent=EN?', figures as of October 2026':', Stand Oktober 2026';
+fetch('/data/strava.json',{cache:'no-cache'}).then(r=>r.ok?r.json():null).then(d=>{
+  if(!d)return;
+  const row=k=>document.querySelector(`.werte [data-k="${k}"]`);
+  const setV=(k,v)=>{const r=row(k);if(r&&v!=null)r.querySelector('.v').textContent=v};
+  if(d.longest_run_km!=null){setV('longest',num(d.longest_run_km,1)+' km');if(d.longest_run_date)row('longest').querySelector('.d').textContent=dstr(d.longest_run_date)}
+  if(d.ytd_run_km!=null){setV('ytd',num(d.ytd_run_km)+' km');if(d.ytd_runs!=null)row('ytd').querySelector('[data-n]').textContent=num(d.ytd_runs)}
+  if(d.year)document.querySelectorAll('[data-yr]').forEach(e=>e.textContent=d.year);
+  if(d.all_run_km!=null){setV('all',num(d.all_run_km)+' km');if(d.all_runs!=null)row('all').querySelector('[data-n]').textContent=num(d.all_runs)}
+  if(d.best_5k_s){const r=row('best5k');r.hidden=false;r.querySelector('.v').textContent=Math.floor(d.best_5k_s/60)+':'+String(Math.round(d.best_5k_s%60)).padStart(2,'0');r.querySelector('.d').textContent=d.best_5k_date?dstr(d.best_5k_date):''}
+  if(d.athlete_url)document.getElementById('stravaLink').href=d.athlete_url;
+  if(d.updated)stamp.textContent=(EN?', as of ':', Stand ')+dstr(d.updated);
+}).catch(()=>{});
+
+/* Lebenslauf anfragen */
+document.getElementById('cvbtn').addEventListener('click',()=>{
+  const cb=document.querySelector('#cvcb input');if(cb)cb.checked=true;
+  const m=document.getElementById('b-msg');if(m&&!m.value.trim())m.value=EN?'Hello,\n\nI would like to request your CV.\n\nKind regards':'Guten Tag,\n\nich möchte Ihren Lebenslauf anfragen.\n\nMit freundlichen Grüßen';
+  const f=document.querySelector('.form');f.classList.remove('flash');void f.offsetWidth;f.classList.add('flash');
+  f.scrollIntoView({behavior:RM?'auto':'smooth',block:'center'});
+  setTimeout(()=>{const n=document.getElementById('b-name');n&&n.focus({preventScroll:true})},RM?0:500);
+});
+/* E-Mail zusammensetzen */
+const m=document.getElementById('mail');if(m){const a=m.dataset.u+'@'+m.dataset.d;m.textContent=a;m.href='mailto:'+a}
+/* Easter Egg: sieben Klicks auf den Namen */
+const logo=document.getElementById('logo'),egg=document.getElementById('egg');let n=0,t=0;
+logo.addEventListener('click',ev=>{const now=Date.now();n=now-t<1500?n+1:1;t=now;if(n>1)ev.preventDefault();if(n>=7){n=0;egg.classList.add('on');egg.removeAttribute('aria-hidden');egg.removeAttribute('tabindex');egg.focus({preventScroll:true});clearTimeout(egg._h);egg._h=setTimeout(()=>{egg.classList.remove('on');egg.setAttribute('aria-hidden','true');egg.setAttribute('tabindex','-1')},12000)}});
+})();
+</script>
+</body>
+</html>
