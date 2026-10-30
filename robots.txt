@@ -8,5 +8,6 @@ Disallow: /study/
 Disallow: /kitteltasche/
 Disallow: /fotos/
 Disallow: /entwurf/
+Disallow: /wa-no-ie/
 
 Sitemap: https://joshuaforster.de/sitemap.xml

@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0e0c0a">
+<meta name="description" content="Wa no Ie: ein Scroll-Rundgang durch ein japanisches Haus.">
+<title>Wa no Ie</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preload" href="/fonts/cormorant-garamond-normal-500.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/fonts/fonts.css">
+<style>
+@font-face{font-family:"Inter";font-weight:100 900;font-display:swap;src:url(/fonts/inter-var.woff2) format("woff2")}
+:root{
+  --sumi:#0e0c0a;--sumi2:#17130f;--kuri:#2a1d12;--washi:#ece4d1;--dim:#a8a08c;--kin:#c8a24b;--shu:#b5312a;
+  --gl:max(16px,env(safe-area-inset-left,0px));--gr:max(16px,env(safe-area-inset-right,0px));
+  --mx:50%;--my:40%;
+  --disp:'Cormorant Garamond','Hiragino Mincho ProN','Yu Mincho','Noto Serif JP','Source Han Serif JP',serif;
+  --body:'Inter','Hiragino Sans','Yu Gothic','Noto Sans JP',system-ui,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{background:var(--sumi)}
+body{margin:0;background:var(--sumi);color:var(--washi);font:400 16px/1.7 var(--body);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
+.in{padding-left:var(--gl);padding-right:var(--gr)}
+
+/* chrome */
+#bar{position:fixed;left:0;top:0;height:2px;width:100%;background:var(--shu);transform:scaleX(0);transform-origin:0 0;z-index:60}
+.brand{text-decoration:none;position:fixed;left:var(--gl);top:calc(16px + env(safe-area-inset-top,0px));z-index:55;font:600 15px/1 var(--disp);letter-spacing:.3em;color:var(--washi);text-shadow:0 1px 14px rgba(0,0,0,.8)}
+.brand b{display:inline-block;width:10px;height:10px;background:var(--shu);margin-right:12px;vertical-align:-1px}
+.seal{position:fixed;right:max(10px,env(safe-area-inset-right,0px));top:50%;transform:translateY(-50%);z-index:55;display:flex;flex-direction:column;gap:10px}
+.seal button{position:relative;width:34px;height:34px;display:grid;place-items:center;border:1px solid rgba(236,228,209,.35);background:rgba(14,12,10,.55);backdrop-filter:blur(4px);font:600 15px/1 var(--disp);color:var(--washi);transition:background .3s,border-color .3s,transform .3s}
+.seal button span{position:absolute;right:calc(100% + 10px);top:50%;transform:translateY(-50%);white-space:nowrap;font:500 11px/1 var(--body);letter-spacing:.25em;text-transform:uppercase;color:var(--washi);opacity:0;pointer-events:none;transition:opacity .25s;text-shadow:0 1px 10px #000}
+.seal button:hover span,.seal button:focus-visible span{opacity:1}
+.seal button.on{background:var(--shu);border-color:var(--shu);transform:scale(1.12)}
+.seal button:focus-visible{outline:2px solid var(--kin);outline-offset:2px}
+
+/* rooms */
+.room{position:relative;height:100vh;height:100svh;overflow:hidden;background:var(--sumi)}
+.ly{position:absolute;inset:0;overflow:hidden}
+.ly img{width:100%;height:100%;object-fit:cover;will-change:transform}
+.tshade{position:absolute;inset:0 0 auto 0;height:48%;background:linear-gradient(rgba(8,6,4,.78),transparent);z-index:2;pointer-events:none}
+.bshade{position:absolute;inset:auto 0 0 0;height:52%;background:linear-gradient(transparent,rgba(8,6,4,.82));z-index:2;pointer-events:none}
+.spot{position:absolute;inset:0;z-index:3;pointer-events:none;background:radial-gradient(circle at var(--mx) var(--my),rgba(255,236,190,.07) 0,transparent 16%,rgba(5,4,3,.5) 55%,rgba(5,4,3,.86) 100%)}
+.rhead{position:absolute;left:0;right:0;top:calc(62px + env(safe-area-inset-top,0px));z-index:4;pointer-events:none}
+.rhead .n{font-size:12px;letter-spacing:.35em;text-transform:uppercase;color:var(--kin)}
+.rhead .k{margin:.05em 0 0;font:700 clamp(54px,9vw,132px)/1.05 var(--disp);letter-spacing:.04em;text-shadow:0 4px 40px rgba(0,0,0,.7)}
+.rhead .t{font-size:clamp(12px,1.2vw,15px);letter-spacing:.42em;text-transform:uppercase;color:var(--washi);opacity:.8;text-shadow:0 1px 14px #000}
+
+/* plaque */
+.plaque{background:rgba(14,12,10,.74);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);border:1px solid rgba(200,162,75,.38);padding:18px 22px 16px;max-width:min(440px,calc(100vw - var(--gl) - var(--gr) - 8px))}
+.plaque .no{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--kin)}
+.plaque h3{margin:.25em 0 .35em;font:500 clamp(21px,2.2vw,26px)/1.25 var(--disp)}
+.plaque h3 em{font-style:normal;color:var(--kin);margin-left:.4em;font-weight:400}
+.plaque p{margin:0;font-size:14px;line-height:1.65;color:#e2d9c4}
+.plaque .meta{margin-top:12px;padding-top:9px;border-top:1px solid rgba(236,228,209,.14);font-size:11.5px;line-height:1.55;color:var(--dim)}
+.stwrap{position:absolute;left:0;right:0;bottom:calc(26px + env(safe-area-inset-bottom,0px));height:min(300px,44svh);z-index:4;pointer-events:none}
+.st{position:absolute;left:var(--gl);bottom:0}
+.js .st:not(:first-child){opacity:0;visibility:hidden}
+
+/* hero */
+.hero .ly{overflow:hidden}
+.hero .ly img{object-position:40% 50%;transform-origin:38% 52%}
+.hero .shade{position:absolute;inset:0;z-index:2;background:linear-gradient(to top,rgba(14,12,10,.94) 0,rgba(14,12,10,.4) 42%,rgba(14,12,10,.1) 68%,rgba(14,12,10,.6) 100%)}
+.hero .fade{position:absolute;inset:0;z-index:5;background:var(--sumi);opacity:0;pointer-events:none}
+.hero-copy{position:absolute;left:0;right:0;bottom:calc(8svh + env(safe-area-inset-bottom,0px));z-index:4}
+.kicker{font-size:12px;letter-spacing:.38em;text-transform:uppercase;color:var(--kin);margin:0 0 .6em}
+h1{margin:0;font-family:var(--disp);font-weight:700;line-height:1}
+h1 .k{display:block;font-size:clamp(72px,16vw,230px);letter-spacing:.06em;text-shadow:0 6px 60px rgba(0,0,0,.6)}
+h1 .l{font-weight:500;display:block;margin-top:.8em;font-size:clamp(14px,2.1vw,26px);letter-spacing:.55em;text-transform:uppercase;color:var(--kin)}
+.lede{max-width:33em;margin:1.4em 0 0;color:#ddd4be;font-size:clamp(15px,1.5vw,18px)}
+.cue{margin-top:26px;display:flex;align-items:center;gap:14px;font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--kin)}
+.cue i{display:block;width:1px;height:46px;background:var(--kin);transform-origin:top;animation:drip 2.4s ease-in-out infinite}
+@keyframes drip{0%{transform:scaleY(0);opacity:1}55%{transform:scaleY(1);opacity:1}100%{transform:scaleY(1);opacity:0}}
+.vert{position:absolute;right:calc(var(--gr) + 58px);top:calc(14svh + env(safe-area-inset-top,0px));z-index:4;writing-mode:vertical-rl;font:500 clamp(17px,2vw,26px)/1.5 var(--disp);letter-spacing:.35em;color:var(--washi);text-shadow:0 2px 20px #000}
+.vert small{display:block;font:400 10px/1 var(--body);letter-spacing:.2em;color:var(--dim);margin-top:1.4em;writing-mode:horizontal-tb}
+
+/* genkan doors */
+.doors{position:absolute;inset:0;z-index:5;display:flex;pointer-events:none}
+.door{position:relative;width:50%;height:100%;background-color:#dccfae;
+  background-image:radial-gradient(ellipse at 50% 42%,rgba(255,240,200,.65),transparent 72%),linear-gradient(90deg,#2b1d12 0 4px,transparent 4px),linear-gradient(#2b1d12 0 4px,transparent 4px);
+  background-size:100% 100%,33.333% 100%,100% 16.666%;box-shadow:inset 0 0 0 7px #2b1d12,0 0 80px rgba(0,0,0,.7)}
+.door.l{will-change:transform}.door.r{will-change:transform}
+.doortext{position:absolute;inset:0;z-index:6;display:grid;place-content:center;text-align:center;color:#2b1d12;pointer-events:none;padding:0 var(--gr) 0 var(--gl)}
+.doortext .k{font:700 clamp(64px,13vw,190px)/1 var(--disp);letter-spacing:.1em;text-shadow:0 0 30px rgba(236,228,209,.9)}
+.doortext .l{font-size:clamp(12px,1.6vw,18px);letter-spacing:.5em;text-transform:uppercase;font-weight:700;margin-top:.8em}
+.doortext p{margin:1.2em auto 0;max-width:24em;font-size:15px;font-weight:500;background:rgba(236,228,209,.8);padding:6px 14px}
+.hall img{object-position:50% 55%}
+.nfig{position:absolute;right:calc(var(--gr) + 54px);bottom:calc(5svh + env(safe-area-inset-bottom,0px));margin:0;width:min(28vw,290px);z-index:4}
+.nfig img{width:100%;aspect-ratio:2/3;object-fit:cover;border:1px solid rgba(200,162,75,.5);box-shadow:0 30px 80px rgba(0,0,0,.75)}
+.nfig figcaption{margin-top:9px;font-size:11.5px;line-height:1.5;color:var(--dim);text-shadow:0 1px 8px #000}
+
+/* katana / generic image positions */
+.k1 img{object-position:58% 62%}.k2 img{object-position:40% 55%}.k3 img{object-position:34% 55%}
+.t1 img{object-position:46% 52%}.t2 img{object-position:68% 50%}.t3 img{object-position:50% 38%}.t4 img{object-position:50% 50%}
+.g1 img{object-position:50% 58%}.g2 img{object-position:50% 62%}.g3 img{object-position:38% 50%}
+
+/* armor gallery */
+.wood{background:linear-gradient(#100b08,#1b130c 72%,#0b0806)}
+.rail{position:relative;z-index:4;display:flex;height:100%;width:max-content;will-change:transform}
+.floor{position:absolute;left:0;right:0;bottom:0;height:14svh;z-index:1;background-color:#120c07;background-image:linear-gradient(90deg,transparent 0 238px,rgba(0,0,0,.55) 238px 240px),linear-gradient(#26180e,#0b0705);background-size:240px 100%,100% 100%;border-top:1px solid rgba(200,162,75,.2)}
+.vit{position:relative;flex:0 0 auto;height:100%;display:flex;flex-direction:column;justify-content:center;gap:16px;padding:0 clamp(26px,5vw,84px);--h:min(62svh,660px)}
+.vit::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 55% 75% at 50% 0%,rgba(255,226,170,.17),transparent 72%)}
+.vit .frame{position:relative;height:var(--h);width:calc(var(--h) * var(--ar));overflow:hidden;border:1px solid rgba(200,162,75,.42);box-shadow:0 40px 90px rgba(0,0,0,.75)}
+.vit .frame img{width:100%;height:100%;object-fit:cover}
+.vit .frame::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 70px rgba(0,0,0,.55);pointer-events:none}
+.vit .plaque{width:max(calc(var(--h) * var(--ar)),290px);position:relative}
+.vit.intro{width:min(90vw,560px);padding-left:calc(var(--gl) + 8px)}
+.vit.intro .k{font:700 clamp(64px,10vw,140px)/1 var(--disp);margin:.1em 0 .1em}
+.vit.intro .n,.vit.intro .t{font-size:12px;letter-spacing:.38em;text-transform:uppercase;color:var(--kin)}
+.vit.intro p{margin:1.2em 0 0;max-width:27em;color:#e2d9c4}
+.vit.intro .hint{margin-top:2em;color:var(--kin);font-size:12px;letter-spacing:.3em;text-transform:uppercase}
+.vit.outro{width:min(78vw,420px)}
+.vit.outro p{font:400 clamp(20px,2.4vw,28px)/1.5 var(--disp);color:var(--washi);margin:0}
+
+/* ma */
+.ma .ly img{object-position:50% 62%}
+.ma-copy{position:absolute;inset:0;z-index:4;display:grid;place-content:center;text-align:center;padding:0 var(--gr) 0 var(--gl)}
+.ma-copy .k{font:700 clamp(120px,26vw,360px)/1 var(--disp);color:var(--washi);text-shadow:0 6px 90px rgba(0,0,0,.65)}
+.ma-copy h2{margin:.2em 0 0;font:500 clamp(16px,2vw,24px)/1.3 var(--disp);letter-spacing:.3em;text-transform:uppercase}
+.ma-copy p{margin:1em auto 0;max-width:30em;font-size:15px;color:#f2ead8;text-shadow:0 1px 18px #000}
+.ma .dim{position:absolute;inset:0;z-index:2;background:rgba(8,6,4,.38)}
+
+/* garden */
+#petals{position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none}
+
+/* end */
+.end{position:relative;min-height:100vh;min-height:100svh;background:#0a0807;overflow:hidden;padding-block:calc(14vh + env(safe-area-inset-top,0px)) calc(7vh + env(safe-area-inset-bottom,0px))}
+.end .bgl{position:absolute;inset:0}
+.end .bgl img{width:100%;height:100%;object-fit:cover;opacity:.3}
+.end .bgl::after{content:"";position:absolute;inset:0;background:linear-gradient(#0a0807,rgba(10,8,7,.55) 40%,#0a0807)}
+.end .wrap{position:relative;z-index:2;max-width:1100px;margin:0 auto}
+.end .k{font:700 clamp(54px,9vw,120px)/1.05 var(--disp);letter-spacing:.06em}
+.end h2{margin:.3em 0 0;font:500 clamp(20px,2.6vw,32px)/1.3 var(--disp)}
+.end .sub{margin:.5em 0 0;color:var(--kin);letter-spacing:.3em;font-size:12px;text-transform:uppercase}
+.backs{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}a.back{text-decoration:none;display:inline-block}
+.back{border:1px solid var(--kin);padding:12px 22px;font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--kin);transition:background .3s,color .3s}
+.back:hover,.back:focus-visible{background:var(--kin);color:var(--sumi);outline:none}
+dl.gloss{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:0 36px;margin:56px 0 0;padding:0}
+.gloss div{padding:14px 0;border-top:1px solid rgba(236,228,209,.14);min-width:0}
+.gloss dt{font:500 22px/1.3 var(--disp)}
+.gloss dt small{font:400 11px var(--body);letter-spacing:.2em;text-transform:uppercase;color:var(--kin);margin-left:.7em}
+.gloss dd{margin:.25em 0 0;font-size:13.5px;color:var(--dim);line-height:1.55}
+.credits{margin-top:48px;padding-top:18px;border-top:1px solid rgba(236,228,209,.14);font-size:12px;line-height:1.7;color:var(--dim);max-width:60em}
+.credits b{color:var(--washi);font-weight:500}
+
+@media (max-width:760px){
+  .plaque{padding:14px 16px 12px}.plaque p{font-size:13px}.plaque h3{font-size:18px}
+  .seal button{width:30px;height:30px;font-size:13px}.seal{gap:8px}.seal button span{display:none}
+  .rhead{top:calc(54px + env(safe-area-inset-top,0px))}
+  .vert{right:calc(var(--gr) + 44px);top:calc(11svh + env(safe-area-inset-top,0px));font-size:15px}
+  .nfig{width:32vw;right:calc(var(--gr) + 44px);bottom:auto;top:calc(54px + env(safe-area-inset-top,0px))}
+  .nfig figcaption{display:none}
+  .stwrap{height:min(300px,50svh)}
+  .vit{--h:min(56svh,520px)}
+  .doortext p{font-size:13px}
+}
+@media (prefers-reduced-motion:reduce){.cue i{animation:none;transform:none}}
+</style>
+
+</head>
+<body>
+<div id="bar"></div>
+<a class="brand" href="/" aria-label="Zur Startseite joshuaforster.de"><b></b>和の家</a>
+<nav class="seal" aria-label="Räume">
+  <button data-r="r1" aria-label="Raum 1 Genkan"><span>Genkan</span>一</button>
+  <button data-r="r2" aria-label="Raum 2 Katana"><span>Katana</span>二</button>
+  <button data-r="r3" aria-label="Raum 3 Yoroi"><span>Yoroi</span>三</button>
+  <button data-r="r4" aria-label="Raum 4 Chashitsu"><span>Chashitsu</span>四</button>
+  <button data-r="r5" aria-label="Raum 5 Niwa"><span>Niwa</span>五</button>
+</nav>
+
+<main>
+<!-- 0 · EINGANG -->
+<section class="room hero" id="r0">
+  <div class="ly"><img src="img/corridor1.jpg" alt="Holzgang einer Tempelanlage über einem grünen Garten" fetchpriority="high"></div>
+  <div class="shade"></div>
+  <div class="vert">靴をお脱ぎください<small>BITTE SCHUHE AUSZIEHEN</small></div>
+  <div class="hero-copy in">
+    <p class="kicker">Ein Rundgang · 博物館</p>
+    <h1><span class="k">和の家</span><span class="l">Wa no Ie</span></h1>
+    <p class="lede">Ein japanisches Haus, von innen. Fünf Räume, kein Plan – nur Licht, Holz und die Dinge, die dort liegen. Scrollen heißt gehen.</p>
+    <div class="cue"><i></i>Scrollen zum Eintreten</div>
+  </div>
+  <div class="fade"></div>
+</section>
+
+<!-- 一 · GENKAN -->
+<section class="room" id="r1">
+  <div class="ly hall"><img src="img/hall3.jpg" alt="Flur mit Shōji-Schiebetüren und Tatami"></div>
+  <div class="tshade"></div><div class="bshade"></div>
+  <div class="rhead in" id="r1head"><div class="n">Raum 一</div><div class="k">玄関</div><div class="t">Genkan · Der Eingang</div></div>
+  <figure class="nfig" id="r1fig"><img src="img/noren.jpg" alt="Noren-Vorhang vor einer Holztür bei Nacht"><figcaption>Noren 暖簾 – der Stoffvorhang vor der Tür. Hängt er, ist geöffnet.</figcaption></figure>
+  <div class="stwrap"><div class="st" id="r1plaque"><div class="plaque">
+    <div class="no">Raum 一 · Schwelle</div>
+    <h3>Wo die Schuhe bleiben <em>上がり框</em></h3>
+    <p>Eine einzige Stufe, die Agari-kamachi, trennt Straße und Haus. Wer sie überschreitet, lässt den Schmutz der Welt zurück und geht in Socken weiter – auf Holz, auf Tatami, leise.</p>
+    <div class="meta">Shōji: Schiebetür aus Holzgitter und Washi-Papier. Sie lässt Licht herein, aber keinen Blick.</div>
+  </div></div></div>
+  <div class="doors" aria-hidden="true"><div class="door l"></div><div class="door r"></div></div>
+  <div class="doortext" id="r1door"><div><div class="k">玄関</div><div class="l">Genkan</div><p>Schiebe die Tür auf – scrolle.</p></div></div>
+</section>
+
+<!-- 二 · KATANA -->
+<section class="room" id="r2">
+  <div class="ly k1"><img src="img/katana1.jpg" alt="Katana mit Tsuba und Griff auf einem Ständer"></div>
+  <div class="ly k3"><img src="img/katana3.jpg" alt="Dunkle Saya und Griff eines Schwertes mit Tsuba"></div>
+  <div class="ly k2"><img src="img/katana2.jpg" alt="Kurzschwert mit Gravur vor blauem Rauch"></div>
+  <div class="tshade"></div><div class="bshade"></div><div class="spot"></div>
+  <div class="rhead in"><div class="n">Raum 二</div><div class="k">刀</div><div class="t">Katana · Das Schwert</div></div>
+  <div class="stwrap">
+    <div class="st"><div class="plaque"><div class="no">Exponat 2·1</div><h3>Die Klinge <em>日本刀</em></h3>
+      <p>Aus Tamahagane geschmiedet, dem Stahl des Eisensands: gefaltet, gehärtet, geschliffen. Ab etwa 60 cm Klingenlänge – in der Edo-Zeit trugen nur Samurai das Paar aus langem und kurzem Schwert.</p>
+      <div class="meta">Klinge auf Ständer · Foto: Seiya Maeda</div></div></div>
+    <div class="st"><div class="plaque"><div class="no">Exponat 2·2</div><h3>Tsuba &amp; Tsuka <em>鍔・柄</em></h3>
+      <p>Das Stichblatt schützt die Hand und ist oft das schönste Detail: Eisen, durchbrochen, eingelegt. Der Griff ist mit Rochenhaut und geflochtener Seide umwickelt, damit nichts rutscht.</p>
+      <div class="meta">Schwert in der Saya (Scheide) · Foto: wtrsnvc</div></div></div>
+    <div class="st"><div class="plaque"><div class="no">Exponat 2·3</div><h3>Ha &amp; Hamon <em>刃・刃文</em></h3>
+      <p>Beim Abschrecken schützt eine Tonschicht den Rücken der Klinge: Die Schneide wird hart, der Rücken bleibt zäh. Die Linie dazwischen – der Hamon – ist die Handschrift des Schmieds.</p>
+      <div class="meta">Kurzschwert mit Gravur (Horimono) · Foto: Carlos Felipe Ramírez Mesa</div></div></div>
+  </div>
+</section>
+
+<!-- 三 · YOROI -->
+<section class="room wood" id="r3">
+  <div class="floor" id="floor"></div>
+  <div class="spot"></div>
+  <div class="rail" id="rail">
+    <article class="vit intro">
+      <div class="n">Raum 三</div><div class="k">鎧</div><div class="t">Yoroi · Die Rüstung</div>
+      <p>Eine Rüstung ist Architektur am Körper: Hunderte lackierte Plättchen, mit Seidenschnüren verbunden – beweglich wie ein Gewand, hart wie ein Dach. Gehen Sie von Vitrine zu Vitrine.</p>
+      <div class="hint">weiter scrollen →</div>
+    </article>
+    <article class="vit" style="--ar:.667">
+      <div class="frame"><img src="img/armor3.jpg" alt="Samurai-Rüstung mit goldenem Halbmond auf dem Helm"></div>
+      <div class="plaque"><div class="no">Vitrine 3·1</div><h3>Kabuto <em>兜</em></h3>
+        <p>Der Helm trägt vorne einen Schmuck, das Maedate – hier ein goldener Halbmond. Auf dem Schlachtfeld machte er aus dem Krieger eine erkennbare Figur.</p>
+        <div class="meta">Foto: Antony Hyson Seltran</div></div>
+    </article>
+    <article class="vit" style="--ar:.572">
+      <div class="frame"><img src="img/armor1.jpg" alt="Vollständige japanische Rüstung (Gusoku) auf Ständer"></div>
+      <div class="plaque"><div class="no">Vitrine 3·2</div><h3>Rüstung (Gusoku) <em>具足</em></h3>
+        <p>Das Gusoku ist die komplette Ausrüstung – Helm, Brust, Ärmel, Beinschutz – hier aus Teilen des 16. und 18. Jahrhunderts zusammengesetzt.</p>
+        <div class="meta">Helm signiert Saotome Ietada · Brustpanzer bezeichnet Myōchin Munesuke · Eisen, Lack, Seide, vergoldetes Kupfer · The Metropolitan Museum of Art, 14.100.172 (CC0)</div></div>
+    </article>
+    <article class="vit" style="--ar:.667">
+      <div class="frame"><img src="img/armor6.jpg" alt="Detail einer Rüstung mit geschnürten Plättchen"></div>
+      <div class="plaque"><div class="no">Vitrine 3·3</div><h3>Plättchen &amp; Schnürung <em>縅</em></h3>
+        <p>Kleine lackierte Plättchen, durch Schnüre (Odoshi) zu Flächen verbunden: leicht, flexibel, reparierbar. Die Farbe der Schnur zeigte oft die Zugehörigkeit.</p>
+        <div class="meta">Detail einer Rüstung</div></div>
+    </article>
+    <article class="vit" style="--ar:.8">
+      <div class="frame"><img src="img/armor2.jpg" alt="Japanische Rüstung des 18. Jahrhunderts"></div>
+      <div class="plaque"><div class="no">Vitrine 3·4</div><h3>Rüstung, 18. Jh. <em>具足</em></h3>
+        <p>In der langen Ruhe der Edo-Zeit wurde die Rüstung vom Werkzeug zum Statussymbol und Kunsthandwerk – mit Silber, Shakudō und Rosshaar.</p>
+        <div class="meta">Helm signiert Bamen Tomotsugu, Echizen/Toyohara · Eisen, Lack, Shakudō, Silber, Seide, Rosshaar, Elfenbein · The Metropolitan Museum of Art, 2001.642 (CC0)</div></div>
+    </article>
+    <article class="vit outro"><p>Nach dem Lärm der Waffen:<br>der stillste Raum des Hauses.</p></article>
+  </div>
+</section>
+
+<!-- 間 -->
+<section class="room ma" id="rm">
+  <div class="ly"><img src="img/room2.jpg" alt="Sonnendurchfluteter Tatami-Raum mit Shōji"></div>
+  <div class="dim"></div>
+  <div class="ma-copy">
+    <div class="k" id="makanji">間</div>
+    <h2>Ma · Der Raum dazwischen</h2>
+    <p>Japanische Räume sind nicht leer, sie atmen. Die Tatami-Matte (90 × 180 cm) gibt das Maß, das Licht kommt gefiltert durch Papier, und was fehlt, ist Teil der Gestaltung.</p>
+  </div>
+</section>
+
+<!-- 四 · CHASHITSU -->
+<section class="room" id="r4">
+  <div class="ly t1"><img src="img/tearoom.jpg" alt="Teeraum mit Tokonoma, Hängerolle und Bonsai"></div>
+  <div class="ly t2"><img src="img/tea3.jpg" alt="Frau im Kimono bei der Teezeremonie vor Goldwand"></div>
+  <div class="ly t3"><img src="img/matcha1.jpg" alt="Matcha wird mit dem Bambusbesen aufgeschlagen"></div>
+  <div class="ly t4"><img src="img/kintsugi.jpg" alt="Keramikschalen mit goldenen Kintsugi-Reparaturen"></div>
+  <div class="tshade"></div><div class="bshade"></div>
+  <div class="rhead in"><div class="n">Raum 四</div><div class="k">茶室</div><div class="t">Chashitsu · Das Teehaus</div></div>
+  <div class="stwrap">
+    <div class="st"><div class="plaque"><div class="no">Exponat 4·1</div><h3>Tokonoma <em>床の間</em></h3>
+      <p>Die Nische zeigt nur zwei Dinge: eine Hängerolle (Kakejiku) und ein Gesteck oder einen Bonsai. Beides wird mit der Jahreszeit gewechselt – nichts ist zu viel.</p>
+      <div class="meta">Teeraum mit Tokonoma · Foto: Jens F</div></div></div>
+    <div class="st"><div class="plaque"><div class="no">Exponat 4·2</div><h3>Chanoyu <em>茶の湯</em></h3>
+      <p>Die Teezeremonie ist Choreografie: Jeder Handgriff an Kessel, Schale und Löffel ist festgelegt. Leitgedanke: Ichi-go ichi-e, 一期一会 – diese Begegnung kommt nie wieder.</p>
+      <div class="meta">Gastgeberin im Kimono · Foto: Roméo A.</div></div></div>
+    <div class="st"><div class="plaque"><div class="no">Exponat 4·3</div><h3>Matcha <em>抹茶</em></h3>
+      <p>Das Pulver aus beschattetem Tee wird mit dem Chasen geschlagen, einem Besen aus einem einzigen Stück Bambus, bis feiner Schaum entsteht.</p>
+      <div class="meta">Foto: Payoon Gerinto</div></div></div>
+    <div class="st"><div class="plaque"><div class="no">Exponat 4·4</div><h3>Kintsugi <em>金継ぎ</em></h3>
+      <p>Zerbrochene Schalen werden mit Urushi-Lack und Gold geflickt. Der Bruch wird nicht versteckt, er wird zur Linie. Wabi-sabi: Schönheit im Unvollkommenen.</p>
+      <div class="meta">Keramik mit Gold-Reparaturen · Foto: Stephen Pontes</div></div></div>
+  </div>
+</section>
+
+<!-- 五 · NIWA -->
+<section class="room" id="r5">
+  <div class="ly g1"><img src="img/garden1.jpg" alt="Moosinseln und Felsen in geharktem weißem Kies"></div>
+  <div class="ly g2"><img src="img/garden2.jpg" alt="Felsen vor einer Lehmmauer im Kiesgarten"></div>
+  <div class="ly g3"><img src="img/garden4.jpg" alt="Blick von der Veranda auf Garten und Dach"></div>
+  <canvas id="petals"></canvas>
+  <div class="tshade"></div><div class="bshade"></div>
+  <div class="rhead in"><div class="n">Raum 五</div><div class="k">庭</div><div class="t">Niwa · Der Garten</div></div>
+  <div class="stwrap">
+    <div class="st"><div class="plaque"><div class="no">Exponat 5·1</div><h3>Karesansui <em>枯山水</em></h3>
+      <p>Ein Garten ohne Wasser: Kies ist das Meer, Moos sind Inseln, Steine sind Berge. Geharkte Linien ersetzen die Wellen.</p>
+      <div class="meta">Foto: Eva Balogh</div></div></div>
+    <div class="st"><div class="plaque"><div class="no">Exponat 5·2</div><h3>Die Mauer <em>築地塀</em></h3>
+      <p>Eine Lehmmauer rahmt den Garten wie ein Bild. Der Betrachter sitzt davor und schaut – eine Meditation ohne Anleitung.</p>
+      <div class="meta">Foto: Bart Wellens</div></div></div>
+    <div class="st"><div class="plaque"><div class="no">Exponat 5·3</div><h3>Engawa <em>縁側</em></h3>
+      <p>Die Veranda ist weder innen noch außen. Hier endet das Haus, und die Jahreszeit beginnt.</p>
+      <div class="meta">Blick über Dach und Garten</div></div></div>
+  </div>
+</section>
+
+<!-- 出口 -->
+<section class="end">
+  <div class="bgl"><img src="img/lantern.jpg" alt="" aria-hidden="true"></div>
+  <div class="wrap in">
+    <div class="k">出口</div>
+    <h2>Danke für Ihren Besuch</h2>
+    <div class="sub">Deguchi · ご来館ありがとうございました</div>
+    <div class="backs"><button class="back" id="back">Zurück zum Eingang</button><a class="back" href="/">joshuaforster.de</a></div>
+    <dl class="gloss">
+      <div><dt>玄関<small>Genkan</small></dt><dd>Eingangsbereich, in dem die Schuhe ausgezogen werden.</dd></div>
+      <div><dt>暖簾<small>Noren</small></dt><dd>Stoffvorhang vor Tür oder Laden.</dd></div>
+      <div><dt>障子<small>Shōji</small></dt><dd>Schiebewand aus Holzgitter und Washi-Papier.</dd></div>
+      <div><dt>畳<small>Tatami</small></dt><dd>Reisstroh-Matte, ca. 90 × 180 cm; Maßeinheit für Räume.</dd></div>
+      <div><dt>床の間<small>Tokonoma</small></dt><dd>Nische für Hängerolle und Blumen.</dd></div>
+      <div><dt>縁側<small>Engawa</small></dt><dd>Holzveranda zwischen Haus und Garten.</dd></div>
+      <div><dt>刃文<small>Hamon</small></dt><dd>Härtelinie auf der Klinge.</dd></div>
+      <div><dt>兜<small>Kabuto</small></dt><dd>Helm der Samurai-Rüstung.</dd></div>
+      <div><dt>侘寂<small>Wabi-sabi</small></dt><dd>Schönheit im Unvollkommenen und Vergänglichen.</dd></div>
+      <div><dt>枯山水<small>Karesansui</small></dt><dd>Trockengarten aus Kies, Moos und Stein.</dd></div>
+    </dl>
+    <p class="credits"><b>Bildnachweis.</b> Alle Exponate sind Fotografien von Unsplash: Akira (Gang), Seiya Maeda, wtrsnvc, Carlos Felipe Ramírez Mesa (Schwerter), The Metropolitan Museum of Art (Rüstungen 14.100.172 und 2001.642, gemeinfrei CC0), Antony Hyson Seltran, Jens F, Roméo A., Payoon Gerinto, Stephen Pontes, Eva Balogh, Bart Wellens sowie weitere Fotografinnen und Fotografen. Objektangaben der Rüstungen stammen aus den Museumsdaten; übrige Texte sind allgemeine Kulturkunde.</p>
+  </div>
+</section>
+</main>
+
+<script src="/vendor/gsap.min.js"></script>
+<script src="/vendor/ScrollTrigger.min.js"></script>
+<script>
+(function(){
+const R=document.documentElement;
+R.classList.add('js');
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $=(s,c=document)=>c.querySelector(s), $$=(s,c=document)=>[...c.querySelectorAll(s)];
+if(!window.gsap||!window.ScrollTrigger){R.classList.remove('js');return;}
+gsap.registerPlugin(ScrollTrigger);
+const Z=RM?0:1, SC=RM?true:.8;
+let petalOn=false;
+function petalRun(on){ petalOn=on; }
+const btns=$$('.seal button');
+const mark=(id,on)=>{ if(on) btns.forEach(b=>b.classList.toggle('on',b.dataset.r===id)); };
+
+/* Taschenlampe: Spot folgt dem Cursor */
+const spots=$$('.spot');
+if(!RM){
+  let tx=.5,ty=.4,cx=.5,cy=.4;
+  addEventListener('pointermove',e=>{tx=e.clientX/innerWidth;ty=e.clientY/innerHeight},{passive:true});
+  gsap.ticker.add(()=>{
+    cx+=(tx-cx)*.09;cy+=(ty-cy)*.09;
+    const x=(cx*100).toFixed(1)+'%',y=(cy*100).toFixed(1)+'%';
+    spots.forEach(s=>{s.style.setProperty('--mx',x);s.style.setProperty('--my',y)});
+  });
+}
+
+/* Übergänge zwischen Fotos */
+const WIPE={
+  sword:['polygon(0% 0%,0% 0%,-30% 100%,-30% 100%)','polygon(0% 0%,130% 0%,100% 100%,-30% 100%)'],
+  right:['inset(0% 0% 0% 100%)','inset(0% 0% 0% 0%)'],
+  up:['inset(100% 0% 0% 0%)','inset(0% 0% 0% 0%)'],
+  bowl:['circle(0% at 50% 50%)','circle(80% at 50% 50%)']
+};
+function enter(tl,el,pos,dur,kind){
+  if(RM){tl.fromTo(el,{autoAlpha:0},{autoAlpha:1,duration:dur,ease:'none'},pos);return;}
+  const w=WIPE[kind];
+  tl.fromTo(el,{clipPath:w[0]},{clipPath:w[1],duration:dur,ease:'power2.inOut'},pos);
+}
+function drift(tl,ly,from,to,fx,tx2){
+  tl.fromTo($('img',ly),{scale:1+.16*Z,xPercent:fx*Z},{scale:1.02,xPercent:tx2*Z,duration:to-from,ease:'none'},from);
+}
+function steps(tl,sel,outs){
+  const s=$$(sel);
+  outs.forEach((t,i)=>{
+    tl.to(s[i],{autoAlpha:0,y:-14,duration:.2},t)
+      .fromTo(s[i+1],{autoAlpha:0,y:14},{autoAlpha:1,y:0,duration:.3},t+.22);
+  });
+}
+const pin=(id,end,extra)=>Object.assign({id,trigger:'#'+id,start:'top top',end,pin:true,scrub:SC,onToggle:s=>mark(id,s.isActive)},extra||{});
+
+/* 0 Eingang: Hineinzoomen in den Gang */
+gsap.timeline({scrollTrigger:pin('r0','+=170%')})
+  .to('#r0 .ly img',{scale:1+.75*Z,ease:'none',duration:1},0)
+  .to('#r0 .hero-copy',{autoAlpha:0,y:-50*Z,ease:'none',duration:.3},0)
+  .to('#r0 .vert',{autoAlpha:0,ease:'none',duration:.25},0)
+  .to('#r0 .fade',{opacity:1,ease:'none',duration:.3},.8);
+
+/* 一 Genkan: Shōji öffnen sich */
+(function(){
+  const t=gsap.timeline({scrollTrigger:pin('r1','+=200%')});
+  t.fromTo('#r1 .hall img',{scale:1+.22*Z},{scale:1,ease:'none',duration:1.6},0)
+   .fromTo('#r1 .door.l',{xPercent:0},{xPercent:-102,ease:'power2.inOut',duration:.8},.25)
+   .fromTo('#r1 .door.r',{xPercent:0},{xPercent:102,ease:'power2.inOut',duration:.8},.25)
+   .to('#r1door',{autoAlpha:0,duration:.25},.2)
+   .fromTo('#r1head',{autoAlpha:0,y:20*Z},{autoAlpha:1,y:0,duration:.35},.95)
+   .fromTo('#r1fig',{autoAlpha:0,y:50*Z},{autoAlpha:1,y:0,duration:.5},1.1)
+   .fromTo('#r1plaque',{autoAlpha:0,y:20*Z},{autoAlpha:1,y:0,duration:.4},1.2)
+   .to({},{duration:.4},1.6);
+})();
+
+/* 二 Katana: Schnitt-Wischer von Foto zu Foto */
+(function(){
+  const t=gsap.timeline({scrollTrigger:pin('r2','+=380%')});
+  const [a,b,c]=$$('#r2 .ly');
+  drift(t,a,0,1.3,3,0);
+  enter(t,b,1,.5,'sword'); drift(t,b,1,2.4,-3,0);
+  enter(t,c,2.1,.5,'sword'); drift(t,c,2.1,3.5,3,0);
+  steps(t,'#r2 .st',[1,2.1]);
+})();
+
+/* 三 Yoroi: horizontaler Rundgang durch die Vitrinen */
+(function(){
+  const rail=$('#rail'), floor=$('#floor');
+  const dist=()=>Math.max(0,rail.scrollWidth-innerWidth);
+  const a=gsap.to(rail,{x:()=>-dist(),ease:'none',scrollTrigger:{id:'r3',trigger:'#r3',start:'top top',end:()=>'+='+dist(),pin:true,scrub:SC,invalidateOnRefresh:true,onToggle:s=>mark('r3',s.isActive),onUpdate:s=>{floor.style.backgroundPositionX=(-dist()*s.progress*1.25)+'px,0px'}}});
+  if(!RM) $$('#r3 .frame img').forEach(im=>{
+    gsap.fromTo(im,{scale:1.14,xPercent:-4},{scale:1.14,xPercent:4,ease:'none',scrollTrigger:{trigger:im.closest('.vit'),containerAnimation:a,start:'left right',end:'right left',scrub:true}});
+  });
+})();
+
+/* 間: Stille */
+gsap.timeline({scrollTrigger:pin('rm','+=120%')})
+  .fromTo('#rm .ly img',{scale:1+.2*Z},{scale:1,ease:'none',duration:1},0)
+  .fromTo('#rm .ma-copy',{autoAlpha:0},{autoAlpha:1,ease:'none',duration:.4},0)
+  .fromTo('#makanji',{scale:RM?1:.88},{scale:1+.08*Z,ease:'none',duration:1},0);
+
+/* 四 Chashitsu */
+(function(){
+  const t=gsap.timeline({scrollTrigger:pin('r4','+=500%')});
+  const [a,b,c,d]=$$('#r4 .ly');
+  drift(t,a,0,1.3,3,0);
+  enter(t,b,1,.55,'right'); drift(t,b,1,2.3,-3,0);
+  enter(t,c,2.1,.6,'bowl'); drift(t,c,2.1,3.3,0,0);
+  enter(t,d,3.1,.55,'up'); drift(t,d,3.1,4.4,2,-2);
+  steps(t,'#r4 .st',[1,2.1,3.1]);
+})();
+
+/* 五 Niwa */
+(function(){
+  const t=gsap.timeline({scrollTrigger:pin('r5','+=380%',{onToggle:s=>{mark('r5',s.isActive);petalRun(s.isActive)}})});
+  const [a,b,c]=$$('#r5 .ly');
+  drift(t,a,0,1.3,2,-2);
+  enter(t,b,1,.55,'right'); drift(t,b,1,2.4,-2,2);
+  enter(t,c,2.1,.55,'up'); drift(t,c,2.1,3.5,2,-2);
+  steps(t,'#r5 .st',[1,2.1]);
+})();
+
+/* Kirschblüten */
+(function(){
+  const cv=$('#petals'); if(!cv||RM) return;
+  const ctx=cv.getContext('2d'); let W=0,H=0,D=1; const P=[];
+  const size=()=>{const r=cv.getBoundingClientRect();D=Math.min(devicePixelRatio||1,2);W=cv.width=Math.round(r.width*D);H=cv.height=Math.round(r.height*D)};
+  size(); addEventListener('resize',size);
+  const mk=(init)=>({x:Math.random()*W,y:init?Math.random()*H:-30*D,s:(5+Math.random()*7)*D,vx:(.25+Math.random()*.6)*D,vy:(.5+Math.random()*.9)*D,r:Math.random()*6.28,vr:(Math.random()-.5)*.03,ph:Math.random()*6.28,a:.55+Math.random()*.4});
+  for(let i=0;i<34;i++)P.push(mk(true));
+  gsap.ticker.add(()=>{
+    if(!petalOn) return;
+    ctx.clearRect(0,0,W,H);
+    for(const p of P){
+      p.ph+=.03; p.x+=p.vx+Math.sin(p.ph)*.5*D; p.y+=p.vy; p.r+=p.vr;
+      if(p.y>H+30||p.x>W+30){Object.assign(p,mk(false),{x:Math.random()*W*.9-W*.1});}
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.r); ctx.scale(1,.55+.45*Math.cos(p.ph));
+      ctx.globalAlpha=p.a; ctx.fillStyle='#f2c6d0';
+      ctx.beginPath(); ctx.moveTo(0,-p.s); ctx.bezierCurveTo(p.s*.9,-p.s*.6,p.s*.7,p.s*.7,0,p.s); ctx.bezierCurveTo(-p.s*.7,p.s*.7,-p.s*.9,-p.s*.6,0,-p.s); ctx.fill();
+      ctx.restore();
+    }
+  });
+})();
+
+/* Navigation, Fortschritt, Rücksprung */
+btns.forEach(b=>b.addEventListener('click',()=>{
+  const st=ScrollTrigger.getById(b.dataset.r);
+  if(st) scrollTo({top:st.start,behavior:RM?'auto':'smooth'});
+}));
+const bar=$('#bar');
+ScrollTrigger.create({start:0,end:'max',onUpdate:s=>{bar.style.transform='scaleX('+s.progress.toFixed(4)+')'}});
+$('#back').addEventListener('click',()=>scrollTo({top:0,behavior:RM?'auto':'smooth'}));
+addEventListener('load',()=>ScrollTrigger.refresh());
+})();
+</script>
+
+</body>
+</html>
