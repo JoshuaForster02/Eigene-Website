@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script>if(!matchMedia('(prefers-reduced-motion: reduce)').matches){document.documentElement.classList.add('anim')}</script>
+<script>(()=>{const d=document.documentElement,os=matchMedia('(prefers-reduced-motion: reduce)').matches;let on=false;try{on=localStorage.getItem('jf-motion')==='on'}catch(e){}if(os)d.classList.add('rm-os');if(!os||on){d.classList.add('anim');if(os)d.classList.add('force-motion')}})()</script>
 <link rel="canonical" href="https://joshuaforster.de/">
 <title>Joshua Forster</title>
 <meta name="description" content="Joshua Forster, Medizinstudent an der Universität des Saarlandes in Homburg. Interessen: Orthopädie und Unfallchirurgie, Sportmedizin und Prävention.">
@@ -343,9 +343,14 @@ html.anim:not(.ready) .nav,html.anim:not(.ready) .name,html.anim:not(.ready) .le
   .ledger{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media (prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation:none!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
-  .menu a{transform:none}
+  html:not(.force-motion) *,html:not(.force-motion) *::before,html:not(.force-motion) *::after{animation:none!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+  html:not(.force-motion) .menu a{transform:none}
 }
+.mot[hidden]{display:none}
+.mot-m{display:none;align-self:flex-start;margin-top:18px;height:40px;padding:0 18px;border-radius:999px;border:1px solid var(--line);background:none;color:var(--fg2);font-size:14px;cursor:pointer}
+.mot-m[hidden]{display:none!important}
+@media (max-width:620px){.mot{display:none!important}.mot-m{display:inline-flex;align-items:center}}
+.pill,.logo{white-space:nowrap}
 @media (prefers-reduced-transparency:reduce){.nav.solid,.menu{background:var(--bg);-webkit-backdrop-filter:none;backdrop-filter:none}}
 </style>
 </head>
@@ -388,12 +393,14 @@ html.anim:not(.ready) .nav,html.anim:not(.ready) .name,html.anim:not(.ready) .le
       <li><a href="#sport" data-i="n4">Sport</a></li>
       <li><a href="#kontakt" data-i="n5">Kontakt</a></li>
     </ul>
+    <button class="pill mot" id="mot" type="button" hidden></button>
     <button class="pill" id="lng" type="button">EN</button>
     <button class="pill burger" id="burger" type="button" aria-expanded="false" aria-controls="menu" data-i="menu">Menü</button>
   </div>
 </nav>
 <div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menü">
   <a href="#profil" data-i="n1">Profil</a><a href="#werdegang" data-i="n2">Werdegang</a><a href="#schwerpunkte" data-i="n3">Schwerpunkte</a><a href="#sport" data-i="n4">Sport</a><a href="#kontakt" data-i="n5">Kontakt</a>
+<button class="mot-m" id="mot2" type="button" hidden></button>
 </div>
 <a class="egg" id="egg" href="/spiele/" aria-hidden="true" tabindex="-1">Easter Egg</a>
 
@@ -635,7 +642,7 @@ b.addEventListener('click',()=>{const n=L==='en'?'de':'en';try{localStorage.setI
 (()=>{
 const root=document.documentElement;
 const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
-const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches&&!root.classList.contains('force-motion');
 const FINE=matchMedia('(hover: hover) and (pointer: fine)').matches;
 const G=typeof gsap!=='undefined'&&typeof ScrollTrigger!=='undefined';
 const EN=window.JF_LANG==='en';
@@ -654,6 +661,10 @@ addEventListener('scroll',onScroll,{passive:true});onScroll();
  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)set(e.target.id)}),{rootMargin:'-45% 0px -54% 0px'});
  ['top',...map.keys()].forEach(id=>{const el=document.getElementById(id);if(el)io.observe(el)})}
 
+/* Bewegung: Systemeinstellung „Bewegung reduzieren“ lässt sich hier überstimmen */
+{const f=root.classList.contains('force-motion');
+ $$('#mot,#mot2').forEach(b=>{if(!root.classList.contains('rm-os'))return;b.hidden=false;b.textContent=f?(EN?'Motion off':'Bewegung aus'):(EN?'Motion on':'Bewegung an');b.setAttribute('aria-pressed',f);
+  b.addEventListener('click',()=>{try{f?localStorage.removeItem('jf-motion'):localStorage.setItem('jf-motion','on')}catch(e){}location.reload()})})}
 /* Menü (mobil) */
 const burger=$('#burger'),menu=$('#menu'),mainEl=$('#main');
 function menuSet(o){menu.classList.toggle('open',o);burger.setAttribute('aria-expanded',o);burger.textContent=o?(EN?'Close':'Schließen'):(EN?'Menu':'Menü');
