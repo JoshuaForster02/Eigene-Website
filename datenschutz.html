@@ -8,39 +8,45 @@
 <meta name="robots" content="noindex">
 <link rel="canonical" href="https://joshuaforster.de/datenschutz.html">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<meta name="theme-color" content="#070D1A">
-<link rel="stylesheet" href="/fonts/fonts.css">
+<meta name="theme-color" content="#060607">
+<link rel="preload" href="/fonts/barlow-600.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
 <style>
-:root{color-scheme:dark;--bg:#070D1A;--bg2:#0C1526;--fg:#EAF0F8;--fg2:#C5D0E2;--fg3:#8B98AE;--fg4:#75829A;--crim:#8FB1FF;--line:rgba(234,240,248,.12)}
-:root[data-theme="light"]{color-scheme:light;--bg:#F5F7FB;--bg2:#E9EEF6;--fg:#0A1428;--fg2:#22304A;--fg3:#56647C;--fg4:#6E7A90;--crim:#1C3D7A;--line:rgba(10,20,40,.14)}
+@font-face{font-family:"Barlow";font-weight:500;font-display:swap;src:url(/fonts/barlow-500.woff2) format("woff2")}
+@font-face{font-family:"Barlow";font-weight:600;font-display:swap;src:url(/fonts/barlow-600.woff2) format("woff2")}
+@font-face{font-family:"Inter";font-weight:100 900;font-display:swap;src:url(/fonts/inter-var.woff2) format("woff2")}
+:root{color-scheme:dark;--bg:#060607;--bg2:#0d0e10;--fg:#f4f4f6;--fg2:#b6b9c2;--fg3:#8d919b;--line:rgba(244,244,246,.14);--line2:rgba(244,244,246,.08);--acc:#8aa0ff;--acc-ink:#060607;
+  --display:"Barlow","Helvetica Neue",Arial,sans-serif;--sans:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;--ease:cubic-bezier(.23,1,.32,1);--pad:clamp(16px,4.4vw,64px)}
 *{box-sizing:border-box}
-body{margin:0;background:radial-gradient(ellipse at 15% 0%,color-mix(in srgb,var(--crim) 14%,transparent),transparent 55%) fixed,var(--bg);color:var(--fg);font-family:Karla,system-ui,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.7}
-a{color:var(--crim)}
-nav{display:flex;justify-content:space-between;align-items:center;max-width:860px;margin:0 auto;padding:26px clamp(16px,5vw,40px)}
-nav .logo{font-family:"Cormorant Garamond",serif;font-size:22px;text-decoration:none;color:var(--fg)}
-nav .logo i{color:var(--crim)}
-nav .back{font-family:"DM Mono",monospace;font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--fg3);text-decoration:none}
-nav .back:hover{color:var(--crim)}
-main{max-width:860px;margin:0 auto;padding:40px clamp(16px,5vw,40px) 80px}
-.label{font-family:"DM Mono",monospace;font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--crim)}
-h1{font-family:"Cormorant Garamond",serif;font-weight:400;font-size:clamp(48px,9vw,88px);line-height:1;margin:14px 0 26px}
-h1 i{color:var(--crim)}
-.lead{font-size:18px;color:var(--fg2);max-width:60ch}
-section{border-top:1px solid var(--line);padding:30px 0 6px;margin-top:30px;display:grid;grid-template-columns:200px minmax(0,1fr);gap:20px}
-h2{font-family:"Cormorant Garamond",serif;font-weight:400;font-size:26px;line-height:1.2;margin:0}
-section p{margin:0 0 14px;color:var(--fg2)}
-small{color:var(--fg4)}
-footer{max-width:860px;margin:0 auto;padding:30px clamp(16px,5vw,40px) 50px;border-top:1px solid var(--line);display:flex;justify-content:space-between;font-size:13px;color:var(--fg4)}
-footer a{color:var(--fg3)}
+html{background:var(--bg);scrollbar-width:thin;scrollbar-color:#2a2b30 var(--bg);-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font:400 17px/1.65 var(--sans);font-feature-settings:"cv11","ss01";-webkit-font-smoothing:antialiased;overflow-x:clip}
+::selection{background:var(--acc);color:var(--acc-ink)}
+a{color:var(--fg);text-underline-offset:.22em;text-decoration-thickness:1px;text-decoration-color:var(--line);transition:text-decoration-color .3s var(--ease),color .3s var(--ease)}
+@media (hover:hover){a:hover{text-decoration-color:var(--acc);color:var(--acc)}}
+:focus-visible{outline:2px solid var(--acc);outline-offset:3px;border-radius:4px}
+nav{position:sticky;top:0;z-index:10;height:68px;display:flex;justify-content:space-between;align-items:center;padding:0 var(--pad);background:rgba(6,6,7,.66);-webkit-backdrop-filter:blur(18px) saturate(1.6);backdrop-filter:blur(18px) saturate(1.6);border-bottom:1px solid var(--line2)}
+nav .logo{font:600 18px/1 var(--display);letter-spacing:-.005em;text-decoration:none;color:var(--fg);padding:10px 0}
+nav .back{display:inline-flex;align-items:center;height:36px;padding:0 14px;border:1px solid var(--line);border-radius:999px;font-size:13px;color:var(--fg2);text-decoration:none}
+@media (hover:hover){nav .back:hover{border-color:rgba(244,244,246,.32);color:var(--fg)}}
+main{max-width:1100px;margin:0 auto;padding:clamp(56px,10vh,110px) var(--pad) clamp(64px,10vh,110px)}
+.label{font-size:14px;color:var(--acc)}
+h1{font:600 clamp(3.2rem,10vw,7.5rem)/.92 var(--display);letter-spacing:-.045em;margin:14px 0 clamp(22px,4vh,36px)}
+.lead{font-size:clamp(17px,1.5vw,20px);color:var(--fg2);max-width:56ch;margin:0}
+section{border-top:1px solid var(--line);padding:30px 0 8px;margin-top:34px;display:grid;grid-template-columns:240px minmax(0,1fr);gap:20px}
+h2{font:600 clamp(1.35rem,2vw,1.7rem)/1.15 var(--display);letter-spacing:-.015em;margin:0}
+section p{margin:0 0 14px;color:var(--fg2);max-width:68ch}
+small{color:var(--fg3)}
+footer{max-width:1100px;margin:0 auto;padding:30px var(--pad) 50px;border-top:1px solid var(--line2);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:14px;color:var(--fg3)}
+footer a{color:var(--fg2);text-decoration:none}
 @media (max-width:640px){section{grid-template-columns:1fr;gap:8px}}
+@media (prefers-reduced-transparency:reduce){nav{background:var(--bg);-webkit-backdrop-filter:none;backdrop-filter:none}}
 </style>
-<script>try{if(localStorage.getItem('jf-theme')==='light')document.documentElement.setAttribute('data-theme','light')}catch(e){}</script>
 </head>
 <body>
-<nav><a class="logo" href="/">Joshua <i>Forster</i></a><a class="back" href="/">← Startseite</a></nav>
+<nav><a class="logo" href="/">Joshua Forster</a><a class="back" href="/">← Startseite</a></nav>
 <main>
   <div class="label">Rechtliches</div>
-  <h1>Daten<i>schutz</i></h1>
+  <h1>Datenschutz</h1>
   <p class="lead">Dies ist eine private Website ohne Werbung, ohne Tracking und ohne Cookies. Hier steht, welche Daten trotzdem anfallen und wohin sie gehen.</p>
 
   <section id="verantwortlich"><h2>Verantwortlich</h2><div>
