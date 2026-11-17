@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#05070c">
+  <meta name="description" content="Mac-Apps und Coding-Projekte von Joshua Forster. Shift, Ctrl und AEON World: Downloads, Quellcode und Einrichtung an einem Ort.">
+  <link rel="canonical" href="https://joshuaforster.de/apps/">
+  <title>Apps — Joshua Forster</title>
+  <link rel="icon" href="/favicon.ico">
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="ambient" aria-hidden="true"></div>
+  <header class="nav wrap">
+    <a class="identity" href="/"><span class="monogram">JF</span><span>Joshua Forster<small>Code &amp; Apps</small></span></a>
+    <nav aria-label="Navigation"><a href="#downloads">Downloads</a><a href="https://github.com/JoshuaForster02" target="_blank" rel="noopener">GitHub ↗</a><a class="back" href="/">Portfolio ↗</a></nav>
+  </header>
+  <main>
+    <section class="hero wrap">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="live-dot"></span> ENTWICKELT AUF DEM MAC. FÜR DEN MAC.</p>
+        <h1>Kleine Apps.<br><em>Mehr Möglichkeiten.</em></h1>
+        <p class="intro">Controller verbinden. Tasten selbst belegen. Virtuell fahren. Meine Coding-Projekte, mit direkten Downloads und offenem Quellcode.</p>
+        <a class="hero-link" href="#downloads">Apps entdecken <span>↓</span></a>
+        <div class="hero-meta"><span>03 PROJEKTE</span><span>INTEL + APPLE SILICON</span><span>OHNE DOWNLOAD-KONTO</span></div>
+      </div>
+      <div class="orbital" aria-hidden="true">
+        <div class="orbit-grid"></div><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="orbit orbit-three"></div>
+        <div class="core"><svg viewBox="0 0 80 80"><path d="m21 25-13 15 13 15M59 25l13 15-13 15M49 16 31 64"/></svg></div>
+        <span class="orbit-label label-one">NATIVE / SWIFT</span><span class="orbit-label label-two">PERSONAL SOFTWARE</span>
+      </div>
+    </section>
+    <section class="catalog wrap" id="downloads" aria-labelledby="catalog-title">
+      <div class="catalog-head"><div><p class="eyebrow">DIE SAMMLUNG</p><h2 id="catalog-title">Direkt zum Download.</h2></div><label class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><input id="search" type="search" placeholder="App suchen" aria-label="Apps durchsuchen"><kbd>⌘ K</kbd></label></div>
+      <div class="catalog-tools"><div class="filters" role="group" aria-label="Projekte filtern"><button type="button" data-filter="all" aria-pressed="true">Alle</button><button type="button" data-filter="controller" aria-pressed="false">Controller</button><button type="button" data-filter="training" aria-pressed="false">Training</button></div><span id="result-count" aria-live="polite">3 Projekte</span></div>
+      <div class="projects">
+        <article class="project" data-category="controller training" data-search="shift mywhoosh click v1 v2 shanwan gamepad bluetooth schalten">
+          <div class="project-index">01</div>
+          <div class="project-icon"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="11" cy="33" r="8"/><circle cx="37" cy="33" r="8"/><path d="m11 33 9-19h10l7 19M17 21l12 12H11M17 14h8M28 10h6"/></svg></div>
+          <div class="project-copy"><div class="project-title"><h3>Shift</h3><span class="release">1.4</span><span class="beta">Beta</span></div><p>Dein Controller. Deine Gänge.</p><p class="description">Click V1/V2, Gamepad oder Tastatur-Remote mit MyWhoosh verbinden. Geführte Einrichtung für beide Click V2, eigene Belegungen und Profile zum Weitergeben.</p><div class="project-meta"><span>macOS 13+</span><span>Intel / Apple Silicon</span><span>SwiftUI</span></div><details><summary>Einrichtung &amp; Kompatibilität</summary><div class="detail-content"><p>Die DMG öffnen und Shift in Programme ziehen. Der Assistent führt durch beide Controller, MyWhoosh und den echten +/−-Test. Der linke V2 kann eine zeitlich begrenzte Zwift-Aktivierung benötigen. Zusätzliche Ride- und OpenBikeControl-Bluetooth-Anbindungen sind Beta; Hardwaretests stehen aus.</p><a href="https://github.com/JoshuaForster02/Shift/releases/latest/download/Vitus-Start.md">Startanleitung</a><a href="https://github.com/JoshuaForster02/Shift/releases/latest/download/Shift-Vitus.json">MyWhoosh-/Click-V2-Profil</a><a href="https://github.com/JoshuaForster02/Shift/blob/codex/shift/SUPPORT.md" target="_blank" rel="noopener">Unterstützungsliste ↗</a></div></details></div>
+          <div class="project-actions"><a class="download" href="https://github.com/JoshuaForster02/Shift/releases/latest/download/Shift-mac.dmg" aria-label="Shift für Mac herunterladen">Für Mac laden <span>↓</span></a><a class="source" href="https://github.com/JoshuaForster02/Shift" target="_blank" rel="noopener">Quellcode ↗</a></div>
+        </article>
+        <article class="project" data-category="controller" data-search="ctrl controller mapper controllermapper anki maus tastatur makro shanwan gamepad">
+          <div class="project-index">02</div>
+          <div class="project-icon"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M15 15h18c5 0 8 5 9 13l1 8c0 5-5 7-8 3l-6-7H19l-6 7c-3 4-8 2-8-3l1-8c1-8 4-13 9-13Z"/><path d="M15 21v10M10 26h10"/><circle cx="32" cy="23" r="1.5"/><circle cx="37" cy="28" r="1.5"/></svg></div>
+          <div class="project-copy"><div class="project-title"><h3>Ctrl</h3><span class="release">1.3</span><span class="beta">Beta</span></div><p>Der Controller wird dein Werkzeug.</p><p class="description">Gamepad-Tasten auf Tastatur, Maus, Scrollen oder Makros legen. Mit Anki-Vorlage, Profilen pro App und einer Live-Ansicht deiner Eingaben.</p><div class="project-meta"><span>macOS 14+</span><span>Intel / Apple Silicon</span><span>SwiftUI</span></div><details><summary>Einrichtung &amp; Berechtigungen</summary><div class="detail-content"><p>Ctrl in Programme ziehen und das Gamepad in macOS verbinden. Für Tastatur- und Mausausgabe die Bedienungshilfen-Freigabe selbst erteilen. Ausgabe lässt sich jederzeit pausieren. Profile werden am selbst gewählten Ort exportiert und beim Import geprüft.</p><a href="https://github.com/JoshuaForster02/ControllerMapper#readme" target="_blank" rel="noopener">Anleitung ↗</a></div></details></div>
+          <div class="project-actions"><a class="download" href="https://github.com/JoshuaForster02/ControllerMapper/releases/latest/download/Ctrl-mac.dmg" aria-label="Ctrl für Mac herunterladen">Für Mac laden <span>↓</span></a><a class="source" href="https://github.com/JoshuaForster02/ControllerMapper" target="_blank" rel="noopener">Quellcode ↗</a></div>
+        </article>
+        <article class="project" data-category="training" data-search="aeon world ride zwift rad trainer virtuelle welt bluetooth ftms">
+          <div class="project-index">03</div>
+          <div class="project-icon"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="m3 37 13-22 10 17 7-12 12 17H3Z"/><path d="m12 22 4 5 4-5M30 25l3 4 3-4"/><circle cx="34" cy="11" r="4"/></svg></div>
+          <div class="project-copy"><div class="project-title"><h3>AEON World</h3><span class="release">1.1</span><span class="beta">Prototyp</span></div><p>Fahren in einer eigenen Welt.</p><p class="description">Virtuelle Radstrecken mit Smart-Trainer-Verbindung. Die Mac-App öffnet die Browser-Welt und stellt Bluetooth nativ bereit. Benötigt eine Internetverbindung.</p><div class="project-meta"><span>macOS 13+</span><span>Intel / Apple Silicon</span><span>Web + CoreBluetooth</span></div><details><summary>Was kann der Prototyp?</summary><div class="detail-content"><p>Strecken, virtuelle Gänge und direkte Trainer-Verbindung. Click-Unterstützung und Widerstandssteuerung sind geräteabhängig und müssen mit der eigenen Hardware geprüft werden. Die Mac-App ist ein Zugang zur Online-Welt.</p><a href="https://aeon-pearl-one.vercel.app/ride/world/" target="_blank" rel="noopener">Im Browser öffnen ↗</a></div></details></div>
+          <div class="project-actions"><a class="download" href="https://aeon-pearl-one.vercel.app/ride/world/mac/AeonWorld-mac.zip" aria-label="AEON World für Mac herunterladen">Für Mac laden <span>↓</span></a><a class="source" href="https://aeon-pearl-one.vercel.app/ride/world/" target="_blank" rel="noopener">Welt öffnen ↗</a></div>
+        </article>
+      </div>
+      <p id="empty-state" class="empty" hidden>Keine passende App gefunden. Probiere einen anderen Begriff.</p>
+    </section>
+    <section class="notes wrap" aria-labelledby="notes-title">
+      <div><p class="eyebrow">VOR DEM ERSTEN START</p><h2 id="notes-title">Eigene Projekte.<br>Offen entwickelt.</h2></div>
+      <div class="notes-copy"><p>Die Downloads sind mit einem Apple-Entwicklerzertifikat signiert, aber noch nicht von Apple notarisiert. macOS kann den ersten Start deshalb blockieren. Prüfe die Herkunft und folge bei Bedarf Apples Anleitung.</p><a class="text-link" href="https://support.apple.com/102445" target="_blank" rel="noopener">Apples Hinweise zum Öffnen ↗</a><p>Beta bedeutet: Protokoll- und Buildprüfungen ersetzen keine Prüfung mit jedem echten Gerät. Die jeweiligen Releases nennen Funktionen, Tests und bekannte Grenzen.</p></div>
+    </section>
+  </main>
+  <footer class="wrap"><a href="/">Joshua Forster</a><span>Code &amp; Apps · 2026</span><button id="motion-toggle" type="button" aria-pressed="true">Animationen an</button><a href="/datenschutz.html">Datenschutz</a></footer>
+</body>
+</html>
